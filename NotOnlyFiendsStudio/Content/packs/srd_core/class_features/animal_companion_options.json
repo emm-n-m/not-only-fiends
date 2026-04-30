@@ -1,0 +1,40 @@
+[
+  {
+    "id": "animal_companion_options",
+    "name": "Animal Companion Options",
+    "description": "Choose an animal to serve as your companion. The PHB pool is gated by effective druid level: level-1 picks at 1+, alternative lists unlock at effective levels 4, 7, 10, 13, and 16. The engine treats `minEffectiveLevel` as an informational hint \u2014 selection is not blocked. Tier 16 picks gain a \u22125 effective-level penalty per PHB.",
+    "options": [
+      { "id": "companion_badger",       "name": "Badger",            "description": "Small burrower with rage when wounded.",                       "minEffectiveLevel": 1 },
+      { "id": "companion_camel",        "name": "Camel",             "description": "Large desert mount with spit attack.",                        "minEffectiveLevel": 1 },
+      { "id": "companion_dog",          "name": "Dog",               "description": "Loyal Small canine.",                                         "minEffectiveLevel": 1 },
+      { "id": "companion_riding_dog",   "name": "Dog, Riding",       "description": "Medium canine, suitable mount for Small riders.",             "minEffectiveLevel": 1 },
+      { "id": "companion_eagle",        "name": "Eagle",             "description": "Small flying companion with sharp eyesight.",                 "minEffectiveLevel": 1 },
+      { "id": "companion_hawk",         "name": "Hawk",              "description": "Tiny flying companion.",                                      "minEffectiveLevel": 1 },
+      { "id": "companion_horse_light",  "name": "Horse, Light",      "description": "Fast Large mount.",                                           "minEffectiveLevel": 1 },
+      { "id": "companion_horse_heavy",  "name": "Horse, Heavy",      "description": "Powerful Large war mount.",                                   "minEffectiveLevel": 1 },
+      { "id": "companion_monkey",       "name": "Monkey",            "description": "Tiny climber.",                                               "minEffectiveLevel": 1 },
+      { "id": "companion_owl",          "name": "Owl",               "description": "Tiny flying nocturnal hunter.",                               "minEffectiveLevel": 1 },
+      { "id": "companion_pony",         "name": "Pony",              "description": "Medium mount for Small riders.",                              "minEffectiveLevel": 1 },
+      { "id": "companion_snake_viper_tiny",   "name": "Snake, Tiny Viper",   "description": "Tiny venomous serpent.",                              "minEffectiveLevel": 1 },
+      { "id": "companion_snake_viper_medium", "name": "Snake, Medium Viper", "description": "Medium venomous serpent.",                            "minEffectiveLevel": 1 },
+      { "id": "companion_wolf",         "name": "Wolf",              "description": "Medium pack hunter with trip on bite.",                        "minEffectiveLevel": 1 },
+      { "id": "companion_boar",         "name": "Boar",              "description": "Medium tusked beast with ferocity.",                          "minEffectiveLevel": 1 },
+      { "id": "companion_ape",          "name": "Ape",               "description": "Large climber. Counts as 3 effective levels lower.",          "minEffectiveLevel": 4 },
+      { "id": "companion_bear_black",   "name": "Bear, Black",       "description": "Medium climber/swimmer. Counts as 3 effective levels lower.", "minEffectiveLevel": 4 },
+      { "id": "companion_dire_bat",     "name": "Bat, Dire",         "description": "Large flier with blindsense. Counts as 3 effective levels lower.", "minEffectiveLevel": 4 },
+      { "id": "companion_snake_constrictor", "name": "Snake, Constrictor", "description": "Medium constrictor with improved grab. Counts as 3 effective levels lower.", "minEffectiveLevel": 4 },
+      { "id": "companion_wolverine",    "name": "Wolverine",         "description": "Medium burrower with rage. Counts as 3 effective levels lower.", "minEffectiveLevel": 4 },
+      { "id": "companion_crocodile",    "name": "Crocodile",         "description": "Medium aquatic with improved grab. Counts as 3 effective levels lower.", "minEffectiveLevel": 4 },
+      { "id": "companion_leopard",      "name": "Leopard",           "description": "Medium pouncer with rake and improved grab. Counts as 3 effective levels lower.", "minEffectiveLevel": 4 },
+      { "id": "companion_bear_brown",   "name": "Bear, Brown",       "description": "Large bear with improved grab. Counts as 6 effective levels lower.", "minEffectiveLevel": 7 },
+      { "id": "companion_dire_wolf",    "name": "Wolf, Dire",        "description": "Large wolf with trip. Counts as 6 effective levels lower.",   "minEffectiveLevel": 7 },
+      { "id": "companion_lion",         "name": "Lion",              "description": "Large pouncer with pounce, improved grab, and rake. Counts as 6 effective levels lower.", "minEffectiveLevel": 7 },
+      { "id": "companion_tiger",        "name": "Tiger",             "description": "Large pouncer with pounce, improved grab, and rake. Counts as 6 effective levels lower.", "minEffectiveLevel": 7 },
+      { "id": "companion_bear_polar",   "name": "Bear, Polar",       "description": "Large arctic bear with improved grab. Counts as 9 effective levels lower.", "minEffectiveLevel": 10 },
+      { "id": "companion_dire_lion",    "name": "Lion, Dire",        "description": "Large dire pouncer with pounce, improved grab, and rake. Counts as 9 effective levels lower.", "minEffectiveLevel": 10 },
+      { "id": "companion_bear_dire",    "name": "Bear, Dire",        "description": "Large dire bear with improved grab. Counts as 12 effective levels lower.", "minEffectiveLevel": 13 },
+      { "id": "companion_elephant",     "name": "Elephant",          "description": "Huge tusked behemoth with trample. Counts as 12 effective levels lower.", "minEffectiveLevel": 13 },
+      { "id": "companion_tiger_dire",   "name": "Tiger, Dire",       "description": "Large dire tiger with pounce, improved grab, and rake. Counts as 15 effective levels lower.", "minEffectiveLevel": 16 }
+    ]
+  }
+]

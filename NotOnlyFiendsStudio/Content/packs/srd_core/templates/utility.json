@@ -1,0 +1,38 @@
+[
+{
+  "id": "template:assign_subtype_extraplanar",
+  "name": "Assign Subtype ~ Extraplanar",
+  "subtypeAdditions": ["extraplanar"],
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:assign_subtype_evil",
+  "name": "Assign Subtype ~ Evil",
+  "subtypeAdditions": ["evil"],
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:assign_race_type_outsider",
+  "name": "Assign Race Type ~ Outsider",
+  "typeOverride": "outsider",
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:racesubtype_augmented_fey",
+  "name": "RaceSubtype ~ Augmented Fey",
+  "subtypeAdditions": ["augmented"],
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+}
+]

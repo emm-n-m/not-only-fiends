@@ -1,0 +1,278 @@
+[
+  {
+    "id": "domain:air",
+    "name": "Air",
+    "description": "Turn or destroy earth creatures as a good cleric turns undead. Rebuke, command, or bolster air creatures as an evil cleric rebukes undead. Use these abilities a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_air_power", "name": "Air Domain Power", "description": "Turn/destroy earth creatures or rebuke/command air creatures." }
+      }
+    ],
+    "bonusSpells": { "1": "obscuring_mist", "2": "wind_wall", "3": "gaseous_form", "4": "air_walk", "5": "control_winds", "6": "chain_lightning", "7": "control_weather", "8": "whirlwind", "9": "elemental_swarm_air" }
+  },
+  {
+    "id": "domain:animal",
+    "name": "Animal",
+    "description": "You can use speak with animals once per day as a spell-like ability. Knowledge (nature) is a class skill.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_animal_power", "name": "Animal Domain Power", "description": "Speak with animals 1/day as a spell-like ability. Knowledge (nature) is a class skill." }
+      }
+    ],
+    "bonusSpells": { "1": "calm_animals", "2": "hold_animal", "3": "dominate_animal", "4": "summon_natures_ally_iv", "5": "commune_with_nature", "6": "antilife_shell", "7": "animal_shapes", "8": "summon_natures_ally_viii", "9": "shapechange" }
+  },
+  {
+    "id": "domain:charm",
+    "name": "Charm",
+    "description": "You can boost your Charisma by 4 as a free action, once per day. The Charisma increase lasts 1 minute.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_charm_power", "name": "Charm Domain Power", "description": "Boost Charisma by +4 as a free action, once per day, lasting 1 minute." }
+      }
+    ],
+    "bonusSpells": { "1": "charm_person", "2": "calm_emotions", "3": "suggestion", "4": "heroism", "5": "charm_monster", "6": "geas_quest", "7": "insanity", "8": "demand", "9": "dominate_monster" }
+  },
+  {
+    "id": "domain:chaos",
+    "name": "Chaos",
+    "description": "You cast chaos spells at +1 caster level.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_chaos_power", "name": "Chaos Domain Power", "description": "Cast chaos spells at +1 caster level." }
+      }
+    ],
+    "bonusSpells": { "1": "protection_from_law", "2": "shatter", "3": "magic_circle_against_law", "4": "chaos_hammer", "5": "dispel_law", "6": "animate_objects", "7": "word_of_chaos", "8": "cloak_of_chaos", "9": "summon_monster_ix_chaos" }
+  },
+  {
+    "id": "domain:death",
+    "name": "Death",
+    "description": "You may use a death touch once per day. Your death touch is a supernatural ability that produces a death effect. You must succeed on a melee touch attack against a living creature (using the rules for touch spells). When you touch, roll 1d6 per cleric level you possess. If the total at least equals the creature's current hit points, it dies (no save).",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_death_power", "name": "Death Touch", "description": "Once per day, melee touch attack that kills if 1d6/cleric level >= target's current HP." }
+      }
+    ],
+    "bonusSpells": { "1": "cause_fear", "2": "death_knell", "3": "animate_dead", "4": "death_ward", "5": "slay_living", "6": "create_undead", "7": "destruction", "8": "create_greater_undead", "9": "wail_of_the_banshee" }
+  },
+  {
+    "id": "domain:destruction",
+    "name": "Destruction",
+    "description": "You gain the smite power, the supernatural ability to make a single melee attack with a +4 bonus on attack rolls and a bonus on damage rolls equal to your cleric level (if you hit). You must declare the smite before making the attack. This ability is usable once per day.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_destruction_power", "name": "Destruction Smite", "description": "Once per day, +4 attack and +cleric level damage on a single melee attack." }
+      }
+    ],
+    "bonusSpells": { "1": "inflict_light_wounds", "2": "shatter", "3": "contagion", "4": "inflict_critical_wounds", "5": "inflict_light_wounds_mass", "6": "harm", "7": "disintegrate", "8": "earthquake", "9": "implosion" }
+  },
+  {
+    "id": "domain:earth",
+    "name": "Earth",
+    "description": "Turn or destroy air creatures as a good cleric turns undead. Rebuke, command, or bolster earth creatures as an evil cleric rebukes undead. Use these abilities a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_earth_power", "name": "Earth Domain Power", "description": "Turn/destroy air creatures or rebuke/command earth creatures." }
+      }
+    ],
+    "bonusSpells": { "1": "magic_stone", "2": "soften_earth_and_stone", "3": "stone_shape", "4": "spike_stones", "5": "wall_of_stone", "6": "stoneskin", "7": "earthquake", "8": "iron_body", "9": "elemental_swarm_earth" }
+  },
+  {
+    "id": "domain:evil",
+    "name": "Evil",
+    "description": "You cast evil spells at +1 caster level.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_evil_power", "name": "Evil Domain Power", "description": "Cast evil spells at +1 caster level." }
+      }
+    ],
+    "bonusSpells": { "1": "protection_from_good", "2": "desecrate", "3": "magic_circle_against_good", "4": "unholy_blight", "5": "dispel_good", "6": "create_undead", "7": "blasphemy", "8": "unholy_aura", "9": "summon_monster_ix_evil" }
+  },
+  {
+    "id": "domain:fire",
+    "name": "Fire",
+    "description": "Turn or destroy water creatures as a good cleric turns undead. Rebuke, command, or bolster fire creatures as an evil cleric rebukes undead. Use these abilities a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_fire_power", "name": "Fire Domain Power", "description": "Turn/destroy water creatures or rebuke/command fire creatures." }
+      }
+    ],
+    "bonusSpells": { "1": "burning_hands", "2": "produce_flame", "3": "resist_energy", "4": "wall_of_fire", "5": "fire_shield", "6": "fire_seeds", "7": "fire_storm", "8": "incendiary_cloud", "9": "elemental_swarm_fire" }
+  },
+  {
+    "id": "domain:good",
+    "name": "Good",
+    "description": "You cast good spells at +1 caster level.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_good_power", "name": "Good Domain Power", "description": "Cast good spells at +1 caster level." }
+      }
+    ],
+    "bonusSpells": { "1": "protection_from_evil", "2": "aid", "3": "magic_circle_against_evil", "4": "holy_smite", "5": "dispel_evil", "6": "blade_barrier", "7": "holy_word", "8": "holy_aura", "9": "summon_monster_ix_good" }
+  },
+  {
+    "id": "domain:healing",
+    "name": "Healing",
+    "description": "You cast healing spells at +1 caster level.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_healing_power", "name": "Healing Domain Power", "description": "Cast healing spells at +1 caster level." }
+      }
+    ],
+    "bonusSpells": { "1": "cure_light_wounds", "2": "cure_moderate_wounds", "3": "cure_serious_wounds", "4": "cure_critical_wounds", "5": "cure_light_wounds_mass", "6": "heal", "7": "regenerate", "8": "cure_critical_wounds_mass", "9": "heal_mass" }
+  },
+  {
+    "id": "domain:knowledge",
+    "name": "Knowledge",
+    "description": "Add all Knowledge skills to your list of cleric class skills. You cast divination spells at +1 caster level.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_knowledge_power", "name": "Knowledge Domain Power", "description": "All Knowledge skills are class skills. Cast divination spells at +1 caster level." }
+      }
+    ],
+    "bonusSpells": { "1": "detect_secret_doors", "2": "detect_thoughts", "3": "clairaudience_clairvoyance", "4": "divination", "5": "true_seeing", "6": "find_the_path", "7": "legend_lore", "8": "discern_location", "9": "foresight" }
+  },
+  {
+    "id": "domain:law",
+    "name": "Law",
+    "description": "You cast law spells at +1 caster level.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_law_power", "name": "Law Domain Power", "description": "Cast law spells at +1 caster level." }
+      }
+    ],
+    "bonusSpells": { "1": "protection_from_chaos", "2": "calm_emotions", "3": "magic_circle_against_chaos", "4": "order_s_wrath", "5": "dispel_chaos", "6": "hold_monster", "7": "dictum", "8": "shield_of_law", "9": "summon_monster_ix_law" }
+  },
+  {
+    "id": "domain:luck",
+    "name": "Luck",
+    "description": "You gain the power of good fortune, which is usable once per day. This extraordinary ability allows you to reroll one roll that you have just made before the DM declares whether the roll results in success or failure. You must take the result of the reroll, even if it's worse than the original roll.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_luck_power", "name": "Good Fortune", "description": "Once per day, reroll one roll before success or failure is declared." }
+      }
+    ],
+    "bonusSpells": { "1": "entropic_shield", "2": "aid", "3": "protection_from_energy", "4": "freedom_of_movement", "5": "break_enchantment", "6": "mislead", "7": "spell_turning", "8": "moment_of_prescience", "9": "miracle" }
+  },
+  {
+    "id": "domain:magic",
+    "name": "Magic",
+    "description": "Use scrolls, wands, and other devices with spell completion or spell trigger activation as a wizard of one-half your cleric level (at least 1st level). For the purpose of using a scroll or other magic device, if you are also a wizard, actual wizard levels and these effective wizard levels stack.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_magic_power", "name": "Magic Domain Power", "description": "Use spell completion/trigger items as a wizard of half cleric level (min 1st)." }
+      }
+    ],
+    "bonusSpells": { "1": "magic_aura", "2": "identify", "3": "dispel_magic", "4": "imbue_with_spell_ability", "5": "spell_resistance", "6": "antimagic_field", "7": "spell_turning", "8": "protection_from_spells", "9": "mordenkainen_s_disjunction" }
+  },
+  {
+    "id": "domain:plant",
+    "name": "Plant",
+    "description": "Rebuke or command plant creatures as an evil cleric rebukes or commands undead. Use this ability a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability. Knowledge (nature) is a class skill.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_plant_power", "name": "Plant Domain Power", "description": "Rebuke or command plant creatures. Knowledge (nature) is a class skill." }
+      }
+    ],
+    "bonusSpells": { "1": "entangle", "2": "barkskin", "3": "plant_growth", "4": "command_plants", "5": "wall_of_thorns", "6": "repel_wood", "7": "animate_plants", "8": "control_plants", "9": "shambler" }
+  },
+  {
+    "id": "domain:protection",
+    "name": "Protection",
+    "description": "You can generate a protective ward as a supernatural ability. Grant someone you touch a resistance bonus equal to your cleric level on his or her next saving throw. Activating this power is a standard action. The protective ward is an abjuration effect with a duration of 1 hour that is usable once per day.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_protection_power", "name": "Protective Ward", "description": "Once per day, touch grants +cleric level resistance bonus on next saving throw (1 hour)." }
+      }
+    ],
+    "bonusSpells": { "1": "sanctuary", "2": "shield_other", "3": "protection_from_energy", "4": "spell_immunity", "5": "spell_resistance", "6": "antimagic_field", "7": "repulsion", "8": "mind_blank", "9": "prismatic_sphere" }
+  },
+  {
+    "id": "domain:strength",
+    "name": "Strength",
+    "description": "You can perform a feat of strength as a supernatural ability. You gain an enhancement bonus to Strength equal to your cleric level. Activating the power is a free action, the power lasts 1 round, and it is usable once per day.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_strength_power", "name": "Feat of Strength", "description": "Once per day, +cleric level enhancement bonus to Strength for 1 round." }
+      }
+    ],
+    "bonusSpells": { "1": "enlarge_person", "2": "bull_s_strength", "3": "magic_vestment", "4": "spell_immunity", "5": "righteous_might", "6": "stoneskin", "7": "bigby_s_grasping_hand", "8": "bigby_s_clenched_fist", "9": "bigby_s_crushing_hand" }
+  },
+  {
+    "id": "domain:sun",
+    "name": "Sun",
+    "description": "Once per day, you can perform a greater turning against undead in place of a regular turning. The greater turning is like a normal turning except that the undead creatures that would be turned are destroyed instead.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_sun_power", "name": "Greater Turning", "description": "Once per day, greater turning destroys undead instead of turning them." }
+      }
+    ],
+    "bonusSpells": { "1": "endure_elements", "2": "heat_metal", "3": "searing_light", "4": "fire_shield", "5": "flame_strike", "6": "fire_seeds", "7": "sunbeam", "8": "sunburst", "9": "prismatic_sphere" }
+  },
+  {
+    "id": "domain:travel",
+    "name": "Travel",
+    "description": "For a total time per day of 1 round per cleric level you possess, you can act normally regardless of magical effects that impede movement as if you were affected by the spell freedom of movement. This effect occurs automatically as soon as it applies, lasts until it runs out or is no longer needed, and can operate multiple times per day (up to the total daily limit of rounds). This granted power is a supernatural ability. Survival is a class skill.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_travel_power", "name": "Freedom of Movement", "description": "1 round/cleric level per day of automatic freedom of movement. Survival is a class skill." }
+      }
+    ],
+    "bonusSpells": { "1": "longstrider", "2": "locate_object", "3": "fly", "4": "dimension_door", "5": "teleport", "6": "find_the_path", "7": "greater_teleport", "8": "phase_door", "9": "astral_projection" }
+  },
+  {
+    "id": "domain:trickery",
+    "name": "Trickery",
+    "description": "Add Bluff, Disguise, and Hide to your list of cleric class skills.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_trickery_power", "name": "Trickery Domain Power", "description": "Add Bluff, Disguise, and Hide to cleric class skills." }
+      }
+    ],
+    "bonusSpells": { "1": "disguise_self", "2": "invisibility", "3": "nondetection", "4": "confusion", "5": "false_vision", "6": "mislead", "7": "screen", "8": "polymorph_any_object", "9": "time_stop" }
+  },
+  {
+    "id": "domain:war",
+    "name": "War",
+    "description": "Free Martial Weapon Proficiency with deity's favored weapon (if necessary) and Weapon Focus with deity's favored weapon.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_war_power", "name": "War Domain Power", "description": "Free Martial Weapon Proficiency and Weapon Focus with deity's favored weapon." }
+      }
+    ],
+    "bonusSpells": { "1": "magic_weapon", "2": "spiritual_weapon", "3": "magic_vestment", "4": "divine_power", "5": "flame_strike", "6": "blade_barrier", "7": "power_word_blind", "8": "power_word_stun", "9": "power_word_kill" }
+  },
+  {
+    "id": "domain:water",
+    "name": "Water",
+    "description": "Turn or destroy fire creatures as a good cleric turns undead. Rebuke, command, or bolster water creatures as an evil cleric rebukes undead. Use these abilities a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "domain_water_power", "name": "Water Domain Power", "description": "Turn/destroy fire creatures or rebuke/command water creatures." }
+      }
+    ],
+    "bonusSpells": { "1": "obscuring_mist", "2": "fog_cloud", "3": "water_breathing", "4": "control_water", "5": "ice_storm", "6": "cone_of_cold", "7": "acid_fog", "8": "horrid_wilting", "9": "elemental_swarm_water" }
+  }
+]

@@ -1,0 +1,155 @@
+@typeparam TItem
+
+<div class="search-select @(_open ? "open" : "")" @onfocusout="OnFocusOut" tabindex="-1">
+    <input type="text"
+           class="form-control @CssClass"
+           placeholder="@Placeholder"
+           @bind="_search"
+           @bind:event="oninput"
+           @bind:after="OnSearchChanged"
+           @onfocus="Open"
+           @onkeydown="OnKeyDown" />
+    @if (_open && _filtered.Any())
+    {
+        <div class="search-select-dropdown">
+            @foreach (var (item, idx) in _filtered.Select((item, i) => (item, i)))
+            {
+                var isHighlighted = idx == _highlightIndex;
+                <div class="search-select-item @(isHighlighted ? "highlighted" : "") @(EqualityComparer<string>.Default.Equals(GetValue(item), Value) ? "selected" : "")"
+                     title="@GetTitle(item)"
+                     @onmousedown="() => Select(item)"
+                     @onmousedown:preventDefault>
+                    @GetDisplay(item)
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+    [Parameter] public Func<TItem, string> DisplaySelector { get; set; } = item => item?.ToString() ?? "";
+    [Parameter] public Func<TItem, string> ValueSelector { get; set; } = item => item?.ToString() ?? "";
+    [Parameter] public string Placeholder { get; set; } = "Search...";
+    [Parameter] public string CssClass { get; set; } = "";
+    [Parameter] public Func<TItem, string>? TitleSelector { get; set; }
+    [Parameter] public int MaxResults { get; set; } = 50;
+
+    private string _search = "";
+    private bool _open;
+    private int _highlightIndex = -1;
+    private List<TItem> _filtered = new();
+
+    protected override void OnParametersSet()
+    {
+        // If the value changed externally, update the search text to match
+        if (!_open && Value != null)
+        {
+            var match = Items.FirstOrDefault(i => GetValue(i) == Value);
+            if (match != null)
+                _search = GetDisplay(match);
+        }
+        else if (!_open && Value == null && !string.IsNullOrEmpty(_search))
+        {
+            // Value was cleared externally
+        }
+        UpdateFiltered();
+    }
+
+    private string GetDisplay(TItem item) => DisplaySelector(item);
+    private string GetValue(TItem item) => ValueSelector(item);
+    private string GetTitle(TItem item) => TitleSelector?.Invoke(item) ?? "";
+
+    private void UpdateFiltered()
+    {
+        var query = _search.Trim();
+        IEnumerable<TItem> source = Items;
+        if (!string.IsNullOrEmpty(query))
+        {
+            var terms = query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            source = source.Where(item =>
+            {
+                var display = GetDisplay(item).ToLowerInvariant();
+                var value = GetValue(item).ToLowerInvariant();
+                return terms.All(t =>
+                {
+                    var tl = t.ToLowerInvariant();
+                    return display.Contains(tl) || value.Contains(tl);
+                });
+            });
+        }
+        _filtered = source.Take(MaxResults).ToList();
+    }
+
+    private void OnSearchChanged()
+    {
+        _highlightIndex = -1;
+        UpdateFiltered();
+        _open = true;
+    }
+
+    private void Open()
+    {
+        _search = "";
+        _open = true;
+        _highlightIndex = -1;
+        UpdateFiltered();
+    }
+
+    private void Select(TItem item)
+    {
+        _search = GetDisplay(item);
+        _open = false;
+        ValueChanged.InvokeAsync(GetValue(item));
+    }
+
+    private async Task OnFocusOut()
+    {
+        // Delay to allow onmousedown to fire before closing
+        await Task.Delay(150);
+        _open = false;
+
+        // If the search text doesn't match a valid item, revert to current value
+        var match = Items.FirstOrDefault(i =>
+            GetDisplay(i).Equals(_search, StringComparison.OrdinalIgnoreCase)
+            || GetValue(i).Equals(_search, StringComparison.OrdinalIgnoreCase));
+        if (match != null)
+        {
+            _search = GetDisplay(match);
+            if (GetValue(match) != Value)
+                await ValueChanged.InvokeAsync(GetValue(match));
+        }
+        else if (Value != null)
+        {
+            var current = Items.FirstOrDefault(i => GetValue(i) == Value);
+            _search = current != null ? GetDisplay(current) : "";
+        }
+        StateHasChanged();
+    }
+
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (!_open || !_filtered.Any()) return;
+
+        switch (e.Key)
+        {
+            case "ArrowDown":
+                _highlightIndex = Math.Min(_highlightIndex + 1, _filtered.Count - 1);
+                break;
+            case "ArrowUp":
+                _highlightIndex = Math.Max(_highlightIndex - 1, 0);
+                break;
+            case "Enter":
+                if (_highlightIndex >= 0 && _highlightIndex < _filtered.Count)
+                    Select(_filtered[_highlightIndex]);
+                else if (_filtered.Count == 1)
+                    Select(_filtered[0]);
+                break;
+            case "Escape":
+                _open = false;
+                break;
+        }
+    }
+}

@@ -1,0 +1,58 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# Local .NET CLI sandbox/cache
+.dotnet-cli/
+
+# NuGet
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+
+# Test results
+[Tt]est[Rr]esult*/
+*.trx
+coverage*/
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Publish output
+publish/
+
+# Content — copyrighted source PDFs (personal use only)
+*.pdf
+*.rtf
+*.docx
+
+
+
+# PCGen data (symlinks to local installs)
+pcgen_deceit
+pcgen_data
+pcgen_characters
+
+# Local content wiring
+.env
+.claude/settings.local.json
+sources/imp.json
+NotOnlyFiendsStudio/Content/srd_html

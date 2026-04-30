@@ -1,0 +1,9 @@
+{
+  "id": "srd_core",
+  "name": "SRD Core Rules",
+  "description": "D&D 3.5e System Reference Document — base races, classes, feats, skills, spells, and domains.",
+  "author": "Wizards of the Coast (OGL)",
+  "version": "3.5",
+  "priority": 0,
+  "depends": []
+}

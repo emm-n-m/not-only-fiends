@@ -1,0 +1,182 @@
+@page "/import"
+@using System.Text.Json
+@using NotOnlyFiendsStudio.Studio
+@using NotOnlyFiendsStudio.Models
+@using NotOnlyFiendsStudio.PcGen
+@using NotOnlyFiendsFeed.Services
+@inject ServerContentService Content
+@inject BrowserFileService FileService
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+<PageTitle>Import PCGen Character</PageTitle>
+
+<h2>Import PCGen Character</h2>
+
+<div class="card mb-3">
+    <div class="card-header">Import .pcg File</div>
+    <div class="card-body">
+        <p class="text-muted">Select a PCGen character file (.pcg) to convert to the engine format. Missing content will be skipped with warnings.</p>
+        <button class="btn btn-primary" @onclick="PickFile">Select .pcg File...</button>
+        <input type="file" id="pcg-file-input" accept=".pcg" style="display:none" />
+    </div>
+</div>
+
+@if (_loading)
+{
+    <div class="alert alert-info">Converting...</div>
+}
+
+@if (_result != null)
+{
+    <div class="card mb-3">
+        <div class="card-header">
+            Conversion Result: @_result.Character.Name
+            <span class="badge @(_result.Warnings.Count == 0 ? "bg-success" : "bg-warning") float-end">
+                @_result.Summary
+            </span>
+        </div>
+        <div class="card-body">
+            <!-- Character Summary -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <h6>Character</h6>
+                    <p class="mb-1"><strong>Name:</strong> @_result.Character.Name</p>
+                    <p class="mb-1"><strong>Race:</strong> @_result.Character.RaceId @(_result.RaceDropped ? "(fallback)" : "")</p>
+                    <p class="mb-1"><strong>HD:</strong> @_result.Character.Ticks.Count</p>
+                </div>
+                <div class="col-md-4">
+                    <h6>Classes</h6>
+                    @{
+                        var classLevels = _result.Character.Ticks
+                            .GroupBy(t => t.DriverId)
+                            .Select(g => $"{g.Key.Replace("class:", "").Replace("racial_hd:", "")} {g.Count()}")
+                            .ToList();
+                    }
+                    @foreach (var cl in classLevels)
+                    {
+                        <span class="badge bg-primary me-1 mb-1">@cl</span>
+                    }
+                </div>
+                <div class="col-md-4">
+                    <h6>Ability Scores</h6>
+                    @foreach (var ab in Enum.GetValues<Ability>())
+                    {
+                        <span class="me-2">@ab: @_result.Character.BaseAbilityScores.GetScore(ab)</span>
+                    }
+                </div>
+            </div>
+
+            @if (_result.Character.TemplateIds.Any())
+            {
+                <div class="mb-2">
+                    <h6>Templates</h6>
+                    @foreach (var t in _result.Character.TemplateIds)
+                    {
+                        <span class="badge bg-info me-1">@t</span>
+                    }
+                </div>
+            }
+
+            @{
+                var tick0 = _result.Character.Ticks.FirstOrDefault();
+                var featCount = tick0?.Choices.FeatIds?.Count ?? 0;
+                var skillCount = tick0?.Choices.SkillAllocations?.Count ?? 0;
+                var domainCount = tick0?.Choices.ClassFeatureChoices?.GetValueOrDefault("domains")?.Count ?? 0;
+            }
+            <div class="mb-2">
+                <small class="text-muted">
+                    @featCount feat(s), @skillCount skill(s), @domainCount domain(s) imported
+                </small>
+            </div>
+
+            <!-- Warnings -->
+            @if (_result.Warnings.Count > 0)
+            {
+                <div class="alert alert-warning mt-2">
+                    <h6>Warnings (@_result.Warnings.Count)</h6>
+                    <div style="max-height: 200px; overflow-y: auto;">
+                        @foreach (var w in _result.Warnings)
+                        {
+                            <div><small>@w</small></div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Actions -->
+            <div class="d-flex gap-2 mt-3">
+                <button class="btn btn-success" @onclick="DownloadCharacter">Download as JSON</button>
+                <button class="btn btn-outline-primary" @onclick="OpenInBuilder">Open in Builder</button>
+            </div>
+
+            <!-- JSON Preview -->
+            <details class="mt-3">
+                <summary class="text-muted" style="cursor: pointer">JSON Preview</summary>
+                <pre class="border rounded p-2 mt-1" style="max-height: 400px; overflow-y: auto; font-size: 0.8rem;">@_jsonPreview</pre>
+            </details>
+        </div>
+    </div>
+}
+
+@if (_error != null)
+{
+    <div class="alert alert-danger">@_error</div>
+}
+
+@code {
+    private PcgConversionResult? _result;
+    private string? _jsonPreview;
+    private string? _error;
+    private bool _loading;
+
+    private async Task PickFile()
+    {
+        _error = null;
+        _result = null;
+
+        try
+        {
+            var fileData = await FileService.OpenPcgFileAsync();
+            if (fileData == null || string.IsNullOrEmpty(fileData.Content))
+                return;
+
+            _loading = true;
+            StateHasChanged();
+
+            var registry = Content.Registry;
+            var data = PcgParser.ParseText(fileData.Content, fileData.Name ?? "imported.pcg");
+            var mapper = new PcgIdMapper();
+            _result = PcgConverter.Convert(data, mapper, registry);
+
+            _jsonPreview = JsonSerializer.Serialize(_result.Character, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+            });
+        }
+        catch (Exception ex)
+        {
+            _error = $"Import failed: {ex.Message}";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task DownloadCharacter()
+    {
+        if (_result == null) return;
+        await FileService.DownloadCharacterAsync(_result.Character);
+    }
+
+    private async Task OpenInBuilder()
+    {
+        if (_result == null) return;
+        var json = JsonSerializer.Serialize(_result.Character, JsonOptions.Default);
+        await JS.InvokeVoidAsync("sessionStorage.setItem", "importedCharacter", json);
+        Navigation.NavigateTo("/builder?imported=true");
+    }
+}

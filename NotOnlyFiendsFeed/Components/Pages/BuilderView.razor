@@ -1,0 +1,1887 @@
+@page "/builder"
+@page "/builder/{Id}"
+@using NotOnlyFiendsStudio.Studio
+@using NotOnlyFiendsStudio.Models
+@using NotOnlyFiendsFeed.Services
+@inject ServerContentService Content
+@inject CharacterStore CharacterStore
+@inject BrowserFileService FileService
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+<PageTitle>Character Builder</PageTitle>
+
+<h2>Character Builder</h2>
+
+@if (_loading)
+{
+    <p>Loading content...</p>
+}
+else if (_error != null)
+{
+    <p class="text-danger">@_error</p>
+}
+else
+{
+    <!-- Step 1: Character Name & Race -->
+    <div class="card mb-3">
+        <div class="card-header">Character Setup</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" @bind="_character.Name" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Alignment</label>
+                    <select class="form-select" value="@_character.Alignment" @onchange="OnAlignmentChanged">
+                        @foreach (var a in Enum.GetValues<Alignment>())
+                        {
+                            <option value="@a">@FormatAlignment(a)</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Race</label>
+                    <SearchSelect TItem="RaceDefinition"
+                                  Items="_races"
+                                  Value="@_character.RaceId"
+                                  ValueChanged="(v) => { _character.RaceId = v ?? _character.RaceId; OnCharacterChanged(); }"
+                                  DisplaySelector="@(r => r.Name)"
+                                  ValueSelector="@(r => r.Id)"
+                                  TitleSelector="@(r => r.Description)"
+                                  Placeholder="Search races..." />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Templates</label>
+
+                            <SearchSelect TItem="TemplateDriver"
+                                          Items="_templates"
+                                          Value="@_selectedTemplate"
+                                          ValueChanged="@((v) => { _selectedTemplate = v ?? string.Empty; })"
+                                  DisplaySelector="@(t => t.Name)"
+                                  ValueSelector="@(t => t.Id)"
+                                  Placeholder="Search templates..." />
+                    @if (!string.IsNullOrEmpty(_selectedTemplate) && !_character.TemplateIds.Contains(_selectedTemplate))
+                    {
+                        <button class="btn btn-sm btn-outline-primary mt-1" @onclick="AddTemplate">Add Template</button>
+                    }
+                    @foreach (var t in _character.TemplateIds)
+                    {
+                        var tDef = _templates.FirstOrDefault(td => td.Id == t);
+                        <span class="badge bg-info me-1 mt-1 d-inline-flex align-items-center gap-1" title="@(t)">@(tDef?.Name ?? t) <button type="button" class="btn btn-sm p-0 border-0 text-white" style="font-size: 0.85em; line-height: 1;" @onclick="() => RemoveTemplate(t)">&times;</button></span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 2: Base Ability Scores -->
+    <div class="card mb-3">
+        <div class="card-header">Base Ability Scores (pre-racial)</div>
+        <div class="card-body">
+            <div class="row">
+                @foreach (var ability in Enum.GetValues<Ability>())
+                {
+                    var raceBonus = GetRaceAbilityModifier(ability);
+                    var templateBonus = GetTemplateAbilityModifier(ability);
+                    var creationTotal = _character.BaseAbilityScores.GetScore(ability) + raceBonus + templateBonus;
+                    <div class="col-2">
+                        <label class="form-label">@ability</label>
+                        <input type="number" class="form-control" min="1" max="40"
+                               value="@_character.BaseAbilityScores.GetScore(ability)"
+                               @onchange="(e) => SetAbilityScore(ability, e)" />
+                        <div class="form-text">
+                            Race @FormatSigned(raceBonus) | Template @FormatSigned(templateBonus) | Start @creationTotal
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 3: HD Timeline -->
+    <div class="card mb-3">
+        <div class="card-header">
+            HD Timeline (@_character.Ticks.Count HD)
+            <div class="float-end d-flex align-items-center gap-1">
+                @if (_character.Ticks.Count > 0)
+                {
+                    <button class="btn btn-sm btn-outline-secondary" @onclick="ToggleAllHdTicks">
+                        @(_expandedHdTicks.Count == _character.Ticks.Count ? "Collapse All" : "Expand All")
+                    </button>
+                }
+                <input type="number" class="form-control form-control-sm" style="width:60px" min="1" max="20" @bind="_addHdCount" />
+                <select class="form-select form-select-sm" style="width:auto" @bind="_addHdDriverId">
+                    @foreach (var d in _drivers)
+                    {
+                        <option value="@d.Id">@d.Name</option>
+                    }
+                </select>
+                <button class="btn btn-sm btn-success" @onclick="AddTick">+ Add HD</button>
+            </div>
+        </div>
+        <div class="card-body">
+            @for (int i = 0; i < _character.Ticks.Count; i++)
+            {
+                var index = i;
+                var tick = _character.Ticks[index];
+                var hdNum = index + 1;
+                <div class="border rounded p-2 mb-2">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-secondary py-0 px-1" @onclick="() => ToggleHdTick(index)" title="@(_expandedHdTicks.Contains(index) ? "Collapse" : "Expand")">
+                                @(_expandedHdTicks.Contains(index) ? "\u25BC" : "\u25B6")
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <strong>HD @hdNum</strong>
+                            @if (hdNum % 4 == 0)
+                            {
+                                @if (tick.Choices.AbilityIncrease != null)
+                                {
+                                    <span class="badge bg-success ms-1">+1 @tick.Choices.AbilityIncrease</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark ms-1">Ability +1 needed</span>
+                                }
+                            }
+                        </div>
+                        @if (_expandedHdTicks.Contains(index))
+                        {
+                            <div class="col-md-3">
+                                <SearchSelect TItem="Driver"
+                                              Items="_drivers"
+                                              Value="@tick.DriverId"
+                                              ValueChanged="(v) => { tick.DriverId = v ?? tick.DriverId; OnCharacterChanged(); }"
+                                              DisplaySelector="@(d => d.Name)"
+                                              ValueSelector="@(d => d.Id)"
+                                              CssClass="form-control-sm"
+                                              Placeholder="Search classes..." />
+                            </div>
+                            @if (hdNum % 4 == 0)
+                            {
+                                <div class="col-md-2">
+                                    <select class="form-select form-select-sm"
+                                            value="@(tick.Choices.AbilityIncrease?.ToString() ?? "")"
+                                            @onchange="(e) => SetAbilityIncrease(index, e)">
+                                        <option value="">Ability +1...</option>
+                                        @foreach (var ab in Enum.GetValues<Ability>())
+                                        {
+                                            <option value="@ab">@ab</option>
+                                        }
+                                    </select>
+                                </div>
+                            }
+                            <div class="col-auto">
+                                <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveTick(index)">Remove</button>
+                            </div>
+                        }
+                        else
+                        {
+                                var driverDef = _drivers.FirstOrDefault(d => d.Id == tick.DriverId);
+                                var collapsedParts = new List<string> { driverDef?.Name ?? tick.DriverId };
+                                if (tick.Choices.AbilityIncrease != null)
+                                    collapsedParts.Add($"+1 {tick.Choices.AbilityIncrease}");
+                                if (tick.Choices.FeatIds?.Any() == true)
+                                    collapsedParts.Add($"{tick.Choices.FeatIds.Count} feat(s)");
+                            <div class="col text-muted small">@string.Join(" | ", collapsedParts)</div>
+                        }
+                    </div>
+
+                    @if (_expandedHdTicks.Contains(index))
+                    {
+                    <!-- Feat selection for this tick -->
+                    @if (tick.Choices.FeatIds != null && tick.Choices.FeatIds.Any())
+                    {
+                        <div class="mt-1">
+                            <small class="text-muted">Feats:</small>
+                            @foreach (var feat in tick.Choices.FeatIds.ToList())
+                            {
+                                var featId = feat;
+                                var featDef = _feats.FirstOrDefault(f => f.Id == featId);
+                                var featLabel = FormatFeatLabel(featId, featDef);
+                                <span class="badge bg-secondary me-1" title="@(featDef?.Description ?? featId)">@featLabel <button type="button" class="btn btn-sm p-0 border-0 text-white" style="font-size: 0.85em; line-height: 1;" @onclick="() => RemoveFeatFromTick(index, featId)">&times;</button></span>
+                            }
+                        </div>
+                    }
+                    <div class="mt-1">
+                        <div class="d-flex align-items-center gap-1" style="max-width: 600px;">
+                            <SearchSelect TItem="FeatDefinition"
+                                          Items="GetTickFeats(index)"
+                                          Value="@_featInput"
+                                          ValueChanged="@((v) => { _featInput = v ?? string.Empty; _featSelectionInput = ""; })"
+                                          DisplaySelector="@(f => f.Name + (f.SelectionRequired != null ? $" ({f.SelectionRequired}...)" : ""))"
+                                          ValueSelector="@(f => f.Id)"
+                                          TitleSelector="@(f => f.Description)"
+                                          CssClass="form-control-sm"
+                                          Placeholder="Search feats..." />
+                            @{
+                                var selectedFeatDef = _feats.FirstOrDefault(f => f.Id == _featInput);
+                            }
+                            @if (selectedFeatDef?.SelectionRequired == "school")
+                            {
+                                <select class="form-select form-select-sm" style="width:auto" @bind="_featSelectionInput">
+                                    <option value="">School...</option>
+                                    @foreach (var school in _spellSchools)
+                                    {
+                                        <option value="@school">@school</option>
+                                    }
+                                </select>
+                            }
+                            else if (selectedFeatDef?.SelectionRequired == "skill")
+                            {
+                                <select class="form-select form-select-sm" style="width:auto" @bind="_featSelectionInput">
+                                    <option value="">Skill...</option>
+                                    @foreach (var skill in _skills)
+                                    {
+                                        <option value="@skill.Id">@skill.Name</option>
+                                    }
+                                </select>
+                            }
+                            else if (selectedFeatDef?.SelectionRequired == "weapon")
+                            {
+                                <input type="text" class="form-control form-control-sm" style="width:150px"
+                                       placeholder="Weapon..." @bind="_featSelectionInput" />
+                            }
+                            <button class="btn btn-sm btn-outline-secondary" @onclick="() => AddFeatToTick(index)">Add</button>
+                        </div>
+                    </div>
+                    var casterInfo = GetTickCasterInfo(index);
+                    @* Domain Selection *@
+                    @if (casterInfo?.PendingDomainSelections > 0)
+                    {
+                        <div class="mt-2">
+                            <small class="text-muted">Domain selection (@(casterInfo.PendingDomainSelections) remaining):</small>
+                            <div class="d-flex align-items-center gap-1 mt-1" style="max-width: 400px;">
+                                <SearchSelect TItem="DomainDefinition"
+                                              Items="_domains"
+                                              Value="@_domainInput"
+                                              ValueChanged="@((v) => { _domainInput = v ?? string.Empty; })"
+                                              DisplaySelector="@(d => d.Name)"
+                                              ValueSelector="@(d => d.Id)"
+                                              TitleSelector="@(d => d.Description)"
+                                              CssClass="form-control-sm"
+                                              Placeholder="Search domains..." />
+                                <button class="btn btn-sm btn-outline-secondary" @onclick="() => AddDomainToTick(index, _domainInput)">Add</button>
+                            </div>
+                        </div>
+                    }
+                    var tickDomains = tick.Choices.ClassFeatureChoices?.GetValueOrDefault("domains");
+                    @if (tickDomains?.Any() == true)
+                    {
+                        <div class="mt-1">
+                            <small class="text-muted">Domains:</small>
+                            @foreach (var domainId in tickDomains.ToList())
+                            {
+                                var did = domainId;
+                                var domainDef = _domains.FirstOrDefault(d => d.Id == did);
+                                <span class="badge bg-primary me-1" title="@(domainDef?.Description ?? did)">@(domainDef?.Name ?? did.Replace("domain:", "")) <button class="btn-close btn-close-white btn-sm" @onclick="() => RemoveDomainFromTick(index, did)"></button></span>
+                            }
+                        </div>
+                    }
+
+                    @* Advance Spellcasting choice (prestige classes with multiple eligible classes) *@
+                    @if (casterInfo?.NeedsAdvanceSpellcastingChoice == true && casterInfo.Spellcasting.Count >= 2)
+                    {
+                        <div class="mt-2">
+                            <small class="text-warning">Advance Spellcasting: choose which class to advance</small>
+                            <select class="form-select form-select-sm mt-1" style="max-width:300px"
+                                    value="@(tick.Choices.ClassFeatureChoices?.GetValueOrDefault("advance_spellcasting")?.FirstOrDefault() ?? "")"
+                                    @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v)) SetAdvanceSpellcastingChoice(index, v); }">
+                                <option value="">Select class to advance...</option>
+                                @foreach (var (classId, sc) in casterInfo.Spellcasting)
+                                {
+                                    <option value="@classId">@classId.Replace("class:", "") (@sc.CastingType CL @sc.CasterLevel)</option>
+                                }
+                            </select>
+                        </div>
+                    }
+
+                    @* Companion slots granted at this tick — pick species *@
+                    var tickSlots = _tickNewCompanionSlots.GetValueOrDefault(index);
+                    @if (tickSlots != null)
+                    {
+                        @foreach (var slot in tickSlots)
+                        {
+                            var capturedSlot = slot;
+                            var featureType = capturedSlot.ClassFeatureType;
+                            var featureDef = string.IsNullOrEmpty(featureType)
+                                ? null
+                                : _classFeatures.FirstOrDefault(f => f.Id == featureType);
+                            var currentPick = !string.IsNullOrEmpty(featureType)
+                                ? tick.Choices.ClassFeatureChoices?.GetValueOrDefault(featureType)?.FirstOrDefault()
+                                : null;
+                            <div class="mt-2 p-2 border rounded bg-light">
+                                <div>
+                                    <small class="text-muted">
+                                        Companion slot: <strong>@capturedSlot.LinkType</strong>
+                                        granted by @capturedSlot.Granter
+                                        — effective level <code>@capturedSlot.EffectiveLevelFormula.Expression</code>
+                                    </small>
+                                </div>
+                                @if (featureDef != null && featureDef.Options.Any())
+                                {
+                                    <select class="form-select form-select-sm mt-1" style="max-width:360px"
+                                            value="@(currentPick ?? "")"
+                                            @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v)) SetCompanionSpeciesOnTick(index, featureType!, v); }">
+                                        <option value="">Pick @capturedSlot.LinkType species...</option>
+                                        @foreach (var opt in featureDef.Options)
+                                        {
+                                            <option value="@opt.Id">@opt.Name</option>
+                                        }
+                                    </select>
+                                }
+                                else if (string.IsNullOrEmpty(featureType))
+                                {
+                                    <div class="mt-1"><small class="text-muted">No species pick — manage via Companions card after Evaluate.</small></div>
+                                }
+                                else
+                                {
+                                    <div class="mt-1"><small class="text-danger">No option pool '@featureType' found in content.</small></div>
+                                }
+                            </div>
+                        }
+                    }
+
+                    @* Spellcasting: spell summaries and spell selection *@
+                    @if (casterInfo?.Spellcasting.Any() == true)
+                    {
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-outline-primary" @onclick="() => ToggleSpellPanel(index)">
+                                Spells
+                                @foreach (var (listId, sc) in casterInfo.Spellcasting)
+                                {
+                                    <span class="badge bg-info text-dark ms-1">@listId.Replace("class:", "") CL @sc.CasterLevel Lvl @sc.MaxSpellLevel</span>
+                                }
+                                @if (tick.Choices.SpellSelections?.Any() == true)
+                                {
+                                    <span class="badge bg-secondary ms-1">@tick.Choices.SpellSelections.Count selected</span>
+                                }
+                            </button>
+                            @if (_expandedSpellTicks.Contains(index))
+                            {
+                                <div class="mt-1 border rounded p-2" style="max-height: 400px; overflow-y: auto;">
+                                    @foreach (var (listId, sc) in casterInfo.Spellcasting.OrderBy(kv => kv.Key))
+                                    {
+                                        var capturedListId = listId;
+                                        <div class="mb-2">
+                                            <strong>@capturedListId.Replace("class:", "") (@sc.CastingType, @sc.CastingStat, CL @sc.CasterLevel)</strong>
+                                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                                <small class="text-muted">Slots:</small>
+                                                @foreach (var (lvl, count) in sc.SpellsPerDay.OrderBy(kv => kv.Key))
+                                                {
+                                                    var domainBonus = sc.DomainBonusSlots.GetValueOrDefault(lvl);
+                                                    <span class="badge bg-light text-dark border">
+                                                        Lvl @lvl: @count@(domainBonus > 0 ? $"+{domainBonus}D" : "")
+                                                    </span>
+                                                }
+                                            </div>
+                                            @if (sc.SpellsKnown != null)
+                                            {
+                                                <div class="d-flex flex-wrap gap-1 mt-1">
+                                                    <small class="text-muted">Known:</small>
+                                                    @foreach (var (lvl, count) in sc.SpellsKnown.OrderBy(kv => kv.Key))
+                                                    {
+                                                        <span class="badge bg-light text-dark border">Lvl @lvl: @count</span>
+                                                    }
+                                                </div>
+                                            }
+                                            @for (int lvl = 0; lvl <= sc.MaxSpellLevel; lvl++)
+                                            {
+                                                var capturedLvl = lvl;
+                                                var alreadyKnown = sc.SpellsKnown != null
+                                                    ? _character.Ticks
+                                                        .SelectMany(t => t.Choices.SpellSelections ?? Enumerable.Empty<SpellSelection>())
+                                                        .Where(s => s.ClassId == capturedListId)
+                                                        .Select(s => s.SpellId)
+                                                        .ToHashSet()
+                                                    : null;
+                                                var spellsAtLevel = _spells
+                                                    .Where(s => s.ClassLevels.TryGetValue(capturedListId, out var l) && l == capturedLvl)
+                                                    .Where(s => alreadyKnown == null || !alreadyKnown.Contains(s.Id))
+                                                    .OrderBy(s => s.Name)
+                                                    .ToList();
+                                                if (spellsAtLevel.Any())
+                                                {
+                                                    <div class="mt-1">
+                                                        <small class="text-muted">Level @capturedLvl:</small>
+                                                        <div class="d-flex align-items-center gap-1">
+                                                            <select class="form-select form-select-sm" style="max-width:250px"
+                                                                    @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v)) AddSpellSelection(index, capturedListId, capturedLvl, v); }">
+                                                                <option value="">Add spell...</option>
+                                                                @foreach (var spell in spellsAtLevel)
+                                                                {
+                                                                    <option value="@spell.Id" title="@spell.Description">@spell.Name</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    }
+                                    @* Domain spell lists — max level and selection ClassId both come from the OWNING class. *@
+                                    @foreach (var domainId in (casterInfo.Domains ?? new()).OrderBy(d => d))
+                                    {
+                                        var capturedDomainId = domainId;
+                                        var ownerClassId = casterInfo.DomainOwners.GetValueOrDefault(capturedDomainId);
+                                        var domainMaxLevel = ownerClassId != null
+                                            && casterInfo.Spellcasting.TryGetValue(ownerClassId, out var ownerSc)
+                                            ? ownerSc.MaxSpellLevel : 0;
+                                        var domainSpells = _spells
+                                            .Where(s => s.ClassLevels.TryGetValue(capturedDomainId, out var l) && l <= domainMaxLevel)
+                                            .OrderBy(s => s.ClassLevels.GetValueOrDefault(capturedDomainId))
+                                            .ThenBy(s => s.Name)
+                                            .ToList();
+                                        if (domainSpells.Any())
+                                        {
+                                            <div class="mb-2">
+                                                <strong>@capturedDomainId.Replace("domain:", "") (domain)</strong>
+                                                @for (int lvl = 1; lvl <= domainMaxLevel; lvl++)
+                                                {
+                                                    var capturedLvl = lvl;
+                                                    var spellsAtLevel = domainSpells
+                                                        .Where(s => s.ClassLevels.GetValueOrDefault(capturedDomainId) == capturedLvl)
+                                                        .ToList();
+                                                    if (spellsAtLevel.Any())
+                                                    {
+                                                        <div class="mt-1">
+                                                            <small class="text-muted">Level @capturedLvl:</small>
+                                                            <div class="d-flex align-items-center gap-1">
+                                                                <select class="form-select form-select-sm" style="max-width:250px"
+                                                                        @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v)) AddSpellSelection(index, capturedDomainId, capturedLvl, v); }">
+                                                                    <option value="">Add domain spell...</option>
+                                                                    @foreach (var spell in spellsAtLevel)
+                                                                    {
+                                                                        <option value="@spell.Id" title="@spell.Description">@spell.Name</option>
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        }
+                                    }
+                                    @* Selected spells display *@
+                                    @if (tick.Choices.SpellSelections?.Any() == true)
+                                    {
+                                        <div class="mt-2 border-top pt-2">
+                                            <small class="text-muted">Selected spells:</small>
+                                            <div class="mt-1 d-flex flex-wrap gap-1">
+                                                @foreach (var selection in tick.Choices.SpellSelections.OrderBy(s => s.ClassId).ThenBy(s => s.SpellLevel).ThenBy(s => s.SpellId))
+                                                {
+                                                    var sel = selection;
+                                                    var spellDef = _spells.FirstOrDefault(s => s.Id == sel.SpellId);
+                                                    <span class="badge bg-secondary" title="@(spellDef?.Description ?? sel.SpellId)">@FormatSpellSelection(sel) <button class="btn-close btn-close-white btn-sm" @onclick="() => RemoveSpellSelection(index, sel)"></button></span>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    <div class="text-end mt-1">
+                                        <button class="btn btn-sm btn-outline-secondary py-0" @onclick="() => ToggleSpellPanel(index)">Collapse Spells</button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    var skillInfo = GetTickSkillInfo(index);
+                    var tickAllocCount = tick.Choices.SkillAllocations?.Sum(a => a.HalfRanks) ?? 0;
+                    @if (skillInfo != null && _skills.Any())
+                    {
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-outline-info" @onclick="() => ToggleSkillPanel(index)">
+                                Skills (@(skillInfo.UnspentPoints) pts remaining, max @(skillInfo.MaxHalfRanks / 2.0) ranks)
+                                @if (tickAllocCount > 0) { <span class="badge bg-secondary ms-1">@(tickAllocCount / 2.0) allocated</span> }
+                            </button>
+                            @if (_expandedSkillTicks.Contains(index))
+                            {
+                                <div class="mt-1 border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                                    <table class="table table-sm table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Skill</th>
+                                                <th style="width:60px">Ranks</th>
+                                                <th style="width:80px">This HD</th>
+                                                <th style="width:80px"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var skill in _skills)
+                                            {
+                                                var sid = skill.Id;
+                                                var isClass = skillInfo.CurrentTickClassSkills.Contains(sid);
+                                                var totalHalfRanks = skillInfo.SkillRanks.GetValueOrDefault(sid);
+                                                var thisTickHalfRanks = GetTickSkillAllocation(index, sid);
+                                                var atMax = totalHalfRanks >= skillInfo.MaxHalfRanks;
+                                                <tr class="@(isClass ? "" : "text-muted")">
+                                                    <td title="@skill.Description">
+                                                        @skill.Name
+                                                        @if (isClass) { <span class="badge bg-success badge-sm ms-1">C</span> }
+                                                    </td>
+                                                    <td>@(totalHalfRanks / 2.0)</td>
+                                                    <td>@(thisTickHalfRanks > 0 ? $"+{thisTickHalfRanks / 2.0}" : "")</td>
+                                                    <td>
+                                                        <div class="btn-group btn-group-sm">
+                                                            <button class="btn btn-outline-success py-0 px-1"
+                                                                    disabled="@(atMax || skillInfo.UnspentPoints <= 0)"
+                                                                    @onclick="() => AddSkillAllocation(index, sid, isClass)">+</button>
+                                                            <button class="btn btn-outline-danger py-0 px-1"
+                                                                    disabled="@(thisTickHalfRanks <= 0)"
+                                                                    @onclick="() => RemoveSkillAllocation(index, sid, isClass)">−</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <div class="text-end mt-1">
+                                        <button class="btn btn-sm btn-outline-secondary py-0" @onclick="() => ToggleSkillPanel(index)">Collapse Skills</button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    } @* end expanded HD details *@
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Step 4: Permanent Events -->
+    <div class="card mb-3">
+        <div class="card-header">
+            Permanent Events (@_character.PermanentEvents.Count)
+            <button class="btn btn-sm btn-success float-end" @onclick="AddPermanentEvent">+ Add Event</button>
+        </div>
+        <div class="card-body">
+            <small class="text-muted d-block mb-2">Tomes, Wishes, and other permanent effects applied between HD levels.</small>
+            @if (!_character.PermanentEvents.Any())
+            {
+                <p class="text-muted mb-0">No permanent events. Use presets or add a custom event.</p>
+            }
+            @for (int i = 0; i < _character.PermanentEvents.Count; i++)
+            {
+                var evtIndex = i;
+                var evt = _character.PermanentEvents[evtIndex];
+                <div class="border rounded p-2 mb-2">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <label class="form-label mb-0">Before HD</label>
+                            <select class="form-select form-select-sm" style="width:80px"
+                                    value="@evt.BeforeTick"
+                                    @onchange="(e) => { if (int.TryParse(e.Value?.ToString(), out var v)) { evt.BeforeTick = v; OnCharacterChanged(); } }">
+                                @for (int t = 0; t <= _character.Ticks.Count; t++)
+                                {
+                                    <option value="@t">@(t == 0 ? "Start" : $"HD {t + 1}")</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col">
+                            @foreach (var buff in evt.Permabuffs)
+                            {
+                                <span class="badge bg-info me-1">@FormatPermabuff(buff)</span>
+                            }
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-danger" @onclick="() => RemovePermanentEvent(evtIndex)">Remove</button>
+                        </div>
+                    </div>
+                    <div class="mt-1 d-flex flex-wrap gap-1">
+                        <span class="text-muted me-1" style="font-size:0.8rem">Add:</span>
+                        <select class="form-select form-select-sm" style="width:160px"
+                                @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v)) AddPresetToEvent(evtIndex, v); }">
+                            <option value="">Preset...</option>
+                            <optgroup label="Tomes (+1 inherent)">
+                                @foreach (var ab in Enum.GetValues<Ability>())
+                                {
+                                    <option value="tome_1_@ab">Tome +1 @ab</option>
+                                }
+                            </optgroup>
+                            <optgroup label="Tomes (+2 inherent)">
+                                @foreach (var ab in Enum.GetValues<Ability>())
+                                {
+                                    <option value="tome_2_@ab">Tome +2 @ab</option>
+                                }
+                            </optgroup>
+                            <optgroup label="Tomes (+5 inherent)">
+                                @foreach (var ab in Enum.GetValues<Ability>())
+                                {
+                                    <option value="tome_5_@ab">Tome +5 @ab</option>
+                                }
+                            </optgroup>
+                            <optgroup label="Other">
+                                <option value="wish_inherent">Wish: +1 inherent to ability...</option>
+                                <option value="nat_armor_1">+1 Natural Armor</option>
+                                <option value="nat_armor_2">+2 Natural Armor</option>
+                                <option value="sr_5">+5 Spell Resistance</option>
+                            </optgroup>
+                        </select>
+                        @if (_pendingWishEvent == evtIndex)
+                        {
+                            <select class="form-select form-select-sm" style="width:100px"
+                                    @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v) && Enum.TryParse<Ability>(v, out var ab)) { AddAbilityModToEvent(evtIndex, ab, 1); _pendingWishEvent = null; } }">
+                                <option value="">Ability...</option>
+                                @foreach (var ab in Enum.GetValues<Ability>())
+                                {
+                                    <option value="@ab">@ab</option>
+                                }
+                            </select>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Step 5: Equipment -->
+    <div class="card mb-3">
+        <div class="card-header">
+            Equipment (@_character.Equipment.Count)
+            <button class="btn btn-sm btn-success float-end" @onclick="AddEquipmentEntry">+ Add Item</button>
+        </div>
+        <div class="card-body">
+            @if (!_character.Equipment.Any())
+            {
+                <p class="text-muted mb-0">No equipment. Add items with stat-boosting effects.</p>
+            }
+            @for (int i = 0; i < _character.Equipment.Count; i++)
+            {
+                var eqIndex = i;
+                var item = _character.Equipment[eqIndex];
+                <div class="border rounded p-2 mb-2">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control form-control-sm" placeholder="Item name"
+                                   @bind="item.ItemId" @bind:after="OnCharacterChanged" />
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select form-select-sm" @bind="item.Slot">
+                                <option value="">No slot</option>
+                                <option value="head">Head</option>
+                                <option value="eyes">Eyes</option>
+                                <option value="neck">Neck</option>
+                                <option value="shoulders">Shoulders</option>
+                                <option value="body">Body</option>
+                                <option value="torso">Torso</option>
+                                <option value="waist">Waist</option>
+                                <option value="hands">Hands</option>
+                                <option value="ring1">Ring 1</option>
+                                <option value="ring2">Ring 2</option>
+                                <option value="feet">Feet</option>
+                                <option value="weapon">Weapon</option>
+                                <option value="shield">Shield</option>
+                                <option value="slotless">Slotless</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            @foreach (var buff in item.Permabuffs)
+                            {
+                                <span class="badge bg-info me-1">@FormatPermabuff(buff)</span>
+                            }
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveEquipmentEntry(eqIndex)">Remove</button>
+                        </div>
+                    </div>
+                    <div class="mt-1 d-flex flex-wrap gap-1">
+                        <span class="text-muted me-1" style="font-size:0.8rem">Add effect:</span>
+                        <select class="form-select form-select-sm" style="width:180px"
+                                @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v)) AddEquipmentEffect(eqIndex, v); }">
+                            <option value="">Effect...</option>
+                            <optgroup label="Ability Bonus">
+                                @foreach (var ab in Enum.GetValues<Ability>())
+                                {
+                                    <option value="ability_2_@ab">+2 @ab</option>
+                                    <option value="ability_4_@ab">+4 @ab</option>
+                                    <option value="ability_6_@ab">+6 @ab</option>
+                                }
+                            </optgroup>
+                            <optgroup label="Armor">
+                                @for (int n = 1; n <= 5; n++)
+                                {
+                                    var val = n;
+                                    <option value="nat_armor_@val">+@val Natural Armor</option>
+                                }
+                            </optgroup>
+                            <optgroup label="Resistance">
+                                @for (int n = 1; n <= 5; n++)
+                                {
+                                    var val = n;
+                                    <option value="save_resist_@val">+@val Resistance (saves)</option>
+                                }
+                            </optgroup>
+                            <optgroup label="Spell Resistance">
+                                <option value="sr_13">SR 13</option>
+                                <option value="sr_17">SR 17</option>
+                                <option value="sr_21">SR 21</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="row mb-3">
+        <div class="col d-flex flex-wrap gap-2">
+            <button class="btn btn-primary" @onclick="EvaluateCharacter">Evaluate</button>
+            <button class="btn btn-success" @onclick="SaveCharacter">Save</button>
+            <button class="btn btn-outline-success" @onclick="DownloadCharacter">Download</button>
+            <button class="btn btn-outline-secondary" @onclick="OpenFile">Open...</button>
+            <button class="btn btn-outline-info" @onclick="ViewSheet">View Sheet</button>
+        </div>
+    </div>
+
+    @if (_statusMessage != null)
+    {
+        <div class="alert @(_statusIsError ? "alert-danger" : "alert-success") alert-dismissible fade show py-2" role="alert">
+            @_statusMessage
+            <button type="button" class="btn-close" @onclick="() => _statusMessage = null"></button>
+        </div>
+    }
+
+    <!-- Hidden file input for Open -->
+    <input type="file" id="file-open-input" accept=".json" style="display:none" />
+
+    <!-- Evaluation Result -->
+    @if (_state != null)
+    {
+        <div class="card mb-3">
+            <div class="card-header">Evaluation Result</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h5>Combat</h5>
+                        <p>HP: @_state.HP | BAB: +@_state.EffectiveBAB</p>
+                        <p>Fort: +@_state.EffectiveSaves.Fort | Ref: +@_state.EffectiveSaves.Ref | Will: +@_state.EffectiveSaves.Will</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Abilities</h5>
+                        @foreach (var ab in Enum.GetValues<Ability>())
+                        {
+                            var score = _state.AbilityScores.GetScore(ab);
+                            var mod = AbilityScoreSet.Modifier(score);
+                            <span>@ab: @score (@(mod >= 0 ? "+" : "")@mod) </span>
+                        }
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Feats (@_state.Feats.Count)</h5>
+                        @foreach (var f in _state.Feats) {
+                            var fd = _feats.FirstOrDefault(x => x.Id == f);
+                            <span class="badge bg-secondary me-1" title="@(fd?.Description ?? f)">@(fd?.Name ?? f)</span>
+                        }
+                        @if (_state.PendingFeatSlots > 0) { <span class="badge bg-warning">@_state.PendingFeatSlots unspent</span> }
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Info</h5>
+                        <p>HD: @_state.TotalHD | ECL: @_state.ECL | Skills: @_state.UnspentSkillPoints pts</p>
+                    </div>
+                </div>
+                @if (_state.Abilities.Any() || _state.Counters.Any() || _state.SLAs.Any())
+                {
+                    <div class="row mt-2">
+                        @if (_state.Abilities.Any())
+                        {
+                            <div class="col-md-4">
+                                <h5>Special Abilities</h5>
+                                @foreach (var a in _state.Abilities)
+                                {
+                                    <span class="badge bg-info me-1" title="@a.Description">@a.Name</span>
+                                }
+                            </div>
+                        }
+                        @if (_state.Counters.Any())
+                        {
+                            <div class="col-md-4">
+                                <h5>Scaling Features</h5>
+                                @foreach (var c in _state.Counters)
+                                {
+                                    <span class="badge bg-secondary me-1">@FormatCounter(c.Key, c.Value)</span>
+                                }
+                            </div>
+                        }
+                        @if (_state.SLAs.Any())
+                        {
+                            <div class="col-md-4">
+                                <h5>Spell-Like Abilities</h5>
+                                @foreach (var sla in _state.SLAs)
+                                {
+                                    <span class="badge bg-primary me-1" title="@(sla.Description ?? "")">@sla.Name@(sla.UsesPerDay != null ? $" ({sla.UsesPerDay}/day)" : "")</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                @if (_state.Warnings.Any())
+                {
+                    <div class="alert alert-warning mt-2">
+                        @foreach (var w in _state.Warnings) { <div>@w</div> }
+                    </div>
+                }
+            </div>
+        </div>
+
+        var masterLinks = string.IsNullOrEmpty(_characterStoreId)
+            ? Array.Empty<CharacterFileInfo>()
+            : CharacterStore.FindMasters(_characterStoreId).ToArray();
+        @if (_state.CompanionSlots.Any() || _character.CompanionLinks.Any() || masterLinks.Length > 0)
+        {
+            <div class="card mb-3">
+                <div class="card-header">Companions</div>
+                <div class="card-body">
+                    @if (masterLinks.Length > 0)
+                    {
+                        <div class="mb-2">
+                            @foreach (var m in masterLinks)
+                            {
+                                <a href="/builder/@m.Id" class="btn btn-sm btn-outline-secondary me-1">&larr; Back to @m.Name</a>
+                            }
+                        </div>
+                    }
+
+                    @foreach (var slot in _state.CompanionSlots)
+                    {
+                        var capturedSlot = slot;
+                        var existingLink = _character.CompanionLinks
+                            .FirstOrDefault(l => l.LinkType == capturedSlot.LinkType);
+                        var raceDef = string.IsNullOrEmpty(capturedSlot.SelectedSpecies)
+                            ? null
+                            : _races.FirstOrDefault(r => r.Id == capturedSlot.SelectedSpecies);
+                        var companionChar = existingLink == null ? null : TryLoadCompanion(existingLink.CompanionId);
+
+                        <div class="border rounded p-2 mb-2">
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <strong>@capturedSlot.LinkType</strong>
+                                <span class="text-muted small">from @capturedSlot.Granter</span>
+                                <span class="badge bg-secondary">effective level @capturedSlot.EffectiveLevel</span>
+                                @if (!string.IsNullOrEmpty(capturedSlot.SelectedSpecies))
+                                {
+                                    <span class="badge bg-info">@(raceDef?.Name ?? capturedSlot.SelectedSpecies)</span>
+                                }
+                            </div>
+
+                            @if (existingLink != null && companionChar != null)
+                            {
+                                <div class="mt-1 d-flex align-items-center gap-2">
+                                    <span>@companionChar.Name</span>
+                                    <a href="/builder/@existingLink.CompanionId" class="btn btn-sm btn-outline-primary">Open &rarr;</a>
+                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => UnlinkCompanion(existingLink)">Unlink</button>
+                                </div>
+                            }
+                            else if (existingLink != null)
+                            {
+                                <div class="mt-1 alert alert-danger py-1 mb-0 d-flex align-items-center gap-2">
+                                    <span>Dangling link: '@existingLink.CompanionId' not found.</span>
+                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => UnlinkCompanion(existingLink)">Remove link</button>
+                                </div>
+                            }
+                            else if (!string.IsNullOrEmpty(capturedSlot.SelectedSpecies))
+                            {
+                                <div class="mt-1">
+                                    <button class="btn btn-sm btn-success" @onclick="() => CreateCompanionFromSlot(capturedSlot)">
+                                        Create @(raceDef?.Name ?? capturedSlot.SelectedSpecies)
+                                    </button>
+                                </div>
+                            }
+                            else if (string.IsNullOrEmpty(capturedSlot.ClassFeatureType))
+                            {
+                                @* Slots without a species pick (leadership cohort) — allow blank-character creation. *@
+                                <div class="mt-1">
+                                    <button class="btn btn-sm btn-success" @onclick="() => CreateCompanionFromSlot(capturedSlot)">Create blank cohort</button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="mt-1 small text-muted">Pick a species on the HD tick that granted this slot.</div>
+                            }
+
+                            @if (existingLink == null && _availableCharacters.Any(c => c.Id != _characterStoreId))
+                            {
+                                var slotLinkType = capturedSlot.LinkType;
+                                var selectedCandidate = _linkCandidateByLinkType.GetValueOrDefault(slotLinkType, "");
+                                <div class="mt-1 d-flex align-items-center gap-1">
+                                    <small class="text-muted">or link existing:</small>
+                                    <select class="form-select form-select-sm" style="max-width:280px"
+                                            value="@selectedCandidate"
+                                            @onchange="(e) => _linkCandidateByLinkType[slotLinkType] = e.Value?.ToString() ?? string.Empty">
+                                        <option value="">Pick a character...</option>
+                                        @foreach (var c in _availableCharacters.Where(c => c.Id != _characterStoreId))
+                                        {
+                                            <option value="@c.Id">@c.Name</option>
+                                        }
+                                    </select>
+                                    <button class="btn btn-sm btn-outline-primary"
+                                            disabled="@string.IsNullOrEmpty(selectedCandidate)"
+                                            @onclick="() => LinkExistingCompanion(capturedSlot)">Link</button>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    @* Existing links whose LinkType no longer appears as an active slot. *@
+                    @foreach (var orphan in _character.CompanionLinks.Where(l => !_state.CompanionSlots.Any(s => s.LinkType == l.LinkType)))
+                    {
+                        var capturedOrphan = orphan;
+                        var companionChar = TryLoadCompanion(capturedOrphan.CompanionId);
+                        <div class="border rounded p-2 mb-2 border-warning">
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <strong>@capturedOrphan.LinkType</strong>
+                                <span class="text-warning small">(no granting slot on master)</span>
+                                @if (companionChar != null)
+                                {
+                                    <span>@companionChar.Name</span>
+                                    <a href="/builder/@capturedOrphan.CompanionId" class="btn btn-sm btn-outline-primary">Open &rarr;</a>
+                                }
+                                else
+                                {
+                                    <span class="text-danger">'@capturedOrphan.CompanionId' not found</span>
+                                }
+                                <button class="btn btn-sm btn-outline-danger" @onclick="() => UnlinkCompanion(capturedOrphan)">Unlink</button>
+                            </div>
+                        </div>
+                    }
+
+                    @if (_companionBuilds != null && _companionBuilds.Any())
+                    {
+                        <div class="mt-2">
+                            <small class="text-muted">Composite evaluation:</small>
+                            @foreach (var build in _companionBuilds)
+                            {
+                                <div class="small">
+                                    @build.Character.Name —
+                                    HD @build.State.TotalHD,
+                                    HP @build.State.HP,
+                                    BAB +@build.State.EffectiveBAB,
+                                    effective master level @build.State.EffectiveMasterLevel
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+}
+
+@code {
+    private string FormatCounter(string key, int value) => key switch
+    {
+        "sneak_attack_dice" => $"Sneak Attack +{value}d6",
+        "trap_sense_bonus" => $"Trap Sense +{value}",
+        "rage_uses" => $"Rage {value}/day",
+        "smite_evil_uses" => $"Smite Evil {value}/day",
+        "smite_good_uses" => $"Smite Good {value}/day",
+        "remove_disease_uses" => $"Remove Disease {value}/week",
+        "impromptu_sneak_attack_uses" => $"Impromptu Sneak Attack {value}/day",
+        "wild_shape_uses" => $"Wild Shape {value}/day",
+        "bardic_music_uses" => $"Bardic Music {value}/day",
+        "shadow_jump_distance" => $"Shadow Jump {value} ft.",
+        _ => $"{key}: {value}"
+    };
+
+    [Parameter] public string? Id { get; set; }
+
+    private bool _loading = true;
+    private string? _error;
+    private Character _character = new()
+    {
+        Name = "New Character",
+        RaceId = "human",
+        BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 }
+    };
+    private CharacterState? _state;
+    private List<CompanionBuild>? _companionBuilds;
+    private ReplayStudio _engine = null!;
+    private List<RaceDefinition> _races = new();
+    private List<TemplateDriver> _templates = new();
+    private List<Driver> _drivers = new();
+    private List<FeatDefinition> _feats = new();
+    private List<SpellDefinition> _spells = new();
+    private List<SkillDefinition> _skills = new();
+    private readonly Dictionary<int, List<TickSpellSummary>> _tickSpellSummaries = new();
+    private readonly Dictionary<int, TickSkillInfo> _tickSkillInfos = new();
+    private readonly Dictionary<int, List<FeatDefinition>> _tickAvailableFeats = new();
+    private readonly Dictionary<int, TickCasterInfo> _tickCasterInfos = new();
+    private readonly Dictionary<int, List<CompanionSlotState>> _tickNewCompanionSlots = new();
+    private List<DomainDefinition> _domains = new();
+    private List<ClassFeatureDefinition> _classFeatures = new();
+    private readonly HashSet<int> _expandedHdTicks = new();
+    private readonly HashSet<int> _expandedSkillTicks = new();
+    private readonly HashSet<int> _expandedSpellTicks = new();
+    private string _selectedTemplate = "";
+    private string _featInput = "";
+    private string _featSelectionInput = "";
+    private string _domainInput = "";
+    private string? _characterStoreId;
+    private List<CharacterFileInfo> _availableCharacters = new();
+    private readonly Dictionary<string, string> _linkCandidateByLinkType = new();
+
+    private static readonly string[] _spellSchools = { "Abjuration", "Conjuration", "Divination", "Enchantment", "Evocation", "Illusion", "Necromancy", "Transmutation" };
+    private int? _pendingWishEvent;
+    private string? _statusMessage;
+    private bool _statusIsError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var registry = Content.Registry;
+            _engine = Content.ReplayStudio;
+            _races = registry.GetAllRaces().ToList();
+            _templates = registry.GetAllTemplates().ToList();
+            _drivers = registry.GetAllDrivers().ToList();
+            _addHdDriverId = _drivers.FirstOrDefault()?.Id ?? "class:fighter";
+            _feats = registry.GetAllFeats().OrderBy(f => f.Name).ToList();
+            _spells = registry.GetAllSpells().OrderBy(s => s.Name).ToList();
+            _skills = registry.GetAllSkills().OrderBy(s => s.Name).ToList();
+            _domains = registry.GetAllDomains().OrderBy(d => d.Name).ToList();
+            _classFeatures = registry.GetAllClassFeatures().ToList();
+            RefreshAvailableCharacters();
+
+            // Route param: /builder/{id} loads an existing character from the store.
+            if (!string.IsNullOrWhiteSpace(Id) && CharacterStore.IsConfigured)
+            {
+                try
+                {
+                    _character = CharacterStore.Get(Id);
+                    _characterStoreId = Id;
+                    ExpandAllHdTicks();
+                }
+                catch (CharacterStoreException ex)
+                {
+                    _error = ex.Message;
+                }
+            }
+
+            // Check for imported character from /import page
+            var uri = new Uri(Navigation.Uri);
+            if (uri.Query.Contains("imported=true"))
+            {
+                var importedJson = await JS.InvokeAsync<string?>("sessionStorage.getItem", "importedCharacter");
+                if (!string.IsNullOrEmpty(importedJson))
+                {
+                    var imported = System.Text.Json.JsonSerializer.Deserialize<Character>(importedJson, JsonOptions.Default);
+                    if (imported != null)
+                    {
+                        _character = imported;
+                        _characterStoreId = null;
+                        ExpandAllHdTicks();
+                        await JS.InvokeVoidAsync("sessionStorage.removeItem", "importedCharacter");
+                        SetStatus($"Imported \"{imported.Name}\" from PCGen.", false);
+                    }
+                }
+            }
+
+            OnCharacterChanged();
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private void OnCharacterChanged()
+    {
+        RefreshPerTickData();
+        EvaluateCharacter();
+    }
+
+    private void RefreshPerTickData()
+    {
+        _tickSpellSummaries.Clear();
+        _tickSkillInfos.Clear();
+        _tickAvailableFeats.Clear();
+        _tickCasterInfos.Clear();
+        _tickNewCompanionSlots.Clear();
+
+        if (_engine == null || !_character.Ticks.Any())
+            return;
+
+        var prevSlotKeys = new HashSet<(string, string)>();
+        for (int i = 0; i < _character.Ticks.Count; i++)
+        {
+            CharacterState state;
+            try
+            {
+                state = _engine.Evaluate(_character, upToHD: i + 1);
+            }
+            catch
+            {
+                continue;
+            }
+
+            var summaries = new List<TickSpellSummary>();
+            foreach (var (spellListId, sc) in state.Spellcasting.OrderBy(kv => kv.Key))
+            {
+                var availableCount = _spells.Count(spell =>
+                    spell.ClassLevels.TryGetValue(spellListId, out var level)
+                    && level <= sc.MaxSpellLevel);
+                summaries.Add(new TickSpellSummary(spellListId, sc.MaxSpellLevel, availableCount, IsDomainList: false));
+            }
+            foreach (var domainId in state.Domains.OrderBy(d => d))
+            {
+                var domainMaxSpellLevel = 0;
+                if (state.DomainOwners.TryGetValue(domainId, out var ownerClassId)
+                    && state.Spellcasting.TryGetValue(ownerClassId, out var ownerSc))
+                    domainMaxSpellLevel = ownerSc.MaxSpellLevel;
+                var availableCount = _spells.Count(spell =>
+                    spell.ClassLevels.TryGetValue(domainId, out var level)
+                    && level <= domainMaxSpellLevel);
+                summaries.Add(new TickSpellSummary(domainId, domainMaxSpellLevel, availableCount, IsDomainList: true));
+            }
+            if (summaries.Count > 0)
+                _tickSpellSummaries[i] = summaries;
+
+            _tickSkillInfos[i] = new TickSkillInfo(
+                state.UnspentSkillPoints,
+                state.MaxHalfRanks,
+                new HashSet<string>(state.CurrentTickClassSkills),
+                new HashSet<string>(state.ClassSkills),
+                new Dictionary<string, int>(state.SkillRanks));
+
+            _tickAvailableFeats[i] = _engine.GetAvailableFeats(state)
+                .OrderBy(f => f.Name).ToList();
+
+            // Companion slots granted at this tick = slots present now that weren't
+            // present in the previous tick's snapshot.
+            var newSlots = state.CompanionSlots
+                .Where(s => prevSlotKeys.Add((s.LinkType, s.Granter)))
+                .ToList();
+            if (newSlots.Count > 0)
+                _tickNewCompanionSlots[i] = newSlots;
+
+            var advanceWarning = state.Warnings.FirstOrDefault(w => w.Contains("AdvanceSpellcasting") && w.Contains("multiple matching"));
+            var pendingTotal = state.PendingDomainSelections.Values.Sum();
+            if (pendingTotal > 0 || state.Spellcasting.Any() || advanceWarning != null)
+            {
+                _tickCasterInfos[i] = new TickCasterInfo(
+                    pendingTotal,
+                    new List<string>(state.Domains),
+                    new Dictionary<string, string>(state.DomainOwners),
+                    state.Spellcasting.ToDictionary(
+                        kv => kv.Key,
+                        kv => new TickSpellcastingInfo(
+                            kv.Value.CastingType,
+                            kv.Value.CastingStat,
+                            kv.Value.CasterLevel,
+                            kv.Value.MaxSpellLevel,
+                            new Dictionary<int, int>(kv.Value.SpellsPerDay),
+                            kv.Value.SpellsKnown != null ? new Dictionary<int, int>(kv.Value.SpellsKnown) : null,
+                            new Dictionary<int, int>(kv.Value.DomainBonusSlots))),
+                    NeedsAdvanceSpellcastingChoice: advanceWarning != null);
+            }
+        }
+    }
+
+    private void AddTemplate()
+    {
+        if (!string.IsNullOrEmpty(_selectedTemplate) && !_character.TemplateIds.Contains(_selectedTemplate))
+        {
+            _character.TemplateIds.Add(_selectedTemplate);
+            OnCharacterChanged();
+        }
+    }
+
+    private void RemoveTemplate(string templateId)
+    {
+        if (_character.TemplateIds.Remove(templateId))
+            OnCharacterChanged();
+    }
+
+    private void SetAbilityScore(Ability ability, ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var val))
+        {
+            _character.BaseAbilityScores.SetScore(ability, val);
+            OnCharacterChanged();
+        }
+    }
+
+    private int _addHdCount = 1;
+    private string _addHdDriverId = "";
+
+    private void AddTick()
+    {
+        var driverId = string.IsNullOrEmpty(_addHdDriverId)
+            ? _drivers.FirstOrDefault()?.Id ?? "class:fighter"
+            : _addHdDriverId;
+        var count = Math.Clamp(_addHdCount, 1, 20);
+        for (int n = 0; n < count; n++)
+        {
+            var tickIndex = _character.Ticks.Count;
+            _character.Ticks.Add(new Tick { DriverId = driverId });
+            _expandedHdTicks.Add(tickIndex);
+        }
+        _addHdCount = 1;
+        OnCharacterChanged();
+    }
+
+    private void RemoveTick(int index)
+    {
+        if (index >= 0 && index < _character.Ticks.Count)
+        {
+            _character.Ticks.RemoveAt(index);
+            var updated = new HashSet<int>();
+            foreach (var i in _expandedHdTicks)
+            {
+                if (i < index) updated.Add(i);
+                else if (i > index) updated.Add(i - 1);
+            }
+            _expandedHdTicks.Clear();
+            foreach (var i in updated) _expandedHdTicks.Add(i);
+            OnCharacterChanged();
+        }
+    }
+
+    private void SetAbilityIncrease(int index, ChangeEventArgs e)
+    {
+        var val = e.Value?.ToString();
+        if (string.IsNullOrEmpty(val))
+            _character.Ticks[index].Choices.AbilityIncrease = null;
+        else if (Enum.TryParse<Ability>(val, out var ability))
+            _character.Ticks[index].Choices.AbilityIncrease = ability;
+        OnCharacterChanged();
+    }
+
+    private void AddFeatToTick(int index)
+    {
+        if (string.IsNullOrWhiteSpace(_featInput)) return;
+        var featDef = _feats.FirstOrDefault(f => f.Id == _featInput);
+        var featId = _featInput.Trim();
+
+        if (featDef?.SelectionRequired != null)
+        {
+            if (string.IsNullOrWhiteSpace(_featSelectionInput)) return;
+            var suffix = _featSelectionInput.Trim().ToLowerInvariant().Replace(' ', '_');
+            featId = $"{featId}_{suffix}";
+        }
+
+        _character.Ticks[index].Choices.FeatIds ??= new List<string>();
+        _character.Ticks[index].Choices.FeatIds!.Add(featId);
+        _featInput = "";
+        _featSelectionInput = "";
+        OnCharacterChanged();
+    }
+
+    private void RemoveFeatFromTick(int index, string featId)
+    {
+        var ids = _character.Ticks[index].Choices.FeatIds;
+        if (ids == null) return;
+        ids.Remove(featId);
+        OnCharacterChanged();
+    }
+
+    private void EvaluateCharacter()
+    {
+        if (_engine == null) return;
+        try
+        {
+            if (_character.CompanionLinks.Count > 0 && CharacterStore.IsConfigured)
+            {
+                var resolver = new CompanionResolver(_engine, TryLoadCompanion);
+                var composite = resolver.Build(_character);
+                _state = composite.MasterState;
+                _companionBuilds = composite.Companions;
+            }
+            else
+            {
+                _state = _engine.Evaluate(_character);
+                _companionBuilds = null;
+            }
+            _error = null;
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+            _state = null;
+            _companionBuilds = null;
+        }
+    }
+
+    private Character? TryLoadCompanion(string id)
+    {
+        try { return CharacterStore.Get(id); }
+        catch (CharacterStoreException) { return null; }
+    }
+
+    private void RefreshAvailableCharacters()
+    {
+        _availableCharacters = CharacterStore.IsConfigured
+            ? CharacterStore.List().OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase).ToList()
+            : new();
+    }
+
+    private async Task ViewSheet()
+    {
+        var json = System.Text.Json.JsonSerializer.Serialize(_character, JsonOptions.Default);
+        await JS.InvokeVoidAsync("sessionStorage.setItem", "currentCharacter", json);
+        Navigation.NavigateTo("/sheet");
+    }
+
+    private void SaveCharacter()
+    {
+        try
+        {
+            if (_state != null)
+                _character.Sheet = CharacterSheet.FromState(_state);
+            if (CharacterStore.IsConfigured)
+            {
+                var id = string.IsNullOrEmpty(_characterStoreId)
+                    ? CharacterStore.DeriveId(_character)
+                    : _characterStoreId;
+                CharacterStore.Replace(id, _character);
+                _characterStoreId = id;
+                SetStatus($"Saved \"{_character.Name}\" to server.", false);
+            }
+            else
+            {
+                SetStatus("Character storage not configured on server.", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Save failed: {ex.Message}", true);
+        }
+    }
+
+    private async Task DownloadCharacter()
+    {
+        try
+        {
+            if (_state != null)
+                _character.Sheet = CharacterSheet.FromState(_state);
+            await FileService.DownloadCharacterAsync(_character);
+            SetStatus($"Downloaded \"{_character.Name}\".", false);
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Download failed: {ex.Message}", true);
+        }
+    }
+
+    private async Task OpenFile()
+    {
+        try
+        {
+            var loaded = await FileService.OpenCharacterAsync();
+            if (loaded != null)
+            {
+                _character = loaded;
+                _error = null;
+                ExpandAllHdTicks();
+                OnCharacterChanged();
+                SetStatus($"Opened \"{loaded.Name}\".", false);
+            }
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Open failed: {ex.Message}", true);
+        }
+    }
+
+    private void SetStatus(string message, bool isError)
+    {
+        _statusMessage = message;
+        _statusIsError = isError;
+    }
+
+    private int GetRaceAbilityModifier(Ability ability)
+    {
+        var race = _races.FirstOrDefault(r => r.Id == _character.RaceId);
+        return race?.AbilityModifiers?.GetScore(ability) ?? 0;
+    }
+
+    private int GetTemplateAbilityModifier(Ability ability) =>
+        _character.TemplateIds
+            .Select(id => _templates.FirstOrDefault(t => t.Id == id))
+            .Where(template => template?.AbilityModifiers != null)
+            .Sum(template => template!.AbilityModifiers!.GetScore(ability));
+
+    private static string FormatSigned(int value) => value >= 0 ? $"+{value}" : value.ToString();
+
+    private string FormatFeatLabel(string featId, FeatDefinition? featDef)
+    {
+        if (featDef != null)
+            return featDef.Name;
+
+        foreach (var f in _feats)
+        {
+            if (f.SelectionRequired != null && featId.StartsWith(f.Id + "_", StringComparison.Ordinal))
+            {
+                var suffix = featId[(f.Id.Length + 1)..];
+                var selection = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(suffix.Replace('_', ' '));
+                return $"{f.Name} ({selection})";
+            }
+        }
+        return featId;
+    }
+
+    private void OnAlignmentChanged(ChangeEventArgs e)
+    {
+        if (Enum.TryParse<Alignment>(e.Value?.ToString(), out var a))
+        {
+            _character.Alignment = a;
+            OnCharacterChanged();
+        }
+    }
+
+    private static string FormatAlignment(Alignment a) => a switch
+    {
+        Alignment.LG => "Lawful Good",
+        Alignment.LN => "Lawful Neutral",
+        Alignment.LE => "Lawful Evil",
+        Alignment.NG => "Neutral Good",
+        Alignment.N  => "True Neutral",
+        Alignment.NE => "Neutral Evil",
+        Alignment.CG => "Chaotic Good",
+        Alignment.CN => "Chaotic Neutral",
+        Alignment.CE => "Chaotic Evil",
+        _ => a.ToString()
+    };
+
+    private IReadOnlyList<TickSpellSummary> GetTickSpellSummaries(int index) =>
+        _tickSpellSummaries.TryGetValue(index, out var summaries)
+            ? summaries
+            : Array.Empty<TickSpellSummary>();
+
+    private static string FormatSpellSummary(TickSpellSummary summary)
+    {
+        var name = summary.SpellListId.Replace("class:", "").Replace("domain:", "");
+        var listType = summary.IsDomainList ? "domain" : "class";
+        return $"{name} {listType} L{summary.MaxSpellLevel} ({summary.AvailableSpellCount} spells)";
+    }
+
+    private static string FormatSpellSelection(SpellSelection selection)
+    {
+        var listId = selection.ClassId.Replace("class:", "").Replace("domain:", "");
+        return $"{listId} {selection.SpellLevel}th: {selection.SpellId}";
+    }
+
+    private List<FeatDefinition> GetTickFeats(int index) =>
+        _tickAvailableFeats.TryGetValue(index, out var feats) ? feats : _feats;
+
+    private TickSkillInfo? GetTickSkillInfo(int index) =>
+        _tickSkillInfos.TryGetValue(index, out var info) ? info : null;
+
+    private void AddSkillAllocation(int tickIndex, string skillId, bool isClassSkill)
+    {
+        var tick = _character.Ticks[tickIndex];
+        tick.Choices.SkillAllocations ??= new List<SkillAllocation>();
+
+        var halfRanks = isClassSkill ? 2 : 1;
+        var existing = tick.Choices.SkillAllocations.FirstOrDefault(a => a.SkillId == skillId);
+        if (existing != null)
+            existing.HalfRanks += halfRanks;
+        else
+            tick.Choices.SkillAllocations.Add(new SkillAllocation { SkillId = skillId, HalfRanks = halfRanks });
+
+        OnCharacterChanged();
+    }
+
+    private void RemoveSkillAllocation(int tickIndex, string skillId, bool isClassSkill)
+    {
+        var tick = _character.Ticks[tickIndex];
+        if (tick.Choices.SkillAllocations == null) return;
+
+        var existing = tick.Choices.SkillAllocations.FirstOrDefault(a => a.SkillId == skillId);
+        if (existing == null) return;
+
+        var halfRanks = isClassSkill ? 2 : 1;
+        existing.HalfRanks -= halfRanks;
+        if (existing.HalfRanks <= 0)
+            tick.Choices.SkillAllocations.Remove(existing);
+
+        OnCharacterChanged();
+    }
+
+    private void ToggleAllHdTicks()
+    {
+        if (_expandedHdTicks.Count == _character.Ticks.Count)
+            _expandedHdTicks.Clear();
+        else
+            ExpandAllHdTicks();
+    }
+
+    private void ExpandAllHdTicks()
+    {
+        _expandedHdTicks.Clear();
+        for (int i = 0; i < _character.Ticks.Count; i++)
+            _expandedHdTicks.Add(i);
+    }
+
+    private void ToggleHdTick(int index)
+    {
+        if (!_expandedHdTicks.Add(index))
+            _expandedHdTicks.Remove(index);
+    }
+
+    private void ToggleSkillPanel(int index)
+    {
+        if (!_expandedSkillTicks.Add(index))
+            _expandedSkillTicks.Remove(index);
+    }
+
+    private int GetTickSkillAllocation(int tickIndex, string skillId)
+    {
+        var allocs = _character.Ticks[tickIndex].Choices.SkillAllocations;
+        return allocs?.FirstOrDefault(a => a.SkillId == skillId)?.HalfRanks ?? 0;
+    }
+
+    private TickCasterInfo? GetTickCasterInfo(int index) =>
+        _tickCasterInfos.TryGetValue(index, out var info) ? info : null;
+
+    private void AddDomainToTick(int tickIndex, string domainId)
+    {
+        if (string.IsNullOrEmpty(domainId)) return;
+        var tick = _character.Ticks[tickIndex];
+        tick.Choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
+        if (!tick.Choices.ClassFeatureChoices.ContainsKey("domains"))
+            tick.Choices.ClassFeatureChoices["domains"] = new List<string>();
+        var domains = tick.Choices.ClassFeatureChoices["domains"];
+        if (!domains.Contains(domainId))
+        {
+            domains.Add(domainId);
+            OnCharacterChanged();
+        }
+    }
+
+    private void RemoveDomainFromTick(int tickIndex, string domainId)
+    {
+        var tick = _character.Ticks[tickIndex];
+        var domains = tick.Choices.ClassFeatureChoices?["domains"];
+        if (domains == null) return;
+        domains.Remove(domainId);
+        OnCharacterChanged();
+    }
+
+    private void ToggleSpellPanel(int index)
+    {
+        if (!_expandedSpellTicks.Add(index))
+            _expandedSpellTicks.Remove(index);
+    }
+
+    private void AddSpellSelection(int tickIndex, string classId, int spellLevel, string spellId)
+    {
+        if (string.IsNullOrEmpty(spellId)) return;
+        var tick = _character.Ticks[tickIndex];
+        tick.Choices.SpellSelections ??= new List<SpellSelection>();
+        tick.Choices.SpellSelections.Add(new SpellSelection
+        {
+            ClassId = classId,
+            SpellLevel = spellLevel,
+            SpellId = spellId
+        });
+        OnCharacterChanged();
+    }
+
+    private void RemoveSpellSelection(int tickIndex, SpellSelection selection)
+    {
+        var tick = _character.Ticks[tickIndex];
+        tick.Choices.SpellSelections?.Remove(selection);
+        OnCharacterChanged();
+    }
+
+    private void SetAdvanceSpellcastingChoice(int tickIndex, string classId)
+    {
+        var tick = _character.Ticks[tickIndex];
+        tick.Choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
+        tick.Choices.ClassFeatureChoices["advance_spellcasting"] = new List<string> { classId };
+        OnCharacterChanged();
+    }
+
+    private void SetCompanionSpeciesOnTick(int tickIndex, string classFeatureType, string raceId)
+    {
+        var tick = _character.Ticks[tickIndex];
+        tick.Choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
+        tick.Choices.ClassFeatureChoices[classFeatureType] = new List<string> { raceId };
+        OnCharacterChanged();
+    }
+
+    private static readonly Dictionary<string, string> CompanionDefaultTemplateByLinkType = new()
+    {
+        ["animal_companion"] = "template:animal_companion_standard",
+        ["familiar"] = "template:familiar_standard",
+        ["improved_familiar"] = "template:familiar_standard",
+        ["special_mount"] = "template:special_mount_standard",
+    };
+
+    private void CreateCompanionFromSlot(CompanionSlotState slot)
+    {
+        if (!CharacterStore.IsConfigured)
+        {
+            SetStatus("Character storage not configured on server.", true);
+            return;
+        }
+        if (string.IsNullOrEmpty(_characterStoreId))
+        {
+            SetStatus("Save the master character first so the companion can link back.", true);
+            return;
+        }
+
+        var species = slot.SelectedSpecies;
+        var raceDef = string.IsNullOrEmpty(species) ? null : _races.FirstOrDefault(r => r.Id == species);
+        var displayName = raceDef?.Name ?? species ?? slot.LinkType.Replace('_', ' ');
+
+        var companion = new Character
+        {
+            Name = $"{_character.Name}'s {displayName}",
+            Alignment = _character.Alignment,
+            RaceId = species ?? string.Empty,
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 }
+        };
+
+        if (CompanionDefaultTemplateByLinkType.TryGetValue(slot.LinkType, out var templateId)
+            && _templates.Any(t => t.Id == templateId))
+        {
+            companion.TemplateIds.Add(templateId);
+        }
+
+        var baseId = CharacterStore.DeriveId(companion);
+        var id = baseId;
+        var suffix = 1;
+        while (CharacterStore.Exists(id))
+        {
+            suffix++;
+            id = $"{baseId}_{suffix}";
+        }
+
+        CharacterStore.Replace(id, companion);
+
+        _character.CompanionLinks.Add(new CompanionLink
+        {
+            LinkType = slot.LinkType,
+            CompanionId = id,
+            SelectedSpecies = species,
+            EffectiveLevelFormula = slot.EffectiveLevelFormula
+        });
+        CharacterStore.Replace(_characterStoreId!, _character);
+        RefreshAvailableCharacters();
+
+        Navigation.NavigateTo($"/builder/{id}");
+    }
+
+    private void LinkExistingCompanion(CompanionSlotState slot)
+    {
+        if (!CharacterStore.IsConfigured)
+        {
+            SetStatus("Character storage not configured on server.", true);
+            return;
+        }
+        if (string.IsNullOrEmpty(_characterStoreId))
+        {
+            SetStatus("Save the master character first so it can own the link.", true);
+            return;
+        }
+        if (!_linkCandidateByLinkType.TryGetValue(slot.LinkType, out var candidateId)
+            || string.IsNullOrEmpty(candidateId))
+        {
+            SetStatus("Pick a character to link first.", true);
+            return;
+        }
+        if (candidateId == _characterStoreId)
+        {
+            SetStatus("A character cannot be linked to itself.", true);
+            return;
+        }
+
+        Character candidate;
+        try { candidate = CharacterStore.Get(candidateId); }
+        catch (CharacterStoreException ex) { SetStatus(ex.Message, true); return; }
+
+        _character.CompanionLinks.Add(new CompanionLink
+        {
+            LinkType = slot.LinkType,
+            CompanionId = candidateId,
+            SelectedSpecies = string.IsNullOrEmpty(candidate.RaceId) ? null : candidate.RaceId,
+            EffectiveLevelFormula = slot.EffectiveLevelFormula
+        });
+        CharacterStore.Replace(_characterStoreId, _character);
+        _linkCandidateByLinkType.Remove(slot.LinkType);
+        SetStatus($"Linked \"{candidate.Name}\" as {slot.LinkType}.", false);
+        OnCharacterChanged();
+    }
+
+    private void UnlinkCompanion(CompanionLink link)
+    {
+        _character.CompanionLinks.Remove(link);
+        if (!string.IsNullOrEmpty(_characterStoreId) && CharacterStore.IsConfigured)
+            CharacterStore.Replace(_characterStoreId, _character);
+        OnCharacterChanged();
+    }
+
+    private void AddPermanentEvent()
+    {
+        _character.PermanentEvents.Add(new PermanentEvent
+        {
+            BeforeTick = _character.Ticks.Count
+        });
+    }
+
+    private void RemovePermanentEvent(int index)
+    {
+        _character.PermanentEvents.RemoveAt(index);
+        OnCharacterChanged();
+    }
+
+    private void AddPresetToEvent(int evtIndex, string preset)
+    {
+        var evt = _character.PermanentEvents[evtIndex];
+
+        if (preset.StartsWith("tome_"))
+        {
+            var parts = preset.Split('_');
+            if (parts.Length == 3 && int.TryParse(parts[1], out var bonus) && Enum.TryParse<Ability>(parts[2], out var ab))
+            {
+                AddAbilityModToEvent(evtIndex, ab, bonus);
+            }
+        }
+        else if (preset == "wish_inherent")
+        {
+            _pendingWishEvent = evtIndex;
+        }
+        else if (preset.StartsWith("nat_armor_"))
+        {
+            if (int.TryParse(preset.Replace("nat_armor_", ""), out var val))
+            {
+                evt.Permabuffs.Add(new ModifyAttribute { Target = AttributeTarget.NaturalArmor, Value = val });
+                OnCharacterChanged();
+            }
+        }
+        else if (preset.StartsWith("sr_"))
+        {
+            if (int.TryParse(preset.Replace("sr_", ""), out var val))
+            {
+                evt.Permabuffs.Add(new ModifyAttribute { Target = AttributeTarget.SpellResistance, Value = val });
+                OnCharacterChanged();
+            }
+        }
+    }
+
+    private void AddAbilityModToEvent(int evtIndex, Ability ability, int value)
+    {
+        var evt = _character.PermanentEvents[evtIndex];
+        evt.Permabuffs.Add(new ModifyAttribute
+        {
+            Target = AttributeTarget.AbilityScore,
+            AbilityScore = ability,
+            Value = value
+        });
+        OnCharacterChanged();
+    }
+
+    private void AddEquipmentEntry()
+    {
+        _character.Equipment.Add(new EquipmentEntry { ItemId = "New Item", Slot = "slotless" });
+    }
+
+    private void RemoveEquipmentEntry(int index)
+    {
+        _character.Equipment.RemoveAt(index);
+        OnCharacterChanged();
+    }
+
+    private void AddEquipmentEffect(int eqIndex, string effect)
+    {
+        var item = _character.Equipment[eqIndex];
+
+        if (effect.StartsWith("ability_"))
+        {
+            var parts = effect.Split('_');
+            if (parts.Length == 3 && int.TryParse(parts[1], out var bonus) && Enum.TryParse<Ability>(parts[2], out var ab))
+            {
+                item.Permabuffs.Add(new ModifyAttribute
+                {
+                    Target = AttributeTarget.AbilityScore,
+                    AbilityScore = ab,
+                    Value = bonus
+                });
+                OnCharacterChanged();
+            }
+        }
+        else if (effect.StartsWith("nat_armor_"))
+        {
+            if (int.TryParse(effect.Replace("nat_armor_", ""), out var val))
+            {
+                item.Permabuffs.Add(new ModifyAttribute { Target = AttributeTarget.NaturalArmor, Value = val });
+                OnCharacterChanged();
+            }
+        }
+        else if (effect.StartsWith("save_resist_"))
+        {
+            if (int.TryParse(effect.Replace("save_resist_", ""), out var val))
+            {
+                item.Permabuffs.Add(new ModifyAttribute { Target = AttributeTarget.AllSaves, Value = val });
+                OnCharacterChanged();
+            }
+        }
+        else if (effect.StartsWith("sr_"))
+        {
+            if (int.TryParse(effect.Replace("sr_", ""), out var val))
+            {
+                item.Permabuffs.Add(new SetAttribute { Target = AttributeTarget.SpellResistance, Value = val });
+                OnCharacterChanged();
+            }
+        }
+    }
+
+    private static string FormatPermabuff(Permabuff buff)
+    {
+        return buff switch
+        {
+            ModifyAttribute ma => ma.Target switch
+            {
+                AttributeTarget.AbilityScore => $"{(ma.Value >= 0 ? "+" : "")}{ma.Value} {ma.AbilityScore}",
+                AttributeTarget.NaturalArmor => $"+{ma.Value} Natural Armor",
+                AttributeTarget.SpellResistance => $"+{ma.Value} SR",
+                AttributeTarget.LevelAdjustment => $"+{ma.Value} LA",
+                AttributeTarget.Resistance => $"+{ma.Value} {ma.ResistanceElement} Resistance",
+                _ => $"Modify {ma.Target} {ma.Value}"
+            },
+            SetAttribute sa => sa.Target switch
+            {
+                AttributeTarget.SpellResistance => $"SR {sa.Value}",
+                AttributeTarget.AbilityScore => $"Set {sa.AbilityScore} = {sa.Value}",
+                _ => $"Set {sa.Target} = {sa.Value}"
+            },
+            _ => buff.GetType().Name
+        };
+    }
+
+    private sealed record TickSpellSummary(
+        string SpellListId,
+        int MaxSpellLevel,
+        int AvailableSpellCount,
+        bool IsDomainList);
+
+    private sealed record TickSkillInfo(
+        int UnspentPoints,
+        int MaxHalfRanks,
+        HashSet<string> CurrentTickClassSkills,
+        HashSet<string> ClassSkills,
+        Dictionary<string, int> SkillRanks);
+
+    private sealed record TickCasterInfo(
+        int PendingDomainSelections,
+        List<string> Domains,
+        Dictionary<string, string> DomainOwners,
+        Dictionary<string, TickSpellcastingInfo> Spellcasting,
+        bool NeedsAdvanceSpellcastingChoice = false);
+
+    private sealed record TickSpellcastingInfo(
+        CastingType CastingType,
+        Ability CastingStat,
+        int CasterLevel,
+        int MaxSpellLevel,
+        Dictionary<int, int> SpellsPerDay,
+        Dictionary<int, int>? SpellsKnown,
+        Dictionary<int, int> DomainBonusSlots);
+}

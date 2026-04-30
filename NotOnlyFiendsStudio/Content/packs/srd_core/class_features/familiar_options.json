@@ -1,0 +1,19 @@
+[
+  {
+    "id": "familiar_options",
+    "name": "Familiar Options",
+    "description": "Choose a Tiny or Diminutive animal to serve as your familiar. Each grants a different bonus to its master while within 5 ft. (PHB 53). Master-side bonuses are NOT auto-applied — track them on your sheet manually.",
+    "options": [
+      { "id": "companion_bat",              "name": "Bat",              "description": "Diminutive flier. Master gains +3 Listen.",                  "minEffectiveLevel": 1 },
+      { "id": "familiar_cat",               "name": "Cat",              "description": "Tiny feline. Master gains +3 Move Silently.",                "minEffectiveLevel": 1 },
+      { "id": "companion_hawk",             "name": "Hawk",             "description": "Tiny raptor. Master gains +3 Spot in bright light.",         "minEffectiveLevel": 1 },
+      { "id": "familiar_lizard",            "name": "Lizard",           "description": "Tiny reptile. Master gains +3 Climb.",                       "minEffectiveLevel": 1 },
+      { "id": "familiar_owl",               "name": "Owl",              "description": "Tiny nocturnal raptor. Master gains +3 Spot in shadowy areas.","minEffectiveLevel": 1 },
+      { "id": "familiar_rat",               "name": "Rat",              "description": "Tiny rodent. Master gains +2 Fortitude saves.",              "minEffectiveLevel": 1 },
+      { "id": "companion_raven",            "name": "Raven",            "description": "Tiny corvid. Master gains +3 Appraise.",                     "minEffectiveLevel": 1 },
+      { "id": "companion_snake_viper_tiny", "name": "Snake (Tiny Viper)","description": "Tiny venomous serpent. Master gains +3 Bluff.",             "minEffectiveLevel": 1 },
+      { "id": "familiar_toad",              "name": "Toad",             "description": "Diminutive amphibian. Master gains +3 hp.",                  "minEffectiveLevel": 1 },
+      { "id": "familiar_weasel",            "name": "Weasel",           "description": "Tiny mustelid. Master gains +2 Reflex saves.",               "minEffectiveLevel": 1 }
+    ]
+  }
+]

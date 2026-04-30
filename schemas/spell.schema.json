@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "spell.schema.json",
+  "title": "D&D 3.5e Spell Definition",
+  "description": "Schema for SpellDefinition content files (NEW type — not yet implemented in C# engine). Each file is a JSON array of spells. Designed to follow existing content pipeline patterns. Self-contained for LLM use.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/SpellDefinition" },
+
+  "$defs": {
+
+    "SpellSchool": {
+      "type": "string",
+      "enum": [
+        "abjuration", "conjuration", "divination", "enchantment",
+        "evocation", "illusion", "necromancy", "transmutation", "universal"
+      ]
+    },
+
+    "SpellComponents": {
+      "type": "object",
+      "description": "Spell components. Set booleans to true/false; use strings for material/focus descriptions.",
+      "properties": {
+        "verbal": { "type": "boolean", "description": "V component." },
+        "somatic": { "type": "boolean", "description": "S component." },
+        "material": { "type": ["string", "null"], "description": "Material component description, or null if none. e.g., 'bat guano and sulfur'." },
+        "focus": { "type": ["string", "null"], "description": "Focus description, or null if none." },
+        "divineFocus": { "type": "boolean", "description": "DF component (divine casters use holy symbol)." },
+        "xpCost": { "type": ["string", "null"], "description": "XP cost, or null if none. e.g., '250 XP'." }
+      },
+      "required": ["verbal", "somatic", "divineFocus"],
+      "additionalProperties": false
+    },
+
+    "SpellDefinition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique ID in snake_case (e.g., 'fireball', 'cure_light_wounds', 'detect_magic')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Fireball', 'Cure Light Wounds')."
+        },
+        "school": { "$ref": "#/$defs/SpellSchool" },
+        "subschool": {
+          "type": ["string", "null"],
+          "description": "Subschool if any (e.g., 'healing', 'creation', 'calling', 'teleportation', 'charm', 'compulsion', 'figment', 'glamer', 'pattern', 'phantasm', 'shadow'). Null if none."
+        },
+        "descriptors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Spell descriptors (e.g., ['fire'], ['mind-affecting'], ['good', 'light']). Empty array if none."
+        },
+        "classLevels": {
+          "type": "object",
+          "description": "Maps driver IDs to spell level for that class. e.g., { 'class:sorcerer': 3, 'class:wizard': 3, 'class:cleric': 4 }. Use the driver ID format from hddriver.schema.json.",
+          "patternProperties": {
+            "^.+$": { "type": "integer", "minimum": 0, "maximum": 9 }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "components": { "$ref": "#/$defs/SpellComponents" },
+        "castingTime": {
+          "type": "string",
+          "description": "e.g., '1 standard action', '1 round', '1 full-round action', '10 minutes', '1 hour'."
+        },
+        "range": {
+          "type": "string",
+          "description": "e.g., 'personal', 'touch', 'close (25 ft. + 5 ft./2 levels)', 'medium (100 ft. + 10 ft./level)', 'long (400 ft. + 40 ft./level)', 'unlimited', or a specific distance."
+        },
+        "area": {
+          "type": ["string", "null"],
+          "description": "Area of effect if applicable (e.g., '20-ft.-radius spread'). Null if not applicable. A spell typically has area, effect, or target (sometimes two)."
+        },
+        "effect": {
+          "type": ["string", "null"],
+          "description": "Effect description if applicable (e.g., 'ray', 'one or more creatures'). Null if not applicable."
+        },
+        "target": {
+          "type": ["string", "null"],
+          "description": "Target if applicable (e.g., 'you', 'one creature', 'one creature/level, no two of which can be more than 30 ft. apart'). Null if not applicable."
+        },
+        "duration": {
+          "type": "string",
+          "description": "e.g., 'instantaneous', '1 round/level', '1 min./level (D)', 'permanent', 'concentration + 1 round/level'. Append (D) for dismissable."
+        },
+        "savingThrow": {
+          "type": "string",
+          "description": "e.g., 'Reflex half', 'Will negates', 'Fortitude partial', 'none', 'Will negates (harmless)'."
+        },
+        "spellResistance": {
+          "type": "string",
+          "description": "e.g., 'yes', 'no', 'yes (harmless)', 'yes (object)'."
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief mechanical summary of the spell's effect."
+        }
+      },
+      "required": [
+        "id", "name", "school", "descriptors", "classLevels", "components",
+        "castingTime", "range", "duration", "savingThrow", "spellResistance", "description"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,524 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "hddriver.schema.json",
+  "title": "D&D 3.5e Class / Racial HD Driver",
+  "description": "Schema for HDDriver content files (base classes, prestige classes, and racial HD). Each file is a JSON array of HDDriver objects. Self-contained — all definitions inlined for LLM use.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/HDDriver" },
+
+  "$defs": {
+
+    "Ability": {
+      "type": "string",
+      "enum": ["str", "dex", "con", "int", "wis", "cha"]
+    },
+
+    "Alignment": {
+      "type": "string",
+      "enum": ["lg", "ln", "le", "ng", "n", "ne", "cg", "cn", "ce"]
+    },
+
+    "CastingType": {
+      "type": "string",
+      "enum": ["arcane", "divine"]
+    },
+
+    "BABProgression": {
+      "type": "string",
+      "enum": ["good", "average", "poor"],
+      "description": "good = 1:1 (fighter), average = 3:4 (cleric), poor = 1:2 (wizard)"
+    },
+
+    "ProgressionRate": {
+      "type": "string",
+      "enum": ["good", "poor"],
+      "description": "good = 2 + level/2, poor = level/3"
+    },
+
+    "AttributeTarget": {
+      "type": "string",
+      "enum": ["naturalArmor", "spellResistance", "levelAdjustment", "resistance", "abilityScore"]
+    },
+
+    "DriverKind": {
+      "type": "string",
+      "enum": ["class", "racialHD"]
+    },
+
+    "SaveProgression": {
+      "type": "object",
+      "properties": {
+        "fort": { "$ref": "#/$defs/ProgressionRate" },
+        "ref": { "$ref": "#/$defs/ProgressionRate" },
+        "will": { "$ref": "#/$defs/ProgressionRate" }
+      },
+      "required": ["fort", "ref", "will"],
+      "additionalProperties": false
+    },
+
+    "SpellcastingProgression": {
+      "type": "object",
+      "description": "Spellcasting progression table. spellsPerDay required; spellsKnown only for spontaneous casters (sorcerer, bard).",
+      "properties": {
+        "castingType": { "$ref": "#/$defs/CastingType" },
+        "castingStat": {
+          "$ref": "#/$defs/Ability",
+          "description": "Primary casting ability: int (wizard), wis (cleric/druid/ranger), cha (sorcerer/bard/paladin)."
+        },
+        "spellsPerDay": {
+          "type": "object",
+          "description": "Keys = class level as string ('1' through '20'). Values = object mapping spell level as string ('0' through '9') to number of slots.",
+          "patternProperties": {
+            "^[0-9]+$": {
+              "type": "object",
+              "patternProperties": {
+                "^[0-9]+$": { "type": "integer", "minimum": 0 }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "spellsKnown": {
+          "type": "object",
+          "description": "Only for spontaneous casters. Same key format as spellsPerDay. Omit for prepared casters.",
+          "patternProperties": {
+            "^[0-9]+$": {
+              "type": "object",
+              "patternProperties": {
+                "^[0-9]+$": { "type": "integer", "minimum": 0 }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["castingType", "castingStat", "spellsPerDay"],
+      "additionalProperties": false
+    },
+
+    "ViolationEffect": {
+      "type": "object",
+      "description": "Effect when class prerequisites are violated post-entry (e.g., paladin falls, monk becomes chaotic).",
+      "properties": {
+        "description": { "type": "string" },
+        "revokeAbilityIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Ability IDs to revoke on violation."
+        }
+      },
+      "required": ["description", "revokeAbilityIds"],
+      "additionalProperties": false
+    },
+
+    "GrantedAbility": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique ID. Use snake_case, prefix with class abbreviation for clarity (e.g., 'rage', 'trap_sense_1')." },
+        "name": { "type": "string", "description": "Display name (e.g., 'Rage', 'Trap Sense +1')." },
+        "description": { "type": "string", "description": "Brief mechanical description." }
+      },
+      "required": ["id", "name", "description"],
+      "additionalProperties": false
+    },
+
+    "SLA": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "usesPerDay": { "type": "string", "description": "e.g., '3/day', '1/day', 'at will'" },
+        "casterLevel": { "type": "integer" },
+        "saveDC": { "type": "integer" }
+      },
+      "required": ["id", "name"],
+      "additionalProperties": false
+    },
+
+    "Prerequisite": {
+      "description": "Polymorphic prerequisite. Use '$type' to specify the concrete type.",
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Minimum Base Attack Bonus.",
+          "properties": {
+            "$type": { "const": "MinBAB" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minimum ability score.",
+          "properties": {
+            "$type": { "const": "MinAbility" },
+            "ability": { "$ref": "#/$defs/Ability" },
+            "value": { "type": "integer" }
+          },
+          "required": ["$type", "ability", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minimum ranks in a skill.",
+          "properties": {
+            "$type": { "const": "MinSkillRanks" },
+            "skillId": { "type": "string" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "skillId", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minimum levels in a specific class.",
+          "properties": {
+            "$type": { "const": "MinClassLevel" },
+            "classId": { "type": "string" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "classId", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Must have a specific feat.",
+          "properties": {
+            "$type": { "const": "HasFeat" },
+            "featId": { "type": "string" }
+          },
+          "required": ["$type", "featId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Must have one of the listed alignments.",
+          "properties": {
+            "$type": { "const": "AlignmentReq" },
+            "allowed": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/Alignment" },
+              "minItems": 1
+            }
+          },
+          "required": ["$type", "allowed"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minimum total Hit Dice.",
+          "properties": {
+            "$type": { "const": "MinHD" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minimum caster level from any class.",
+          "properties": {
+            "$type": { "const": "MinCasterLevel" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Can cast spells of at least this level.",
+          "properties": {
+            "$type": { "const": "CanCastSpellLevel" },
+            "spellLevel": { "type": "integer", "minimum": 0, "maximum": 9 }
+          },
+          "required": ["$type", "spellLevel"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Must be a specific race. Used for racial HD drivers.",
+          "properties": {
+            "$type": { "const": "HasRace" },
+            "raceId": { "type": "string" }
+          },
+          "required": ["$type", "raceId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minimum base save bonus.",
+          "properties": {
+            "$type": { "const": "MinSave" },
+            "save": { "type": "string", "enum": ["fort", "ref", "will"] },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "save", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Must have a specific granted ability.",
+          "properties": {
+            "$type": { "const": "HasAbility" },
+            "abilityId": { "type": "string" }
+          },
+          "required": ["$type", "abilityId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Must have spellcasting ability.",
+          "properties": {
+            "$type": { "const": "HasSpellcasting" },
+            "castingType": { "$ref": "#/$defs/CastingType" }
+          },
+          "required": ["$type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Must have N feats of a specific FeatType.",
+          "properties": {
+            "$type": { "const": "HasFeatOfType" },
+            "featType": { "$ref": "#/$defs/FeatType" },
+            "minCount": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          "required": ["$type", "featType"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Must have N feats with a specific tag.",
+          "properties": {
+            "$type": { "const": "HasFeatWithTag" },
+            "tag": { "type": "string" },
+            "minCount": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          "required": ["$type", "tag"],
+          "additionalProperties": false
+        }
+      ]
+    },
+
+    "UserPermabuff": {
+      "description": "User-authored permabuffs ONLY. DO NOT use: AddHitDie, AddBAB, AddSaves, GrantSkillPoints, AddClassSkills, UpdateSpellcasting — these are auto-generated from the driver's top-level fields (hitDie, babProgression, saveProgression, skillPointsPerLevel, classSkills, spellcasting).",
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Grant a special ability.",
+          "properties": {
+            "$type": { "const": "GrantAbility" },
+            "ability": { "$ref": "#/$defs/GrantedAbility" }
+          },
+          "required": ["$type", "ability"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Remove a previously granted ability. Used for upgrades: revoke old version, grant new.",
+          "properties": {
+            "$type": { "const": "RevokeAbility" },
+            "abilityId": { "type": "string" }
+          },
+          "required": ["$type", "abilityId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant a Spell-Like Ability.",
+          "properties": {
+            "$type": { "const": "GrantSLA" },
+            "sla": { "$ref": "#/$defs/SLA" }
+          },
+          "required": ["$type", "sla"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Remove a previously granted SLA.",
+          "properties": {
+            "$type": { "const": "RevokeSLA" },
+            "slaId": { "type": "string" }
+          },
+          "required": ["$type", "slaId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Auto-grant a feat (must exist in content registry). Cascades: applies the feat's GrantedPermabuffs.",
+          "properties": {
+            "$type": { "const": "GrantBonusFeat" },
+            "featId": { "type": "string" }
+          },
+          "required": ["$type", "featId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant a feat selection slot. Omit restriction for standard feats; set to 'fighter_bonus' etc. for restricted slots.",
+          "properties": {
+            "$type": { "const": "GrantFeatSlot" },
+            "restriction": { "type": "string" }
+          },
+          "required": ["$type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Add to an attribute (additive).",
+          "properties": {
+            "$type": { "const": "ModifyAttribute" },
+            "target": { "$ref": "#/$defs/AttributeTarget" },
+            "value": { "type": "integer" },
+            "resistanceElement": { "type": "string" },
+            "abilityScore": { "$ref": "#/$defs/Ability" }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Set an attribute to an absolute value.",
+          "properties": {
+            "$type": { "const": "SetAttribute" },
+            "target": { "$ref": "#/$defs/AttributeTarget" },
+            "value": { "type": "integer" },
+            "resistanceElement": { "type": "string" },
+            "abilityScore": { "$ref": "#/$defs/Ability" }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Advance spellcasting by +1 caster level. For prestige classes granting '+1 level of existing spellcasting class'.",
+          "properties": {
+            "$type": { "const": "AdvanceSpellcasting" },
+            "castingType": { "$ref": "#/$defs/CastingType" }
+          },
+          "required": ["$type", "castingType"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant domain selection slots. Clerics get 2 at level 1. A prestige class might grant 1.",
+          "properties": {
+            "$type": { "const": "GrantDomainSelection" },
+            "count": { "type": "integer", "minimum": 1, "default": 2 }
+          },
+          "required": ["$type", "count"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantImmunity" },
+            "immunity": { "type": "string" }
+          },
+          "required": ["$type", "immunity"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantDR" },
+            "value": { "type": "integer", "minimum": 1 },
+            "bypassedBy": { "type": "string" }
+          },
+          "required": ["$type", "value", "bypassedBy"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantSkillBonus" },
+            "skillId": { "type": "string" },
+            "value": { "type": "integer" }
+          },
+          "required": ["$type", "skillId", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+
+    "HDDriver": {
+      "type": "object",
+      "description": "A class or racial HD progression driver.",
+      "properties": {
+        "$type": {
+          "const": "HDDriver",
+          "description": "Always 'HDDriver' — the JSON polymorphic discriminator."
+        },
+        "kind": {
+          "$ref": "#/$defs/DriverKind",
+          "description": "'class' for character classes, 'racialHD' for racial hit dice."
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique ID. Format: 'class:snake_case_name' for classes (e.g., 'class:fighter', 'class:eldritch_knight'), 'racial_hd:snake_case_name' for racial HD (e.g., 'racial_hd:outsider')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Fighter', 'Eldritch Knight')."
+        },
+        "hitDie": {
+          "type": "integer",
+          "enum": [4, 6, 8, 10, 12],
+          "description": "Hit die size. d4=wizard, d6=sorcerer/rogue, d8=cleric, d10=fighter, d12=barbarian."
+        },
+        "skillPointsPerLevel": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 8,
+          "description": "Base skill points per level (before INT modifier)."
+        },
+        "classSkills": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of class skill IDs in snake_case (e.g., 'climb', 'knowledge_arcana', 'handle_animal')."
+        },
+        "babProgression": { "$ref": "#/$defs/BABProgression" },
+        "saveProgression": { "$ref": "#/$defs/SaveProgression" },
+        "maxLevel": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum class level. Required for prestige classes (typically 5 or 10). Omit for base classes (unlimited)."
+        },
+        "spellcasting": {
+          "$ref": "#/$defs/SpellcastingProgression",
+          "description": "Spellcasting progression. Omit for non-casters."
+        },
+        "levelPermabuffs": {
+          "type": "object",
+          "description": "Permabuffs granted at specific class levels. Keys = level number as string. NEVER include auto-computed types here.",
+          "patternProperties": {
+            "^[0-9]+$": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/UserPermabuff" }
+            }
+          },
+          "additionalProperties": false
+        },
+        "perLevelPermabuffs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/UserPermabuff" },
+          "description": "Permabuffs applied every level. Rarely used; most class features are level-specific."
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Prerequisite" },
+          "description": "Entry requirements. Empty array for base classes with no restrictions."
+        },
+        "violationEffect": {
+          "$ref": "#/$defs/ViolationEffect",
+          "description": "What happens when prerequisites are violated after entry (e.g., paladin falls). Omit if not applicable."
+        }
+      },
+      "required": ["$type", "kind", "id", "name", "hitDie", "skillPointsPerLevel", "classSkills", "babProgression", "saveProgression"],
+      "additionalProperties": false
+    }
+  }
+}

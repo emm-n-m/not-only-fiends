@@ -1,0 +1,1745 @@
+[
+  {
+    "id": "ability_focus",
+    "name": "Ability Focus",
+    "description": "+2 to the DC of one special attack you possess.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": true
+  },
+  {
+    "id": "acrobatic",
+    "name": "Acrobatic",
+    "description": "+2 bonus on Jump and Tumble checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "agile",
+    "name": "Agile",
+    "description": "+2 bonus on Balance and Escape Artist checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "alertness",
+    "name": "Alertness",
+    "description": "+2 bonus on Listen and Spot checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "animal_affinity",
+    "name": "Animal Affinity",
+    "description": "+2 bonus on Handle Animal and Ride checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "armor_proficiency_heavy",
+    "name": "Armor Proficiency (Heavy)",
+    "description": "No armor check penalty on attack rolls when wearing heavy armor.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "armor_proficiency_light",
+    "name": "Armor Proficiency (Light)",
+    "description": "No armor check penalty on attack rolls when wearing light armor.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "armor_proficiency_medium",
+    "name": "Armor Proficiency (Medium)",
+    "description": "No armor check penalty on attack rolls when wearing medium armor.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "athletic",
+    "name": "Athletic",
+    "description": "+2 bonus on Climb and Swim checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "augment_summoning",
+    "name": "Augment Summoning",
+    "description": "Creatures you summon with conjuration (summoning) spells gain +4 Str and +4 Con.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "spell_focus"
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "awesome_blow",
+    "name": "Awesome Blow",
+    "description": "As a standard action, send a corporeal opponent smaller than you flying 10 feet and knock it prone.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "power_attack"
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "improved_bull_rush"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "str",
+        "value": 25
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "blindsight_5_ft_radius",
+    "name": "Blindsight (5 ft Radius)",
+    "description": "Gain blindsight out to 5 feet, allowing you to detect and fight unseen foes within that range.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "blind_fight"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "wis",
+        "value": 19
+      },
+      {
+        "$type": "MinBAB",
+        "value": 4
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "brew_potion",
+    "name": "Brew Potion",
+    "description": "Create potions of spells of 3rd level or lower that target one or more creatures.",
+    "type": "itemCreation",
+    "prerequisites": [
+      {
+        "$type": "MinCasterLevel",
+        "value": 3
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "category_feat_improved_familiar_mod",
+    "name": "CATEGORY=FEAT|Improved Familiar.MOD",
+    "description": "Modifier entry for Improved Familiar feat data.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "cleave_granted_by_sylvan_scimitar",
+    "name": "Cleave (Granted by Sylvan Scimitar)",
+    "description": "Cleave feat granted by the Sylvan Scimitar magic item.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "combat_casting",
+    "name": "Combat Casting",
+    "description": "+4 bonus on Concentration checks made to cast defensively or while grappled.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "craft_construct",
+    "name": "Craft Construct",
+    "description": "Create magical constructs such as golems and shield guardians.",
+    "type": "itemCreation",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "craft_magic_arms_and_armor"
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "craft_wondrous_item"
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "craft_magic_arms_and_armor",
+    "name": "Craft Magic Arms and Armor",
+    "description": "Create magic weapons, armor, and shields.",
+    "type": "itemCreation",
+    "prerequisites": [
+      {
+        "$type": "MinCasterLevel",
+        "value": 5
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "craft_rod",
+    "name": "Craft Rod",
+    "description": "Create magic rods.",
+    "type": "itemCreation",
+    "prerequisites": [
+      {
+        "$type": "MinCasterLevel",
+        "value": 9
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "craft_staff",
+    "name": "Craft Staff",
+    "description": "Create magic staffs.",
+    "type": "itemCreation",
+    "prerequisites": [
+      {
+        "$type": "MinCasterLevel",
+        "value": 12
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "craft_wand",
+    "name": "Craft Wand",
+    "description": "Create wands of spells of 4th level or lower.",
+    "type": "itemCreation",
+    "prerequisites": [
+      {
+        "$type": "MinCasterLevel",
+        "value": 5
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "craft_wondrous_item",
+    "name": "Craft Wondrous Item",
+    "description": "Create miscellaneous magic items such as cloaks, boots, and amulets.",
+    "type": "itemCreation",
+    "prerequisites": [
+      {
+        "$type": "MinCasterLevel",
+        "value": 3
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "deceitful",
+    "name": "Deceitful",
+    "description": "+2 bonus on Disguise and Forgery checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "deflect_arrows",
+    "name": "Deflect Arrows",
+    "description": "Once per round, deflect one ranged attack that would normally hit you.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "improved_unarmed_strike"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 13
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "deft_hands",
+    "name": "Deft Hands",
+    "description": "+2 bonus on Sleight of Hand and Use Rope checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "diehard",
+    "name": "Diehard",
+    "description": "Automatically become stable when reduced to negative hit points. You may act while disabled or dying.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "endurance"
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "diligent",
+    "name": "Diligent",
+    "description": "+2 bonus on Appraise and Decipher Script checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "disguise_spell",
+    "name": "Disguise Spell",
+    "description": "Disguise spellcasting as part of a Perform check so observers don't notice you're casting. Uses spell slot +1 level higher.",
+    "type": "metamagic",
+    "prerequisites": [
+      {
+        "$type": "MinSkillRanks",
+        "skillId": "type_perform",
+        "value": 12
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "divine_might",
+    "name": "Divine Might",
+    "description": "Spend a turn/rebuke undead attempt as a free action to add your Charisma bonus to weapon damage for 1 round.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "power_attack"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "str",
+        "value": 13
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "divine_vengeance",
+    "name": "Divine Vengeance",
+    "description": "Spend a turn undead attempt as a free action to add 2d6 holy damage to melee attacks against undead for 1 round.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "extra_turning"
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "empower_spell",
+    "name": "Empower Spell",
+    "description": "Increase all variable numeric effects of a spell by 50%. Uses spell slot +2 levels higher.",
+    "type": "metamagic",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "empower_spell_like_ability",
+    "name": "Empower Spell-Like Ability",
+    "description": "Increase all variable numeric effects of one spell-like ability by 50%. Usable twice per day.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": true
+  },
+  {
+    "id": "endurance",
+    "name": "Endurance",
+    "description": "+4 bonus on checks and saves involving extended physical activity (swim, run, hold breath, etc.).",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "energy_substitution",
+    "name": "Energy Substitution",
+    "description": "Substitute one energy type for another in a spell's damage. No change in spell slot level.",
+    "type": "metamagic",
+    "prerequisites": [
+      {
+        "$type": "HasFeatOfType",
+        "featType": "metamagic",
+        "minCount": 1
+      },
+      {
+        "$type": "MinSkillRanks",
+        "skillId": "knowledge_arcana",
+        "value": 5
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true
+  },
+  {
+    "id": "enlarge_spell",
+    "name": "Enlarge Spell",
+    "description": "Double the range of a spell. Uses spell slot +1 level higher.",
+    "type": "metamagic",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "eschew_materials",
+    "name": "Eschew Materials",
+    "description": "Cast spells without material components costing 1 gp or less.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "exotic_weapon_proficiency",
+    "name": "Exotic Weapon Proficiency",
+    "description": "No penalty on attack rolls when using the selected exotic weapon.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "MinBAB",
+        "value": 1
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true,
+    "selectionRequired": "weapon"
+  },
+  {
+    "id": "extend_spell",
+    "name": "Extend Spell",
+    "description": "Double the duration of a spell. Uses spell slot +1 level higher.",
+    "type": "metamagic",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "extra_music",
+    "name": "Extra Music",
+    "description": "Gain four extra uses per day of bardic music.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": true
+  },
+  {
+    "id": "extra_turning",
+    "name": "Extra Turning",
+    "description": "Gain four extra turn/rebuke undead attempts per day.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasAbility",
+        "abilityId": "turn_undead"
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true
+  },
+  {
+    "id": "eyes_in_the_back_of_your_head",
+    "name": "Eyes in the Back of Your Head",
+    "description": "Attackers do not gain flanking bonuses against you. You still grant sneak attack from flanking.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "MinAbility",
+        "ability": "wis",
+        "value": 19
+      },
+      {
+        "$type": "MinBAB",
+        "value": 3
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "far_shot",
+    "name": "Far Shot",
+    "description": "Increase range increment by 50% for projectile weapons, or double it for thrown weapons.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "point_blank_shot"
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "fleet_of_foot",
+    "name": "Fleet of Foot",
+    "description": "When running or charging, you may make a single direction change of up to 90 degrees.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "run"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 15
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "flyby_attack",
+    "name": "Flyby Attack",
+    "description": "When flying, take a standard action at any point during your move without provoking from the target.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "forge_ring",
+    "name": "Forge Ring",
+    "description": "Create magic rings.",
+    "type": "itemCreation",
+    "prerequisites": [
+      {
+        "$type": "MinCasterLevel",
+        "value": 12
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "greater_spell_focus",
+    "name": "Greater Spell Focus",
+    "description": "+1 to the DC of spells from the selected school (stacks with Spell Focus for +2 total).",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "spell_focus"
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true,
+    "selectionRequired": "school"
+  },
+  {
+    "id": "greater_spell_penetration",
+    "name": "Greater Spell Penetration",
+    "description": "+2 bonus on caster level checks to overcome spell resistance (stacks with Spell Penetration for +4 total).",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "spell_penetration"
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "greater_two_weapon_fighting",
+    "name": "Greater Two-Weapon Fighting",
+    "description": "Gain a third off-hand attack at a -10 penalty.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "two_weapon_fighting"
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "improved_two_weapon_fighting"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 19
+      },
+      {
+        "$type": "MinBAB",
+        "value": 11
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "heighten_spell",
+    "name": "Heighten Spell",
+    "description": "Cast a spell as if it were a higher-level spell. All level-dependent effects use the new, higher level.",
+    "type": "metamagic",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "hold_the_line",
+    "name": "Hold the Line",
+    "description": "Make an attack of opportunity against a charging opponent who enters your threatened area.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "combat_reflexes"
+      },
+      {
+        "$type": "MinBAB",
+        "value": 2
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "hover",
+    "name": "Hover",
+    "description": "Halt in midair while flying without needing to maintain forward speed. Creates a downdraft.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_counterspell",
+    "name": "Improved Counterspell",
+    "description": "Counterspell using a spell from the same school that is one or more levels higher.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_critical",
+    "name": "Improved Critical",
+    "description": "Double the threat range of the selected weapon.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "MinBAB",
+        "value": 8
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true,
+    "selectionRequired": "weapon"
+  },
+  {
+    "id": "improved_disarm",
+    "name": "Improved Disarm",
+    "description": "+4 bonus on disarm attempts. No attack of opportunity when you attempt to disarm.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "combat_expertise"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "int",
+        "value": 13
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_familiar",
+    "name": "Improved Familiar",
+    "description": "Gain access to more powerful familiar options based on your alignment and arcane caster level. Replaces the basic familiar choice when a valid improved option is picked.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantClassFeatureSelection",
+        "featureType": "improved_familiar_options",
+        "count": 1
+      }
+    ],
+    "repeatable": false
+  },
+  {
+    "id": "wild_cohort",
+    "name": "Wild Cohort",
+    "description": "Gain the service of a loyal animal, treated as an animal companion of a druid of your character level minus 3 (minimum 1). Approximates the Complete Adventurer feat (not yet extracted from official source).",
+    "type": "general",
+    "prerequisites": [
+      { "$type": "MinHD", "value": 1 }
+    ],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantCompanionSlot",
+        "linkType": "wild_cohort",
+        "classFeatureType": "wild_cohort_options",
+        "effectiveLevelFormula": { "expression": "max(1, TotalHD - 3)" }
+      }
+    ],
+    "tags": ["approximation"],
+    "repeatable": false
+  },
+  {
+    "id": "improved_feint",
+    "name": "Improved Feint",
+    "description": "Feint in combat as a move action instead of a standard action.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "combat_expertise"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "int",
+        "value": 13
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_grapple",
+    "name": "Improved Grapple",
+    "description": "+4 bonus on grapple checks. No attack of opportunity when you start a grapple.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "improved_unarmed_strike"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 13
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_natural_armor",
+    "name": "Improved Natural Armor",
+    "description": "+1 to natural armor bonus. May be taken multiple times; effects stack.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "MinAbility",
+        "ability": "con",
+        "value": 13
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true
+  },
+  {
+    "id": "improved_natural_attack",
+    "name": "Improved Natural Attack",
+    "description": "Increase the damage die of one natural weapon by one step (e.g. 1d4 to 1d6).",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "MinBAB",
+        "value": 4
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true,
+    "selectionRequired": "weapon"
+  },
+  {
+    "id": "improved_overrun",
+    "name": "Improved Overrun",
+    "description": "+4 bonus on overrun attempts. Target cannot choose to avoid you.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "power_attack"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "str",
+        "value": 13
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_precise_shot",
+    "name": "Improved Precise Shot",
+    "description": "No penalty for ranged attacks against targets in melee. Ignore anything less than total cover/concealment.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "point_blank_shot"
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "precise_shot"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 19
+      },
+      {
+        "$type": "MinBAB",
+        "value": 11
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_shield_bash",
+    "name": "Improved Shield Bash",
+    "description": "Retain your shield's AC bonus when making a shield bash attack.",
+    "type": "fighterBonus",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_turning",
+    "name": "Improved Turning",
+    "description": "+1 to your effective cleric level when turning or rebuking undead.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_two_weapon_fighting",
+    "name": "Improved Two-Weapon Fighting",
+    "description": "Gain a second off-hand attack at a -5 penalty.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "two_weapon_fighting"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 17
+      },
+      {
+        "$type": "MinBAB",
+        "value": 6
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_unarmed_strike",
+    "name": "Improved Unarmed Strike",
+    "description": "Deal lethal damage with unarmed strikes and do not provoke attacks of opportunity when attacking unarmed.",
+    "type": "fighterBonus",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "investigator",
+    "name": "Investigator",
+    "description": "+2 bonus on Gather Information and Search checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "jack_of_all_trades",
+    "name": "Jack Of All Trades",
+    "description": "Use any skill untrained, even skills that normally require training.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "MinHD",
+        "value": 6
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "knock_down",
+    "name": "Knock Down",
+    "description": "When you deal 10+ damage in melee, make a free trip attempt that does not provoke attacks of opportunity.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "improved_trip"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "str",
+        "value": 15
+      },
+      {
+        "$type": "MinBAB",
+        "value": 2
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "leadership",
+    "name": "Leadership",
+    "description": "Attract a cohort and followers based on your Leadership score.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "MinHD",
+        "value": 6
+      }
+    ],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantCompanionSlot",
+        "linkType": "leadership_cohort",
+        "classFeatureType": "",
+        "effectiveLevelFormula": { "expression": "min(TotalHD - 2, LeadershipScore - 2)" }
+      }
+    ],
+    "repeatable": false
+  },
+  {
+    "id": "magical_aptitude",
+    "name": "Magical Aptitude",
+    "description": "+2 bonus on Spellcraft and Use Magic Device checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "manyshot",
+    "name": "Manyshot",
+    "description": "Fire two or more arrows simultaneously as a standard action at a single target within 30 feet.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "point_blank_shot"
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "rapid_shot"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 17
+      },
+      {
+        "$type": "MinBAB",
+        "value": 6
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "martial_weapon_proficiency",
+    "name": "Martial Weapon Proficiency",
+    "description": "No penalty on attack rolls when using the selected martial weapon.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": true,
+    "selectionRequired": "weapon"
+  },
+  {
+    "id": "maximize_spell",
+    "name": "Maximize Spell",
+    "description": "All variable numeric effects of a spell are maximized. Uses spell slot +3 levels higher.",
+    "type": "metamagic",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "mounted_archery",
+    "name": "Mounted Archery",
+    "description": "Halve the penalty for ranged attacks while mounted.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "mounted_combat"
+      },
+      {
+        "$type": "MinSkillRanks",
+        "skillId": "ride",
+        "value": 1
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "mounted_combat",
+    "name": "Mounted Combat",
+    "description": "Once per round, negate a hit on your mount with a Ride check.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "MinSkillRanks",
+        "skillId": "ride",
+        "value": 1
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "multiattack",
+    "name": "Multiattack",
+    "description": "Secondary natural weapon attacks take only a -2 penalty instead of -5.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "multiweapon_fighting",
+    "name": "Multiweapon Fighting",
+    "description": "Reduce penalties for fighting with multiple weapons (for creatures with three or more hands).",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 13
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "natural_spell",
+    "name": "Natural Spell",
+    "description": "Cast spells while in wild shape form, using the form's natural abilities for somatic components.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "MinAbility",
+        "ability": "wis",
+        "value": 13
+      },
+      {
+        "$type": "HasAbility",
+        "abilityId": "wild_shape"
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "negotiator",
+    "name": "Negotiator",
+    "description": "+2 bonus on Diplomacy and Sense Motive checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "nimble_fingers",
+    "name": "Nimble Fingers",
+    "description": "+2 bonus on Disable Device and Open Lock checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "persistent_spell",
+    "name": "Persistent Spell",
+    "description": "A fixed-range or personal spell lasts 24 hours. Uses spell slot +6 levels higher.",
+    "type": "metamagic",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "extend_spell"
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "persuasive",
+    "name": "Persuasive",
+    "description": "+2 bonus on Bluff and Intimidate checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "plant_control",
+    "name": "Plant Control",
+    "description": "Rebuke or command plant creatures as an evil cleric rebukes undead.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "plant_defiance"
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "plant_defiance",
+    "name": "Plant Defiance",
+    "description": "Turn or destroy plant creatures as a good cleric turns undead.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "point_blank_shot",
+    "name": "Point Blank Shot",
+    "description": "+1 bonus on attack and damage rolls with ranged weapons at targets within 30 feet.",
+    "type": "fighterBonus",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "power_critical",
+    "name": "Power Critical",
+    "description": "+4 bonus on the roll to confirm a critical threat with the selected weapon.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "weapon_focus"
+      },
+      {
+        "$type": "MinBAB",
+        "value": 4
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true,
+    "selectionRequired": "weapon"
+  },
+  {
+    "id": "precise_shot",
+    "name": "Precise Shot",
+    "description": "No -4 penalty for shooting into melee.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "point_blank_shot"
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "quick_draw",
+    "name": "Quick Draw",
+    "description": "Draw a weapon as a free action instead of a move action.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "MinBAB",
+        "value": 1
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "quicken_spell",
+    "name": "Quicken Spell",
+    "description": "Cast a spell as a free action. Uses spell slot +4 levels higher.",
+    "type": "metamagic",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "quicken_spell_like_ability",
+    "name": "Quicken Spell-Like Ability",
+    "description": "Use one spell-like ability as a free action up to three times per day.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": true
+  },
+  {
+    "id": "rapid_reload",
+    "name": "Rapid Reload",
+    "description": "Reload the selected crossbow type faster: heavy as a move action, light as a free action.",
+    "type": "fighterBonus",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": true,
+    "selectionRequired": "weapon"
+  },
+  {
+    "id": "rapid_shot",
+    "name": "Rapid Shot",
+    "description": "Get one extra ranged attack per round at your highest bonus, but all attacks take -2.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "point_blank_shot"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 13
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "reach_spell",
+    "name": "Reach Spell",
+    "description": "Cast a touch spell as a ranged touch attack with 30-foot range. Uses spell slot +2 levels higher.",
+    "type": "metamagic",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "repeat_spell",
+    "name": "Repeat Spell",
+    "description": "A repeated spell is automatically cast again on the next round. Uses spell slot +3 levels higher.",
+    "type": "metamagic",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "ride_by_attack",
+    "name": "Ride-By Attack",
+    "description": "Move before and after a mounted charge attack, as long as total distance doesn't exceed your mount's speed.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "mounted_combat"
+      },
+      {
+        "$type": "MinSkillRanks",
+        "skillId": "ride",
+        "value": 1
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "run",
+    "name": "Run",
+    "description": "Run at 5x normal speed (or 4x in heavy armor). Retain Dex bonus to AC while running.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "sacred_spell",
+    "name": "Sacred Spell",
+    "description": "Half of the spell's damage becomes divine (sacred) energy not subject to energy resistance. Uses spell slot +2 levels higher.",
+    "type": "metamagic",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "scribe_scroll",
+    "name": "Scribe Scroll",
+    "description": "Create scrolls of any spell you know.",
+    "type": "itemCreation",
+    "prerequisites": [
+      {
+        "$type": "MinCasterLevel",
+        "value": 1
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "self_sufficient",
+    "name": "Self-Sufficient",
+    "description": "+2 bonus on Heal and Survival checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "sharp_shooting",
+    "name": "Sharp Shooting",
+    "description": "Halve the AC bonus granted by cover for ranged attacks you make.",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "point_blank_shot"
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "precise_shot"
+      },
+      {
+        "$type": "MinBAB",
+        "value": 3
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "shield_proficiency",
+    "name": "Shield Proficiency",
+    "description": "No armor check penalty on attack rolls when using a shield.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "shot_on_the_run",
+    "name": "Shot on the Run",
+    "description": "Move before and after making a ranged attack, as long as total distance doesn't exceed your speed.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "point_blank_shot"
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "dodge"
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "mobility"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 13
+      },
+      {
+        "$type": "MinBAB",
+        "value": 4
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "silent_spell",
+    "name": "Silent Spell",
+    "description": "Cast a spell without verbal components. Uses spell slot +1 level higher.",
+    "type": "metamagic",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "simple_weapon_proficiency",
+    "name": "Simple Weapon Proficiency",
+    "description": "No penalty on attack rolls when using simple weapons.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "skill_focus",
+    "name": "Skill Focus",
+    "description": "+3 bonus on checks with the selected skill.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": true,
+    "selectionRequired": "skill"
+  },
+  {
+    "id": "snatch",
+    "name": "Snatch",
+    "description": "Grapple a smaller creature with a claw or bite attack, automatically dealing damage each round.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "snatch_arrows",
+    "name": "Snatch Arrows",
+    "description": "Catch ranged weapons instead of just deflecting them. May throw back a weapon as a free action.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "improved_unarmed_strike"
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "deflect_arrows"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 15
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "spell_focus",
+    "name": "Spell Focus",
+    "description": "+1 to the DC of saving throws against spells from the selected school.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": true,
+    "selectionRequired": "school"
+  },
+  {
+    "id": "spell_mastery",
+    "name": "Spell Mastery",
+    "description": "Prepare a number of spells equal to your Int modifier without a spellbook (wizard only).",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": true
+  },
+  {
+    "id": "spell_penetration",
+    "name": "Spell Penetration",
+    "description": "+2 bonus on caster level checks to overcome spell resistance.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "spirited_charge",
+    "name": "Spirited Charge",
+    "description": "Deal double damage on a mounted charge (triple with a lance).",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "mounted_combat"
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "ride_by_attack"
+      },
+      {
+        "$type": "MinSkillRanks",
+        "skillId": "ride",
+        "value": 1
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "stealthy",
+    "name": "Stealthy",
+    "description": "+2 bonus on Hide and Move Silently checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "still_spell",
+    "name": "Still Spell",
+    "description": "Cast a spell without somatic components. Uses spell slot +1 level higher.",
+    "type": "metamagic",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "stunning_fist",
+    "name": "Stunning Fist",
+    "description": "Declare before attack; if you hit, target must save (DC 10 + 1/2 level + Wis mod) or be stunned for 1 round.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "improved_unarmed_strike"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 13
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "wis",
+        "value": 13
+      },
+      {
+        "$type": "MinBAB",
+        "value": 8
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "subdual_substitution",
+    "name": "Subdual Substitution",
+    "description": "Change an energy spell's damage to nonlethal damage. No change in spell slot level.",
+    "type": "metamagic",
+    "prerequisites": [
+      {
+        "$type": "HasFeatOfType",
+        "featType": "metamagic",
+        "minCount": 1
+      },
+      {
+        "$type": "MinSkillRanks",
+        "skillId": "knowledge_arcana",
+        "value": 5
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "superior_expertise",
+    "name": "Superior Expertise",
+    "description": "Trade attack bonus for AC bonus on a 1-for-1 basis with no limit from BAB (improved Combat Expertise).",
+    "type": "general",
+    "prerequisites": [
+      {
+        "$type": "MinAbility",
+        "ability": "int",
+        "value": 13
+      },
+      {
+        "$type": "MinBAB",
+        "value": 6
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "tower_shield_proficiency",
+    "name": "Tower Shield Proficiency",
+    "description": "No penalty on attack rolls when using a tower shield.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "track",
+    "name": "Track",
+    "description": "Use the Survival skill to find and follow tracks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "trample",
+    "name": "Trample",
+    "description": "When mounted and charging, your mount may make a hoof attack against the target as a free action.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "mounted_combat"
+      },
+      {
+        "$type": "MinSkillRanks",
+        "skillId": "ride",
+        "value": 1
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "two_weapon_defense",
+    "name": "Two-Weapon Defense",
+    "description": "+1 shield bonus to AC when wielding a weapon in each hand.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "two_weapon_fighting"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 15
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "two_weapon_fighting",
+    "name": "Two-Weapon Fighting",
+    "description": "Reduce two-weapon fighting penalties: -2 primary / -2 off-hand (with light off-hand weapon).",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 15
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "weapon_finesse",
+    "name": "Weapon Finesse",
+    "description": "Use Dex modifier instead of Str on attack rolls with light melee weapons.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "MinBAB",
+        "value": 1
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "whirlwind_attack",
+    "name": "Whirlwind Attack",
+    "description": "As a full-round action, make one melee attack against each opponent within reach.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      {
+        "$type": "HasFeat",
+        "featId": "dodge"
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "mobility"
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "spring_attack"
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "combat_expertise"
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "dex",
+        "value": 13
+      },
+      {
+        "$type": "MinAbility",
+        "ability": "int",
+        "value": 13
+      },
+      {
+        "$type": "MinBAB",
+        "value": 4
+      }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "widen_spell",
+    "name": "Widen Spell",
+    "description": "Double the area of a burst, emanation, line, or spread spell. Uses a spell slot three levels higher.",
+    "type": "metamagic",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "wingover",
+    "name": "Wingover",
+    "description": "A flying creature can make a turn of up to 180 degrees as a free action, regardless of maneuverability.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  }
+]

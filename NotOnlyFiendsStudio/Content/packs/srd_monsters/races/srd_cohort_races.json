@@ -1,0 +1,324 @@
+[
+  {
+    "id": "gray_render",
+    "name": "Gray Render",
+    "description": "Large magical beast with 10 RHD. Protector-beast that bonds to a single creature or group, with six eyes, rend, and improved grab. LA +5 (cohort).",
+    "type": "magicalBeast",
+    "subtypes": [],
+    "size": "large",
+    "speeds": { "land": 30 },
+    "abilityModifiers": { "str": 12, "dex": 0, "con": 14, "int": -8, "wis": 2, "cha": -2 },
+    "levelAdjustment": 5,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:magical_beast",
+    "racialClassSkillAdditions": ["hide", "spot", "survival"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 10 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gray_render_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gray_render_low_light_vision", "name": "Low-Light Vision", "description": "See twice as far as a human in dim illumination." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gray_render_scent", "name": "Scent", "description": "Detect opponents by scent within 30 ft. (60 ft. upwind, 15 ft. downwind)." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gray_render_improved_grab", "name": "Improved Grab (Ex)", "description": "On a successful bite attack, may attempt a grapple as a free action without provoking AoOs." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gray_render_rend", "name": "Rend (Ex)", "description": "Winning a grapple check after a successful bite latches onto the opponent and deals automatic 2d6+9 damage." }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "spot", "value": 4 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gray_render_bonded_guardian", "name": "Bonded Guardian", "description": "Gray renders bond to a single creature or small group, watching over them and bringing daily meat offerings. Never willingly harms its bonded charges and retreats if they attack it." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "griffon",
+    "name": "Griffon",
+    "description": "Large magical beast with 7 RHD. Eagle-lion hybrid with flight 80, pounce, and rake. LA +3 (cohort).",
+    "type": "magicalBeast",
+    "subtypes": [],
+    "size": "large",
+    "speeds": { "land": 30, "fly": 80 },
+    "abilityModifiers": { "str": 8, "dex": 4, "con": 6, "int": -6, "wis": 2, "cha": -2 },
+    "levelAdjustment": 3,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:magical_beast",
+    "racialClassSkillAdditions": ["jump", "listen", "spot"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 6 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "griffon_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "griffon_low_light_vision", "name": "Low-Light Vision", "description": "See twice as far as a human in dim illumination." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "griffon_scent", "name": "Scent", "description": "Detect opponents by scent within 30 ft." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "griffon_pounce", "name": "Pounce (Ex)", "description": "On a dive or charge, can make a full attack including two rake attacks." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "griffon_rake", "name": "Rake (Ex)", "description": "+8 melee, damage 1d6+2 (two rake attacks on pounce)." }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "jump", "value": 4 },
+      { "$type": "GrantSkillBonus", "skillId": "spot", "value": 4 }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "shadow_mastiff",
+    "name": "Shadow Mastiff",
+    "description": "Medium outsider (extraplanar) with 4 RHD. Shadowy canine with panic-inducing bay, trip, and shadow blend. LA +3 (cohort).",
+    "type": "outsider",
+    "subtypes": ["extraplanar"],
+    "size": "medium",
+    "speeds": { "land": 50 },
+    "abilityModifiers": { "str": 6, "dex": 2, "con": 6, "int": -6, "wis": 2, "cha": 2 },
+    "levelAdjustment": 3,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:outsider",
+    "racialClassSkillAdditions": ["hide", "move_silently"],
+    "racialClassSkillRemovals": ["appraise", "concentration", "diplomacy", "knowledge_planes"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 3 },
+      { "$type": "GrantBonusFeat", "featId": "track" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shadow_mastiff_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shadow_mastiff_scent", "name": "Scent", "description": "Detect opponents by scent within 30 ft." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shadow_mastiff_bay", "name": "Bay (Su)", "description": "When the mastiff howls or barks, all creatures except evil outsiders within 300 ft. must succeed on Will DC 13 or be panicked for 2d4 rounds. Sonic mind-affecting fear. Affected creatures are immune to the same mastiff's bay for 24 hours." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shadow_mastiff_trip", "name": "Trip (Ex)", "description": "On a successful bite, may attempt to trip as a free action (+3 modifier) without a touch attack or provoking AoOs. Failure does not allow counter-trip." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shadow_mastiff_shadow_blend", "name": "Shadow Blend (Su)", "description": "In any illumination other than full daylight, total concealment. Daylight spell negates but ordinary light does not." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shadow_mastiff_track_scent", "name": "Scent-Tracking", "description": "+4 racial bonus on Survival checks when tracking by scent." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "androsphinx",
+    "name": "Androsphinx",
+    "description": "Large male magical beast with 12 RHD. Lion-bodied sphinx with paralyzing roar, pounce, rake, and 6th-level cleric spellcasting. LA +5 (cohort).",
+    "type": "magicalBeast",
+    "subtypes": [],
+    "size": "large",
+    "speeds": { "land": 50, "fly": 80 },
+    "abilityModifiers": { "str": 14, "dex": 0, "con": 8, "int": 6, "wis": 6, "cha": 6 },
+    "levelAdjustment": 5,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:magical_beast",
+    "racialClassSkillAdditions": ["intimidate", "knowledge_religion", "listen", "spot", "survival"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 13 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "androsphinx_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "androsphinx_low_light_vision", "name": "Low-Light Vision", "description": "See twice as far as a human in dim illumination." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "androsphinx_pounce", "name": "Pounce (Ex)", "description": "On a charge, can make a full attack including two rake attacks." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "androsphinx_rake", "name": "Rake (Ex)", "description": "+18 melee, damage 2d4+3 (two rake attacks on pounce)." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "androsphinx_roar", "name": "Roar (Su)", "description": "3/day escalating roar: 1st fear (500 ft., DC 19 Will), 2nd paralysis (250 ft., DC 19 Fort) + deafens (90 ft., no save), 3rd 2d4 Str damage (250 ft., DC 19 Fort) and 2d8 knockdown (90 ft., Medium or smaller). Charisma-based." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "androsphinx_divine_casting", "name": "Divine Spellcasting (6th-Level Cleric)", "description": "Casts divine spells as a 6th-level cleric with access to Good, Healing, and Protection domains." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "criosphinx",
+    "name": "Criosphinx",
+    "description": "Large male magical beast with 10 RHD. Ram-headed sphinx with pounce, rake, and a devastating gore attack. LA +3 (cohort).",
+    "type": "magicalBeast",
+    "subtypes": [],
+    "size": "large",
+    "speeds": { "land": 30, "fly": 60 },
+    "abilityModifiers": { "str": 12, "dex": 0, "con": 6, "int": 0, "wis": 0, "cha": 0 },
+    "levelAdjustment": 3,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:magical_beast",
+    "racialClassSkillAdditions": ["intimidate", "listen", "spot"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 11 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "criosphinx_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "criosphinx_low_light_vision", "name": "Low-Light Vision", "description": "See twice as far as a human in dim illumination." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "criosphinx_gore", "name": "Gore Attack", "description": "Primary natural weapon: gore (2d6 damage)." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "criosphinx_pounce", "name": "Pounce (Ex)", "description": "On a charge, can make a full attack including rake attacks." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "criosphinx_rake", "name": "Rake (Ex)", "description": "+15 melee, damage 1d6+3 (rake attacks on pounce)." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "gynosphinx",
+    "name": "Gynosphinx",
+    "description": "Large female magical beast with 8 RHD. Sage-sphinx with pounce, rake, and a large spell-like ability suite culminating in weekly symbols. LA +4 (cohort).",
+    "type": "magicalBeast",
+    "subtypes": [],
+    "size": "large",
+    "speeds": { "land": 40, "fly": 60 },
+    "abilityModifiers": { "str": 8, "dex": 2, "con": 2, "int": 8, "wis": 8, "cha": 8 },
+    "levelAdjustment": 4,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:magical_beast",
+    "racialClassSkillAdditions": ["bluff", "concentration", "diplomacy", "disguise", "intimidate", "listen", "sense_motive", "spot"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 11 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gynosphinx_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gynosphinx_low_light_vision", "name": "Low-Light Vision", "description": "See twice as far as a human in dim illumination." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gynosphinx_pounce", "name": "Pounce (Ex)", "description": "On a charge, can make a full attack including rake attacks." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gynosphinx_rake", "name": "Rake (Ex)", "description": "+11 melee, damage 1d6+2 (rake attacks on pounce)." }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "gynosphinx_clairaudience", "name": "Clairaudience/Clairvoyance", "usesPerDay": "3/day", "casterLevel": 14 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "gynosphinx_detect_magic", "name": "Detect Magic", "usesPerDay": "3/day", "casterLevel": 14 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "gynosphinx_read_magic", "name": "Read Magic", "usesPerDay": "3/day", "casterLevel": 14 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "gynosphinx_see_invisibility", "name": "See Invisibility", "usesPerDay": "3/day", "casterLevel": 14 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "gynosphinx_comprehend_languages", "name": "Comprehend Languages", "usesPerDay": "1/day", "casterLevel": 14 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "gynosphinx_locate_object", "name": "Locate Object", "usesPerDay": "1/day", "casterLevel": 14 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "gynosphinx_dispel_magic", "name": "Dispel Magic", "usesPerDay": "1/day", "casterLevel": 14 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "gynosphinx_remove_curse", "name": "Remove Curse", "usesPerDay": "1/day", "casterLevel": 14, "saveDC": 18 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "gynosphinx_legend_lore", "name": "Legend Lore", "usesPerDay": "1/day", "casterLevel": 14 }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gynosphinx_symbols", "name": "Symbols (Sp)", "description": "1/week, may create one symbol from: death, fear, insanity, pain, persuasion, sleep, or stunning (caster level 18th). All save DCs 22, each symbol remains active for up to one week." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "hieracosphinx",
+    "name": "Hieracosphinx",
+    "description": "Large chaotic evil magical beast with 9 RHD. Hawk-headed sphinx with fly 90, pounce, and rake. LA +3 (cohort).",
+    "type": "magicalBeast",
+    "subtypes": [],
+    "size": "large",
+    "speeds": { "land": 30, "fly": 90 },
+    "abilityModifiers": { "str": 10, "dex": 4, "con": 4, "int": -4, "wis": 4, "cha": 0 },
+    "levelAdjustment": 3,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:magical_beast",
+    "racialClassSkillAdditions": ["listen", "spot"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 8 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hieracosphinx_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hieracosphinx_low_light_vision", "name": "Low-Light Vision", "description": "See twice as far as a human in dim illumination." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hieracosphinx_pounce", "name": "Pounce (Ex)", "description": "On a dive or charge, can make a full attack including rake attacks." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hieracosphinx_rake", "name": "Rake (Ex)", "description": "+13 melee, damage 1d6+2 (rake attacks on pounce)." }
+      }
+    ],
+    "scalingFormulas": []
+  }
+]

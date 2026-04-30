@@ -1,0 +1,236 @@
+[
+{
+  "id": "template:drow_elf",
+  "name": "Drow Elf",
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:pixie_ability_irresistible_dance",
+  "name": "Pixie Ability (Irresistible Dance)",
+  "levelAdjustment": 2,
+  "creationPermabuffs": [
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "pixie_irresistible_dance", "name": "Irresistible Dance", "usesPerDay": "1/day", "casterLevel": 8 }
+    }
+  ],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:racesubtype_augmented_animal",
+  "name": "RaceSubtype ~ Augmented Animal",
+  "subtypeAdditions": ["augmented"],
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:racesubtype_augmented_humanoid",
+  "name": "RaceSubtype ~ Augmented Humanoid",
+  "subtypeAdditions": ["augmented"],
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:racesubtype_augmented_dragon",
+  "name": "RaceSubtype ~ Augmented Dragon",
+  "subtypeAdditions": ["augmented"],
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:raven_familiar_language",
+  "name": "Raven Familiar Language",
+  "levelAdjustment": 0,
+  "creationPermabuffs": [
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "raven_speak", "name": "Speak One Language", "description": "A raven familiar can speak one language of its master's choice as a supernatural ability." }
+    }
+  ],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:undead",
+  "name": "Undead",
+  "typeOverride": "undead",
+  "levelAdjustment": 0,
+  "creationPermabuffs": [
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "undead_traits", "name": "Undead Traits", "description": "No Constitution score. Uses CHA for HP, Fort saves, and CON-based abilities. Immune to mind-affecting effects, poison, sleep, paralysis, stunning, disease, death effects, critical hits, nonlethal damage, ability drain, energy drain, fatigue, exhaustion, and any effect requiring a Fortitude save unless it also works on objects." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "undead_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+    }
+  ],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:vampire",
+  "name": "Vampire",
+  "subtypeAdditions": ["augmented"],
+  "abilityModifiers": { "str": 6, "dex": 4, "con": 0, "int": 2, "wis": 2, "cha": 4 },
+  "naturalArmor": 6,
+  "levelAdjustment": 8,
+  "creationPermabuffs": [
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "vampire_dr", "name": "DR 10/silver and magic", "description": "Damage reduction 10/silver and magic." }
+    },
+    {
+      "$type": "ModifyAttribute",
+      "target": "Resistance",
+      "resistanceElement": "cold",
+      "value": 10
+    },
+    {
+      "$type": "ModifyAttribute",
+      "target": "Resistance",
+      "resistanceElement": "electricity",
+      "value": 10
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "vampire_fast_healing", "name": "Fast Healing 5", "description": "Regains 5 HP per round as long as it has at least 1 HP." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "vampire_turn_resistance", "name": "+4 Turn Resistance", "description": "+4 bonus on checks to resist being turned." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "vampire_slam", "name": "Slam Attack", "description": "Slam attack deals 1d6 + 1.5x STR damage plus energy drain." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "vampire_blood_drain", "name": "Blood Drain", "description": "Drains blood from a pinned opponent, dealing 1d4 CON drain per round." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "vampire_energy_drain", "name": "Energy Drain", "description": "Living creatures hit by slam gain two negative levels. Fort DC 10 + 1/2 HD + CHA to remove after 24 hours." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "vampire_dominate", "name": "Dominate", "description": "Dominate person as a standard action, gaze range 30 ft. Will DC 10 + 1/2 HD + CHA negates." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "vampire_create_spawn", "name": "Create Spawn", "description": "Humanoid or monstrous humanoid slain by energy drain rises as a vampire spawn (or full vampire if HD 5+) in 1d4 days." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "vampire_gaseous_form", "name": "Gaseous Form", "description": "At will, as the spell (CL 5th), as a standard action." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "vampire_spider_climb", "name": "Spider Climb", "description": "Can climb sheer surfaces as spider climb." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "vampire_alternate_form", "name": "Alternate Form", "description": "Can assume the form of a bat, dire bat, wolf, or dire wolf as a standard action." }
+    },
+    {
+      "$type": "GrantBonusFeat",
+      "featId": "alertness"
+    },
+    {
+      "$type": "GrantBonusFeat",
+      "featId": "combat_reflexes"
+    },
+    {
+      "$type": "GrantBonusFeat",
+      "featId": "dodge"
+    },
+    {
+      "$type": "GrantBonusFeat",
+      "featId": "improved_initiative"
+    },
+    {
+      "$type": "GrantBonusFeat",
+      "featId": "lightning_reflexes"
+    }
+  ],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:slam_medium",
+  "name": "Slam (Medium)",
+  "levelAdjustment": 0,
+  "naturalAttacks": [
+    { "name": "Slam", "damage": "1d6", "count": 1, "isPrimary": true }
+  ],
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:01_allow_hedge_magic_spells_for_non_feat_users",
+  "name": "01 - Allow Hedge Magic Spells for non-feat users",
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:01_allow_practical_enchanter_spell_templates",
+  "name": "01 - Allow Practical Enchanter Spell Templates",
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:01_the_practical_enchanter_spell_access",
+  "name": "01 - The Practical Enchanter Spell Access",
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:01_allow_techno_hedge_magic_spells",
+  "name": "01 - Allow Techno Hedge Magic Spells",
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:half_fey_creature_no_wings",
+  "name": "Half-Fey Creature (No Wings)",
+  "typeOverride": "fey",
+  "abilityModifiers": { "str": 2, "dex": 6, "con": 2, "int": 2, "wis": 2, "cha": 6 },
+  "naturalArmor": 1,
+  "levelAdjustment": 0,
+  "creationPermabuffs": [
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "low_light_vision", "name": "Low-Light Vision", "description": "Can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination." }
+    }
+  ],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+},
+{
+  "id": "template:combat_expertise_trade_off",
+  "name": "Combat Expertise trade off",
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+}
+]

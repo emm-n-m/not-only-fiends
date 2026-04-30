@@ -1,0 +1,19 @@
+[
+{
+  "id": "outsider",
+  "name": "Outsider",
+  "description": "Native outsider. d8 HD, full BAB, all good saves, 8+Int skill points. Darkvision 60 ft.",
+  "type": "outsider",
+  "subtypes": ["native"],
+  "size": "medium",
+  "speeds": {
+    "land": 30
+  },
+  "abilityModifiers": null,
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "racialHDDriverId": "racial_hd:outsider",
+  "racialPermabuffs": [],
+  "scalingFormulas": []
+}
+]

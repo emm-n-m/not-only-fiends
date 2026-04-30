@@ -1,0 +1,3996 @@
+[
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:adept",
+    "name": "Adept",
+    "hitDie": 6,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "concentration",
+      "craft",
+      "handle_animal",
+      "heal",
+      "knowledge",
+      "profession",
+      "spellcraft",
+      "survival"
+    ],
+    "babProgression": "poor",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "poor",
+      "will": "good"
+    },
+    "spellcasting": {
+      "castingType": "divine",
+      "castingStat": "wis",
+      "spellsPerDay": {
+        "1": {
+          "0": 3,
+          "1": 1
+        },
+        "2": {
+          "0": 3,
+          "1": 1
+        },
+        "3": {
+          "0": 3,
+          "1": 2
+        },
+        "4": {
+          "0": 3,
+          "1": 2,
+          "2": 0
+        },
+        "5": {
+          "0": 3,
+          "1": 2,
+          "2": 1
+        },
+        "6": {
+          "0": 3,
+          "1": 2,
+          "2": 1
+        },
+        "7": {
+          "0": 3,
+          "1": 3,
+          "2": 2
+        },
+        "8": {
+          "0": 3,
+          "1": 3,
+          "2": 2,
+          "3": 0
+        },
+        "9": {
+          "0": 3,
+          "1": 3,
+          "2": 2,
+          "3": 1
+        },
+        "10": {
+          "0": 3,
+          "1": 3,
+          "2": 2,
+          "3": 1
+        },
+        "11": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 2
+        },
+        "12": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 2,
+          "4": 0
+        },
+        "13": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 2,
+          "4": 1
+        },
+        "14": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 2,
+          "4": 1
+        },
+        "15": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2
+        },
+        "16": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2,
+          "5": 0
+        },
+        "17": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2,
+          "5": 1
+        },
+        "18": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2,
+          "5": 1
+        },
+        "19": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 3,
+          "5": 2
+        },
+        "20": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 3,
+          "5": 2
+        }
+      }
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with all simple weapons. Not proficient with any armor or shields."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells",
+            "name": "Spells",
+            "description": "Casts divine spells drawn from the adept spell list."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "summon_familiar",
+            "name": "Summon Familiar",
+            "description": "Can obtain a familiar, as the sorcerer/wizard ability."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": []
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:arcane_archer",
+    "name": "Arcane Archer",
+    "hitDie": 8,
+    "skillPointsPerLevel": 4,
+    "classSkills": [
+      "craft",
+      "hide",
+      "listen",
+      "move_silently",
+      "ride",
+      "spot",
+      "survival",
+      "use_rope"
+    ],
+    "babProgression": "good",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "good",
+      "will": "poor"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Gains no new weapon or armor proficiencies."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "enhance_arrow",
+            "name": "Enhance Arrow",
+            "description": "Non-magical arrows gain an enhancement bonus equal to class level (max +5) when fired."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "imbue_arrow",
+            "name": "Imbue Arrow",
+            "description": "Can place an area spell on an arrow, with the spell detonating on impact at the target point."
+          }
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "seeker_arrow",
+            "name": "Seeker Arrow",
+            "description": "Once per day, fire an arrow that veers toward the target, ignoring miss chances and cover (except total)."
+          }
+        }
+      ],
+      "6": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "phase_arrow",
+            "name": "Phase Arrow",
+            "description": "Once per day, fire an arrow that passes through objects and cover (except total) to strike a visible target."
+          }
+        }
+      ],
+      "8": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "hail_of_arrows",
+            "name": "Hail of Arrows",
+            "description": "Once per day, fire one arrow at each enemy within range (one per arrow possessed), each using full attack bonus."
+          }
+        }
+      ],
+      "10": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "arrow_of_death",
+            "name": "Arrow of Death",
+            "description": "Once per day, create a special arrow that forces a Fort save (DC 20) or die upon hit."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [],
+    "maxLevel": 10
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:arcane_trickster",
+    "name": "Arcane Trickster",
+    "hitDie": 4,
+    "skillPointsPerLevel": 4,
+    "classSkills": [
+      "appraise",
+      "balance",
+      "bluff",
+      "climb",
+      "concentration",
+      "craft",
+      "decipher_script",
+      "diplomacy",
+      "disable_device",
+      "disguise",
+      "escape_artist",
+      "gather_information",
+      "hide",
+      "jump",
+      "knowledge",
+      "listen",
+      "move_silently",
+      "open_lock",
+      "profession",
+      "search",
+      "sense_motive",
+      "sleight_of_hand",
+      "speak_language",
+      "spellcraft",
+      "spot",
+      "swim",
+      "tumble",
+      "use_rope"
+    ],
+    "babProgression": "poor",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "good",
+      "will": "good"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Gains no new weapon or armor proficiencies."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells_per_day",
+            "name": "Spells per Day",
+            "description": "Advances existing arcane spellcasting class by one level per arcane trickster level."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "ranged_legerdemain",
+            "name": "Ranged Legerdemain",
+            "description": "Can perform Disable Device, Open Lock, or Sleight of Hand at range of 30 ft. with a +5 DC increase."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "sneak_attack",
+            "name": "Sneak Attack",
+            "description": "Extra damage when flanking or when target is denied Dex bonus to AC."
+          }
+        },
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "3": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "impromptu_sneak_attack",
+            "name": "Impromptu Sneak Attack",
+            "description": "Can declare one melee or ranged attack as a sneak attack per use, even if target is not normally denied Dex bonus."
+          }
+        },
+        { "$type": "ModifyCounter", "counterId": "impromptu_sneak_attack_uses" }
+      ],
+      "4": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "6": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "7": [
+        { "$type": "ModifyCounter", "counterId": "impromptu_sneak_attack_uses" }
+      ],
+      "8": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "10": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ]
+    },
+    "perLevelPermabuffs": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
+    ],
+    "prerequisites": [
+      {
+        "$type": "AlignmentReq",
+        "allowed": [
+          "cE",
+          "cG",
+          "cN",
+          "n",
+          "nE",
+          "nG"
+        ]
+      }
+    ],
+    "maxLevel": 10
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:archmage",
+    "name": "Archmage",
+    "hitDie": 4,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "concentration",
+      "craft_alchemy",
+      "knowledge",
+      "profession",
+      "search",
+      "spellcraft"
+    ],
+    "babProgression": "poor",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "poor",
+      "will": "good"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Gains no new weapon or armor proficiencies."
+          }
+        },
+        { "$type": "GrantClassFeatureSelection", "featureType": "high_arcana" }
+      ],
+      "2": [
+        { "$type": "GrantClassFeatureSelection", "featureType": "high_arcana" }
+      ],
+      "3": [
+        { "$type": "GrantClassFeatureSelection", "featureType": "high_arcana" }
+      ],
+      "4": [
+        { "$type": "GrantClassFeatureSelection", "featureType": "high_arcana" }
+      ],
+      "5": [
+        { "$type": "GrantClassFeatureSelection", "featureType": "high_arcana" }
+      ]
+    },
+    "perLevelPermabuffs": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
+    ],
+    "prerequisites": [
+      { "$type": "HasFeat", "featId": "skill_focus_spellcraft" },
+      { "$type": "HasFeatSelections", "featId": "spell_focus", "minCount": 2 },
+      { "$type": "MinSkillRanks", "skillId": "knowledge_arcana", "value": 15 },
+      { "$type": "MinSkillRanks", "skillId": "spellcraft", "value": 15 },
+      { "$type": "HasSpellcasting", "castingType": "Arcane" },
+      { "$type": "CanCastSpellLevel", "spellLevel": 7 }
+    ],
+    "maxLevel": 5
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:aristocrat",
+    "name": "Aristocrat",
+    "hitDie": 8,
+    "skillPointsPerLevel": 4,
+    "classSkills": [
+      "appraise",
+      "bluff",
+      "diplomacy",
+      "disguise",
+      "forgery",
+      "gather_information",
+      "handle_animal",
+      "intimidate",
+      "knowledge",
+      "listen",
+      "perform",
+      "ride",
+      "sense_motive",
+      "speak_language",
+      "spot",
+      "survival",
+      "swim"
+    ],
+    "babProgression": "average",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "poor",
+      "will": "good"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with all simple and martial weapons, all armor, and shields."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": []
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:assassin",
+    "name": "Assassin",
+    "hitDie": 6,
+    "skillPointsPerLevel": 4,
+    "classSkills": [
+      "balance",
+      "bluff",
+      "climb",
+      "craft",
+      "decipher_script",
+      "diplomacy",
+      "disable_device",
+      "disguise",
+      "escape_artist",
+      "forgery",
+      "gather_information",
+      "hide",
+      "intimidate",
+      "jump",
+      "listen",
+      "move_silently",
+      "open_lock",
+      "search",
+      "sense_motive",
+      "sleight_of_hand",
+      "spot",
+      "swim",
+      "tumble",
+      "use_magic_device",
+      "use_rope"
+    ],
+    "babProgression": "average",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "good",
+      "will": "poor"
+    },
+    "spellcasting": {
+      "castingType": "arcane",
+      "castingStat": "int",
+      "spellsPerDay": {
+        "1": {
+          "0": 0,
+          "1": 0
+        },
+        "2": {
+          "0": 0,
+          "1": 1
+        },
+        "3": {
+          "0": 0,
+          "1": 2,
+          "2": 0
+        },
+        "4": {
+          "0": 0,
+          "1": 3,
+          "2": 1
+        },
+        "5": {
+          "0": 0,
+          "1": 3,
+          "2": 2,
+          "3": 0
+        },
+        "6": {
+          "0": 0,
+          "1": 3,
+          "2": 3,
+          "3": 1
+        },
+        "7": {
+          "0": 0,
+          "1": 3,
+          "2": 3,
+          "3": 2,
+          "4": 0
+        },
+        "8": {
+          "0": 0,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 1
+        },
+        "9": {
+          "0": 0,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2
+        },
+        "10": {
+          "0": 0,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 3
+        }
+      },
+      "spellsKnown": {
+        "1": {
+          "0": 0,
+          "1": 2
+        },
+        "2": {
+          "0": 0,
+          "1": 3
+        },
+        "3": {
+          "0": 0,
+          "1": 3,
+          "2": 2
+        },
+        "4": {
+          "0": 0,
+          "1": 4,
+          "2": 3
+        },
+        "5": {
+          "0": 0,
+          "1": 4,
+          "2": 3,
+          "3": 2
+        },
+        "6": {
+          "0": 0,
+          "1": 4,
+          "2": 4,
+          "3": 3
+        },
+        "7": {
+          "0": 0,
+          "1": 4,
+          "2": 4,
+          "3": 3,
+          "4": 2
+        },
+        "8": {
+          "0": 0,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 3
+        },
+        "9": {
+          "0": 0,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 3
+        },
+        "10": {
+          "0": 0,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4
+        }
+      }
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with crossbow (hand, light, or heavy), dagger, dart, rapier, sap, shortbow, and short sword. Proficient with light armor."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "death_attack",
+            "name": "Death Attack",
+            "description": "Study a target for 3 rounds, then make a sneak attack that can paralyze or kill (Fort save DC 10 + class level + Int modifier)."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "poison_use",
+            "name": "Poison Use",
+            "description": "Never risks accidentally poisoning self when applying poison to a weapon."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "sneak_attack",
+            "name": "Sneak Attack",
+            "description": "Extra damage when flanking or when target is denied Dex bonus to AC."
+          }
+        },
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells",
+            "name": "Spells",
+            "description": "Casts arcane spells drawn from the assassin spell list, using Intelligence as the casting stat."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "uncanny_dodge",
+            "name": "Uncanny Dodge",
+            "description": "Retains Dex bonus to AC even when flat-footed or struck by an invisible attacker."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "save_bonus_against_poison",
+            "name": "Save Bonus against Poison",
+            "description": "+1 bonus on saves against poison at 2nd level, increasing by +1 every two levels."
+          }
+        }
+      ],
+      "3": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "5": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "improved_uncanny_dodge",
+            "name": "Improved Uncanny Dodge",
+            "description": "Cannot be flanked except by a rogue 4+ levels higher."
+          }
+        },
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "7": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "8": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "hide_in_plain_sight",
+            "name": "Hide in Plain Sight",
+            "description": "Can use the Hide skill even while being observed, as long as within 10 ft. of a shadow."
+          }
+        }
+      ],
+      "9": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [
+      {
+        "$type": "AlignmentReq",
+        "allowed": [
+          "cE",
+          "lE",
+          "nE"
+        ]
+      }
+    ],
+    "maxLevel": 10
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:bard",
+    "name": "Bard",
+    "hitDie": 6,
+    "skillPointsPerLevel": 6,
+    "classSkills": [
+      "appraise",
+      "balance",
+      "bluff",
+      "climb",
+      "concentration",
+      "craft",
+      "decipher_script",
+      "diplomacy",
+      "disguise",
+      "escape_artist",
+      "gather_information",
+      "hide",
+      "jump",
+      "knowledge",
+      "listen",
+      "move_silently",
+      "perform",
+      "profession",
+      "sense_motive",
+      "sleight_of_hand",
+      "speak_language",
+      "spellcraft",
+      "swim",
+      "tumble",
+      "use_magic_device"
+    ],
+    "babProgression": "average",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "good",
+      "will": "good"
+    },
+    "spellcasting": {
+      "castingType": "arcane",
+      "castingStat": "cha",
+      "spellsPerDay": {
+        "1": {
+          "0": 2
+        },
+        "2": {
+          "0": 3,
+          "1": 0
+        },
+        "3": {
+          "0": 3,
+          "1": 1
+        },
+        "4": {
+          "0": 3,
+          "1": 2,
+          "2": 0
+        },
+        "5": {
+          "0": 3,
+          "1": 3,
+          "2": 1
+        },
+        "6": {
+          "0": 3,
+          "1": 3,
+          "2": 2
+        },
+        "7": {
+          "0": 3,
+          "1": 3,
+          "2": 2,
+          "3": 0
+        },
+        "8": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 1
+        },
+        "9": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 2
+        },
+        "10": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 2,
+          "4": 0
+        },
+        "11": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 1
+        },
+        "12": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2
+        },
+        "13": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2,
+          "5": 0
+        },
+        "14": {
+          "0": 4,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 3,
+          "5": 1
+        },
+        "15": {
+          "0": 4,
+          "1": 4,
+          "2": 3,
+          "3": 3,
+          "4": 3,
+          "5": 2
+        },
+        "16": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 0
+        },
+        "17": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 3,
+          "5": 3,
+          "6": 1
+        },
+        "18": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 3,
+          "6": 2
+        },
+        "19": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 3
+        },
+        "20": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 4
+        }
+      },
+      "spellsKnown": {
+        "1": {
+          "0": 4
+        },
+        "2": {
+          "0": 5,
+          "1": 2
+        },
+        "3": {
+          "0": 6,
+          "1": 3
+        },
+        "4": {
+          "0": 6,
+          "1": 3,
+          "2": 2
+        },
+        "5": {
+          "0": 6,
+          "1": 4,
+          "2": 3
+        },
+        "6": {
+          "0": 6,
+          "1": 4,
+          "2": 3
+        },
+        "7": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 2
+        },
+        "8": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 3
+        },
+        "9": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 3
+        },
+        "10": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 2
+        },
+        "11": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 3
+        },
+        "12": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 3
+        },
+        "13": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 2
+        },
+        "14": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 3
+        },
+        "15": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 3
+        },
+        "16": {
+          "0": 6,
+          "1": 5,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 2
+        },
+        "17": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 3
+        },
+        "18": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 4,
+          "5": 4,
+          "6": 3
+        },
+        "19": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 5,
+          "5": 4,
+          "6": 4
+        },
+        "20": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 5,
+          "5": 5,
+          "6": 4
+        }
+      }
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with all simple weapons, plus longsword, rapier, sap, short sword, shortbow, and whip. Proficient with light armor and shields (except tower)."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells",
+            "name": "Spells",
+            "description": "Casts arcane spells drawn from the bard spell list, using Charisma as the casting stat. Can cast in light armor without arcane spell failure."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "bardic_knowledge",
+            "name": "Bardic Knowledge",
+            "description": "Can make a special knowledge check to see whether a notable fact is known."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "bardic_music",
+            "name": "Bardic Music",
+            "description": "Can use music or poetics to produce magical effects on those nearby."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [
+      {
+        "$type": "AlignmentReq",
+        "allowed": [
+          "cE",
+          "cG",
+          "cN",
+          "n",
+          "nE",
+          "nG"
+        ]
+      }
+    ]
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:blackguard",
+    "name": "Blackguard",
+    "hitDie": 10,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "concentration",
+      "craft",
+      "diplomacy",
+      "handle_animal",
+      "heal",
+      "hide",
+      "intimidate",
+      "knowledge_religion",
+      "profession",
+      "ride"
+    ],
+    "babProgression": "good",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "poor",
+      "will": "poor"
+    },
+    "spellcasting": {
+      "castingType": "divine",
+      "castingStat": "wis",
+      "spellsPerDay": {
+        "1": {
+          "0": 0,
+          "1": 0
+        },
+        "2": {
+          "0": 0,
+          "1": 1
+        },
+        "3": {
+          "0": 0,
+          "1": 1,
+          "2": 0
+        },
+        "4": {
+          "0": 0,
+          "1": 1,
+          "2": 1
+        },
+        "5": {
+          "0": 0,
+          "1": 1,
+          "2": 1,
+          "3": 0
+        },
+        "6": {
+          "0": 0,
+          "1": 1,
+          "2": 1,
+          "3": 1
+        },
+        "7": {
+          "0": 0,
+          "1": 2,
+          "2": 1,
+          "3": 1,
+          "4": 0
+        },
+        "8": {
+          "0": 0,
+          "1": 2,
+          "2": 1,
+          "3": 1,
+          "4": 1
+        },
+        "9": {
+          "0": 0,
+          "1": 2,
+          "2": 2,
+          "3": 1,
+          "4": 1
+        },
+        "10": {
+          "0": 0,
+          "1": 2,
+          "2": 2,
+          "3": 2,
+          "4": 1
+        }
+      }
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with all simple and martial weapons, all armor, and shields."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "aura_of_evil",
+            "name": "Aura of Evil",
+            "description": "Radiates an aura of evil with power equal to class level."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "detect_good",
+            "name": "Detect Good",
+            "description": "Can use detect good at will as a spell-like ability."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "poison_use",
+            "name": "Poison Use",
+            "description": "Never risks accidentally poisoning self when applying poison to a weapon."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells",
+            "name": "Spells",
+            "description": "Casts divine spells drawn from the blackguard spell list, using Wisdom as the casting stat."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "lay_on_hands",
+            "name": "Lay on Hands",
+            "description": "Inflict damage equal to blackguard level x Cha modifier per day by touch (heals undead)."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "dark_blessing",
+            "name": "Dark Blessing",
+            "description": "Add Cha bonus to all saving throws."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "smite_good",
+            "name": "Smite Good",
+            "description": "Add Cha bonus to attack roll and blackguard level to damage against a good foe."
+          }
+        }
+      ],
+      "3": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "aura_of_despair",
+            "name": "Aura of Despair",
+            "description": "Enemies within 10 ft. take a -2 penalty on all saving throws."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "command_undead",
+            "name": "Command Undead",
+            "description": "Can command or rebuke undead as a cleric of equal level."
+          }
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "sneak_attack",
+            "name": "Sneak Attack",
+            "description": "Extra damage when flanking or when target is denied Dex bonus to AC."
+          }
+        },
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "5": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "fiendish_servant",
+            "name": "Fiendish Servant",
+            "description": "Gain a fiendish animal servant."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "fiendish_summoning",
+            "name": "Fiendish Summoning",
+            "description": "Once per day, can summon a fiendish creature as a standard action."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "undead_companion",
+            "name": "Undead Companion",
+            "description": "Can command undead followers with total HD up to blackguard level."
+          }
+        }
+      ],
+      "7": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "10": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [
+      {
+        "$type": "AlignmentReq",
+        "allowed": [
+          "cE",
+          "lE",
+          "nE"
+        ]
+      }
+    ],
+    "maxLevel": 10
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:commoner",
+    "name": "Commoner",
+    "hitDie": 4,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "climb",
+      "craft",
+      "handle_animal",
+      "jump",
+      "listen",
+      "profession",
+      "ride",
+      "spot",
+      "swim",
+      "use_rope"
+    ],
+    "babProgression": "poor",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "poor",
+      "will": "poor"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with one simple weapon. Not proficient with any armor or shields."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": []
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:dragon_disciple",
+    "name": "Dragon Disciple",
+    "hitDie": 12,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "concentration",
+      "craft",
+      "diplomacy",
+      "escape_artist",
+      "gather_information",
+      "knowledge",
+      "listen",
+      "profession",
+      "search",
+      "speak_language",
+      "spellcraft",
+      "spot"
+    ],
+    "babProgression": "average",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "poor",
+      "will": "good"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Gains no new weapon or armor proficiencies."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "bonus_spells",
+            "name": "Bonus Spells",
+            "description": "Gain additional spells known as if from a higher sorcerer level."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "natural_armor_increase",
+            "name": "Natural Armor Increase",
+            "description": "Natural armor bonus increases by +1 at 1st, 4th, and 7th level."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "claws_and_bite",
+            "name": "Claws and Bite",
+            "description": "Gain two claw attacks (1d4) and a bite attack (1d6) as natural weapons."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "ability_boost",
+            "name": "Ability Boost",
+            "description": "Gain permanent ability score increases at various levels (+2 STR, CON, or INT)."
+          }
+        }
+      ],
+      "3": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "breath_weapon",
+            "name": "Breath Weapon",
+            "description": "Gain a breath weapon usable once per day, dealing 2d8 damage of the dragon type (Reflex half)."
+          }
+        }
+      ],
+      "5": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "blindsense",
+            "name": "Blindsense",
+            "description": "Gain blindsense out to 30 ft."
+          }
+        }
+      ],
+      "9": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "wings",
+            "name": "Wings",
+            "description": "Grow wings, gaining a fly speed of 30 ft. (average maneuverability)."
+          }
+        }
+      ],
+      "10": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "dragon_apotheosis",
+            "name": "Dragon Apotheosis",
+            "description": "Type changes to half-dragon. Gain immunity to sleep, paralysis, and the dragon's energy type, plus darkvision 120 ft. and low-light vision."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [],
+    "maxLevel": 10
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:druid",
+    "name": "Druid",
+    "hitDie": 8,
+    "skillPointsPerLevel": 4,
+    "classSkills": [
+      "concentration",
+      "craft",
+      "diplomacy",
+      "handle_animal",
+      "heal",
+      "knowledge_nature",
+      "listen",
+      "profession",
+      "ride",
+      "spellcraft",
+      "spot",
+      "survival",
+      "swim"
+    ],
+    "babProgression": "average",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "poor",
+      "will": "good"
+    },
+    "spellcasting": {
+      "castingType": "divine",
+      "castingStat": "wis",
+      "spellsPerDay": {
+        "1": {
+          "0": 3,
+          "1": 1
+        },
+        "2": {
+          "0": 4,
+          "1": 2
+        },
+        "3": {
+          "0": 4,
+          "1": 2,
+          "2": 1
+        },
+        "4": {
+          "0": 5,
+          "1": 3,
+          "2": 2
+        },
+        "5": {
+          "0": 5,
+          "1": 3,
+          "2": 2,
+          "3": 1
+        },
+        "6": {
+          "0": 5,
+          "1": 3,
+          "2": 3,
+          "3": 2
+        },
+        "7": {
+          "0": 6,
+          "1": 4,
+          "2": 3,
+          "3": 2,
+          "4": 1
+        },
+        "8": {
+          "0": 6,
+          "1": 4,
+          "2": 3,
+          "3": 3,
+          "4": 2
+        },
+        "9": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 3,
+          "4": 2,
+          "5": 1
+        },
+        "10": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 3,
+          "4": 3,
+          "5": 2
+        },
+        "11": {
+          "0": 6,
+          "1": 5,
+          "2": 4,
+          "3": 4,
+          "4": 3,
+          "5": 2,
+          "6": 1
+        },
+        "12": {
+          "0": 6,
+          "1": 5,
+          "2": 4,
+          "3": 4,
+          "4": 3,
+          "5": 3,
+          "6": 2
+        },
+        "13": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 4,
+          "4": 4,
+          "5": 3,
+          "6": 2,
+          "7": 1
+        },
+        "14": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 4,
+          "4": 4,
+          "5": 3,
+          "6": 3,
+          "7": 2
+        },
+        "15": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 4,
+          "5": 4,
+          "6": 3,
+          "7": 2,
+          "8": 1
+        },
+        "16": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 4,
+          "5": 4,
+          "6": 3,
+          "7": 3,
+          "8": 2
+        },
+        "17": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 5,
+          "5": 4,
+          "6": 4,
+          "7": 3,
+          "8": 2,
+          "9": 1
+        },
+        "18": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 5,
+          "5": 4,
+          "6": 4,
+          "7": 3,
+          "8": 3,
+          "9": 2
+        },
+        "19": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 5,
+          "5": 5,
+          "6": 4,
+          "7": 4,
+          "8": 3,
+          "9": 3
+        },
+        "20": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 5,
+          "5": 5,
+          "6": 4,
+          "7": 4,
+          "8": 4,
+          "9": 4
+        }
+      }
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with club, dagger, dart, quarterstaff, scimitar, sickle, shortspear, sling, and spear. Proficient with light and medium armor (non-metal only) and shields (non-metal, non-tower)."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells",
+            "name": "Spells",
+            "description": "Casts divine spells drawn from the druid spell list, using Wisdom as the casting stat."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "bonus_languages",
+            "name": "Bonus Languages",
+            "description": "Automatically knows Druidic, a secret language known only to druids."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spontaneous_casting",
+            "name": "Spontaneous Casting",
+            "description": "Can channel stored spell energy into summon nature's ally spells not prepared ahead of time."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "animal_companion",
+            "name": "Animal Companion",
+            "description": "Gain an animal companion that accompanies the druid on adventures."
+          }
+        },
+        {
+          "$type": "GrantCompanionSlot",
+          "linkType": "animal_companion",
+          "classFeatureType": "animal_companion_options",
+          "effectiveLevelFormula": { "expression": "max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)" }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "nature_sense",
+            "name": "Nature Sense",
+            "description": "+2 bonus on Knowledge (nature) and Survival checks."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "wild_empathy",
+            "name": "Wild Empathy",
+            "description": "Can improve attitude of an animal, similar to a Diplomacy check."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "woodland_stride",
+            "name": "Woodland Stride",
+            "description": "Move through natural thorns, briars, and overgrown areas at normal speed without damage."
+          }
+        }
+      ],
+      "3": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "trackless_step",
+            "name": "Trackless Step",
+            "description": "Leave no trail in natural surroundings and cannot be tracked."
+          }
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "resist_natures_lure",
+            "name": "Resist Nature's Lure",
+            "description": "+4 bonus on saves against spell-like abilities of fey."
+          }
+        }
+      ],
+      "5": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "wild_shape",
+            "name": "Wild Shape",
+            "description": "Can transform into a Small or Medium animal and back, 1/day for 1 hour per druid level."
+          }
+        },
+        { "$type": "GrantCapability", "capability": "wild_shape:animal:small" },
+        { "$type": "GrantCapability", "capability": "wild_shape:animal:medium" },
+        { "$type": "ModifyCounter", "counterId": "wild_shape_uses_per_day", "value": 1 }
+      ],
+      "6": [
+        { "$type": "ModifyCounter", "counterId": "wild_shape_uses_per_day", "value": 1 }
+      ],
+      "7": [
+        { "$type": "ModifyCounter", "counterId": "wild_shape_uses_per_day", "value": 1 }
+      ],
+      "8": [
+        { "$type": "GrantCapability", "capability": "wild_shape:animal:large" }
+      ],
+      "9": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "venom_immunity",
+            "name": "Venom Immunity",
+            "description": "Immune to all poisons."
+          }
+        }
+      ],
+      "10": [
+        { "$type": "ModifyCounter", "counterId": "wild_shape_uses_per_day", "value": 1 }
+      ],
+      "11": [
+        { "$type": "GrantCapability", "capability": "wild_shape:animal:tiny" }
+      ],
+      "12": [
+        { "$type": "GrantCapability", "capability": "wild_shape:plant:tiny" },
+        { "$type": "GrantCapability", "capability": "wild_shape:plant:small" },
+        { "$type": "GrantCapability", "capability": "wild_shape:plant:medium" },
+        { "$type": "GrantCapability", "capability": "wild_shape:plant:large" }
+      ],
+      "13": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "a_thousand_faces",
+            "name": "A Thousand Faces",
+            "description": "Can change appearance at will, as alter self."
+          }
+        }
+      ],
+      "14": [
+        { "$type": "ModifyCounter", "counterId": "wild_shape_uses_per_day", "value": 1 }
+      ],
+      "15": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "timeless_body",
+            "name": "Timeless Body",
+            "description": "No longer takes ability score penalties for aging."
+          }
+        },
+        { "$type": "GrantCapability", "capability": "wild_shape:animal:huge" },
+        { "$type": "GrantCapability", "capability": "wild_shape:plant:huge" }
+      ],
+      "16": [
+        { "$type": "GrantCapability", "capability": "wild_shape:elemental:small" },
+        { "$type": "GrantCapability", "capability": "wild_shape:elemental:medium" },
+        { "$type": "GrantCapability", "capability": "wild_shape:elemental:large" },
+        { "$type": "ModifyCounter", "counterId": "wild_shape_elemental_uses_per_day", "value": 1 }
+      ],
+      "18": [
+        { "$type": "ModifyCounter", "counterId": "wild_shape_uses_per_day", "value": 1 },
+        { "$type": "ModifyCounter", "counterId": "wild_shape_elemental_uses_per_day", "value": 1 }
+      ],
+      "20": [
+        { "$type": "ModifyCounter", "counterId": "wild_shape_elemental_uses_per_day", "value": 1 },
+        { "$type": "GrantCapability", "capability": "wild_shape:elemental:huge" }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [
+      {
+        "$type": "AlignmentReq",
+        "allowed": [
+          "cN",
+          "lN",
+          "n",
+          "nE",
+          "nG"
+        ]
+      }
+    ]
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:duelist",
+    "name": "Duelist",
+    "hitDie": 10,
+    "skillPointsPerLevel": 4,
+    "classSkills": [
+      "balance",
+      "bluff",
+      "escape_artist",
+      "jump",
+      "listen",
+      "perform",
+      "sense_motive",
+      "spot",
+      "tumble"
+    ],
+    "babProgression": "good",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "good",
+      "will": "poor"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Gains no new weapon or armor proficiencies."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "canny_defense",
+            "name": "Canny Defense",
+            "description": "Add Int bonus (up to class level) to AC when not wearing armor or using a shield, wielding a melee weapon, and not flat-footed."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "improved_reaction",
+            "name": "Improved Reaction",
+            "description": "+2 bonus on initiative checks."
+          }
+        }
+      ],
+      "3": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "enhanced_mobility",
+            "name": "Enhanced Mobility",
+            "description": "+4 dodge bonus to AC against attacks of opportunity provoked by moving through threatened squares."
+          }
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "grace",
+            "name": "Grace",
+            "description": "+2 competence bonus on Reflex saves."
+          }
+        }
+      ],
+      "5": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "precise_strike",
+            "name": "Precise Strike",
+            "description": "Add class level to damage with a light or one-handed piercing weapon while the other hand is free."
+          }
+        }
+      ],
+      "6": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "acrobatic_charge",
+            "name": "Acrobatic Charge",
+            "description": "Can charge in situations where others cannot, such as through difficult terrain."
+          }
+        }
+      ],
+      "7": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "elaborate_parry",
+            "name": "Elaborate Parry",
+            "description": "Gain a bonus to AC equal to Int bonus (up to class level) when fighting defensively or using total defense."
+          }
+        }
+      ],
+      "9": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "deflect_arrows",
+            "name": "Deflect Arrows",
+            "description": "Gain the Deflect Arrows feat, even without prerequisites. Can deflect one ranged attack per round."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [],
+    "maxLevel": 10
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:dwarven_defender",
+    "name": "Dwarven Defender",
+    "hitDie": 12,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "craft",
+      "listen",
+      "sense_motive",
+      "spot"
+    ],
+    "babProgression": "good",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "poor",
+      "will": "good"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Gains no new weapon or armor proficiencies."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "ac_bonus",
+            "name": "AC Bonus",
+            "description": "Dodge bonus to AC that increases with class level (+1 at 1st, +2 at 3rd, +3 at 5th, +4 at 7th, +5 at 10th)."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "defensive_stance",
+            "name": "Defensive Stance",
+            "description": "Enter a defensive stance gaining +2 STR, +4 CON, +2 resistance to saves, and +4 dodge to AC, but cannot move."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "uncanny_dodge",
+            "name": "Uncanny Dodge",
+            "description": "Retains Dex bonus to AC even when flat-footed or struck by an invisible attacker."
+          }
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "trap_sense",
+            "name": "Trap Sense",
+            "description": "Bonus on Reflex saves and AC against traps."
+          }
+        }
+      ],
+      "5": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "damage_reduction",
+            "name": "Damage Reduction",
+            "description": "Gain damage reduction 3/- at 5th level, increasing to 6/- at 10th level."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "improved_uncanny_dodge",
+            "name": "Improved Uncanny Dodge",
+            "description": "Cannot be flanked except by a rogue 4+ levels higher."
+          }
+        }
+      ],
+      "8": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "mobile_defense",
+            "name": "Mobile Defense",
+            "description": "Can take one 5-ft. step per round while in a defensive stance without losing the stance."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [
+      {
+        "$type": "AlignmentReq",
+        "allowed": [
+          "lE",
+          "lG",
+          "lN"
+        ]
+      }
+    ],
+    "maxLevel": 10
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:expert",
+    "name": "Expert",
+    "hitDie": 6,
+    "skillPointsPerLevel": 6,
+    "classSkills": [],
+    "babProgression": "average",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "poor",
+      "will": "good"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with all simple weapons and with light armor."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": []
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:hierophant",
+    "name": "Hierophant",
+    "hitDie": 8,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "concentration",
+      "craft",
+      "diplomacy",
+      "heal",
+      "knowledge_arcana",
+      "knowledge_religion",
+      "profession",
+      "spellcraft"
+    ],
+    "babProgression": "poor",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "poor",
+      "will": "good"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Gains no new weapon or armor proficiencies."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells_and_caster_level",
+            "name": "Spells and Caster Level",
+            "description": "Advances existing divine spellcasting class by one level per hierophant level."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "special_ability",
+            "name": "Special Ability",
+            "description": "Select a special hierophant ability each level, such as blast infidel, divine reach, faith healing, or mastery of energy."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [
+      { "$type": "AdvanceSpellcasting", "castingType": "divine" }
+    ],
+    "prerequisites": [],
+    "maxLevel": 5
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:horizon_walker",
+    "name": "Horizon Walker",
+    "hitDie": 8,
+    "skillPointsPerLevel": 4,
+    "classSkills": [
+      "balance",
+      "climb",
+      "diplomacy",
+      "handle_animal",
+      "hide",
+      "knowledge_geography",
+      "listen",
+      "move_silently",
+      "profession",
+      "ride",
+      "speak_language",
+      "spot",
+      "survival"
+    ],
+    "babProgression": "good",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "poor",
+      "will": "poor"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Gains no new weapon or armor proficiencies."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "terrain_mastery",
+            "name": "Terrain Mastery",
+            "description": "Select a terrain type each level to gain a cumulative benefit when in that terrain (e.g. bonus on initiative, hide, or resist energy)."
+          }
+        }
+      ],
+      "6": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "planar_terrain_mastery",
+            "name": "Planar Terrain Mastery",
+            "description": "At 6th level and above, can select planar terrains for terrain mastery, gaining planar-specific benefits."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [],
+    "maxLevel": 10
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:loremaster",
+    "name": "Loremaster",
+    "hitDie": 4,
+    "skillPointsPerLevel": 4,
+    "classSkills": [
+      "appraise",
+      "concentration",
+      "craft_alchemy",
+      "decipher_script",
+      "gather_information",
+      "handle_animal",
+      "heal",
+      "knowledge",
+      "perform",
+      "profession",
+      "speak_language",
+      "spellcraft",
+      "use_magic_device"
+    ],
+    "babProgression": "poor",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "poor",
+      "will": "good"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Gains no new weapon or armor proficiencies."
+          }
+        },
+        { "$type": "GrantClassFeatureSelection", "featureType": "loremaster_secret" }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "lore",
+            "name": "Lore",
+            "description": "Can make a special lore check (1d20 + class level + Int modifier) to recall obscure knowledge."
+          }
+        }
+      ],
+      "3": [
+        { "$type": "GrantClassFeatureSelection", "featureType": "loremaster_secret" }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "bonus_languages",
+            "name": "Bonus Languages",
+            "description": "Can choose any new language at 4th level."
+          }
+        }
+      ],
+      "5": [
+        { "$type": "GrantClassFeatureSelection", "featureType": "loremaster_secret" }
+      ],
+      "6": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "greater_lore",
+            "name": "Greater Lore",
+            "description": "Can identify magic items as the identify spell, at will."
+          }
+        }
+      ],
+      "7": [
+        { "$type": "GrantClassFeatureSelection", "featureType": "loremaster_secret" }
+      ],
+      "9": [
+        { "$type": "GrantClassFeatureSelection", "featureType": "loremaster_secret" }
+      ],
+      "10": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "true_lore",
+            "name": "True Lore",
+            "description": "Can use legend lore or analyze dweomer once per day as a spell-like ability."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
+    ],
+    "prerequisites": [],
+    "maxLevel": 10
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:monk",
+    "name": "Monk",
+    "hitDie": 8,
+    "skillPointsPerLevel": 4,
+    "classSkills": [
+      "balance",
+      "climb",
+      "concentration",
+      "craft",
+      "diplomacy",
+      "escape_artist",
+      "hide",
+      "jump",
+      "knowledge_arcana",
+      "knowledge_religion",
+      "listen",
+      "move_silently",
+      "perform",
+      "profession",
+      "sense_motive",
+      "spot",
+      "swim",
+      "tumble"
+    ],
+    "babProgression": "average",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "good",
+      "will": "good"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with club, crossbow (light or heavy), dagger, handaxe, javelin, kama, nunchaku, quarterstaff, sai, shuriken, siangham, and sling. Not proficient with armor or shields."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "ac_bonus",
+            "name": "AC Bonus",
+            "description": "Add Wis bonus to AC when unarmored and unencumbered. Bonus increases by +1 at 5th level and every 5 levels after."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "flurry_of_blows",
+            "name": "Flurry of Blows",
+            "description": "Make one extra attack per round at highest BAB with a -2 penalty to all attacks. Penalty decreases at higher levels."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "unarmed_strike",
+            "name": "Unarmed Strike",
+            "description": "Deal lethal or nonlethal unarmed damage as a Medium creature (1d6 at 1st, increasing with level). Treated as armed when unarmed."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "bonus_feat",
+            "name": "Bonus Feat",
+            "description": "Select a bonus feat from the monk bonus feat list at 1st, 2nd, and 6th level."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "evasion",
+            "name": "Evasion",
+            "description": "On a successful Reflex save against an area attack, takes no damage instead of half."
+          }
+        }
+      ],
+      "3": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "fast_movement",
+            "name": "Fast Movement",
+            "description": "+10 ft. land speed when not wearing armor. Increases with level."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "still_mind",
+            "name": "Still Mind",
+            "description": "+2 bonus on saving throws against enchantment spells and effects."
+          }
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "ki_strike",
+            "name": "Ki Strike",
+            "description": "Unarmed attacks are treated as magic weapons for overcoming damage reduction. At 10th lawful, at 16th adamantine."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "slow_fall",
+            "name": "Slow Fall",
+            "description": "Take damage as if a fall were shorter than it actually is, with distance reduced increasing with level."
+          }
+        }
+      ],
+      "5": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "purity_of_body",
+            "name": "Purity of Body",
+            "description": "Immune to all diseases, including supernatural and magical diseases."
+          }
+        }
+      ],
+      "7": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "wholeness_of_body",
+            "name": "Wholeness of Body",
+            "description": "Can heal own wounds, restoring up to twice monk level in HP per day."
+          }
+        }
+      ],
+      "9": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "improved_evasion",
+            "name": "Improved Evasion",
+            "description": "On a failed Reflex save against an area attack, takes half damage instead of full; no damage on success."
+          }
+        }
+      ],
+      "11": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "diamond_body",
+            "name": "Diamond Body",
+            "description": "Immune to all poisons."
+          }
+        }
+      ],
+      "12": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "abundant_step",
+            "name": "Abundant Step",
+            "description": "Can use dimension door as a spell-like ability once per day, using monk level as caster level."
+          }
+        }
+      ],
+      "13": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "diamond_soul",
+            "name": "Diamond Soul",
+            "description": "Gain spell resistance equal to monk level + 10."
+          }
+        }
+      ],
+      "15": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "quivering_palm",
+            "name": "Quivering Palm",
+            "description": "Once per week, set up vibrations that can kill a living creature within 1 day (Fort save DC 10 + level/2 + Wis modifier)."
+          }
+        }
+      ],
+      "17": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "timeless_body",
+            "name": "Timeless Body",
+            "description": "No longer takes ability score penalties for aging."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "tongue_of_the_sun_and_moon",
+            "name": "Tongue of the Sun and Moon",
+            "description": "Can speak with any living creature, as though using a tongues spell."
+          }
+        }
+      ],
+      "19": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "empty_body",
+            "name": "Empty Body",
+            "description": "Can become ethereal for 1 round per monk level per day, as the etherealness spell."
+          }
+        }
+      ],
+      "20": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "perfect_self",
+            "name": "Perfect Self",
+            "description": "Type changes to outsider. Gain damage reduction 10/magic."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [
+      {
+        "$type": "AlignmentReq",
+        "allowed": [
+          "lE",
+          "lG",
+          "lN"
+        ]
+      }
+    ]
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:mystic_theurge",
+    "name": "Mystic Theurge",
+    "hitDie": 4,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "concentration",
+      "craft",
+      "decipher_script",
+      "knowledge_arcana",
+      "knowledge_religion",
+      "profession",
+      "sense_motive",
+      "spellcraft"
+    ],
+    "babProgression": "poor",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "poor",
+      "will": "good"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Gains no new weapon or armor proficiencies."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells_per_day",
+            "name": "Spells per Day",
+            "description": "Advances both arcane and divine spellcasting classes by one level per mystic theurge level."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" },
+      { "$type": "AdvanceSpellcasting", "castingType": "divine" }
+    ],
+    "prerequisites": [],
+    "maxLevel": 10
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:paladin",
+    "name": "Paladin",
+    "hitDie": 10,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "concentration",
+      "craft",
+      "diplomacy",
+      "handle_animal",
+      "heal",
+      "knowledge_nobility",
+      "knowledge_religion",
+      "profession",
+      "ride",
+      "sense_motive"
+    ],
+    "babProgression": "good",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "poor",
+      "will": "poor"
+    },
+    "spellcasting": {
+      "castingType": "divine",
+      "castingStat": "wis",
+      "spellsPerDay": {
+        "4": {
+          "0": 0,
+          "1": 0
+        },
+        "5": {
+          "0": 0,
+          "1": 0
+        },
+        "6": {
+          "0": 0,
+          "1": 1
+        },
+        "7": {
+          "0": 0,
+          "1": 1
+        },
+        "8": {
+          "0": 0,
+          "1": 1,
+          "2": 0
+        },
+        "9": {
+          "0": 0,
+          "1": 1,
+          "2": 0
+        },
+        "10": {
+          "0": 0,
+          "1": 1,
+          "2": 1
+        },
+        "11": {
+          "0": 0,
+          "1": 1,
+          "2": 1,
+          "3": 0
+        },
+        "12": {
+          "0": 0,
+          "1": 1,
+          "2": 1,
+          "3": 1
+        },
+        "13": {
+          "0": 0,
+          "1": 1,
+          "2": 1,
+          "3": 1
+        },
+        "14": {
+          "0": 0,
+          "1": 2,
+          "2": 1,
+          "3": 1,
+          "4": 0
+        },
+        "15": {
+          "0": 0,
+          "1": 2,
+          "2": 1,
+          "3": 1,
+          "4": 1
+        },
+        "16": {
+          "0": 0,
+          "1": 2,
+          "2": 2,
+          "3": 1,
+          "4": 1
+        },
+        "17": {
+          "0": 0,
+          "1": 2,
+          "2": 2,
+          "3": 2,
+          "4": 1
+        },
+        "18": {
+          "0": 0,
+          "1": 3,
+          "2": 2,
+          "3": 2,
+          "4": 1
+        },
+        "19": {
+          "0": 0,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2
+        },
+        "20": {
+          "0": 0,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 3
+        }
+      }
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with all simple and martial weapons, all armor, and shields."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "aura_of_good",
+            "name": "Aura of Good",
+            "description": "Radiates an aura of good with power equal to paladin level."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "detect_evil",
+            "name": "Detect Evil",
+            "description": "Can use detect evil at will as a spell-like ability."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "smite_evil",
+            "name": "Smite Evil",
+            "description": "Add Cha bonus to attack roll and paladin level to damage against an evil foe."
+          }
+        },
+        { "$type": "ModifyCounter", "counterId": "smite_evil_uses" },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "code_of_conduct",
+            "name": "Code of Conduct",
+            "description": "Must be lawful good and loses paladin abilities if violating code."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "associates",
+            "name": "Associates",
+            "description": "May only associate with good-aligned characters or those who uphold the paladin code."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "divine_grace",
+            "name": "Divine Grace",
+            "description": "Add Cha bonus to all saving throws."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "lay_on_hands",
+            "name": "Lay on Hands",
+            "description": "Heal damage equal to paladin level x Cha modifier per day by touch."
+          }
+        }
+      ],
+      "3": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "aura_of_courage",
+            "name": "Aura of Courage",
+            "description": "Immune to fear; allies within 10 ft. get +4 morale bonus on saving throws against fear."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "divine_health",
+            "name": "Divine Health",
+            "description": "Immune to all diseases, including supernatural and magical diseases."
+          }
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "turn_undead",
+            "name": "Turn Undead",
+            "description": "Channel positive energy to turn or destroy undead."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells",
+            "name": "Spells",
+            "description": "Casts divine spells drawn from the paladin spell list, beginning at 4th level, using Wisdom as the casting stat."
+          }
+        }
+      ],
+      "5": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "special_mount",
+            "name": "Special Mount",
+            "description": "Gain a special paladin mount with enhanced abilities."
+          }
+        },
+        {
+          "$type": "GrantCompanionSlot",
+          "linkType": "special_mount",
+          "classFeatureType": "paladin_mount_options",
+          "effectiveLevelFormula": { "expression": "ClassLevel(paladin)" }
+        },
+        { "$type": "ModifyCounter", "counterId": "smite_evil_uses" }
+      ],
+      "6": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "remove_disease",
+            "name": "Remove Disease",
+            "description": "Can use remove disease as a spell-like ability."
+          }
+        },
+        { "$type": "ModifyCounter", "counterId": "remove_disease_uses" }
+      ],
+      "9": [
+        { "$type": "ModifyCounter", "counterId": "remove_disease_uses" }
+      ],
+      "10": [
+        { "$type": "ModifyCounter", "counterId": "smite_evil_uses" }
+      ],
+      "12": [
+        { "$type": "ModifyCounter", "counterId": "remove_disease_uses" }
+      ],
+      "15": [
+        { "$type": "ModifyCounter", "counterId": "smite_evil_uses" },
+        { "$type": "ModifyCounter", "counterId": "remove_disease_uses" }
+      ],
+      "18": [
+        { "$type": "ModifyCounter", "counterId": "remove_disease_uses" }
+      ],
+      "20": [
+        { "$type": "ModifyCounter", "counterId": "smite_evil_uses" }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [
+      {
+        "$type": "AlignmentReq",
+        "allowed": [
+          "lG"
+        ]
+      }
+    ]
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:ranger",
+    "name": "Ranger",
+    "hitDie": 8,
+    "skillPointsPerLevel": 6,
+    "classSkills": [
+      "climb",
+      "concentration",
+      "craft",
+      "handle_animal",
+      "heal",
+      "hide",
+      "jump",
+      "knowledge_dungeoneering",
+      "knowledge_geography",
+      "knowledge_nature",
+      "listen",
+      "move_silently",
+      "profession",
+      "ride",
+      "search",
+      "spot",
+      "survival",
+      "swim",
+      "use_rope"
+    ],
+    "babProgression": "good",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "good",
+      "will": "poor"
+    },
+    "spellcasting": {
+      "castingType": "divine",
+      "castingStat": "wis",
+      "spellsPerDay": {
+        "4": {
+          "0": 0,
+          "1": 0
+        },
+        "5": {
+          "0": 0,
+          "1": 0
+        },
+        "6": {
+          "0": 0,
+          "1": 1
+        },
+        "7": {
+          "0": 0,
+          "1": 1
+        },
+        "8": {
+          "0": 0,
+          "1": 1,
+          "2": 0
+        },
+        "9": {
+          "0": 0,
+          "1": 1,
+          "2": 0
+        },
+        "10": {
+          "0": 0,
+          "1": 1,
+          "2": 1
+        },
+        "11": {
+          "0": 0,
+          "1": 1,
+          "2": 1,
+          "3": 0
+        },
+        "12": {
+          "0": 0,
+          "1": 1,
+          "2": 1,
+          "3": 1
+        },
+        "13": {
+          "0": 0,
+          "1": 1,
+          "2": 1,
+          "3": 1
+        },
+        "14": {
+          "0": 0,
+          "1": 2,
+          "2": 1,
+          "3": 1,
+          "4": 0
+        },
+        "15": {
+          "0": 0,
+          "1": 2,
+          "2": 1,
+          "3": 1,
+          "4": 1
+        },
+        "16": {
+          "0": 0,
+          "1": 2,
+          "2": 2,
+          "3": 1,
+          "4": 1
+        },
+        "17": {
+          "0": 0,
+          "1": 2,
+          "2": 2,
+          "3": 2,
+          "4": 1
+        },
+        "18": {
+          "0": 0,
+          "1": 3,
+          "2": 2,
+          "3": 2,
+          "4": 1
+        },
+        "19": {
+          "0": 0,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2
+        },
+        "20": {
+          "0": 0,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 3
+        }
+      }
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with all simple and martial weapons, light armor, and shields (except tower)."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "favored_enemy",
+            "name": "Favored Enemy",
+            "description": "Select a creature type; gain +2 bonus on Bluff, Listen, Sense Motive, Spot, and Survival checks and weapon damage against that type."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "track",
+            "name": "Track",
+            "description": "Gain Track as a bonus feat."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "wild_empathy",
+            "name": "Wild Empathy",
+            "description": "Can improve attitude of an animal, similar to a Diplomacy check."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "combat_style",
+            "name": "Combat Style",
+            "description": "Choose archery or two-weapon combat style. Gain a bonus feat appropriate to the chosen style, usable in light or no armor."
+          }
+        }
+      ],
+      "3": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "endurance",
+            "name": "Endurance",
+            "description": "Gain Endurance as a bonus feat."
+          }
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "animal_companion",
+            "name": "Animal Companion",
+            "description": "Gain an animal companion, as a druid of level equal to ranger level - 3."
+          }
+        },
+        {
+          "$type": "GrantCompanionSlot",
+          "linkType": "animal_companion",
+          "classFeatureType": "animal_companion_options",
+          "effectiveLevelFormula": { "expression": "max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)" }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells",
+            "name": "Spells",
+            "description": "Casts divine spells drawn from the ranger spell list, beginning at 4th level, using Wisdom as the casting stat."
+          }
+        }
+      ],
+      "6": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "improved_combat_style",
+            "name": "Improved Combat Style",
+            "description": "Gain a second bonus feat appropriate to chosen combat style, usable in light or no armor."
+          }
+        }
+      ],
+      "7": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "woodland_stride",
+            "name": "Woodland Stride",
+            "description": "Move through natural thorns, briars, and overgrown areas at normal speed without damage."
+          }
+        }
+      ],
+      "8": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "swift_tracker",
+            "name": "Swift Tracker",
+            "description": "Can move at normal speed while following tracks without taking the normal -5 penalty."
+          }
+        }
+      ],
+      "9": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "evasion",
+            "name": "Evasion",
+            "description": "On a successful Reflex save against an area attack, takes no damage instead of half."
+          }
+        }
+      ],
+      "11": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "combat_style_mastery",
+            "name": "Combat Style Mastery",
+            "description": "Gain a third bonus feat appropriate to chosen combat style, usable in any armor."
+          }
+        }
+      ],
+      "13": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "camouflage",
+            "name": "Camouflage",
+            "description": "Can use the Hide skill in any natural terrain, even without cover or concealment."
+          }
+        }
+      ],
+      "17": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "hide_in_plain_sight",
+            "name": "Hide in Plain Sight",
+            "description": "Can use the Hide skill even while being observed, in any natural terrain."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": []
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:rogue",
+    "name": "Rogue",
+    "hitDie": 6,
+    "skillPointsPerLevel": 8,
+    "classSkills": [
+      "appraise",
+      "balance",
+      "bluff",
+      "climb",
+      "craft",
+      "decipher_script",
+      "diplomacy",
+      "disable_device",
+      "disguise",
+      "escape_artist",
+      "forgery",
+      "gather_information",
+      "hide",
+      "intimidate",
+      "jump",
+      "knowledge_local",
+      "listen",
+      "move_silently",
+      "open_lock",
+      "perform",
+      "profession",
+      "search",
+      "sense_motive",
+      "sleight_of_hand",
+      "spot",
+      "swim",
+      "tumble",
+      "use_magic_device",
+      "use_rope"
+    ],
+    "babProgression": "average",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "good",
+      "will": "poor"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with all simple weapons, hand crossbow, rapier, sap, shortbow, and short sword. Proficient with light armor."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "sneak_attack",
+            "name": "Sneak Attack",
+            "description": "Extra damage when flanking or when target is denied Dex bonus to AC."
+          }
+        },
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "trapfinding",
+            "name": "Trapfinding",
+            "description": "Can use Search to find traps with DC above 20, and Disable Device to disarm magic traps."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "evasion",
+            "name": "Evasion",
+            "description": "On a successful Reflex save against an area attack, takes no damage instead of half."
+          }
+        }
+      ],
+      "3": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "trap_sense",
+            "name": "Trap Sense",
+            "description": "Bonus on Reflex saves and AC against traps."
+          }
+        },
+        { "$type": "ModifyCounter", "counterId": "trap_sense_bonus" }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "uncanny_dodge",
+            "name": "Uncanny Dodge",
+            "description": "Retains Dex bonus to AC even when flat-footed or struck by an invisible attacker."
+          }
+        }
+      ],
+      "5": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "6": [
+        { "$type": "ModifyCounter", "counterId": "trap_sense_bonus" }
+      ],
+      "7": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "8": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "improved_uncanny_dodge",
+            "name": "Improved Uncanny Dodge",
+            "description": "Cannot be flanked except by a rogue 4+ levels higher."
+          }
+        }
+      ],
+      "9": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" },
+        { "$type": "ModifyCounter", "counterId": "trap_sense_bonus" }
+      ],
+      "10": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "special_abilities",
+            "name": "Special Abilities",
+            "description": "Select a special ability from the rogue special abilities list at 10th level and every 3 levels after."
+          }
+        }
+      ],
+      "11": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "12": [
+        { "$type": "ModifyCounter", "counterId": "trap_sense_bonus" }
+      ],
+      "13": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "15": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" },
+        { "$type": "ModifyCounter", "counterId": "trap_sense_bonus" }
+      ],
+      "17": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ],
+      "18": [
+        { "$type": "ModifyCounter", "counterId": "trap_sense_bonus" }
+      ],
+      "19": [
+        { "$type": "ModifyCounter", "counterId": "sneak_attack_dice" }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": []
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:shadowdancer",
+    "name": "Shadowdancer",
+    "hitDie": 8,
+    "skillPointsPerLevel": 6,
+    "classSkills": [
+      "balance",
+      "bluff",
+      "decipher_script",
+      "diplomacy",
+      "disguise",
+      "escape_artist",
+      "hide",
+      "jump",
+      "listen",
+      "move_silently",
+      "perform",
+      "profession",
+      "search",
+      "sleight_of_hand",
+      "spot",
+      "tumble",
+      "use_rope"
+    ],
+    "babProgression": "average",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "good",
+      "will": "poor"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Gains no new weapon or armor proficiencies."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "hide_in_plain_sight",
+            "name": "Hide in Plain Sight",
+            "description": "Can use the Hide skill even while being observed, as long as within 10 ft. of a shadow other than own."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "evasion",
+            "name": "Evasion",
+            "description": "On a successful Reflex save against an area attack, takes no damage instead of half."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "darkvision",
+            "name": "Darkvision",
+            "description": "Gain darkvision out to 60 ft."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "uncanny_dodge",
+            "name": "Uncanny Dodge",
+            "description": "Retains Dex bonus to AC even when flat-footed or struck by an invisible attacker."
+          }
+        }
+      ],
+      "3": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "shadow_illusion",
+            "name": "Shadow Illusion",
+            "description": "Can cast silent image as a spell-like ability once per day, using class level as caster level."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "summon_shadow",
+            "name": "Summon Shadow",
+            "description": "Summon a shadow companion from the Plane of Shadow. If destroyed, cannot be summoned for 30 days."
+          }
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "shadow_jump",
+            "name": "Shadow Jump",
+            "description": "Teleport between shadows as a move action, up to a total distance per day that increases with level."
+          }
+        }
+      ],
+      "5": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "defensive_roll",
+            "name": "Defensive Roll",
+            "description": "Once per day when reduced to 0 or fewer HP by damage, can attempt a Reflex save (DC = damage dealt) to take only half damage."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "improved_uncanny_dodge",
+            "name": "Improved Uncanny Dodge",
+            "description": "Cannot be flanked except by a rogue 4+ levels higher."
+          }
+        }
+      ],
+      "7": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "slippery_mind",
+            "name": "Slippery Mind",
+            "description": "If affected by an enchantment spell, can attempt a second saving throw 1 round later."
+          }
+        }
+      ],
+      "10": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "improved_evasion",
+            "name": "Improved Evasion",
+            "description": "On a failed Reflex save against an area attack, takes half damage instead of full; no damage on success."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [],
+    "maxLevel": 10
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:thaumaturgist",
+    "name": "Thaumaturgist",
+    "hitDie": 4,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "concentration",
+      "craft",
+      "diplomacy",
+      "knowledge_planes",
+      "knowledge_religion",
+      "profession",
+      "sense_motive",
+      "speak_language",
+      "spellcraft"
+    ],
+    "babProgression": "poor",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "poor",
+      "will": "good"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Gains no new weapon or armor proficiencies."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells_per_day",
+            "name": "Spells per Day",
+            "description": "Advances existing divine spellcasting class by one level per thaumaturgist level."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "improved_ally",
+            "name": "Improved Ally",
+            "description": "When casting a planar ally spell, pay half the usual offering or payment for the creature's service."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "augment_summoning",
+            "name": "Augment Summoning",
+            "description": "Gain Augment Summoning as a bonus feat. Summoned creatures get +4 STR and +4 CON."
+          }
+        }
+      ],
+      "3": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "extended_summoning",
+            "name": "Extended Summoning",
+            "description": "All summon monster and summon nature's ally spells have their duration doubled."
+          }
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "contingent_conjuration",
+            "name": "Contingent Conjuration",
+            "description": "Can set a summon monster spell to trigger automatically under specific conditions, as contingency."
+          }
+        }
+      ],
+      "5": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "planar_cohort",
+            "name": "Planar Cohort",
+            "description": "Can use planar ally to call an outsider to serve permanently as a cohort."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [
+      { "$type": "AdvanceSpellcasting", "castingType": "divine" }
+    ],
+    "prerequisites": [],
+    "maxLevel": 5
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:warrior",
+    "name": "Warrior",
+    "hitDie": 8,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "climb",
+      "handle_animal",
+      "intimidate",
+      "jump",
+      "ride",
+      "swim"
+    ],
+    "babProgression": "good",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "poor",
+      "will": "poor"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with all simple and martial weapons, all armor, and shields."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": []
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:wizard",
+    "name": "Wizard",
+    "hitDie": 4,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "concentration",
+      "craft",
+      "decipher_script",
+      "knowledge",
+      "profession",
+      "spellcraft"
+    ],
+    "babProgression": "poor",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "poor",
+      "will": "good"
+    },
+    "spellcasting": {
+      "castingType": "arcane",
+      "castingStat": "int",
+      "spellsPerDay": {
+        "1": {
+          "0": 3,
+          "1": 1
+        },
+        "2": {
+          "0": 4,
+          "1": 2
+        },
+        "3": {
+          "0": 4,
+          "1": 2,
+          "2": 1
+        },
+        "4": {
+          "0": 4,
+          "1": 3,
+          "2": 2
+        },
+        "5": {
+          "0": 4,
+          "1": 3,
+          "2": 2,
+          "3": 1
+        },
+        "6": {
+          "0": 4,
+          "1": 3,
+          "2": 3,
+          "3": 2
+        },
+        "7": {
+          "0": 4,
+          "1": 4,
+          "2": 3,
+          "3": 2,
+          "4": 1
+        },
+        "8": {
+          "0": 4,
+          "1": 4,
+          "2": 3,
+          "3": 3,
+          "4": 2
+        },
+        "9": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 3,
+          "4": 2,
+          "5": 1
+        },
+        "10": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 3,
+          "4": 3,
+          "5": 2
+        },
+        "11": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 3,
+          "5": 2,
+          "6": 1
+        },
+        "12": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 3,
+          "5": 3,
+          "6": 2
+        },
+        "13": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 3,
+          "6": 2,
+          "7": 1
+        },
+        "14": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 3,
+          "6": 3,
+          "7": 2
+        },
+        "15": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 3,
+          "7": 2,
+          "8": 1
+        },
+        "16": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 3,
+          "7": 3,
+          "8": 2
+        },
+        "17": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 4,
+          "7": 3,
+          "8": 2,
+          "9": 1
+        },
+        "18": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 4,
+          "7": 3,
+          "8": 3,
+          "9": 2
+        },
+        "19": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 4,
+          "7": 4,
+          "8": 3,
+          "9": 3
+        },
+        "20": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 4,
+          "7": 4,
+          "8": 4,
+          "9": 4
+        }
+      }
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with club, dagger, heavy crossbow, light crossbow, and quarterstaff. Not proficient with any armor or shields."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells",
+            "name": "Spells",
+            "description": "Casts arcane spells from the sorcerer/wizard spell list, using Intelligence as the casting stat. Must prepare spells from a spellbook."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "bonus_languages",
+            "name": "Bonus Languages",
+            "description": "Can substitute Draconic for one of the bonus languages available to the character."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "familiar",
+            "name": "Familiar",
+            "description": "Gain a familiar, a small magical beast that grants special abilities to its master."
+          }
+        },
+        {
+          "$type": "GrantCompanionSlot",
+          "linkType": "familiar",
+          "classFeatureType": "familiar_options",
+          "effectiveLevelFormula": { "expression": "CasterLevel(wizard) + CasterLevel(sorcerer)" }
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "scribe_scroll"
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spellbooks",
+            "name": "Spellbooks",
+            "description": "Must study spellbook each day to prepare spells. Starts with all 0-level spells and three 1st-level spells."
+          }
+        }
+      ],
+      "5": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "bonus_feats",
+            "name": "Bonus Feats",
+            "description": "At 5th level and every 5 levels after, gain a bonus feat from the list of item creation or metamagic feats."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": []
+  }
+]

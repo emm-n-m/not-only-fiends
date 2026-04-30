@@ -1,0 +1,71 @@
+---
+name: extract-spell
+description: Extract spell definitions from a D&D 3.5e source (HTML preferred, PDF fallback). Produces spell JSON matching the SpellDefinition schema.
+argument-hint: <source-path> [spell-ids...]
+---
+
+# Extract Spells from D&D 3.5e Source Material
+
+You are extracting spell data for the NotOnlyFiendsStudio content pipeline.
+
+## Source selection
+
+Prefer HTML over PDF — the d20srd.org mirror has each spell as a stable anchor with its stat block inline as labeled `<span class="stat-block">` elements, which parse cleanly. PDF stays the fallback for supplements.
+
+Dispatch on the argument:
+- Ends in `.html`/`.htm` → HTML extraction (see below).
+- Ends in `.pdf` → PDF extraction (original workflow).
+- No path given → ask the user; default suggestion is the alphabetical-split files below.
+
+### SRD HTML landmark files
+
+Spells are sharded alphabetically:
+- [spellsAtoB.html](../../../NotOnlyFiendsStudio/Content/srd_html/spellsAtoB.html)
+- [spellsC.html](../../../NotOnlyFiendsStudio/Content/srd_html/spellsC.html)
+- [spellsDtoE.html](../../../NotOnlyFiendsStudio/Content/srd_html/spellsDtoE.html)
+- [spellsFtoG.html](../../../NotOnlyFiendsStudio/Content/srd_html/spellsFtoG.html)
+- [spellsHtoL.html](../../../NotOnlyFiendsStudio/Content/srd_html/spellsHtoL.html)
+- [spellsMtoO.html](../../../NotOnlyFiendsStudio/Content/srd_html/spellsMtoO.html)
+- [spellsPtoR.html](../../../NotOnlyFiendsStudio/Content/srd_html/spellsPtoR.html)
+- [spellsS.html](../../../NotOnlyFiendsStudio/Content/srd_html/spellsS.html)
+- [spellsTtoZ.html](../../../NotOnlyFiendsStudio/Content/srd_html/spellsTtoZ.html)
+
+Class-bound indexes (use only for finding spell lists, not stat blocks):
+- [arcaneSpells.html](../../../NotOnlyFiendsStudio/Content/srd_html/arcaneSpells.html), [bardSpells.html](../../../NotOnlyFiendsStudio/Content/srd_html/bardSpells.html), [clericSpells.html](../../../NotOnlyFiendsStudio/Content/srd_html/clericSpells.html), [druidSpells.html](../../../NotOnlyFiendsStudio/Content/srd_html/druidSpells.html), [paladinSpells.html](../../../NotOnlyFiendsStudio/Content/srd_html/paladinSpells.html), [rangerSpells.html](../../../NotOnlyFiendsStudio/Content/srd_html/rangerSpells.html).
+- [divineSpells.html](../../../NotOnlyFiendsStudio/Content/srd_html/divineSpells.html), [divineNewSpells.html](../../../NotOnlyFiendsStudio/Content/srd_html/divineNewSpells.html), [epicSpells.html](../../../NotOnlyFiendsStudio/Content/srd_html/epicSpells.html).
+
+## HTML extraction workflow
+
+1. **Read schema & prompt** — [schemas/spell.schema.json](../../../schemas/spell.schema.json) and [schemas/prompts/extract-spell.md](../../../schemas/prompts/extract-spell.md) are authoritative.
+2. **Load the HTML file** — each spell is delimited by `<h6><a id="spell-id">Spell Name</a></h6>` (anchor id uses hyphens; our IDs use underscores).
+3. **Pick spells** — if the user supplied IDs, extract only those. Otherwise grep all `<h6><a id=` anchors in the file and confirm scope with the user before bulk extraction.
+4. **Parse each spell block** — the `<h6>` is followed by a fixed sequence:
+   - `<p class="initial"><i>School (Subschool) [Descriptors]</i></p>` — school/subschool/descriptors.
+   - `<span class="stat-block"><b>Level</b>: Sor/Wiz 2, Clr 3, ...</span>` — maps to `classLevels`. **`Sor/Wiz N` expands to BOTH `class:sorcerer` and `class:wizard`.** Standard class abbrevs: Brd=bard, Clr=cleric, Drd=druid, Pal=paladin, Rgr=ranger, Sor=sorcerer, Wiz=wizard. Domain labels (`Good 2`, `Water 7`) map to `domain:good`, `domain:water`.
+   - `<span class="stat-block"><b>Components</b>: V, S, M, F, DF, XP</span>` — each letter → corresponding schema flag; `M/DF` means "M or DF" (arcane M, divine DF).
+   - `Casting Time`, `Range`, `Target`/`Area`/`Effect` (exactly one of the three), `Duration`, `Saving Throw`, `Spell Resistance` — each in its own `<span class="stat-block">`.
+   - Flavor paragraphs follow, including Material/Focus/XP component details in labeled `<p><i>…</i></p>` blocks.
+5. **ID normalization** — anchor `acid-arrow` → spell ID `acid_arrow`. For variants: `cure_light_wounds_mass`, `dispel_magic_greater`, `restoration_lesser`. Possessives preserved: `bigbys_interposing_hand`, `mordenkainens_disjunction`, `tashas_hideous_laughter`.
+6. **Batching** — extract one shard file or one school at a time; the full SRD is ~600 spells.
+7. **Check existing spells** — read [NotOnlyFiendsStudio/Content/packs/srd_core/spells/srd.json](../../../NotOnlyFiendsStudio/Content/packs/srd_core/spells/srd.json) before extraction to avoid duplicate IDs.
+8. **Write output** — SRD spells go to [NotOnlyFiendsStudio/Content/packs/srd_core/spells/srd.json](../../../NotOnlyFiendsStudio/Content/packs/srd_core/spells/srd.json) (append). Supplements go to a new pack's `spells/` directory.
+9. **Run tests** — `dotnet test`.
+
+## PDF extraction workflow (fallback)
+
+1. Locate the spell chapter from the table of contents.
+2. Parse each spell's stat block (school, components, range, target/effect/area, duration, SR, save).
+3. Normalize IDs and write output.
+
+## Key conventions
+
+- Spell IDs: `snake_case` (`fireball`, `cure_light_wounds`, `tashas_hideous_laughter`).
+- `Sor/Wiz N` → both `class:sorcerer` and `class:wizard` at level N in `classLevels`.
+- Use SRD wording for Range: `"close (25 ft. + 5 ft./2 levels)"`, `"medium (100 ft. + 10 ft./level)"`, `"long (400 ft. + 40 ft./level)"`.
+- Duration preserves `(D)` for dismissable.
+
+## Reference files
+
+- Schema: [schemas/spell.schema.json](../../../schemas/spell.schema.json)
+- Prompt: [schemas/prompts/extract-spell.md](../../../schemas/prompts/extract-spell.md)
+- Existing spells: [NotOnlyFiendsStudio/Content/packs/srd_core/spells/srd.json](../../../NotOnlyFiendsStudio/Content/packs/srd_core/spells/srd.json)

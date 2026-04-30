@@ -1,0 +1,129 @@
+[
+  {
+    "id": "high_arcana",
+    "name": "High Arcana",
+    "description": "An archmage gains one high arcana ability per level, chosen from the list below. Each ability trades one prepared spell slot of the indicated level for a permanent special ability.",
+    "options": [
+      {
+        "id": "arcane_fire",
+        "name": "Arcane Fire",
+        "description": "Change arcane spell energy into arcane fire, dealing 1d6 damage per spell level plus 1d6 per caster level (as a ranged touch attack). Costs one 9th-level spell slot.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "arcane_fire",
+              "name": "Arcane Fire",
+              "description": "Change arcane spell energy into arcane fire, dealing 1d6 damage per spell level plus 1d6 per caster level as a ranged touch attack."
+            }
+          }
+        ]
+      },
+      {
+        "id": "arcane_reach",
+        "name": "Arcane Reach",
+        "description": "Use touch spells as ranged touch attacks with a range of 30 feet. Costs one 7th-level spell slot.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "arcane_reach",
+              "name": "Arcane Reach",
+              "description": "Use touch-range spells as ranged touch attacks with a range of 30 feet."
+            }
+          }
+        ]
+      },
+      {
+        "id": "improved_arcane_reach",
+        "name": "Improved Arcane Reach",
+        "description": "Arcane reach extends to 60 feet. Requires Arcane Reach. Costs one 7th-level spell slot.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "improved_arcane_reach",
+              "name": "Improved Arcane Reach",
+              "description": "Arcane Reach extends to 60 feet."
+            }
+          }
+        ]
+      },
+      {
+        "id": "mastery_of_counterspelling",
+        "name": "Mastery of Counterspelling",
+        "description": "When you successfully counterspell a spell, it is reflected back at the caster. Costs one 7th-level spell slot.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "mastery_of_counterspelling",
+              "name": "Mastery of Counterspelling",
+              "description": "When you successfully counterspell a spell, it is turned back upon the caster as if it were fully combated by a spell turning spell."
+            }
+          }
+        ]
+      },
+      {
+        "id": "mastery_of_elements",
+        "name": "Mastery of Elements",
+        "description": "Alter an arcane spell with an energy descriptor to use a different energy type. Costs one 8th-level spell slot.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "mastery_of_elements",
+              "name": "Mastery of Elements",
+              "description": "Alter an arcane spell with an energy descriptor to use a different type of energy (acid, cold, electricity, or fire)."
+            }
+          }
+        ]
+      },
+      {
+        "id": "mastery_of_shaping",
+        "name": "Mastery of Shaping",
+        "description": "Alter area and effect spells that use one of the standard shapes to create spaces within the area that are not subject to the spell. Costs one 6th-level spell slot.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "mastery_of_shaping",
+              "name": "Mastery of Shaping",
+              "description": "Alter area and effect spells that use a standard shape (burst, cone, cylinder, emanation, or spread) to exclude any number of 5-foot squares from the area."
+            }
+          }
+        ]
+      },
+      {
+        "id": "spell_power",
+        "name": "Spell Power",
+        "description": "+1 to caster level for the purpose of level-dependent spell effects. May be selected multiple times. Costs one 5th-level spell slot.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "spell_power",
+              "name": "Spell Power",
+              "description": "+1 to caster level for the purpose of determining level-dependent spell variables and for caster level checks."
+            }
+          }
+        ]
+      },
+      {
+        "id": "spell_like_ability",
+        "name": "Spell-Like Ability",
+        "description": "Use a spell of 5th level or lower as a spell-like ability twice per day. Costs one spell slot one level higher than the chosen spell.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "high_arcana_spell_like_ability",
+              "name": "Spell-Like Ability",
+              "description": "Use a spell of 5th level or lower as a spell-like ability twice per day."
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

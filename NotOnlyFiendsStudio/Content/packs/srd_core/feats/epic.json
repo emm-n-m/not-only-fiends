@@ -1,0 +1,57 @@
+[
+  {
+    "id": "epic_toughness",
+    "name": "Epic Toughness",
+    "description": "+30 hit points. Can be taken multiple times.",
+    "type": "epic",
+    "prerequisites": [
+      { "$type": "MinHD", "value": 21 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true
+  },
+  {
+    "id": "epic_prowess",
+    "name": "Epic Prowess",
+    "description": "+1 bonus on all attack rolls. Can be taken multiple times.",
+    "type": "epic",
+    "prerequisites": [
+      { "$type": "MinHD", "value": 21 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true
+  },
+  {
+    "id": "epic_fortitude",
+    "name": "Epic Fortitude",
+    "description": "+4 bonus on Fortitude saving throws.",
+    "type": "epic",
+    "prerequisites": [
+      { "$type": "MinHD", "value": 21 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "epic_reflexes",
+    "name": "Epic Reflexes",
+    "description": "+4 bonus on Reflex saving throws.",
+    "type": "epic",
+    "prerequisites": [
+      { "$type": "MinHD", "value": 21 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "epic_will",
+    "name": "Epic Will",
+    "description": "+4 bonus on Will saving throws.",
+    "type": "epic",
+    "prerequisites": [
+      { "$type": "MinHD", "value": 21 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  }
+]

@@ -1,0 +1,693 @@
+[
+  {
+    "id": "appraise",
+    "name": "Appraise",
+    "keyAbility": "int",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "balance",
+    "name": "Balance",
+    "keyAbility": "dex",
+    "trainedOnly": false,
+    "armorCheckPenalty": true,
+    "description": ""
+  },
+  {
+    "id": "bluff",
+    "name": "Bluff",
+    "keyAbility": "cha",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": "",
+    "synergies": [
+      {
+        "targetSkillId": "sleight_of_hand",
+        "bonus": 2
+      },
+      {
+        "targetSkillId": "diplomacy",
+        "bonus": 2
+      },
+      {
+        "targetSkillId": "intimidate",
+        "bonus": 2
+      }
+    ]
+  },
+  {
+    "id": "climb",
+    "name": "Climb",
+    "keyAbility": "str",
+    "trainedOnly": false,
+    "armorCheckPenalty": true,
+    "description": ""
+  },
+  {
+    "id": "concentration",
+    "name": "Concentration",
+    "keyAbility": "con",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "control_shape",
+    "name": "Control Shape",
+    "keyAbility": "wis",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "craft_alchemy",
+    "name": "Craft (Alchemy)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_armorsmithing",
+    "name": "Craft (Armorsmithing)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_blacksmithing",
+    "name": "Craft (Blacksmithing)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_bowmaking",
+    "name": "Craft (Bowmaking)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_carpentry",
+    "name": "Craft (Carpentry)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_dreamweaving",
+    "name": "Craft (Dreamweaving)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_gemcutting",
+    "name": "Craft (Gemcutting)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_leatherworking",
+    "name": "Craft (Leatherworking)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_metalworking",
+    "name": "Craft (Metalworking)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_painting",
+    "name": "Craft (Painting)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_pottery",
+    "name": "Craft (Pottery)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_sculpting",
+    "name": "Craft (Sculpting)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_shipmaking",
+    "name": "Craft (Shipmaking)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_stonemasonry",
+    "name": "Craft (Stonemasonry)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_stoneworking",
+    "name": "Craft (Stoneworking)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_trapmaking",
+    "name": "Craft (Trapmaking)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_weaponsmithing",
+    "name": "Craft (Weaponsmithing)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "craft_woodworking",
+    "name": "Craft (Woodworking)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "craft"
+  },
+  {
+    "id": "decipher_script",
+    "name": "Decipher Script",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "diplomacy",
+    "name": "Diplomacy",
+    "keyAbility": "cha",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "disable_device",
+    "name": "Disable Device",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "disguise",
+    "name": "Disguise",
+    "keyAbility": "cha",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "escape_artist",
+    "name": "Escape Artist",
+    "keyAbility": "dex",
+    "trainedOnly": false,
+    "armorCheckPenalty": true,
+    "description": ""
+  },
+  {
+    "id": "forgery",
+    "name": "Forgery",
+    "keyAbility": "int",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "gather_information",
+    "name": "Gather Information",
+    "keyAbility": "cha",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "handle_animal",
+    "name": "Handle Animal",
+    "keyAbility": "cha",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "synergies": [
+      {
+        "targetSkillId": "ride",
+        "bonus": 2
+      }
+    ]
+  },
+  {
+    "id": "heal",
+    "name": "Heal",
+    "keyAbility": "wis",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "hide",
+    "name": "Hide",
+    "keyAbility": "dex",
+    "trainedOnly": false,
+    "armorCheckPenalty": true,
+    "description": ""
+  },
+  {
+    "id": "intimidate",
+    "name": "Intimidate",
+    "keyAbility": "cha",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "jump",
+    "name": "Jump",
+    "keyAbility": "str",
+    "trainedOnly": false,
+    "armorCheckPenalty": true,
+    "description": "",
+    "synergies": [
+      {
+        "targetSkillId": "tumble",
+        "bonus": 2
+      }
+    ]
+  },
+  {
+    "id": "knowledge_arcana",
+    "name": "Knowledge (Arcana)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "knowledge",
+    "synergies": [
+      {
+        "targetSkillId": "spellcraft",
+        "bonus": 2
+      }
+    ]
+  },
+  {
+    "id": "knowledge_architecture",
+    "name": "Knowledge (Architecture and Studioering)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "knowledge"
+  },
+  {
+    "id": "knowledge_dungeoneering",
+    "name": "Knowledge (Dungeoneering)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "knowledge"
+  },
+  {
+    "id": "knowledge_geography",
+    "name": "Knowledge (Geography)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "knowledge"
+  },
+  {
+    "id": "knowledge_history",
+    "name": "Knowledge (History)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "knowledge"
+  },
+  {
+    "id": "knowledge_local",
+    "name": "Knowledge (Local)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "knowledge",
+    "synergies": [
+      {
+        "targetSkillId": "gather_information",
+        "bonus": 2
+      }
+    ]
+  },
+  {
+    "id": "knowledge_nature",
+    "name": "Knowledge (Nature)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "knowledge"
+  },
+  {
+    "id": "knowledge_nobility",
+    "name": "Knowledge (Nobility and Royalty)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "knowledge",
+    "synergies": [
+      {
+        "targetSkillId": "diplomacy",
+        "bonus": 2
+      }
+    ]
+  },
+  {
+    "id": "knowledge_planes",
+    "name": "Knowledge (The Planes)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "knowledge"
+  },
+  {
+    "id": "knowledge_religion",
+    "name": "Knowledge (Religion)",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "knowledge"
+  },
+  {
+    "id": "listen",
+    "name": "Listen",
+    "keyAbility": "wis",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "move_silently",
+    "name": "Move Silently",
+    "keyAbility": "dex",
+    "trainedOnly": false,
+    "armorCheckPenalty": true,
+    "description": ""
+  },
+  {
+    "id": "open_lock",
+    "name": "Open Lock",
+    "keyAbility": "dex",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "perform_act",
+    "name": "Perform (Act)",
+    "keyAbility": "cha",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "perform"
+  },
+  {
+    "id": "perform_comedy",
+    "name": "Perform (Comedy)",
+    "keyAbility": "cha",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "perform"
+  },
+  {
+    "id": "perform_dance",
+    "name": "Perform (Dance)",
+    "keyAbility": "cha",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "perform"
+  },
+  {
+    "id": "perform_keyboard_instruments",
+    "name": "Perform (Keyboard Instruments)",
+    "keyAbility": "cha",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "perform"
+  },
+  {
+    "id": "perform_oratory",
+    "name": "Perform (Oratory)",
+    "keyAbility": "cha",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "perform"
+  },
+  {
+    "id": "perform_percussion_instruments",
+    "name": "Perform (Percussion Instruments)",
+    "keyAbility": "cha",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "perform"
+  },
+  {
+    "id": "perform_sing",
+    "name": "Perform (Sing)",
+    "keyAbility": "cha",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "perform"
+  },
+  {
+    "id": "perform_string_instruments",
+    "name": "Perform (String Instruments)",
+    "keyAbility": "cha",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "perform"
+  },
+  {
+    "id": "perform_wind_instruments",
+    "name": "Perform (Wind Instruments)",
+    "keyAbility": "cha",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "perform"
+  },
+  {
+    "id": "profession_bookkeeper",
+    "name": "Profession (Bookkeeper)",
+    "keyAbility": "wis",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "profession"
+  },
+  {
+    "id": "profession_hunter",
+    "name": "Profession (Hunter)",
+    "keyAbility": "wis",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "profession"
+  },
+  {
+    "id": "profession_miner",
+    "name": "Profession (Miner)",
+    "keyAbility": "wis",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "profession"
+  },
+  {
+    "id": "profession_siege_engineer",
+    "name": "Profession (Siege Studioer)",
+    "keyAbility": "wis",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": "",
+    "parentSkill": "profession"
+  },
+  {
+    "id": "ride",
+    "name": "Ride",
+    "keyAbility": "dex",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "search",
+    "name": "Search",
+    "keyAbility": "int",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "sense_motive",
+    "name": "Sense Motive",
+    "keyAbility": "wis",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": "",
+    "synergies": [
+      {
+        "targetSkillId": "diplomacy",
+        "bonus": 2
+      }
+    ]
+  },
+  {
+    "id": "sleight_of_hand",
+    "name": "Sleight of Hand",
+    "keyAbility": "dex",
+    "trainedOnly": true,
+    "armorCheckPenalty": true,
+    "description": ""
+  },
+  {
+    "id": "spellcraft",
+    "name": "Spellcraft",
+    "keyAbility": "int",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "spot",
+    "name": "Spot",
+    "keyAbility": "wis",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "survival",
+    "name": "Survival",
+    "keyAbility": "wis",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": "",
+    "synergies": [
+      {
+        "targetSkillId": "knowledge_nature",
+        "bonus": 2
+      }
+    ]
+  },
+  {
+    "id": "swim",
+    "name": "Swim",
+    "keyAbility": "str",
+    "trainedOnly": false,
+    "armorCheckPenalty": true,
+    "description": ""
+  },
+  {
+    "id": "tumble",
+    "name": "Tumble",
+    "keyAbility": "dex",
+    "trainedOnly": true,
+    "armorCheckPenalty": true,
+    "description": "",
+    "synergies": [
+      {
+        "targetSkillId": "balance",
+        "bonus": 2
+      },
+      {
+        "targetSkillId": "jump",
+        "bonus": 2
+      }
+    ]
+  },
+  {
+    "id": "use_magic_device",
+    "name": "Use Magic Device",
+    "keyAbility": "cha",
+    "trainedOnly": true,
+    "armorCheckPenalty": false,
+    "description": ""
+  },
+  {
+    "id": "use_rope",
+    "name": "Use Rope",
+    "keyAbility": "dex",
+    "trainedOnly": false,
+    "armorCheckPenalty": false,
+    "description": ""
+  }
+]

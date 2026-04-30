@@ -1,0 +1,315 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "race.schema.json",
+  "title": "D&D 3.5e Race Definition",
+  "description": "Schema for RaceDefinition content files. Each file is a JSON array of races. Self-contained for LLM use.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/RaceDefinition" },
+
+  "$defs": {
+
+    "Ability": {
+      "type": "string",
+      "enum": ["str", "dex", "con", "int", "wis", "cha"]
+    },
+
+    "CastingType": {
+      "type": "string",
+      "enum": ["arcane", "divine"]
+    },
+
+    "Size": {
+      "type": "string",
+      "enum": ["fine", "diminutive", "tiny", "small", "medium", "large", "huge", "gargantuan", "colossal"]
+    },
+
+    "CreatureType": {
+      "type": "string",
+      "enum": [
+        "aberration", "animal", "construct", "dragon", "elemental", "fey", "giant",
+        "humanoid", "magicalBeast", "monstrousHumanoid", "ooze", "outsider",
+        "plant", "undead", "vermin"
+      ]
+    },
+
+    "MovementMode": {
+      "type": "string",
+      "enum": ["land", "fly", "swim", "burrow", "climb"]
+    },
+
+    "AttributeTarget": {
+      "type": "string",
+      "enum": ["naturalArmor", "spellResistance", "levelAdjustment", "resistance", "abilityScore"]
+    },
+
+    "AbilityScoreSet": {
+      "type": "object",
+      "properties": {
+        "str": { "type": "integer" },
+        "dex": { "type": "integer" },
+        "con": { "type": "integer" },
+        "int": { "type": "integer" },
+        "wis": { "type": "integer" },
+        "cha": { "type": "integer" }
+      },
+      "required": ["str", "dex", "con", "int", "wis", "cha"],
+      "additionalProperties": false
+    },
+
+    "Formula": {
+      "type": "object",
+      "description": "Formula DSL expression. Variables: TotalHD, BaseBAB, EffectiveBAB, SpellResistance. Functions: Mod(ability), Score(ability), ClassLevel(id), CasterLevel(id), min(a,b), max(a,b).",
+      "properties": {
+        "expression": { "type": "string" }
+      },
+      "required": ["expression"],
+      "additionalProperties": false
+    },
+
+    "ScalingFormula": {
+      "type": "object",
+      "description": "Recalculated every tick using SetAttribute semantics (absolute value).",
+      "properties": {
+        "target": { "$ref": "#/$defs/AttributeTarget" },
+        "resistanceElement": { "type": "string", "description": "Required when target = 'resistance'." },
+        "abilityScore": { "$ref": "#/$defs/Ability", "description": "Required when target = 'abilityScore'." },
+        "formula": { "$ref": "#/$defs/Formula" }
+      },
+      "required": ["target", "formula"],
+      "additionalProperties": false
+    },
+
+    "GrantedAbility": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["id", "name", "description"],
+      "additionalProperties": false
+    },
+
+    "SLA": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "usesPerDay": { "type": "string" },
+        "casterLevel": { "type": "integer" },
+        "saveDC": { "type": "integer" }
+      },
+      "required": ["id", "name"],
+      "additionalProperties": false
+    },
+
+    "UserPermabuff": {
+      "description": "Permabuffs applied at race creation (racialPermabuffs).",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantAbility" },
+            "ability": { "$ref": "#/$defs/GrantedAbility" }
+          },
+          "required": ["$type", "ability"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "RevokeAbility" },
+            "abilityId": { "type": "string" }
+          },
+          "required": ["$type", "abilityId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantSLA" },
+            "sla": { "$ref": "#/$defs/SLA" }
+          },
+          "required": ["$type", "sla"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "RevokeSLA" },
+            "slaId": { "type": "string" }
+          },
+          "required": ["$type", "slaId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantBonusFeat" },
+            "featId": { "type": "string" }
+          },
+          "required": ["$type", "featId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantFeatSlot" },
+            "restriction": { "type": "string" }
+          },
+          "required": ["$type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "ModifyAttribute" },
+            "target": { "$ref": "#/$defs/AttributeTarget" },
+            "value": { "type": "integer" },
+            "resistanceElement": { "type": "string" },
+            "abilityScore": { "$ref": "#/$defs/Ability" }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "SetAttribute" },
+            "target": { "$ref": "#/$defs/AttributeTarget" },
+            "value": { "type": "integer" },
+            "resistanceElement": { "type": "string" },
+            "abilityScore": { "$ref": "#/$defs/Ability" }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "AdvanceSpellcasting" },
+            "castingType": { "$ref": "#/$defs/CastingType" }
+          },
+          "required": ["$type", "castingType"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant an immunity (e.g., 'electricity', 'poison').",
+          "properties": {
+            "$type": { "const": "GrantImmunity" },
+            "immunity": { "type": "string" }
+          },
+          "required": ["$type", "immunity"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant damage reduction (e.g., DR 10/cold iron).",
+          "properties": {
+            "$type": { "const": "GrantDR" },
+            "value": { "type": "integer", "minimum": 1 },
+            "bypassedBy": { "type": "string" }
+          },
+          "required": ["$type", "value", "bypassedBy"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant a racial/miscellaneous skill bonus (separate from ranks).",
+          "properties": {
+            "$type": { "const": "GrantSkillBonus" },
+            "skillId": { "type": "string" },
+            "value": { "type": "integer" }
+          },
+          "required": ["$type", "skillId", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+
+    "RaceDefinition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique ID in snake_case (e.g., 'human', 'outsider', 'half_elf')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Human', 'Outsider')."
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable summary of the race's key mechanical features."
+        },
+        "type": {
+          "$ref": "#/$defs/CreatureType",
+          "description": "Base creature type (e.g., 'humanoid', 'outsider')."
+        },
+        "subtypes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Creature subtypes (e.g., ['native'] for Outsider). Empty array if none."
+        },
+        "size": { "$ref": "#/$defs/Size" },
+        "speeds": {
+          "type": "object",
+          "description": "Movement speeds by mode. Keys are movement modes, values are feet per round.",
+          "patternProperties": {
+            "^(land|fly|swim|burrow|climb)$": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "abilityModifiers": {
+          "description": "Racial ability score adjustments. Use null for races with no modifiers (e.g., Human).",
+          "oneOf": [
+            { "$ref": "#/$defs/AbilityScoreSet" },
+            { "type": "null" }
+          ]
+        },
+        "levelAdjustment": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Level adjustment (LA). 0 for standard races."
+        },
+        "bonusFeats": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Extra feats at HD 1. Humans get 1, most races get 0."
+        },
+        "bonusSkillPointsPerHD": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Extra skill points per HD. Humans get 1, most races get 0."
+        },
+        "racialHDDriverId": {
+          "type": ["string", "null"],
+          "description": "Reference to a racial HD driver (e.g., 'racial_hd:outsider'). null for races without racial HD."
+        },
+        "racialClassSkillAdditions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Skills to ADD to the racial HD driver's class skill list for this specific race. Delta over the generic type driver."
+        },
+        "racialClassSkillRemovals": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Skills to REMOVE from the racial HD driver's class skill list for this specific race. Delta over the generic type driver."
+        },
+        "racialPermabuffs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/UserPermabuff" },
+          "description": "Flat racial abilities applied at creation (darkvision, weapon familiarity, etc.)."
+        },
+        "scalingFormulas": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ScalingFormula" },
+          "description": "Formula-based abilities that recalculate every tick (e.g., SR = TotalHD + 11)."
+        }
+      },
+      "required": ["id", "name", "type", "subtypes", "size", "speeds", "levelAdjustment", "bonusFeats", "bonusSkillPointsPerHD", "racialPermabuffs", "scalingFormulas"],
+      "additionalProperties": false
+    }
+  }
+}

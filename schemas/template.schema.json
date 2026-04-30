@@ -1,0 +1,313 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "template.schema.json",
+  "title": "D&D 3.5e Template Driver",
+  "description": "Schema for TemplateDriver content files (inherited templates like Half-Fiend, Half-Dragon). Each file is a JSON array. Self-contained for LLM use.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/TemplateDriver" },
+
+  "$defs": {
+
+    "Ability": {
+      "type": "string",
+      "enum": ["str", "dex", "con", "int", "wis", "cha"]
+    },
+
+    "CastingType": {
+      "type": "string",
+      "enum": ["arcane", "divine"]
+    },
+
+    "CreatureType": {
+      "type": "string",
+      "enum": [
+        "aberration", "animal", "construct", "dragon", "elemental", "fey", "giant",
+        "humanoid", "magicalBeast", "monstrousHumanoid", "ooze", "outsider",
+        "plant", "undead", "vermin"
+      ]
+    },
+
+    "MovementMode": {
+      "type": "string",
+      "enum": ["land", "fly", "swim", "burrow", "climb"]
+    },
+
+    "AttributeTarget": {
+      "type": "string",
+      "enum": ["naturalArmor", "spellResistance", "levelAdjustment", "resistance", "abilityScore"]
+    },
+
+    "AbilityScoreSet": {
+      "type": "object",
+      "properties": {
+        "str": { "type": "integer" },
+        "dex": { "type": "integer" },
+        "con": { "type": "integer" },
+        "int": { "type": "integer" },
+        "wis": { "type": "integer" },
+        "cha": { "type": "integer" }
+      },
+      "required": ["str", "dex", "con", "int", "wis", "cha"],
+      "additionalProperties": false
+    },
+
+    "NaturalAttack": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Attack name (e.g., 'Bite', 'Claw', 'Tail Slap')." },
+        "damage": { "type": "string", "description": "Damage dice (e.g., '1d6', '2d4'). Use Medium size damage." },
+        "count": { "type": "integer", "minimum": 1, "description": "Number of this attack type (e.g., 2 claws)." },
+        "isPrimary": { "type": "boolean", "description": "true = primary (full BAB), false = secondary (-5 BAB, half STR)." }
+      },
+      "required": ["name", "damage", "count", "isPrimary"],
+      "additionalProperties": false
+    },
+
+    "Formula": {
+      "type": "object",
+      "description": "Formula DSL expression. Variables: TotalHD, BaseBAB, EffectiveBAB, SpellResistance. Functions: Mod(ability), Score(ability), ClassLevel(id), CasterLevel(id), min(a,b), max(a,b).",
+      "properties": {
+        "expression": { "type": "string" }
+      },
+      "required": ["expression"],
+      "additionalProperties": false
+    },
+
+    "ScalingFormula": {
+      "type": "object",
+      "description": "Recalculated every tick using SetAttribute semantics.",
+      "properties": {
+        "target": { "$ref": "#/$defs/AttributeTarget" },
+        "resistanceElement": { "type": "string" },
+        "abilityScore": { "$ref": "#/$defs/Ability" },
+        "formula": { "$ref": "#/$defs/Formula" }
+      },
+      "required": ["target", "formula"],
+      "additionalProperties": false
+    },
+
+    "GrantedAbility": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["id", "name", "description"],
+      "additionalProperties": false
+    },
+
+    "SLA": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Prefix with template abbreviation (e.g., 'hf_sla_darkness' for half-fiend)." },
+        "name": { "type": "string" },
+        "usesPerDay": { "type": "string", "description": "e.g., '3/day', '1/day', 'at will'" },
+        "casterLevel": { "type": "integer" },
+        "saveDC": { "type": "integer" }
+      },
+      "required": ["id", "name"],
+      "additionalProperties": false
+    },
+
+    "UserPermabuff": {
+      "description": "Permabuffs for template creation and scaling.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantAbility" },
+            "ability": { "$ref": "#/$defs/GrantedAbility" }
+          },
+          "required": ["$type", "ability"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "RevokeAbility" },
+            "abilityId": { "type": "string" }
+          },
+          "required": ["$type", "abilityId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantSLA" },
+            "sla": { "$ref": "#/$defs/SLA" }
+          },
+          "required": ["$type", "sla"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "RevokeSLA" },
+            "slaId": { "type": "string" }
+          },
+          "required": ["$type", "slaId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantBonusFeat" },
+            "featId": { "type": "string" }
+          },
+          "required": ["$type", "featId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantFeatSlot" },
+            "restriction": { "type": "string" }
+          },
+          "required": ["$type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "ModifyAttribute" },
+            "target": { "$ref": "#/$defs/AttributeTarget" },
+            "value": { "type": "integer" },
+            "resistanceElement": { "type": "string" },
+            "abilityScore": { "$ref": "#/$defs/Ability" }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "SetAttribute" },
+            "target": { "$ref": "#/$defs/AttributeTarget" },
+            "value": { "type": "integer" },
+            "resistanceElement": { "type": "string" },
+            "abilityScore": { "$ref": "#/$defs/Ability" }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "AdvanceSpellcasting" },
+            "castingType": { "$ref": "#/$defs/CastingType" }
+          },
+          "required": ["$type", "castingType"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantImmunity" },
+            "immunity": { "type": "string" }
+          },
+          "required": ["$type", "immunity"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantDR" },
+            "value": { "type": "integer", "minimum": 1 },
+            "bypassedBy": { "type": "string" }
+          },
+          "required": ["$type", "value", "bypassedBy"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantSkillBonus" },
+            "skillId": { "type": "string" },
+            "value": { "type": "integer" }
+          },
+          "required": ["$type", "skillId", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+
+    "TemplateDriver": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique ID. Format: 'template:snake_case_name' (e.g., 'template:half_fiend', 'template:half_dragon')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Half-Fiend')."
+        },
+        "typeOverride": {
+          "description": "Creature type to override the base race's type. Omit if the template does not change type.",
+          "oneOf": [
+            { "$ref": "#/$defs/CreatureType" },
+            { "type": "null" }
+          ]
+        },
+        "subtypeAdditions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Subtypes to add (e.g., ['native']). Empty array if none."
+        },
+        "abilityModifiers": {
+          "description": "Permanent ability score modifications. Null if no changes.",
+          "oneOf": [
+            { "$ref": "#/$defs/AbilityScoreSet" },
+            { "type": "null" }
+          ]
+        },
+        "naturalArmor": {
+          "type": ["integer", "null"],
+          "description": "Additive natural armor bonus. Omit or null if none."
+        },
+        "speedModifiers": {
+          "type": "object",
+          "description": "Movement speed changes. Values are additive if mode exists, or create new mode.",
+          "patternProperties": {
+            "^(land|fly|swim|burrow|climb)$": { "type": "integer" }
+          },
+          "additionalProperties": false
+        },
+        "levelAdjustment": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Level adjustment added by this template."
+        },
+        "naturalAttacks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/NaturalAttack" },
+          "description": "Natural attacks granted by template."
+        },
+        "creationPermabuffs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/UserPermabuff" },
+          "description": "Applied once at character creation. Use for permanent abilities, resistances, immunities."
+        },
+        "scalingPermabuffs": {
+          "type": "object",
+          "description": "Keyed by total HD threshold (as string). Permabuffs fire ONCE when totalHD reaches exactly that value.",
+          "patternProperties": {
+            "^[0-9]+$": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/UserPermabuff" }
+            }
+          },
+          "additionalProperties": false
+        },
+        "scalingFormulas": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ScalingFormula" },
+          "description": "Recalculated every tick. Use for things like 'SR = TotalHD + 10'."
+        }
+      },
+      "required": ["id", "name", "subtypeAdditions", "levelAdjustment", "naturalAttacks", "creationPermabuffs", "scalingPermabuffs", "scalingFormulas"],
+      "additionalProperties": false
+    }
+  }
+}

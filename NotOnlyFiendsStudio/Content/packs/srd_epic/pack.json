@@ -1,0 +1,9 @@
+{
+  "id": "srd_epic",
+  "name": "SRD Epic Level Handbook",
+  "description": "Epic feats, spells, and content from the Epic Level Handbook (RSRD).",
+  "author": "Wizards of the Coast",
+  "version": "1.0.0",
+  "priority": 0,
+  "depends": ["srd_core"]
+}

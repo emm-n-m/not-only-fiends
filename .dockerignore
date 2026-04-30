@@ -1,0 +1,35 @@
+**/.git
+**/.vs
+**/.vscode
+**/.idea
+**/bin
+**/obj
+**/out
+**/publish
+**/*.user
+**/*.suo
+
+# Test project not needed in Docker
+NotOnlyFiendsStudio.Tests/
+
+
+# Tools and scripts
+tools/
+
+# PCGen data
+pcgen_deceit
+pcgen_data
+pcgen_characters
+
+# Source PDFs
+*.pdf
+*.rtf
+*.docx
+
+# Local config
+.env
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore

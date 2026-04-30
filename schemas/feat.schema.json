@@ -1,0 +1,391 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "feat.schema.json",
+  "title": "D&D 3.5e Feat Definition",
+  "description": "Schema for FeatDefinition content files. Each file is a JSON array of feats. Self-contained for LLM use.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/FeatDefinition" },
+
+  "$defs": {
+
+    "Ability": {
+      "type": "string",
+      "enum": ["str", "dex", "con", "int", "wis", "cha"]
+    },
+
+    "Alignment": {
+      "type": "string",
+      "enum": ["lg", "ln", "le", "ng", "n", "ne", "cg", "cn", "ce"]
+    },
+
+    "CastingType": {
+      "type": "string",
+      "enum": ["arcane", "divine"]
+    },
+
+    "FeatType": {
+      "type": "string",
+      "enum": [
+        "general", "fighterBonus", "metamagic", "itemCreation", "epic",
+        "divine", "vile", "exalted", "tactical", "other"
+      ],
+      "description": "Feat category. 'general' = any character, 'fighterBonus' = fighter bonus feat list, 'epic' = requires 21+ HD."
+    },
+
+    "AttributeTarget": {
+      "type": "string",
+      "enum": ["naturalArmor", "spellResistance", "levelAdjustment", "resistance", "abilityScore"]
+    },
+
+    "GrantedAbility": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["id", "name", "description"],
+      "additionalProperties": false
+    },
+
+    "SLA": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "usesPerDay": { "type": "string" },
+        "casterLevel": { "type": "integer" },
+        "saveDC": { "type": "integer" }
+      },
+      "required": ["id", "name"],
+      "additionalProperties": false
+    },
+
+    "Prerequisite": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "MinBAB" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "MinAbility" },
+            "ability": { "$ref": "#/$defs/Ability" },
+            "value": { "type": "integer" }
+          },
+          "required": ["$type", "ability", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "MinSkillRanks" },
+            "skillId": { "type": "string" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "skillId", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "MinClassLevel" },
+            "classId": { "type": "string" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "classId", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "HasFeat" },
+            "featId": { "type": "string" }
+          },
+          "required": ["$type", "featId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "AlignmentReq" },
+            "allowed": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/Alignment" },
+              "minItems": 1
+            }
+          },
+          "required": ["$type", "allowed"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "MinHD" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "MinCasterLevel" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "CanCastSpellLevel" },
+            "spellLevel": { "type": "integer", "minimum": 0, "maximum": 9 }
+          },
+          "required": ["$type", "spellLevel"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "HasRace" },
+            "raceId": { "type": "string" }
+          },
+          "required": ["$type", "raceId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minimum base save bonus.",
+          "properties": {
+            "$type": { "const": "MinSave" },
+            "save": { "type": "string", "enum": ["fort", "ref", "will"] },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "save", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Must have a specific granted ability (class feature, racial ability, etc.).",
+          "properties": {
+            "$type": { "const": "HasAbility" },
+            "abilityId": { "type": "string" }
+          },
+          "required": ["$type", "abilityId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Must have spellcasting ability. Optionally filter by casting type.",
+          "properties": {
+            "$type": { "const": "HasSpellcasting" },
+            "castingType": { "$ref": "#/$defs/CastingType" }
+          },
+          "required": ["$type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Must have N feats of a specific FeatType (e.g., 'any two item creation feats').",
+          "properties": {
+            "$type": { "const": "HasFeatOfType" },
+            "featType": { "$ref": "#/$defs/FeatType" },
+            "minCount": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          "required": ["$type", "featType"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Must have N feats with a specific tag (e.g., 'any one Abyssal heritor feat').",
+          "properties": {
+            "$type": { "const": "HasFeatWithTag" },
+            "tag": { "type": "string" },
+            "minCount": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          "required": ["$type", "tag"],
+          "additionalProperties": false
+        }
+      ]
+    },
+
+    "UserPermabuff": {
+      "description": "Permabuffs granted when the feat is taken. Most feats have an empty array — only use when the engine needs to track a persistent mechanical effect.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantAbility" },
+            "ability": { "$ref": "#/$defs/GrantedAbility" }
+          },
+          "required": ["$type", "ability"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "RevokeAbility" },
+            "abilityId": { "type": "string" }
+          },
+          "required": ["$type", "abilityId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantSLA" },
+            "sla": { "$ref": "#/$defs/SLA" }
+          },
+          "required": ["$type", "sla"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "RevokeSLA" },
+            "slaId": { "type": "string" }
+          },
+          "required": ["$type", "slaId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantBonusFeat" },
+            "featId": { "type": "string" }
+          },
+          "required": ["$type", "featId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantFeatSlot" },
+            "restriction": { "type": "string" }
+          },
+          "required": ["$type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "ModifyAttribute" },
+            "target": { "$ref": "#/$defs/AttributeTarget" },
+            "value": { "type": "integer" },
+            "resistanceElement": { "type": "string" },
+            "abilityScore": { "$ref": "#/$defs/Ability" }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "SetAttribute" },
+            "target": { "$ref": "#/$defs/AttributeTarget" },
+            "value": { "type": "integer" },
+            "resistanceElement": { "type": "string" },
+            "abilityScore": { "$ref": "#/$defs/Ability" }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "AdvanceSpellcasting" },
+            "castingType": { "$ref": "#/$defs/CastingType" }
+          },
+          "required": ["$type", "castingType"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant domain selection slots.",
+          "properties": {
+            "$type": { "const": "GrantDomainSelection" },
+            "count": { "type": "integer", "minimum": 1, "default": 2 }
+          },
+          "required": ["$type", "count"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantImmunity" },
+            "immunity": { "type": "string" }
+          },
+          "required": ["$type", "immunity"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantDR" },
+            "value": { "type": "integer", "minimum": 1 },
+            "bypassedBy": { "type": "string" }
+          },
+          "required": ["$type", "value", "bypassedBy"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantSkillBonus" },
+            "skillId": { "type": "string" },
+            "value": { "type": "integer" }
+          },
+          "required": ["$type", "skillId", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+
+    "FeatDefinition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique ID in snake_case (e.g., 'power_attack', 'weapon_focus', 'improved_initiative')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Power Attack', 'Weapon Focus')."
+        },
+        "type": { "$ref": "#/$defs/FeatType" },
+        "prerequisites": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Prerequisite" },
+          "description": "Entry requirements. Empty array if no prerequisites."
+        },
+        "grantedPermabuffs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/UserPermabuff" },
+          "description": "Permabuffs applied when feat is taken. Most feats use an empty array — only populate for persistent mechanical effects the engine tracks (e.g., ModifyAttribute for stat bonuses)."
+        },
+        "repeatable": {
+          "type": "boolean",
+          "description": "true if the feat can be taken multiple times (e.g., Toughness, Weapon Focus)."
+        },
+        "selectionRequired": {
+          "type": "string",
+          "description": "If present, the user must choose a specific thing when taking this feat. Common values: 'weapon', 'skill', 'school'. Omit if no selection needed."
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Optional tags for feat subcategories beyond FeatType (e.g., 'abyssal_heritor'). Used by HasFeatWithTag prerequisite. Omit if no tags."
+        }
+      },
+      "required": ["id", "name", "type", "prerequisites", "grantedPermabuffs", "repeatable"],
+      "additionalProperties": false
+    }
+  }
+}

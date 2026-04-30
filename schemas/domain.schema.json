@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "domain.schema.json",
+  "title": "D&D 3.5e Domain Definition",
+  "description": "Schema for DomainDefinition content files. Each file is a JSON array of domains. Self-contained for LLM use.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/DomainDefinition" },
+
+  "$defs": {
+
+    "Ability": {
+      "type": "string",
+      "enum": ["str", "dex", "con", "int", "wis", "cha"]
+    },
+
+    "CastingType": {
+      "type": "string",
+      "enum": ["arcane", "divine"]
+    },
+
+    "AttributeTarget": {
+      "type": "string",
+      "enum": ["naturalArmor", "spellResistance", "levelAdjustment", "resistance", "abilityScore"]
+    },
+
+    "FeatType": {
+      "type": "string",
+      "enum": [
+        "general", "fighterBonus", "metamagic", "itemCreation", "epic",
+        "divine", "vile", "exalted", "tactical", "other"
+      ]
+    },
+
+    "GrantedAbility": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["id", "name", "description"],
+      "additionalProperties": false
+    },
+
+    "SLA": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "usesPerDay": { "type": "string" },
+        "casterLevel": { "type": "integer" },
+        "saveDC": { "type": "integer" }
+      },
+      "required": ["id", "name"],
+      "additionalProperties": false
+    },
+
+    "UserPermabuff": {
+      "description": "Permabuffs granted by the domain's granted power. Most domains use GrantAbility to describe their granted power.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantAbility" },
+            "ability": { "$ref": "#/$defs/GrantedAbility" }
+          },
+          "required": ["$type", "ability"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantSLA" },
+            "sla": { "$ref": "#/$defs/SLA" }
+          },
+          "required": ["$type", "sla"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantBonusFeat" },
+            "featId": { "type": "string" }
+          },
+          "required": ["$type", "featId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "ModifyAttribute" },
+            "target": { "$ref": "#/$defs/AttributeTarget" },
+            "value": { "type": "integer" },
+            "resistanceElement": { "type": "string" },
+            "abilityScore": { "$ref": "#/$defs/Ability" }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantFeatSlot" },
+            "restriction": { "type": "string" }
+          },
+          "required": ["$type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantImmunity" },
+            "immunity": { "type": "string" }
+          },
+          "required": ["$type", "immunity"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantDR" },
+            "value": { "type": "integer", "minimum": 1 },
+            "bypassedBy": { "type": "string" }
+          },
+          "required": ["$type", "value", "bypassedBy"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantSkillBonus" },
+            "skillId": { "type": "string" },
+            "value": { "type": "integer" }
+          },
+          "required": ["$type", "skillId", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+
+    "DomainDefinition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique ID in format 'domain:snake_case_name' (e.g., 'domain:knowledge', 'domain:corruption')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Knowledge', 'Corruption')."
+        },
+        "description": {
+          "type": "string",
+          "description": "The domain's granted power description, copied from the source material."
+        },
+        "grantedPermabuffs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/UserPermabuff" },
+          "description": "Mechanical effects of the granted power. Most domains use a single GrantAbility with descriptive text."
+        },
+        "bonusSpells": {
+          "type": "object",
+          "description": "Domain spell list. Keys are spell levels (1-9 as strings), values are spell IDs in snake_case.",
+          "patternProperties": {
+            "^[1-9]$": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["id", "name", "description", "grantedPermabuffs", "bonusSpells"],
+      "additionalProperties": false
+    }
+  }
+}

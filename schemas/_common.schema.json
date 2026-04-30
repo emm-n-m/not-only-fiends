@@ -1,0 +1,547 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "_common.schema.json",
+  "title": "D&D 3.5e Content System — Shared Definitions",
+  "description": "Canonical reference for shared types used across all content schemas. Not referenced via $ref by per-type schemas (those are self-contained for LLM use). This file is the single source of truth for maintainers.",
+
+  "$defs": {
+
+    "Ability": {
+      "type": "string",
+      "enum": ["str", "dex", "con", "int", "wis", "cha"],
+      "description": "Ability score identifier. Studio is case-insensitive."
+    },
+
+    "Size": {
+      "type": "string",
+      "enum": ["fine", "diminutive", "tiny", "small", "medium", "large", "huge", "gargantuan", "colossal"]
+    },
+
+    "CreatureType": {
+      "type": "string",
+      "enum": [
+        "aberration", "animal", "construct", "dragon", "elemental", "fey", "giant",
+        "humanoid", "magicalBeast", "monstrousHumanoid", "ooze", "outsider",
+        "plant", "undead", "vermin"
+      ]
+    },
+
+    "MovementMode": {
+      "type": "string",
+      "enum": ["land", "fly", "swim", "burrow", "climb"]
+    },
+
+    "Alignment": {
+      "type": "string",
+      "enum": ["lg", "ln", "le", "ng", "n", "ne", "cg", "cn", "ce"],
+      "description": "Two-letter alignment code (lawful/neutral/chaotic + good/neutral/evil). Studio is case-insensitive."
+    },
+
+    "CastingType": {
+      "type": "string",
+      "enum": ["arcane", "divine"]
+    },
+
+    "BABProgression": {
+      "type": "string",
+      "enum": ["good", "average", "poor"],
+      "description": "good = 1:1, average = 3:4, poor = 1:2"
+    },
+
+    "ProgressionRate": {
+      "type": "string",
+      "enum": ["good", "poor"],
+      "description": "good = 2 + level/2, poor = level/3"
+    },
+
+    "FeatType": {
+      "type": "string",
+      "enum": [
+        "general", "fighterBonus", "metamagic", "itemCreation", "epic",
+        "divine", "vile", "exalted", "tactical", "other"
+      ]
+    },
+
+    "AttributeTarget": {
+      "type": "string",
+      "enum": ["naturalArmor", "spellResistance", "levelAdjustment", "resistance", "abilityScore"],
+      "description": "Target for ModifyAttribute/SetAttribute permabuffs."
+    },
+
+    "DriverKind": {
+      "type": "string",
+      "enum": ["class", "racialHD"]
+    },
+
+    "AbilityScoreSet": {
+      "type": "object",
+      "description": "Six ability score values. Property names serialize as lowercase (str, dex, con, int, wis, cha).",
+      "properties": {
+        "str": { "type": "integer" },
+        "dex": { "type": "integer" },
+        "con": { "type": "integer" },
+        "int": { "type": "integer" },
+        "wis": { "type": "integer" },
+        "cha": { "type": "integer" }
+      },
+      "required": ["str", "dex", "con", "int", "wis", "cha"],
+      "additionalProperties": false
+    },
+
+    "SaveProgression": {
+      "type": "object",
+      "properties": {
+        "fort": { "$ref": "#/$defs/ProgressionRate" },
+        "ref": { "$ref": "#/$defs/ProgressionRate" },
+        "will": { "$ref": "#/$defs/ProgressionRate" }
+      },
+      "required": ["fort", "ref", "will"],
+      "additionalProperties": false
+    },
+
+    "SpellcastingProgression": {
+      "type": "object",
+      "description": "Spellcasting table for a class. spellsPerDay is required; spellsKnown only for spontaneous casters (sorcerer, bard).",
+      "properties": {
+        "castingType": { "$ref": "#/$defs/CastingType" },
+        "castingStat": { "$ref": "#/$defs/Ability" },
+        "spellsPerDay": {
+          "type": "object",
+          "description": "Keys = class level (as string), values = object mapping spell level (as string) to slot count.",
+          "patternProperties": {
+            "^[0-9]+$": {
+              "type": "object",
+              "patternProperties": {
+                "^[0-9]+$": { "type": "integer", "minimum": 0 }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "spellsKnown": {
+          "type": "object",
+          "description": "Only for spontaneous casters. Same format as spellsPerDay.",
+          "patternProperties": {
+            "^[0-9]+$": {
+              "type": "object",
+              "patternProperties": {
+                "^[0-9]+$": { "type": "integer", "minimum": 0 }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["castingType", "castingStat", "spellsPerDay"],
+      "additionalProperties": false
+    },
+
+    "ViolationEffect": {
+      "type": "object",
+      "description": "Effect applied when a class's prerequisites are violated (e.g., ex-paladin, ex-monk).",
+      "properties": {
+        "description": { "type": "string" },
+        "revokeAbilityIds": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["description", "revokeAbilityIds"],
+      "additionalProperties": false
+    },
+
+    "GrantedAbility": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique ID for the ability (use snake_case, prefix with class/template abbreviation)." },
+        "name": { "type": "string", "description": "Display name." },
+        "description": { "type": "string", "description": "Brief mechanical description." }
+      },
+      "required": ["id", "name", "description"],
+      "additionalProperties": false
+    },
+
+    "SLA": {
+      "type": "object",
+      "description": "Spell-Like Ability.",
+      "properties": {
+        "id": { "type": "string", "description": "Unique ID (prefix with source abbreviation, e.g., hf_sla_darkness)." },
+        "name": { "type": "string" },
+        "usesPerDay": { "type": "string", "description": "e.g., '3/day', '1/day', 'at will'" },
+        "casterLevel": { "type": "integer", "description": "Caster level for the SLA. Optional." },
+        "saveDC": { "type": "integer", "description": "Save DC. Optional." }
+      },
+      "required": ["id", "name"],
+      "additionalProperties": false
+    },
+
+    "NaturalAttack": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Attack name (e.g., 'Bite', 'Claw', 'Tail Slap')." },
+        "damage": { "type": "string", "description": "Damage dice (e.g., '1d6', '2d4')." },
+        "count": { "type": "integer", "minimum": 1, "description": "Number of this attack type." },
+        "isPrimary": { "type": "boolean", "description": "true = primary (full BAB), false = secondary (-5 penalty)." }
+      },
+      "required": ["name", "damage", "count", "isPrimary"],
+      "additionalProperties": false
+    },
+
+    "Formula": {
+      "type": "object",
+      "description": "Formula DSL expression. Variables: TotalHD, BaseBAB, EffectiveBAB, SpellResistance. Functions: Mod(ability), Score(ability), ClassLevel(classId), CasterLevel(classId), min(a,b), max(a,b). Operators: +, -, *, / (floor division).",
+      "properties": {
+        "expression": { "type": "string", "description": "e.g., 'TotalHD + 10', '10 + Mod(CON)', 'min(TotalHD, 20)'" }
+      },
+      "required": ["expression"],
+      "additionalProperties": false
+    },
+
+    "ScalingFormula": {
+      "type": "object",
+      "description": "Recalculated every tick. Uses SetAttribute semantics (absolute, not additive).",
+      "properties": {
+        "target": { "$ref": "#/$defs/AttributeTarget" },
+        "resistanceElement": { "type": "string", "description": "Required when target = 'resistance'." },
+        "abilityScore": { "$ref": "#/$defs/Ability", "description": "Required when target = 'abilityScore'." },
+        "formula": { "$ref": "#/$defs/Formula" }
+      },
+      "required": ["target", "formula"],
+      "additionalProperties": false
+    },
+
+    "Prerequisite": {
+      "description": "Polymorphic prerequisite. The '$type' field determines the concrete type.",
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Minimum Base Attack Bonus.",
+          "properties": {
+            "$type": { "const": "MinBAB" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minimum ability score (before temporary bonuses).",
+          "properties": {
+            "$type": { "const": "MinAbility" },
+            "ability": { "$ref": "#/$defs/Ability" },
+            "value": { "type": "integer" }
+          },
+          "required": ["$type", "ability", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minimum skill ranks (stored as half-ranks internally; this value is in full ranks).",
+          "properties": {
+            "$type": { "const": "MinSkillRanks" },
+            "skillId": { "type": "string", "description": "snake_case skill ID (e.g., 'knowledge_arcana')." },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "skillId", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minimum class level in a specific class.",
+          "properties": {
+            "$type": { "const": "MinClassLevel" },
+            "classId": { "type": "string", "description": "Driver ID (e.g., 'class:fighter')." },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "classId", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Character must have a specific feat.",
+          "properties": {
+            "$type": { "const": "HasFeat" },
+            "featId": { "type": "string", "description": "Feat ID (snake_case)." }
+          },
+          "required": ["$type", "featId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Character must have one of the allowed alignments.",
+          "properties": {
+            "$type": { "const": "AlignmentReq" },
+            "allowed": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/Alignment" },
+              "minItems": 1
+            }
+          },
+          "required": ["$type", "allowed"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minimum total Hit Dice.",
+          "properties": {
+            "$type": { "const": "MinHD" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minimum caster level (any spellcasting class).",
+          "properties": {
+            "$type": { "const": "MinCasterLevel" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Can cast spells of at least this level.",
+          "properties": {
+            "$type": { "const": "CanCastSpellLevel" },
+            "spellLevel": { "type": "integer", "minimum": 0, "maximum": 9 }
+          },
+          "required": ["$type", "spellLevel"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Character must be a specific race. Used for racial HD prerequisites.",
+          "properties": {
+            "$type": { "const": "HasRace" },
+            "raceId": { "type": "string" }
+          },
+          "required": ["$type", "raceId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minimum base save bonus (fort, ref, or will).",
+          "properties": {
+            "$type": { "const": "MinSave" },
+            "save": { "type": "string", "enum": ["fort", "ref", "will"] },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "save", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Character must have a specific granted ability (class feature, racial ability, etc.).",
+          "properties": {
+            "$type": { "const": "HasAbility" },
+            "abilityId": { "type": "string", "description": "The ID of the granted ability (e.g., 'sneak_attack', 'rage')." }
+          },
+          "required": ["$type", "abilityId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Character must have spellcasting ability. Optionally filter by casting type.",
+          "properties": {
+            "$type": { "const": "HasSpellcasting" },
+            "castingType": { "$ref": "#/$defs/CastingType", "description": "Optional. If set, must have this type of casting. Omit to accept any spellcasting." }
+          },
+          "required": ["$type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Character must have a minimum number of feats of a specific FeatType (e.g., 'any two item creation feats').",
+          "properties": {
+            "$type": { "const": "HasFeatOfType" },
+            "featType": { "$ref": "#/$defs/FeatType" },
+            "minCount": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          "required": ["$type", "featType"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Character must have a minimum number of feats with a specific tag (e.g., 'any one Abyssal heritor feat').",
+          "properties": {
+            "$type": { "const": "HasFeatWithTag" },
+            "tag": { "type": "string", "description": "Tag to match (e.g., 'abyssal_heritor')." },
+            "minCount": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          "required": ["$type", "tag"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Requires a repeatable/selectable feat taken at least minCount times. Counts feats whose ID equals featId or starts with featId + '_'.",
+          "properties": {
+            "$type": { "const": "HasFeatSelections" },
+            "featId": { "type": "string", "description": "Base feat ID (e.g., 'spell_focus')." },
+            "minCount": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          "required": ["$type", "featId", "minCount"],
+          "additionalProperties": false
+        }
+      ]
+    },
+
+    "UserPermabuff": {
+      "description": "User-authored permabuffs only. Auto-computed types (AddHitDie, AddBAB, AddSaves, GrantSkillPoints, AddClassSkills, UpdateSpellcasting) are generated by the engine and must NOT appear in content JSON.",
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Grant a special ability to the character.",
+          "properties": {
+            "$type": { "const": "GrantAbility" },
+            "ability": { "$ref": "#/$defs/GrantedAbility" }
+          },
+          "required": ["$type", "ability"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Remove a previously granted ability by ID. Used for ability upgrades (revoke old, grant new).",
+          "properties": {
+            "$type": { "const": "RevokeAbility" },
+            "abilityId": { "type": "string" }
+          },
+          "required": ["$type", "abilityId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Increment a named counter on the character state. Used for scaling class features: sneak attack dice, rage uses/day, trap sense bonus, smite evil uses, etc. Multiple sources (e.g., Rogue + Assassin sneak attack) stack by incrementing the same counter.",
+          "properties": {
+            "$type": { "const": "ModifyCounter" },
+            "counterId": { "type": "string", "description": "The counter key (e.g., 'sneak_attack_dice', 'rage_uses', 'trap_sense_bonus', 'smite_evil_uses')." },
+            "value": { "type": "integer", "default": 1, "description": "Amount to add to the counter. Defaults to 1 if omitted." }
+          },
+          "required": ["$type", "counterId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant a Spell-Like Ability.",
+          "properties": {
+            "$type": { "const": "GrantSLA" },
+            "sla": { "$ref": "#/$defs/SLA" }
+          },
+          "required": ["$type", "sla"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Remove a previously granted SLA by ID.",
+          "properties": {
+            "$type": { "const": "RevokeSLA" },
+            "slaId": { "type": "string" }
+          },
+          "required": ["$type", "slaId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Automatically grant a feat and apply its GrantedPermabuffs. The feat must exist in the content registry.",
+          "properties": {
+            "$type": { "const": "GrantBonusFeat" },
+            "featId": { "type": "string" }
+          },
+          "required": ["$type", "featId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant a feat selection slot. restriction=null for any feat, or a string like 'fighter_bonus' for restricted slots.",
+          "properties": {
+            "$type": { "const": "GrantFeatSlot" },
+            "restriction": { "type": "string", "description": "null for unrestricted, or a restriction key like 'fighter_bonus'." }
+          },
+          "required": ["$type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Add to or set an attribute value. target determines which attribute.",
+          "properties": {
+            "$type": { "const": "ModifyAttribute" },
+            "target": { "$ref": "#/$defs/AttributeTarget" },
+            "value": { "type": "integer", "description": "Amount to add (can be negative)." },
+            "resistanceElement": { "type": "string", "description": "Required when target = 'resistance'. e.g., 'fire', 'cold'." },
+            "abilityScore": { "$ref": "#/$defs/Ability", "description": "Required when target = 'abilityScore'." }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Set an attribute to an absolute value (overwrites, does not add).",
+          "properties": {
+            "$type": { "const": "SetAttribute" },
+            "target": { "$ref": "#/$defs/AttributeTarget" },
+            "value": { "type": "integer" },
+            "resistanceElement": { "type": "string", "description": "Required when target = 'resistance'." },
+            "abilityScore": { "$ref": "#/$defs/Ability", "description": "Required when target = 'abilityScore'." }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Advance spellcasting by 1 caster level. Used by prestige classes that grant '+1 level of existing spellcasting class'.",
+          "properties": {
+            "$type": { "const": "AdvanceSpellcasting" },
+            "castingType": { "$ref": "#/$defs/CastingType" }
+          },
+          "required": ["$type", "castingType"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant domain selection slots. Clerics get 2 at level 1. A prestige class might grant 1.",
+          "properties": {
+            "$type": { "const": "GrantDomainSelection" },
+            "count": { "type": "integer", "minimum": 1, "default": 2, "description": "Number of domains to select. Default 2 (standard cleric)." }
+          },
+          "required": ["$type", "count"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant an immunity (e.g., 'electricity', 'poison', 'sleep').",
+          "properties": {
+            "$type": { "const": "GrantImmunity" },
+            "immunity": { "type": "string", "description": "Immunity key (e.g., 'electricity', 'poison', 'sleep_effects')." }
+          },
+          "required": ["$type", "immunity"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant damage reduction (e.g., DR 10/cold iron).",
+          "properties": {
+            "$type": { "const": "GrantDR" },
+            "value": { "type": "integer", "minimum": 1, "description": "DR amount (e.g., 10 for DR 10/cold iron)." },
+            "bypassedBy": { "type": "string", "description": "What bypasses the DR (e.g., 'cold iron', 'good', 'magic', 'cold iron and good', '-' for DR X/—)." }
+          },
+          "required": ["$type", "value", "bypassedBy"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant a racial/miscellaneous skill bonus (separate from ranks). Stacks additively from multiple sources.",
+          "properties": {
+            "$type": { "const": "GrantSkillBonus" },
+            "skillId": { "type": "string", "description": "Skill ID (e.g., 'listen', 'spot', 'hide')." },
+            "value": { "type": "integer", "description": "Bonus amount (e.g., 8 for +8 racial bonus to Listen)." }
+          },
+          "required": ["$type", "skillId", "value"],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

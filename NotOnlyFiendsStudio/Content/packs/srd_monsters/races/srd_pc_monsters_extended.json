@@ -1,0 +1,750 @@
+[
+  {
+    "id": "astral_deva",
+    "name": "Astral Deva (Angel)",
+    "description": "Medium outsider (angel, extraplanar, good) with 12 RHD. Celestial warrior with wings of flight, DR 10/evil, SR 30, and change shape. LA +8.",
+    "type": "outsider",
+    "subtypes": ["angel", "extraplanar", "good"],
+    "size": "medium",
+    "speeds": { "land": 50, "fly": 100 },
+    "abilityModifiers": { "str": 12, "dex": 8, "con": 8, "int": 8, "wis": 8, "cha": 10 },
+    "levelAdjustment": 8,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:outsider",
+    "racialClassSkillAdditions": ["concentration", "diplomacy", "escape_artist", "hide", "intimidate", "move_silently"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 15 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "deva_darkvision_60", "name": "Darkvision 60 ft.", "description": "Astral devas can see in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "deva_low_light_vision", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim illumination, retaining color and detail." }
+      },
+      { "$type": "GrantImmunity", "immunity": "acid" },
+      { "$type": "GrantImmunity", "immunity": "cold" },
+      { "$type": "GrantImmunity", "immunity": "petrification" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "deva_resistance_electricity", "name": "Resistance to Electricity 10", "description": "Ignore the first 10 points of electricity damage per attack." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "deva_resistance_fire", "name": "Resistance to Fire 10", "description": "Ignore the first 10 points of fire damage per attack." }
+      },
+      { "$type": "GrantDR", "value": 10, "bypassedBy": "evil" },
+      { "$type": "ModifyAttribute", "target": "spellResistance", "value": 30 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "deva_protective_aura", "name": "Protective Aura (Su)", "description": "20 ft. aura grants allies +4 deflection AC and +4 resistance saves against attacks made or effects created by evil creatures. Functions as magic circle against evil and lesser globe of invulnerability." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "deva_tongues", "name": "Tongues (Su)", "description": "Speak with any creature with a language, as the tongues spell (caster level 12th). Always active." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "deva_uncanny_dodge", "name": "Uncanny Dodge (Ex)", "description": "Retains Dexterity bonus to AC when flat-footed. Cannot be flanked except by a rogue of 16th+ level. Can flank characters with uncanny dodge as a 12th-level rogue." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "deva_change_shape", "name": "Change Shape (Su)", "description": "Assume the form of any Small or Medium humanoid." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "deva_stun", "name": "Stun (Su)", "description": "If the deva strikes a foe twice in one round with its mace, that creature must succeed on a DC 22 Fortitude save or be stunned for 1d6 rounds." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "deva_good_weapons", "name": "Good-Aligned Strikes", "description": "Natural weapons and wielded weapons are treated as good-aligned for the purpose of overcoming damage reduction." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "hound_archon",
+    "name": "Hound Archon",
+    "description": "Medium outsider (archon, lawful, good, extraplanar) with 6 RHD. Canine-headed celestial with scent, teleport, and change shape to any canine. LA +5.",
+    "type": "outsider",
+    "subtypes": ["archon", "extraplanar", "good", "lawful"],
+    "size": "medium",
+    "speeds": { "land": 40 },
+    "abilityModifiers": { "str": 4, "dex": 0, "con": 2, "int": 0, "wis": 2, "cha": 2 },
+    "levelAdjustment": 5,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:outsider",
+    "racialClassSkillAdditions": ["concentration", "diplomacy", "hide", "jump", "move_silently"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 9 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hound_archon_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      { "$type": "GrantImmunity", "immunity": "electricity" },
+      { "$type": "GrantImmunity", "immunity": "petrification" },
+      { "$type": "GrantDR", "value": 10, "bypassedBy": "evil" },
+      { "$type": "ModifyAttribute", "target": "spellResistance", "value": 16 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hound_archon_aura_of_menace", "name": "Aura of Menace (Su)", "description": "20 ft. aura: hostile creatures must succeed on Will DC 16 or take -2 penalty on attacks, AC, and saves for 24 hours (or until they successfully hit the archon)." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hound_archon_magic_circle_evil", "name": "Magic Circle Against Evil (Su)", "description": "Continuous effect as the spell (caster level 6th). Can be dispelled but reactivated as a free action." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hound_archon_scent", "name": "Scent", "description": "Detect opponents by scent within 30 ft. (60 ft. upwind, 15 ft. downwind)." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hound_archon_teleport", "name": "Teleport (Su)", "description": "At will, as greater teleport (self + 50 lbs of objects only, caster level 14th)." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hound_archon_tongues", "name": "Tongues (Su)", "description": "Speak with any creature with a language, as the tongues spell (caster level 14th). Always active." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hound_archon_change_shape", "name": "Change Shape (Su)", "description": "Assume any canine form of Small to Large size. Loses bite/slam/greatsword attacks but gains the bite of the chosen form. +4 circumstance on Hide and Survival checks in canine form." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hound_archon_good_lawful_weapons", "name": "Good- and Lawful-Aligned Strikes", "description": "Natural weapons and wielded weapons are treated as good- and lawful-aligned for DR purposes." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "trumpet_archon",
+    "name": "Trumpet Archon",
+    "description": "Medium outsider (archon, lawful, good, extraplanar) with 12 RHD. Silver-trumpet-wielding archon, casts as 14th-level cleric, DR 10/evil, SR 29. LA +8.",
+    "type": "outsider",
+    "subtypes": ["archon", "extraplanar", "good", "lawful"],
+    "size": "medium",
+    "speeds": { "land": 40, "fly": 90 },
+    "abilityModifiers": { "str": 10, "dex": 6, "con": 12, "int": 6, "wis": 6, "cha": 6 },
+    "levelAdjustment": 8,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:outsider",
+    "racialClassSkillAdditions": ["concentration", "diplomacy", "escape_artist", "handle_animal", "move_silently", "perform_wind_instruments", "ride"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 14 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "trumpet_archon_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      { "$type": "GrantImmunity", "immunity": "electricity" },
+      { "$type": "GrantImmunity", "immunity": "petrification" },
+      { "$type": "GrantDR", "value": 10, "bypassedBy": "evil" },
+      { "$type": "ModifyAttribute", "target": "spellResistance", "value": 29 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "trumpet_archon_aura_of_menace", "name": "Aura of Menace (Su)", "description": "20 ft. aura: hostile creatures must succeed on Will DC 21 or take -2 penalty on attacks, AC, and saves for 24 hours." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "trumpet_archon_magic_circle_evil", "name": "Magic Circle Against Evil (Su)", "description": "Continuous effect as the spell (caster level 14th)." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "trumpet_archon_teleport", "name": "Teleport (Su)", "description": "At will, as greater teleport (self + 50 lbs of objects only, caster level 14th)." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "trumpet_archon_tongues", "name": "Tongues (Su)", "description": "Speak with any creature with a language, as the tongues spell (caster level 14th). Always active." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "trumpet_archon_trumpet", "name": "Trumpet (Su)", "description": "Instrument produces music of piercing beauty and, if willed, paralyzing awe. All non-archons within 100 ft. must succeed on Fortitude DC 19 or be paralyzed 1d4 rounds. Can command trumpet to become a +4 greatsword as a free action." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "trumpet_archon_cleric_casting", "name": "Divine Spellcasting (14th-Level Cleric)", "description": "Casts divine spells as a 14th-level cleric. Access to two domains from: Air, Destruction, Good, Law, War (plus deity's). Save DCs Wisdom-based." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "trumpet_archon_good_lawful_weapons", "name": "Good- and Lawful-Aligned Strikes", "description": "Natural weapons and wielded weapons are treated as good- and lawful-aligned for DR purposes." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "djinni",
+    "name": "Djinni",
+    "description": "Large outsider (air, extraplanar) with 7 RHD. Aristocratic genie of the Plane of Air with flight, whirlwind form, and classic genie spell-like abilities. LA +6.",
+    "type": "outsider",
+    "subtypes": ["air", "extraplanar"],
+    "size": "large",
+    "speeds": { "land": 20, "fly": 60 },
+    "abilityModifiers": { "str": 8, "dex": 8, "con": 4, "int": 4, "wis": 4, "cha": 4 },
+    "levelAdjustment": 6,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:outsider",
+    "racialClassSkillAdditions": ["appraise", "concentration", "escape_artist", "move_silently", "spellcraft"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 3 },
+      { "$type": "GrantBonusFeat", "featId": "improved_initiative" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "djinni_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      { "$type": "GrantImmunity", "immunity": "acid" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "djinni_plane_shift", "name": "Plane Shift (Sp)", "description": "Enter any of the elemental planes, the Astral Plane, or the Material Plane (self + up to 8 linked-hand creatures). As the plane shift spell, caster level 13th." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "djinni_telepathy_100", "name": "Telepathy 100 ft.", "description": "Communicate telepathically with any creature within 100 ft. that has a language." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "djinni_air_mastery", "name": "Air Mastery (Ex)", "description": "Airborne creatures take -1 penalty on attack and damage rolls against a djinni." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "djinni_whirlwind", "name": "Whirlwind (Su)", "description": "Once every 10 minutes, transform into a whirlwind (5 ft. base, up to 30 ft. top, up to 50 ft. tall) for up to 7 rounds. Creatures one size smaller may be caught (DC 20 Reflex save), taking 3d6 damage and potentially held aloft (1d8/round). Charisma-based save includes +3 racial." }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "djinni_invisibility_self", "name": "Invisibility (Self Only)", "usesPerDay": "at will", "casterLevel": 20 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "djinni_create_food_and_water", "name": "Create Food and Water", "usesPerDay": "1/day", "casterLevel": 20 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "djinni_major_creation", "name": "Major Creation (Vegetable Matter Permanent)", "usesPerDay": "1/day", "casterLevel": 20 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "djinni_persistent_image", "name": "Persistent Image", "usesPerDay": "1/day", "casterLevel": 20 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "djinni_wind_walk", "name": "Wind Walk", "usesPerDay": "1/day", "casterLevel": 20 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "djinni_gaseous_form", "name": "Gaseous Form (1 hour)", "usesPerDay": "1/day", "casterLevel": 20 }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "azer",
+    "name": "Azer",
+    "description": "Medium outsider (fire, extraplanar) with 2 RHD. Dwarflike fire-plane natives with intense body heat, fire immunity, and cold vulnerability. LA +4.",
+    "type": "outsider",
+    "subtypes": ["extraplanar", "fire"],
+    "size": "medium",
+    "speeds": { "land": 30 },
+    "abilityModifiers": { "str": 2, "dex": 2, "con": 2, "int": 2, "wis": 2, "cha": -2 },
+    "levelAdjustment": 4,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:outsider",
+    "racialClassSkillAdditions": ["climb", "hide", "jump"],
+    "racialClassSkillRemovals": ["bluff", "knowledge_planes", "sense_motive", "survival"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 6 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "azer_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      { "$type": "GrantImmunity", "immunity": "fire" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "azer_cold_vulnerability", "name": "Vulnerability to Cold", "description": "Takes half again as much (+50%) damage from cold." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "azer_heat", "name": "Heat (Ex)", "description": "Body is intensely hot; unarmed attacks deal +1 fire damage, and metallic weapons wielded also conduct this heat." }
+      }
+    ],
+    "scalingFormulas": [
+      {
+        "target": "spellResistance",
+        "formula": { "expression": "TotalHD + 11" }
+      }
+    ]
+  },
+  {
+    "id": "grig",
+    "name": "Grig (Sprite)",
+    "description": "Tiny fey with 1/2 RHD. Cricket-like faerie with leaping prowess, fiddle music, and DR 5/cold iron. LA +3.",
+    "type": "fey",
+    "subtypes": [],
+    "size": "tiny",
+    "speeds": { "land": 20, "fly": 40 },
+    "abilityModifiers": { "str": -6, "dex": 8, "con": 2, "int": 0, "wis": 2, "cha": 4 },
+    "levelAdjustment": 3,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:fey",
+    "racialClassSkillAdditions": ["craft_alchemy", "escape_artist", "hide", "jump", "listen", "move_silently", "perform_string_instruments", "search", "spot"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
+      { "$type": "GrantBonusFeat", "featId": "dodge" },
+      { "$type": "GrantBonusFeat", "featId": "weapon_finesse" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "grig_low_light_vision", "name": "Low-Light Vision", "description": "See twice as far as a human in dim illumination." }
+      },
+      { "$type": "GrantDR", "value": 5, "bypassedBy": "cold iron" },
+      { "$type": "ModifyAttribute", "target": "spellResistance", "value": 17 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "grig_fiddle", "name": "Fiddle (Su)", "description": "One grig per band carries a tiny fiddle. Non-sprites within 30 ft. must succeed on Will DC 12 or be affected as by irresistible dance while the fiddle plays." }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "search", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "spot", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "listen", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "jump", "value": 8 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "grig_forest_move_silently", "name": "Forest Move Silently", "description": "+5 additional racial bonus on Move Silently checks in a forest setting." }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "grig_disguise_self", "name": "Disguise Self", "usesPerDay": "3/day", "casterLevel": 9 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "grig_entangle", "name": "Entangle", "usesPerDay": "3/day", "casterLevel": 9, "saveDC": 13 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "grig_invisibility_self", "name": "Invisibility (Self Only)", "usesPerDay": "3/day", "casterLevel": 9 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "grig_pyrotechnics", "name": "Pyrotechnics", "usesPerDay": "3/day", "casterLevel": 9, "saveDC": 14 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "grig_ventriloquism", "name": "Ventriloquism", "usesPerDay": "3/day", "casterLevel": 9, "saveDC": 13 }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "nixie",
+    "name": "Nixie (Sprite)",
+    "description": "Small aquatic fey with 1 RHD. Lake-dwelling charmer with DR 5/cold iron, water breathing, and wild empathy. LA +3.",
+    "type": "fey",
+    "subtypes": ["aquatic"],
+    "size": "small",
+    "speeds": { "land": 20, "swim": 30 },
+    "abilityModifiers": { "str": -4, "dex": 6, "con": 0, "int": 2, "wis": 2, "cha": 8 },
+    "levelAdjustment": 3,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:fey",
+    "racialClassSkillAdditions": ["bluff", "craft_alchemy", "escape_artist", "handle_animal", "hide", "listen", "perform_sing", "search", "sense_motive", "spot", "swim"],
+    "racialPermabuffs": [
+      { "$type": "GrantBonusFeat", "featId": "dodge" },
+      { "$type": "GrantBonusFeat", "featId": "weapon_finesse" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "nixie_low_light_vision", "name": "Low-Light Vision", "description": "See twice as far as a human in dim illumination." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "nixie_amphibious", "name": "Amphibious (Ex)", "description": "Although nixies are aquatic, they can survive indefinitely on land." }
+      },
+      { "$type": "GrantDR", "value": 5, "bypassedBy": "cold iron" },
+      { "$type": "ModifyAttribute", "target": "spellResistance", "value": 16 },
+      { "$type": "GrantSkillBonus", "skillId": "search", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "spot", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "listen", "value": 2 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "nixie_water_hide", "name": "Water Concealment", "description": "+5 racial bonus on Hide checks when in water." }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "nixie_charm_person", "name": "Charm Person", "usesPerDay": "3/day", "casterLevel": 4, "saveDC": 15 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "nixie_water_breathing", "name": "Water Breathing", "usesPerDay": "1/day", "casterLevel": 12 }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "nixie_wild_empathy", "name": "Wild Empathy (Ex)", "description": "As the druid class feature with +6 racial bonus on the check." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "gnoll",
+    "name": "Gnoll",
+    "description": "Medium humanoid (gnoll) with 2 RHD. Hyena-headed savage with darkvision and simple combat instincts. LA +1.",
+    "type": "humanoid",
+    "subtypes": ["gnoll"],
+    "size": "medium",
+    "speeds": { "land": 30 },
+    "abilityModifiers": { "str": 4, "dex": 0, "con": 2, "int": -2, "wis": 0, "cha": -2 },
+    "levelAdjustment": 1,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:humanoid",
+    "racialClassSkillAdditions": ["listen", "spot"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gnoll_darkvision_60", "name": "Darkvision 60 ft.", "description": "Gnolls can see in the dark up to 60 feet." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "goblin",
+    "name": "Goblin",
+    "description": "Small humanoid (goblinoid) with 1 RHD (treated as class level). Small wicked scavenger with darkvision and skilled ambush tactics. LA +0.",
+    "type": "humanoid",
+    "subtypes": ["goblinoid"],
+    "size": "small",
+    "speeds": { "land": 30 },
+    "abilityModifiers": { "str": -2, "dex": 2, "con": 0, "int": 0, "wis": 0, "cha": -2 },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "goblin_darkvision_60", "name": "Darkvision 60 ft.", "description": "Goblins can see in the dark up to 60 feet." }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "move_silently", "value": 4 },
+      { "$type": "GrantSkillBonus", "skillId": "ride", "value": 4 }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "sahuagin",
+    "name": "Sahuagin",
+    "description": "Medium monstrous humanoid (aquatic) with 2 RHD. Predatory shark-fish folk with swim 60, blindsense, blood frenzy, and rake. LA +2.",
+    "type": "monstrousHumanoid",
+    "subtypes": ["aquatic"],
+    "size": "medium",
+    "speeds": { "land": 30, "swim": 60 },
+    "abilityModifiers": { "str": 4, "dex": 2, "con": 2, "int": 4, "wis": 2, "cha": -2 },
+    "levelAdjustment": 2,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:monstrous_humanoid",
+    "racialClassSkillAdditions": ["handle_animal", "profession_hunter", "ride"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 5 },
+      { "$type": "GrantBonusFeat", "featId": "multiattack" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "sahuagin_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "sahuagin_blindsense_30", "name": "Blindsense 30 ft. (Underwater)", "description": "Can locate creatures underwater within 30 ft. Works only while submerged." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "sahuagin_blood_frenzy", "name": "Blood Frenzy (Ex)", "description": "Once per day, when taking damage in combat, the sahuagin may enter a frenzy next round: +2 Constitution, +2 Strength, -2 AC, and attacks madly until it or its opponent is dead. Cannot voluntarily end the frenzy." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "sahuagin_rake", "name": "Rake (Ex)", "description": "Two additional rake attacks (+2 melee, 1d4+1) when attacking while swimming." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "sahuagin_freshwater_sensitivity", "name": "Freshwater Sensitivity (Ex)", "description": "Fully immersed in fresh water, must succeed on Fortitude DC 15 or become fatigued. Repeats every 10 minutes." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "sahuagin_light_blindness", "name": "Light Blindness (Ex)", "description": "Abrupt exposure to bright light blinds a sahuagin for 1 round. On subsequent rounds, dazzled while in bright light." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "sahuagin_speak_with_sharks", "name": "Speak with Sharks (Ex)", "description": "Telepathically communicate simple concepts with sharks up to 150 ft. away." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "sahuagin_water_dependent", "name": "Water Dependent (Ex)", "description": "Can survive out of water for 1 hour per 2 points of Constitution." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "fire_giant",
+    "name": "Fire Giant",
+    "description": "Large giant (fire) with 15 RHD. Volcano-dwelling giant with fire immunity, cold vulnerability, and heated-rock throwing. LA +4.",
+    "type": "giant",
+    "subtypes": ["fire"],
+    "size": "large",
+    "speeds": { "land": 40 },
+    "abilityModifiers": { "str": 20, "dex": -2, "con": 10, "int": 0, "wis": 4, "cha": 0 },
+    "levelAdjustment": 4,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:giant",
+    "racialClassSkillAdditions": ["craft_stoneworking", "intimidate"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 8 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "fire_giant_low_light_vision", "name": "Low-Light Vision", "description": "See twice as far as a human in dim illumination." }
+      },
+      { "$type": "GrantImmunity", "immunity": "fire" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "fire_giant_cold_vulnerability", "name": "Vulnerability to Cold", "description": "Takes half again as much (+50%) damage from cold." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "fire_giant_rock_throwing", "name": "Rock Throwing (Ex)", "description": "Range increment 120 ft. Can heat rocks in fire/lava to deal extra fire damage." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "fire_giant_rock_catching", "name": "Rock Catching (Ex)", "description": "Can catch Small, Medium, or Large thrown rocks with a successful Reflex save (DC 15, 20, or 25 respectively)." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "frost_giant",
+    "name": "Frost Giant",
+    "description": "Large giant (cold) with 14 RHD. Arctic giant with cold immunity, fire vulnerability, and rock-throwing tactics. LA +4.",
+    "type": "giant",
+    "subtypes": ["cold"],
+    "size": "large",
+    "speeds": { "land": 40 },
+    "abilityModifiers": { "str": 18, "dex": -2, "con": 10, "int": 0, "wis": 4, "cha": 0 },
+    "levelAdjustment": 4,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:giant",
+    "racialClassSkillAdditions": ["craft_stoneworking", "intimidate"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 9 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "frost_giant_low_light_vision", "name": "Low-Light Vision", "description": "See twice as far as a human in dim illumination." }
+      },
+      { "$type": "GrantImmunity", "immunity": "cold" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "frost_giant_fire_vulnerability", "name": "Vulnerability to Fire", "description": "Takes half again as much (+50%) damage from fire." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "frost_giant_rock_throwing", "name": "Rock Throwing (Ex)", "description": "Range increment 120 ft." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "frost_giant_rock_catching", "name": "Rock Catching (Ex)", "description": "Can catch Small, Medium, or Large thrown rocks with a successful Reflex save." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "hill_giant",
+    "name": "Hill Giant",
+    "description": "Large giant with 12 RHD. Brutish highland giant with low-light vision and rock-throwing tactics. LA +4.",
+    "type": "giant",
+    "subtypes": [],
+    "size": "large",
+    "speeds": { "land": 40 },
+    "abilityModifiers": { "str": 14, "dex": -2, "con": 8, "int": -4, "wis": 0, "cha": -4 },
+    "levelAdjustment": 4,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:giant",
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 9 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hill_giant_low_light_vision", "name": "Low-Light Vision", "description": "See twice as far as a human in dim illumination." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hill_giant_rock_throwing", "name": "Rock Throwing (Ex)", "description": "Range increment 120 ft." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hill_giant_rock_catching", "name": "Rock Catching (Ex)", "description": "Can catch Small, Medium, or Large thrown rocks with a successful Reflex save." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "hill_giant_weapon_armor_proficiency", "name": "Weapon and Armor Proficiency", "description": "Automatically proficient with simple and martial weapons, light and medium armor, and shields." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "stone_giant",
+    "name": "Stone Giant",
+    "description": "Large giant (earth) with 14 RHD. Reclusive mountain-dwelling giant with darkvision, low-light vision, and stone-camouflage Hide. LA +4 (elder +6).",
+    "type": "giant",
+    "subtypes": ["earth"],
+    "size": "large",
+    "speeds": { "land": 40 },
+    "abilityModifiers": { "str": 16, "dex": 4, "con": 8, "int": 0, "wis": 2, "cha": 0 },
+    "levelAdjustment": 4,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:giant",
+    "racialClassSkillAdditions": ["hide"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 11 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "stone_giant_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "stone_giant_low_light_vision", "name": "Low-Light Vision", "description": "See twice as far as a human in dim illumination." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "stone_giant_rock_throwing", "name": "Rock Throwing (Ex)", "description": "Range increment 180 ft. Uses both hands to throw." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "stone_giant_rock_catching", "name": "Rock Catching (Ex)", "description": "+4 racial bonus on Reflex save to catch thrown rocks." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "stone_giant_rocky_hide", "name": "Rocky Terrain Camouflage", "description": "+8 racial bonus on Hide checks in rocky terrain." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "athach",
+    "name": "Athach",
+    "description": "Huge aberration with 14 RHD. Hulking three-armed giant with a poisonous bite and multi-weapon strikes. LA +5.",
+    "type": "aberration",
+    "subtypes": [],
+    "size": "huge",
+    "speeds": { "land": 50 },
+    "abilityModifiers": { "str": 16, "dex": 2, "con": 10, "int": -4, "wis": 2, "cha": -4 },
+    "levelAdjustment": 5,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:aberration",
+    "racialClassSkillAdditions": ["climb", "jump", "listen", "spot"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 8 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "athach_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "athach_third_arm", "name": "Three Arms", "description": "An athach has three arms and can wield three weapons (primary + two off-hand) with Multiweapon Fighting." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "athach_bite_poison", "name": "Poison Bite (Ex)", "description": "Injury poison on bite: Fort DC 19 (Con-based), initial 1d6 Str, secondary 2d6 Str." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "skum",
+    "name": "Skum",
+    "description": "Medium aquatic aberration with 2 RHD. Frog-fish slave-race of aboleths with amphibious nature, rake, and strong swim. LA +3.",
+    "type": "aberration",
+    "subtypes": ["aquatic"],
+    "size": "medium",
+    "speeds": { "land": 20, "swim": 40 },
+    "abilityModifiers": { "str": 8, "dex": 2, "con": 2, "int": 0, "wis": 0, "cha": -4 },
+    "levelAdjustment": 3,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:aberration",
+    "racialClassSkillAdditions": ["hide", "listen", "move_silently", "spot", "swim"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "skum_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "skum_amphibious", "name": "Amphibious (Ex)", "description": "Can breathe air and water equally; may live indefinitely in either environment." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "skum_rake", "name": "Rake (Ex)", "description": "Two additional rake attacks (1d6+2) when attacking while swimming." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "skum_underwater_skills", "name": "Underwater Senses", "description": "+4 racial bonus on Hide, Listen, and Spot checks underwater." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "shambling_mound",
+    "name": "Shambling Mound",
+    "description": "Large plant with 8 RHD. Intelligent carnivorous vegetable mass; immune to electricity (gains Con when shocked), resist fire 10, plant immunities. LA +6.",
+    "type": "plant",
+    "subtypes": [],
+    "size": "large",
+    "speeds": { "land": 20, "swim": 20 },
+    "abilityModifiers": { "str": 10, "dex": 0, "con": 6, "int": -4, "wis": 0, "cha": -2 },
+    "levelAdjustment": 6,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:plant",
+    "racialClassSkillAdditions": ["hide", "listen", "move_silently"],
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 11 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shambler_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shambler_low_light_vision", "name": "Low-Light Vision", "description": "See twice as far as a human in dim illumination." }
+      },
+      { "$type": "GrantImmunity", "immunity": "electricity" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shambler_electricity_con_gain", "name": "Electrical Invigoration (Ex)", "description": "Instead of taking electricity damage, gains 1d4 temporary Con (loses 1 per hour)." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shambler_fire_resistance_10", "name": "Resistance to Fire 10", "description": "Ignore the first 10 points of fire damage per attack." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shambler_plant_traits", "name": "Plant Traits", "description": "Immune to mind-affecting effects (charms, compulsions, phantasms, patterns, morale), poison, sleep, paralysis, polymorph, and stunning. Not subject to critical hits." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shambler_improved_grab", "name": "Improved Grab (Ex)", "description": "When the shambler hits with both slam attacks, it may attempt a grapple as a free action without provoking AoOs." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shambler_constrict", "name": "Constrict (Ex)", "description": "Deals 2d6+7 bludgeoning damage on a successful grapple check." }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "hide", "value": 4 },
+      { "$type": "GrantSkillBonus", "skillId": "listen", "value": 4 },
+      { "$type": "GrantSkillBonus", "skillId": "move_silently", "value": 4 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "shambler_swamp_hide", "name": "Swamp/Forest Camouflage", "description": "+12 additional racial bonus on Hide checks when in swampy or forested areas (stacks to +16 total)." }
+      }
+    ],
+    "scalingFormulas": []
+  }
+]

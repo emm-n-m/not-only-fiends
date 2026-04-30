@@ -1,0 +1,8 @@
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ${CHARACTERS_PATH}:/data/characters
+      - ${EXTRA_PACKS_PATH}:/data/extra-packs

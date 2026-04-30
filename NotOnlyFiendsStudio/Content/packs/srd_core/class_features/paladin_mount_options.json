@@ -1,0 +1,11 @@
+[
+  {
+    "id": "paladin_mount_options",
+    "name": "Paladin Special Mount Options",
+    "description": "Choose a mount that will serve as your paladin special mount. Core PHB offers a heavy warhorse (or warpony for a Small paladin).",
+    "options": [
+      { "id": "companion_heavy_warhorse", "name": "Heavy Warhorse", "description": "Large combat-trained mount. Default paladin mount.", "minEffectiveLevel": 5 },
+      { "id": "companion_warpony",        "name": "Warpony",        "description": "Medium combat-trained pony for a Small paladin.", "minEffectiveLevel": 5 }
+    ]
+  }
+]

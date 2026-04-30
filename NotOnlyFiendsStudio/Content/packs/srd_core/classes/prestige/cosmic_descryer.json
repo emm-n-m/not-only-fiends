@@ -1,0 +1,93 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:cosmic_descryer",
+  "name": "Cosmic Descryer",
+  "hitDie": 4,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "bluff", "concentration", "craft", "diplomacy",
+    "knowledge_arcana", "knowledge_religion", "knowledge_planes",
+    "profession", "sense_motive", "spellcraft"
+  ],
+  "babProgression": "poor",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "poor",
+    "will": "good"
+  },
+  "perLevelPermabuffs": [],
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "cd_superior_planar_summoning", "name": "Superior Planar Summoning", "description": "Summoned creatures gain +4 HD per 4 class levels." }
+      }
+    ],
+    "2": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "cd_naturalization_1", "name": "Naturalization", "description": "Become native to one additional plane." }
+      }
+    ],
+    "3": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "cd_enduring_gate", "name": "Enduring Gate", "description": "Gate spell remains open for floor(CL/3) days." }
+      }
+    ],
+    "4": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "cd_naturalization_2", "name": "Naturalization", "description": "Become native to one additional plane." }
+      }
+    ],
+    "5": [
+      {
+        "$type": "GrantFeatSlot",
+        "restriction": null
+      }
+    ],
+    "6": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "cd_naturalization_3", "name": "Naturalization", "description": "Become native to one additional plane." }
+      }
+    ],
+    "7": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "cd_cosmic_connection", "name": "Cosmic Connection", "description": "Mysterious planar connection, 1/day." }
+      }
+    ],
+    "8": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "cd_naturalization_4", "name": "Naturalization", "description": "Become native to one additional plane." }
+      }
+    ],
+    "9": [],
+    "10": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" },
+      {
+        "$type": "GrantFeatSlot",
+        "restriction": null
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "cd_naturalization_5", "name": "Naturalization", "description": "Become native to one additional plane." }
+      }
+    ]
+  },
+  "prerequisites": [
+    { "$type": "HasFeat", "featId": "spell_focus_conjuration" },
+    { "$type": "MinSkillRanks", "skillId": "knowledge_planes", "value": 24 }
+  ],
+  "maxLevel": 10
+}
+]

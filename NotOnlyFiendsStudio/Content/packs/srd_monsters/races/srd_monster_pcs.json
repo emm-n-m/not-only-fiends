@@ -1,0 +1,307 @@
+[
+  {
+    "id": "gargoyle",
+    "name": "Gargoyle",
+    "description": "Medium monstrous humanoid (earth) with 4 RHD. Winged stone-skinned creatures with DR 10/magic, freeze, and flight. LA +5.",
+    "type": "monstrousHumanoid",
+    "subtypes": ["earth"],
+    "size": "medium",
+    "speeds": { "land": 40, "fly": 60 },
+    "abilityModifiers": { "str": 4, "dex": 4, "con": 8, "int": -4, "wis": 0, "cha": -4 },
+    "levelAdjustment": 5,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:monstrous_humanoid",
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gargoyle_darkvision_60", "name": "Darkvision 60 ft.", "description": "Gargoyles can see in the dark up to 60 feet." }
+      },
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 4 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gargoyle_dr_magic", "name": "DR 10/magic", "description": "Damage reduction 10/magic. Gargoyle natural weapons are treated as magic for the purpose of overcoming DR." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gargoyle_freeze", "name": "Freeze (Ex)", "description": "A gargoyle can hold still to appear as a stone statue. Spot DC 20 to notice it is alive." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gargoyle_no_sustenance", "name": "No Sustenance", "description": "Gargoyles require no food, water, or air." }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "hide", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "listen", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "spot", "value": 2 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gargoyle_stone_hide", "name": "Stone Concealment", "description": "+8 additional racial bonus on Hide checks when concealed against a background of stone (stacks with the general +2 Hide)." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "grimlock",
+    "name": "Grimlock",
+    "description": "Medium monstrous humanoid with 2 RHD. Blind subterranean savages with blindsight, scent, and immunity to gaze and visual effects. LA +2.",
+    "type": "monstrousHumanoid",
+    "subtypes": [],
+    "size": "medium",
+    "speeds": { "land": 30 },
+    "abilityModifiers": { "str": 4, "dex": 2, "con": 2, "int": 0, "wis": -2, "cha": -4 },
+    "levelAdjustment": 2,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:monstrous_humanoid",
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "grimlock_blindsight_40", "name": "Blindsight 40 ft.", "description": "Grimlocks maneuver and fight as well as a sighted creature by using scent and acute hearing within 40 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "grimlock_scent", "name": "Scent", "description": "Detect opponents by scent within 30 ft. (60 ft. upwind, 15 ft. downwind)." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "grimlock_blindness_immunities", "name": "Immune to Gaze and Visual Effects", "description": "Because they have no true sight, grimlocks are immune to gaze attacks, visual effects, illusions, and other forms of attack that rely on sight." }
+      },
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 4 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "grimlock_battleaxe_proficiency", "name": "Battleaxe Proficiency", "description": "A grimlock is automatically proficient with the battleaxe." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "grimlock_stone_hide", "name": "Stone Camouflage", "description": "+10 racial bonus on Hide checks in mountainous or underground terrain." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "satyr",
+    "name": "Satyr",
+    "description": "Medium fey with 5 RHD. Woodland reveler with DR 5/cold iron, magical pan pipes, and natural Perform/stealth aptitude. LA +2.",
+    "type": "fey",
+    "subtypes": [],
+    "size": "medium",
+    "speeds": { "land": 40 },
+    "abilityModifiers": { "str": 0, "dex": 2, "con": 2, "int": 2, "wis": 2, "cha": 2 },
+    "levelAdjustment": 2,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:fey",
+    "racialClassSkillAdditions": ["bluff", "hide", "knowledge_nature", "listen", "move_silently", "perform_wind_instruments", "spot"],
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "satyr_low_light_vision", "name": "Low-Light Vision", "description": "A satyr can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination." }
+      },
+      { "$type": "GrantBonusFeat", "featId": "alertness" },
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 4 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "satyr_head_butt", "name": "Head Butt", "description": "Natural weapon: Head butt (1d6 bludgeoning)." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "satyr_pipes", "name": "Pipes (Su)", "description": "When a satyr plays its pan pipes, all creatures within 60 ft. (except satyrs) must succeed on a DC 13 Will save or be affected by charm person, sleep, or fear (satyr's choice, caster level 10th). A creature that saves cannot be affected by the same pipes for 24 hours. The save DC is Charisma-based. The pipes are only magical in a satyr's hands." }
+      },
+      { "$type": "GrantDR", "value": 5, "bypassedBy": "cold iron" },
+      { "$type": "GrantSkillBonus", "skillId": "hide", "value": 4 },
+      { "$type": "GrantSkillBonus", "skillId": "listen", "value": 4 },
+      { "$type": "GrantSkillBonus", "skillId": "move_silently", "value": 4 },
+      { "$type": "GrantSkillBonus", "skillId": "spot", "value": 4 }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "janni",
+    "name": "Janni",
+    "description": "Medium native outsider with 6 RHD. Weakest of the genies; flight, resistance to fire 10, telepathy, and genie spell-like abilities. LA +5.",
+    "type": "outsider",
+    "subtypes": ["native"],
+    "size": "medium",
+    "speeds": { "land": 30, "fly": 20 },
+    "abilityModifiers": { "str": 6, "dex": 4, "con": 2, "int": 4, "wis": 4, "cha": 2 },
+    "levelAdjustment": 5,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:outsider",
+    "racialClassSkillAdditions": ["appraise", "concentration", "escape_artist", "move_silently", "ride"],
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "janni_darkvision_60", "name": "Darkvision 60 ft.", "description": "Janni can see in the dark up to 60 feet." }
+      },
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
+      { "$type": "GrantBonusFeat", "featId": "improved_initiative" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "janni_fire_resistance_10", "name": "Resistance to Fire 10", "description": "Janni have resistance 10 to fire damage." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "janni_elemental_endurance", "name": "Elemental Endurance (Ex)", "description": "Janni can survive on any inner plane (Air, Earth, Fire, Water) for up to 48 hours; beyond that, they take 1 HP of damage per hour until they return to the Material Plane." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "janni_plane_shift", "name": "Plane Shift (Sp)", "description": "A janni can enter any of the elemental planes, the Astral Plane, or the Material Plane (up to 8 additional creatures linked by hand). Otherwise as the plane shift spell, caster level 13th." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "janni_telepathy_100", "name": "Telepathy 100 ft.", "description": "Janni can communicate telepathically with any creature within 100 ft. that has a language." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "janni_change_size", "name": "Change Size (Sp)", "description": "Twice per day, a janni can magically change a creature's size as enlarge person or reduce person (can affect the janni). Fortitude DC 13 negates. Save DC is Charisma-based." }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "janni_invisibility", "name": "Invisibility (Self Only)", "usesPerDay": "3/day", "casterLevel": 12 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "janni_speak_with_animals", "name": "Speak with Animals", "usesPerDay": "3/day", "casterLevel": 12 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "janni_create_food_and_water", "name": "Create Food and Water", "usesPerDay": "1/day", "casterLevel": 7 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "janni_ethereal_jaunt", "name": "Ethereal Jaunt (1 hour)", "usesPerDay": "1/day", "casterLevel": 12 }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "svirfneblin",
+    "name": "Svirfneblin (Deep Gnome)",
+    "description": "Small humanoid (gnome). Deep Underdark gnome subrace with darkvision 120, SR (11 + class levels), +2 saves, nondetection, and rogue-like stealth. LA +3.",
+    "type": "humanoid",
+    "subtypes": ["gnome"],
+    "size": "small",
+    "speeds": { "land": 20 },
+    "abilityModifiers": { "str": -2, "dex": 2, "con": 0, "int": 0, "wis": 2, "cha": -4 },
+    "levelAdjustment": 3,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "svirfneblin_darkvision_120", "name": "Darkvision 120 ft.", "description": "Svirfneblin can see in the dark up to 120 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "svirfneblin_low_light_vision", "name": "Low-Light Vision", "description": "A svirfneblin can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "svirfneblin_stonecunning", "name": "Stonecunning", "description": "+2 racial bonus on Search checks to notice unusual stonework, passive search within 10 ft., can find stonework traps as a rogue, and can intuit depth underground." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "svirfneblin_save_bonus", "name": "Svirfneblin Luck", "description": "+2 racial bonus on all saving throws. Replaces the rock gnome's +2 vs. illusions." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "svirfneblin_illusion_dc", "name": "Illusion DC +1", "description": "+1 to the DC of all saving throws against illusion spells cast by a svirfneblin. Stacks with similar effects." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "svirfneblin_kobold_goblinoid_attack", "name": "Enmity vs. Kobolds and Goblinoids", "description": "+1 racial bonus on attack rolls against kobolds and goblinoids." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "svirfneblin_dodge_all", "name": "Dodge All Creatures", "description": "+4 dodge bonus to Armor Class against all creatures. Replaces the rock gnome's dodge bonus against giants." }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "svirfneblin_blindness_deafness", "name": "Blindness/Deafness", "usesPerDay": "1/day", "casterLevel": 1, "saveDC": 13 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "svirfneblin_blur", "name": "Blur", "usesPerDay": "1/day", "casterLevel": 1 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "svirfneblin_disguise_self", "name": "Disguise Self", "usesPerDay": "1/day", "casterLevel": 1 }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "svirfneblin_nondetection", "name": "Nondetection (Su)", "description": "Continuous nondetection effect as the spell (caster level equals class levels)." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "svirfneblin_craft_alchemy", "name": "Craft (Alchemy)", "description": "+2 racial bonus on Craft (alchemy) checks." }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "listen", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "hide", "value": 2 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "svirfneblin_hide_underground", "name": "Underground Concealment", "description": "+2 additional racial bonus on Hide checks underground (stacks to +4 total)." }
+      }
+    ],
+    "scalingFormulas": [
+      {
+        "target": "spellResistance",
+        "formula": { "expression": "TotalHD + 11" }
+      }
+    ]
+  },
+  {
+    "id": "forest_gnome",
+    "name": "Forest Gnome",
+    "description": "Small humanoid (gnome). Woodland gnome subrace. Pass without trace at will, enmity vs. reptilians, and strong Hide in forests. LA +0.",
+    "type": "humanoid",
+    "subtypes": ["gnome"],
+    "size": "small",
+    "speeds": { "land": 20 },
+    "abilityModifiers": { "str": -2, "dex": 0, "con": 2, "int": 0, "wis": 0, "cha": 0 },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "forest_gnome_low_light_vision", "name": "Low-Light Vision", "description": "A forest gnome can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "forest_gnome_weapon_familiarity", "name": "Weapon Familiarity", "description": "Forest gnomes treat gnome hooked hammers as martial weapons." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "forest_gnome_illusion_resistance", "name": "Illusion Resistance", "description": "+2 racial bonus on saving throws against illusions." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "forest_gnome_illusion_dc", "name": "Illusion DC +1", "description": "+1 to the DC of all saving throws against illusion spells cast by a forest gnome. Stacks with similar effects." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "forest_gnome_enmity_reptilian", "name": "Enmity vs. Kobolds/Goblinoids/Orcs/Reptilians", "description": "+1 racial bonus on attack rolls against kobolds, goblinoids, orcs, and reptilian humanoids. Replaces the rock gnome's +1 vs. kobolds/goblinoids only." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "forest_gnome_giant_dodge", "name": "Dodge Giants", "description": "+4 dodge bonus to AC against monsters of the giant type." }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "listen", "value": 2 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "forest_gnome_craft_alchemy", "name": "Craft (Alchemy)", "description": "+2 racial bonus on Craft (alchemy) checks." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "forest_gnome_pass_without_trace", "name": "Pass without Trace (Su)", "description": "Self only, as a free action, as the spell cast by a druid of the forest gnome's class levels." }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "hide", "value": 4 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "forest_gnome_hide_wooded", "name": "Woodland Concealment", "description": "+4 additional racial bonus on Hide checks in a wooded area (stacks to +8 total)." }
+      }
+    ],
+    "scalingFormulas": []
+  }
+]

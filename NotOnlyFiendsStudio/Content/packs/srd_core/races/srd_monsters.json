@@ -1,0 +1,183 @@
+[
+{
+  "id": "pixie",
+  "name": "Pixie",
+  "description": "Small fey with permanent greater invisibility, DR 10/cold iron, numerous spell-like abilities, and memory-erasing arrows.",
+  "type": "fey",
+  "subtypes": [],
+  "size": "small",
+  "speeds": {
+    "land": 20,
+    "fly": 60
+  },
+  "abilityModifiers": { "str": -4, "dex": 8, "con": 0, "int": 6, "wis": 4, "cha": 6 },
+  "levelAdjustment": 4,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialClassSkillAdditions": ["concentration", "craft", "escape_artist", "hide", "listen", "move_silently", "ride", "search", "sense_motive", "spot", "use_rope"],
+  "racialPermabuffs": [
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "pixie_low_light_vision", "name": "Low-Light Vision", "description": "Can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination." }
+    },
+    {
+      "$type": "ModifyAttribute",
+      "target": "naturalArmor",
+      "value": 1
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "pixie_dr_cold_iron", "name": "Damage Reduction 10/Cold Iron", "description": "Damage reduction 10/cold iron." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "pixie_greater_invisibility", "name": "Greater Invisibility", "description": "A pixie remains invisible even when it attacks. This ability is constant, but can be suppressed or resumed as a free action." }
+    },
+    {
+      "$type": "GrantBonusFeat",
+      "featId": "dodge"
+    },
+    {
+      "$type": "GrantBonusFeat",
+      "featId": "weapon_finesse"
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "pixie_racial_listen", "name": "+2 Listen", "description": "+2 racial bonus on Listen checks." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "pixie_racial_search", "name": "+2 Search", "description": "+2 racial bonus on Search checks." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "pixie_racial_spot", "name": "+2 Spot", "description": "+2 racial bonus on Spot checks." }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "pixie_lesser_confusion", "name": "Lesser Confusion", "usesPerDay": "1/day", "casterLevel": 8 }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "pixie_dancing_lights", "name": "Dancing Lights", "usesPerDay": "1/day", "casterLevel": 8 }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "pixie_detect_chaos", "name": "Detect Chaos", "usesPerDay": "1/day", "casterLevel": 8 }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "pixie_detect_good", "name": "Detect Good", "usesPerDay": "1/day", "casterLevel": 8 }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "pixie_detect_evil", "name": "Detect Evil", "usesPerDay": "1/day", "casterLevel": 8 }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "pixie_detect_law", "name": "Detect Law", "usesPerDay": "1/day", "casterLevel": 8 }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "pixie_detect_thoughts", "name": "Detect Thoughts", "usesPerDay": "1/day", "casterLevel": 8 }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "pixie_dispel_magic", "name": "Dispel Magic", "usesPerDay": "1/day", "casterLevel": 8 }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "pixie_entangle", "name": "Entangle", "usesPerDay": "1/day", "casterLevel": 8 }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "pixie_permanent_image", "name": "Permanent Image", "usesPerDay": "1/day", "casterLevel": 8 }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "pixie_polymorph", "name": "Polymorph (self only)", "usesPerDay": "1/day", "casterLevel": 8 }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "pixie_special_arrows", "name": "Special Arrows", "description": "Pixies can employ arrows that deal no damage but can erase memory (DC 15 Will) or put a creature to sleep (DC 15 Fort)." }
+    }
+  ],
+  "scalingFormulas": [
+    {
+      "target": "SpellResistance",
+      "formula": { "expression": "15 + TotalHD" }
+    }
+  ]
+},
+{
+  "id": "drow",
+  "name": "Drow",
+  "description": "Medium elf subrace with 120 ft. darkvision, spell resistance, light blindness, and innate spell-like abilities.",
+  "type": "humanoid",
+  "subtypes": ["elf"],
+  "size": "medium",
+  "speeds": {
+    "land": 30
+  },
+  "abilityModifiers": { "str": 0, "dex": 2, "con": -2, "int": 2, "wis": 0, "cha": 2 },
+  "levelAdjustment": 2,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialPermabuffs": [
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "drow_darkvision_120", "name": "Darkvision 120 ft.", "description": "Can see in the dark up to 120 feet." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "drow_immunity_sleep", "name": "Immunity to Sleep", "description": "Immune to magic sleep effects." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "drow_enchantment_save", "name": "+2 vs Enchantment", "description": "+2 racial saving throw bonus against enchantment spells or effects." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "drow_will_save_spells", "name": "+2 Will vs Spells", "description": "+2 racial bonus on Will saves against spells and spell-like abilities." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "drow_racial_listen", "name": "+2 Listen", "description": "+2 racial bonus on Listen checks." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "drow_racial_search", "name": "+2 Search", "description": "+2 racial bonus on Search checks." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "drow_racial_spot", "name": "+2 Spot", "description": "+2 racial bonus on Spot checks." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "drow_light_blindness", "name": "Light Blindness", "description": "Abrupt exposure to bright light blinds drow for 1 round. On subsequent rounds, dazzled as long as in the affected area." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "drow_weapon_proficiency", "name": "Weapon Proficiency", "description": "Proficient with hand crossbow, rapier, and short sword." }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "drow_dancing_lights", "name": "Dancing Lights", "usesPerDay": "1/day", "casterLevel": 0 }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "drow_darkness", "name": "Darkness", "usesPerDay": "1/day", "casterLevel": 0 }
+    },
+    {
+      "$type": "GrantSLA",
+      "sla": { "id": "drow_faerie_fire", "name": "Faerie Fire", "usesPerDay": "1/day", "casterLevel": 0 }
+    }
+  ],
+  "scalingFormulas": [
+    {
+      "target": "SpellResistance",
+      "formula": { "expression": "11 + TotalHD" }
+    }
+  ]
+}
+]

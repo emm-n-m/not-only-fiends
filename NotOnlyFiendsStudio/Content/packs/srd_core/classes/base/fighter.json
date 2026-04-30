@@ -1,0 +1,55 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:fighter",
+  "name": "Fighter",
+  "hitDie": 10,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "climb", "craft", "handle_animal", "intimidate", "jump", "ride", "swim"
+  ],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "poor",
+    "will": "poor"
+  },
+  "perLevelPermabuffs": [],
+  "levelPermabuffs": {
+    "1": [
+      { "$type": "GrantFeatSlot", "restriction": "fighter_bonus" }
+    ],
+    "2": [
+      { "$type": "GrantFeatSlot", "restriction": "fighter_bonus" }
+    ],
+    "4": [
+      { "$type": "GrantFeatSlot", "restriction": "fighter_bonus" }
+    ],
+    "6": [
+      { "$type": "GrantFeatSlot", "restriction": "fighter_bonus" }
+    ],
+    "8": [
+      { "$type": "GrantFeatSlot", "restriction": "fighter_bonus" }
+    ],
+    "10": [
+      { "$type": "GrantFeatSlot", "restriction": "fighter_bonus" }
+    ],
+    "12": [
+      { "$type": "GrantFeatSlot", "restriction": "fighter_bonus" }
+    ],
+    "14": [
+      { "$type": "GrantFeatSlot", "restriction": "fighter_bonus" }
+    ],
+    "16": [
+      { "$type": "GrantFeatSlot", "restriction": "fighter_bonus" }
+    ],
+    "18": [
+      { "$type": "GrantFeatSlot", "restriction": "fighter_bonus" }
+    ],
+    "20": [
+      { "$type": "GrantFeatSlot", "restriction": "fighter_bonus" }
+    ]
+  }
+}
+]

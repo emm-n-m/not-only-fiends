@@ -1,0 +1,48 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:dragon",
+  "name": "Dragon (Generic)",
+  "hitDie": 12,
+  "skillPointsPerLevel": 6,
+  "classSkills": [
+    "appraise", "bluff", "concentration", "diplomacy",
+    "escape_artist", "intimidate", "jump", "listen",
+    "knowledge_arcana", "knowledge_nature",
+    "search", "sense_motive", "spot"
+  ],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "good",
+    "will": "good"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+},
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:red_dragon",
+  "name": "Red Dragon",
+  "hitDie": 12,
+  "skillPointsPerLevel": 6,
+  "classSkills": [
+    "appraise", "bluff", "concentration", "diplomacy",
+    "escape_artist", "intimidate", "jump", "listen",
+    "knowledge_arcana", "knowledge_geography", "knowledge_history",
+    "knowledge_local", "knowledge_nature", "knowledge_nobility",
+    "knowledge_planes", "knowledge_religion",
+    "search", "sense_motive", "spot", "use_magic_device"
+  ],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "good",
+    "will": "good"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+}
+]

@@ -1,0 +1,71 @@
+@page "/settings"
+@using NotOnlyFiendsStudio.Models
+@using NotOnlyFiendsFeed.Services
+@inject ServerContentService Content
+
+<PageTitle>Settings</PageTitle>
+
+<h2>Settings</h2>
+
+<div class="card mb-3">
+    <div class="card-header">Loaded Content Packs</div>
+    <div class="card-body">
+        <small class="text-muted d-block mb-2">Content packs loaded by the server. To change which packs are loaded, edit the server configuration.</small>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Pack</th>
+                    <th>Version</th>
+                    <th>Description</th>
+                    <th>Priority</th>
+                    <th>Dependencies</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pack in Content.LoadedPacks.OrderBy(p => p.Manifest.Priority).ThenBy(p => p.Manifest.Name))
+                {
+                    <tr>
+                        <td><strong>@pack.Manifest.Name</strong></td>
+                        <td>@(pack.Manifest.Version ?? "")</td>
+                        <td>@(pack.Manifest.Description ?? "")</td>
+                        <td>@pack.Manifest.Priority</td>
+                        <td>
+                            @if (pack.Manifest.Depends.Any())
+                            {
+                                @string.Join(", ", pack.Manifest.Depends)
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">Content Summary</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3"><strong>Races:</strong> @Content.Registry.GetAllRaces().Count()</div>
+            <div class="col-md-3"><strong>Classes:</strong> @Content.Registry.GetAllDrivers().Count()</div>
+            <div class="col-md-3"><strong>Feats:</strong> @Content.Registry.GetAllFeats().Count()</div>
+            <div class="col-md-3"><strong>Spells:</strong> @Content.Registry.GetAllSpells().Count()</div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-3"><strong>Templates:</strong> @Content.Registry.GetAllTemplates().Count()</div>
+            <div class="col-md-3"><strong>Domains:</strong> @Content.Registry.GetAllDomains().Count()</div>
+            <div class="col-md-3"><strong>Skills:</strong> @Content.Registry.GetAllSkills().Count()</div>
+            <div class="col-md-3"><strong>Class Features:</strong> @Content.Registry.GetAllClassFeatures().Count()</div>
+        </div>
+    </div>
+</div>
+
+@if (Content.CharactersPath != null)
+{
+    <div class="card mb-3">
+        <div class="card-header">Character Storage</div>
+        <div class="card-body">
+            <p><strong>Path:</strong> @Content.CharactersPath</p>
+        </div>
+    </div>
+}

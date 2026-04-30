@@ -1,0 +1,39 @@
+[
+{
+  "id": "template:special_mount_standard",
+  "name": "Paladin Special Mount (Standard Progression)",
+  "subtypeAdditions": [],
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": [],
+  "companionScalingPermabuffs": {
+    "5": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 4 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "STR", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 6 },
+      { "$type": "GrantAbility", "ability": { "id": "mount_empathic_link", "name": "Empathic Link", "description": "Paladin has empathic link with mount up to 1 mile; senses and emotional state shared." } },
+      { "$type": "GrantAbility", "ability": { "id": "mount_improved_evasion", "name": "Improved Evasion", "description": "On a successful Reflex save mount takes no damage; on a failed save only half." } },
+      { "$type": "GrantAbility", "ability": { "id": "mount_share_spells", "name": "Share Spells", "description": "Paladin can have any spell cast on himself also affect the mount if it is within 5 ft." } },
+      { "$type": "GrantAbility", "ability": { "id": "mount_share_saving_throws", "name": "Share Saving Throws", "description": "Mount uses its own save bonuses or the paladin's, whichever are higher." } }
+    ],
+    "8": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "STR", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 7 },
+      { "$type": "GrantAbility", "ability": { "id": "mount_improved_speed", "name": "Improved Speed", "description": "Mount's land speed increases by 10 ft." } }
+    ],
+    "11": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "STR", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 8 },
+      { "$type": "GrantAbility", "ability": { "id": "mount_command", "name": "Command Creatures of Its Kind", "description": "Command other creatures of approximately the same kind (but not mount's own sort) as the spell command (DC 10 + 1/2 paladin level + Cha mod), once per day per two paladin levels, as a free action." } }
+    ],
+    "15": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "STR", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 9 },
+      { "$type": "GrantAbility", "ability": { "id": "mount_spell_resistance", "name": "Spell Resistance", "description": "Spell resistance equal to paladin level + 5." } }
+    ]
+  }
+}
+]

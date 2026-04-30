@@ -1,0 +1,9 @@
+{
+  "id": "srd_monsters",
+  "name": "SRD Monsters",
+  "description": "Monster races and racial HD from the System Reference Document.",
+  "author": "Wizards of the Coast",
+  "version": "1.0.0",
+  "priority": 0,
+  "depends": ["srd_core"]
+}

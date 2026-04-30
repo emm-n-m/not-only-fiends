@@ -1,0 +1,24 @@
+[
+  {
+    "id": "wild_cohort_options",
+    "name": "Wild Cohort Options",
+    "description": "Choose an animal to serve as your wild cohort. Pool mirrors the level-1 druid animal companion list (PHB 35). Approximation \u2014 the official Complete Adventurer list has not yet been extracted from source.",
+    "options": [
+      { "id": "companion_badger",       "name": "Badger",            "description": "Small burrower with rage when wounded.",                       "minEffectiveLevel": 1 },
+      { "id": "companion_camel",        "name": "Camel",             "description": "Large desert mount with spit attack.",                        "minEffectiveLevel": 1 },
+      { "id": "companion_dog",          "name": "Dog",               "description": "Loyal Small canine.",                                         "minEffectiveLevel": 1 },
+      { "id": "companion_riding_dog",   "name": "Dog, Riding",       "description": "Medium canine, suitable mount for Small riders.",             "minEffectiveLevel": 1 },
+      { "id": "companion_eagle",        "name": "Eagle",             "description": "Small flying companion with sharp eyesight.",                 "minEffectiveLevel": 1 },
+      { "id": "companion_hawk",         "name": "Hawk",              "description": "Tiny flying companion.",                                      "minEffectiveLevel": 1 },
+      { "id": "companion_horse_light",  "name": "Horse, Light",      "description": "Fast Large mount.",                                           "minEffectiveLevel": 1 },
+      { "id": "companion_horse_heavy",  "name": "Horse, Heavy",      "description": "Powerful Large war mount.",                                   "minEffectiveLevel": 1 },
+      { "id": "companion_monkey",       "name": "Monkey",            "description": "Tiny climber.",                                               "minEffectiveLevel": 1 },
+      { "id": "companion_owl",          "name": "Owl",               "description": "Tiny flying nocturnal hunter.",                               "minEffectiveLevel": 1 },
+      { "id": "companion_pony",         "name": "Pony",              "description": "Medium mount for Small riders.",                              "minEffectiveLevel": 1 },
+      { "id": "companion_snake_viper_tiny",   "name": "Snake, Tiny Viper",   "description": "Tiny venomous serpent.",                              "minEffectiveLevel": 1 },
+      { "id": "companion_snake_viper_medium", "name": "Snake, Medium Viper", "description": "Medium venomous serpent.",                            "minEffectiveLevel": 1 },
+      { "id": "companion_wolf",         "name": "Wolf",              "description": "Medium pack hunter with trip on bite.",                        "minEffectiveLevel": 1 },
+      { "id": "companion_boar",         "name": "Boar",              "description": "Medium tusked beast with ferocity.",                          "minEffectiveLevel": 1 }
+    ]
+  }
+]

@@ -1,0 +1,245 @@
+[
+  {
+    "id": "dwarf",
+    "name": "Dwarf",
+    "description": "Medium humanoid (dwarf). +2 Con, -2 Cha. Darkvision 60 ft. and stonecunning. Racial bonuses against poison, magic, orcs, goblinoids, and giants.",
+    "type": "humanoid",
+    "subtypes": ["dwarf"],
+    "size": "medium",
+    "speeds": { "land": 20 },
+    "abilityModifiers": { "str": 0, "dex": 0, "con": 2, "int": 0, "wis": 0, "cha": -2 },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "dwarf_darkvision_60", "name": "Darkvision 60 ft.", "description": "Dwarves can see in the dark up to 60 feet. Darkvision is black and white only but otherwise like normal sight." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "dwarf_stonecunning", "name": "Stonecunning", "description": "+2 racial bonus on Search checks to notice unusual stonework (sliding walls, traps, new construction, shaky ceilings, etc.). A dwarf within 10 ft. of unusual stonework may Search as if actively searching. Can intuit approximate depth underground." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "dwarf_weapon_familiarity", "name": "Weapon Familiarity", "description": "Dwarves may treat dwarven waraxes and dwarven urgroshes as martial weapons rather than exotic weapons." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "dwarf_stability", "name": "Stability", "description": "+4 racial bonus on ability checks to resist being bull rushed or tripped while standing on the ground." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "dwarf_poison_resistance", "name": "Poison Resistance", "description": "+2 racial bonus on saving throws against poison." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "dwarf_magic_resistance", "name": "Magic Resistance", "description": "+2 racial bonus on saving throws against spells and spell-like effects." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "dwarf_orc_goblinoid_attack", "name": "Enmity vs. Orcs and Goblinoids", "description": "+1 racial bonus on attack rolls against orcs and goblinoids." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "dwarf_giant_dodge", "name": "Dodge Giants", "description": "+4 dodge bonus to Armor Class against monsters of the giant type. Lost any time the dwarf would lose his Dexterity bonus to AC." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "dwarf_appraise_stone_metal", "name": "Appraise (Stone/Metal)", "description": "+2 racial bonus on Appraise checks related to stone or metal items." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "dwarf_craft_stone_metal", "name": "Craft (Stone/Metal)", "description": "+2 racial bonus on Craft checks related to stone or metal." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "elf",
+    "name": "Elf",
+    "description": "Medium humanoid (elf). +2 Dex, -2 Con. Immunity to magic sleep effects, low-light vision, racial skill bonuses on Listen/Search/Spot, and bonus weapon proficiencies.",
+    "type": "humanoid",
+    "subtypes": ["elf"],
+    "size": "medium",
+    "speeds": { "land": 30 },
+    "abilityModifiers": { "str": 0, "dex": 2, "con": -2, "int": 0, "wis": 0, "cha": 0 },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialPermabuffs": [
+      { "$type": "GrantImmunity", "immunity": "sleep" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "elf_enchantment_resistance", "name": "Enchantment Resistance", "description": "+2 racial bonus on saving throws against enchantment spells or effects." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "elf_low_light_vision", "name": "Low-Light Vision", "description": "An elf can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination, retaining color and detail." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "elf_weapon_proficiency", "name": "Weapon Proficiency", "description": "Elves receive Martial Weapon Proficiency for the longsword, rapier, longbow (including composite longbow), and shortbow (including composite shortbow) as bonus feats." }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "listen", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "search", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "spot", "value": 2 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "elf_secret_door_sense", "name": "Passive Secret-Door Detection", "description": "An elf passing within 5 ft. of a secret or concealed door is entitled to a Search check as if actively looking for it." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "gnome",
+    "name": "Gnome",
+    "description": "Small humanoid (gnome). +2 Con, -2 Str. Low-light vision, racial bonuses against illusions, giants, kobolds, and goblinoids, plus innate spell-like abilities.",
+    "type": "humanoid",
+    "subtypes": ["gnome"],
+    "size": "small",
+    "speeds": { "land": 20 },
+    "abilityModifiers": { "str": -2, "dex": 0, "con": 2, "int": 0, "wis": 0, "cha": 0 },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gnome_low_light_vision", "name": "Low-Light Vision", "description": "A gnome can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination, retaining color and detail." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gnome_weapon_familiarity", "name": "Weapon Familiarity", "description": "Gnomes may treat gnome hooked hammers as martial weapons rather than exotic weapons." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gnome_illusion_resistance", "name": "Illusion Resistance", "description": "+2 racial bonus on saving throws against illusions." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gnome_illusion_dc", "name": "Illusion DC +1", "description": "+1 to the DC of all saving throws against illusion spells cast by a gnome. Stacks with similar effects." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gnome_kobold_goblinoid_attack", "name": "Enmity vs. Kobolds and Goblinoids", "description": "+1 racial bonus on attack rolls against kobolds and goblinoids." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gnome_giant_dodge", "name": "Dodge Giants", "description": "+4 dodge bonus to Armor Class against monsters of the giant type. Lost any time the gnome would lose his Dexterity bonus to AC." }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "listen", "value": 2 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "gnome_craft_alchemy", "name": "Craft (Alchemy)", "description": "+2 racial bonus on Craft (alchemy) checks." }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "gnome_speak_with_animals", "name": "Speak with Animals (Burrowing Mammal)", "usesPerDay": "1/day", "casterLevel": 1 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "gnome_dancing_lights", "name": "Dancing Lights", "usesPerDay": "1/day", "casterLevel": 1 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "gnome_ghost_sound", "name": "Ghost Sound", "usesPerDay": "1/day", "casterLevel": 1 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "gnome_prestidigitation", "name": "Prestidigitation", "usesPerDay": "1/day", "casterLevel": 1 }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "half_elf",
+    "name": "Half-Elf",
+    "description": "Medium humanoid (elf). Immunity to magic sleep effects, low-light vision, and racial skill bonuses on Listen/Search/Spot and Diplomacy/Gather Information.",
+    "type": "humanoid",
+    "subtypes": ["elf"],
+    "size": "medium",
+    "speeds": { "land": 30 },
+    "abilityModifiers": null,
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialPermabuffs": [
+      { "$type": "GrantImmunity", "immunity": "sleep" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "half_elf_enchantment_resistance", "name": "Enchantment Resistance", "description": "+2 racial bonus on saving throws against enchantment spells or effects." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "half_elf_low_light_vision", "name": "Low-Light Vision", "description": "A half-elf can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination, retaining color and detail." }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "listen", "value": 1 },
+      { "$type": "GrantSkillBonus", "skillId": "search", "value": 1 },
+      { "$type": "GrantSkillBonus", "skillId": "spot", "value": 1 },
+      { "$type": "GrantSkillBonus", "skillId": "diplomacy", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "gather_information", "value": 2 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "half_elf_elven_blood", "name": "Elven Blood", "description": "For all effects related to race, a half-elf is considered an elf." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "half_orc",
+    "name": "Half-Orc",
+    "description": "Medium humanoid (orc). +2 Str, -2 Int, -2 Cha. Darkvision 60 ft. and counts as an orc for race-related effects.",
+    "type": "humanoid",
+    "subtypes": ["orc"],
+    "size": "medium",
+    "speeds": { "land": 30 },
+    "abilityModifiers": { "str": 2, "dex": 0, "con": 0, "int": -2, "wis": 0, "cha": -2 },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "half_orc_darkvision_60", "name": "Darkvision 60 ft.", "description": "Half-orcs can see in the dark up to 60 feet. Darkvision is black and white only but otherwise like normal sight." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "half_orc_orc_blood", "name": "Orc Blood", "description": "For all effects related to race, a half-orc is considered an orc." }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "halfling",
+    "name": "Halfling",
+    "description": "Small humanoid (halfling). +2 Dex, -2 Str. Racial skill bonuses on Climb/Jump/Move Silently/Listen, +1 on all saves, +2 morale vs. fear, and +1 with thrown/sling attacks.",
+    "type": "humanoid",
+    "subtypes": ["halfling"],
+    "size": "small",
+    "speeds": { "land": 20 },
+    "abilityModifiers": { "str": -2, "dex": 2, "con": 0, "int": 0, "wis": 0, "cha": 0 },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialPermabuffs": [
+      { "$type": "GrantSkillBonus", "skillId": "climb", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "jump", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "move_silently", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "listen", "value": 2 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "halfling_lucky", "name": "Lucky", "description": "+1 racial bonus on all saving throws." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "halfling_fearless", "name": "Fearless", "description": "+2 morale bonus on saving throws against fear. Stacks with the halfling's +1 bonus on saves in general." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "halfling_thrown_slings", "name": "Thrown Weapon Mastery", "description": "+1 racial bonus on attack rolls with thrown weapons and slings." }
+      }
+    ],
+    "scalingFormulas": []
+  }
+]

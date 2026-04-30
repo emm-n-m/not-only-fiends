@@ -1,0 +1,42 @@
+[
+  {
+    "id": "weapon_specialization",
+    "name": "Weapon Specialization",
+    "description": "+2 bonus on damage rolls with selected weapon.",
+    "type": "fighterBonus",
+    "prerequisites": [
+      { "$type": "HasFeat", "featId": "weapon_focus" },
+      { "$type": "MinClassLevel", "classId": "class:fighter", "value": 4 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true,
+    "selectionRequired": "weapon"
+  },
+  {
+    "id": "greater_weapon_focus",
+    "name": "Greater Weapon Focus",
+    "description": "+1 bonus on attack rolls with selected weapon (stacks with Weapon Focus for +2 total).",
+    "type": "fighterBonus",
+    "prerequisites": [
+      { "$type": "HasFeat", "featId": "weapon_focus" },
+      { "$type": "MinClassLevel", "classId": "class:fighter", "value": 8 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true,
+    "selectionRequired": "weapon"
+  },
+  {
+    "id": "greater_weapon_specialization",
+    "name": "Greater Weapon Specialization",
+    "description": "+2 bonus on damage rolls with selected weapon (stacks with Weapon Specialization for +4 total).",
+    "type": "fighterBonus",
+    "prerequisites": [
+      { "$type": "HasFeat", "featId": "greater_weapon_focus" },
+      { "$type": "HasFeat", "featId": "weapon_specialization" },
+      { "$type": "MinClassLevel", "classId": "class:fighter", "value": 12 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true,
+    "selectionRequired": "weapon"
+  }
+]

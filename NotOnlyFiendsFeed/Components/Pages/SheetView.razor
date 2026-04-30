@@ -1,0 +1,397 @@
+@page "/sheet"
+@using NotOnlyFiendsStudio.Studio
+@using NotOnlyFiendsStudio.Models
+@using NotOnlyFiendsFeed.Services
+@inject ServerContentService Content
+@inject IJSRuntime JS
+
+<PageTitle>Character Sheet</PageTitle>
+
+<h2>Character Sheet</h2>
+
+@if (_loading)
+{
+    <p>Loading...</p>
+}
+else if (_error != null)
+{
+    <p class="text-danger">@_error</p>
+}
+else if (_state != null && _character != null)
+{
+    <div class="sheet">
+        <!-- Level Slider -->
+        <div class="level-slider mb-3">
+            <label>View at HD: <strong>@_viewHD</strong> / @_character.Ticks.Count</label>
+            <input type="range" min="1" max="@_character.Ticks.Count" @bind="_viewHD" @bind:event="oninput"
+                   @bind:after="OnSliderChanged" class="form-range" />
+        </div>
+
+        <!-- Header -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <h3>@_character.Name</h3>
+                <p>
+                    <strong>Race:</strong> @_state.RaceId |
+                    <strong>Type:</strong> @_state.Type |
+                    <strong>Size:</strong> @_state.Size |
+                    <strong>HD:</strong> @_state.TotalHD |
+                    <strong>ECL:</strong> @_state.ECL
+                    @if (_state.LevelAdjustment > 0) { <span> (LA +@_state.LevelAdjustment)</span> }
+                </p>
+                <p>
+                    <strong>Classes:</strong>
+                    @foreach (var (classId, level) in _state.ClassLevels)
+                    {
+                        <span class="badge bg-secondary me-1">@classId.Replace("class:", "") @level</span>
+                    }
+                    @if (_state.TemplateIds.Any())
+                    {
+                        <strong class="ms-2">Templates:</strong>
+                        @foreach (var t in _state.TemplateIds)
+                        {
+                            <span class="badge bg-info me-1">@t.Replace("template:", "")</span>
+                        }
+                    }
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Ability Scores -->
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-header">Ability Scores</div>
+                    <div class="card-body">
+                        <table class="table table-sm">
+                            <thead><tr><th>Ability</th><th>Score</th><th>Mod</th></tr></thead>
+                            <tbody>
+                                @foreach (var ability in Enum.GetValues<Ability>())
+                                {
+                                    var score = _state.AbilityScores.GetScore(ability);
+                                    var mod = AbilityScoreSet.Modifier(score);
+                                    <tr>
+                                        <td>@ability</td>
+                                        <td>@score</td>
+                                        <td>@(mod >= 0 ? $"+{mod}" : mod.ToString())</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Combat Stats -->
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-header">Combat</div>
+                    <div class="card-body">
+                        <p><strong>HP:</strong> @_state.HP</p>
+                        <p>
+                            <strong>BAB:</strong> +@_state.EffectiveBAB
+                            @if (_state.EpicAttackBonus > 0) { <span class="text-muted">(base @_state.BaseBAB + epic @_state.EpicAttackBonus)</span> }
+                        </p>
+                        <p>
+                            <strong>Saves:</strong>
+                            Fort +@_state.EffectiveSaves.Fort |
+                            Ref +@_state.EffectiveSaves.Ref |
+                            Will +@_state.EffectiveSaves.Will
+                            @if (_state.EpicSaveBonus > 0) { <span class="text-muted">(+@_state.EpicSaveBonus epic)</span> }
+                        </p>
+                        @if (_state.NaturalArmor > 0)
+                        {
+                            <p><strong>Natural Armor:</strong> +@_state.NaturalArmor</p>
+                        }
+                        @if (_state.SpellResistance.HasValue)
+                        {
+                            <p><strong>SR:</strong> @_state.SpellResistance</p>
+                        }
+                    </div>
+                </div>
+
+                <!-- Movement -->
+                <div class="card mb-3">
+                    <div class="card-header">Movement</div>
+                    <div class="card-body">
+                        @foreach (var (mode, speed) in _state.Speeds)
+                        {
+                            <p>@mode: @speed ft.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feats & Skills -->
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-header">Feats (@_state.Feats.Count)</div>
+                    <div class="card-body">
+                        @if (_state.Feats.Any())
+                        {
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var feat in _state.Feats)
+                                {
+                                    _registry.TryGetFeat(feat, out var featDef);
+                                    <li title="@(featDef?.Description ?? "")">@(featDef?.Name ?? feat)</li>
+                                }
+                            </ul>
+                        }
+                        @if (_state.PendingFeatSlots > 0 || _state.PendingBonusFeatSlots > 0)
+                        {
+                            <p class="text-warning mt-2">
+                                Unspent: @_state.PendingFeatSlots standard, @_state.PendingBonusFeatSlots bonus
+                            </p>
+                        }
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header">Skills (@_state.UnspentSkillPoints unspent pts)</div>
+                    <div class="card-body">
+                        @if (_state.SkillRanks.Any())
+                        {
+                            <table class="table table-sm">
+                                <thead><tr><th>Skill</th><th>Ranks</th></tr></thead>
+                                <tbody>
+                                    @foreach (var (skill, halfRanks) in _state.SkillRanks.OrderBy(kv => kv.Key))
+                                    {
+                                        var skillDef = _registry.GetAllSkills().FirstOrDefault(s => s.Id == skill);
+                                        <tr>
+                                            <td title="@(skillDef?.Description ?? "")">@(skillDef?.Name ?? skill) @(_state.ClassSkills.Contains(skill) ? "(class)" : "")</td>
+                                            <td>@(halfRanks / 2.0)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No skill ranks allocated</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Special Abilities Row -->
+        <div class="row">
+            @if (_state.Abilities.Any())
+            {
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header">Special Abilities</div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var ability in _state.Abilities)
+                                {
+                                    <li><strong>@ability.Name</strong> — @ability.Description</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (_state.Counters.Any())
+            {
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header">Scaling Features</div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var c in _state.Counters)
+                                {
+                                    <li><strong>@FormatCounter(c.Key, c.Value)</strong></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="row">
+            @if (_state.SLAs.Any())
+            {
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header">Spell-Like Abilities</div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var sla in _state.SLAs)
+                                {
+                                    <li title="@(sla.Description ?? "")">@sla.Name @(sla.UsesPerDay != null ? $"({sla.UsesPerDay})" : "")</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Resistances, DR, Immunities -->
+        @if (_state.Resistances.Any() || _state.DamageReduction.Any() || _state.Immunities.Any() || _state.NaturalAttacks.Any())
+        {
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header">Defenses</div>
+                        <div class="card-body">
+                            @if (_state.Immunities.Any())
+                            {
+                                <p><strong>Immunities:</strong> @string.Join(", ", _state.Immunities)</p>
+                            }
+                            @if (_state.Resistances.Any())
+                            {
+                                <p><strong>Resistances:</strong>
+                                    @string.Join(", ", _state.Resistances.Select(r => $"{r.Key} {r.Value}"))
+                                </p>
+                            }
+                            @if (_state.DamageReduction.Any())
+                            {
+                                <p><strong>DR:</strong>
+                                    @string.Join(", ", _state.DamageReduction.Select(dr => $"{dr.Value}/{dr.BypassedBy}"))
+                                </p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                @if (_state.NaturalAttacks.Any())
+                {
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header">Natural Attacks</div>
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-0">
+                                    @foreach (var atk in _state.NaturalAttacks)
+                                    {
+                                        <li>@atk.Count× @atk.Name (@atk.Damage) @(atk.IsPrimary ? "primary" : "secondary")</li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- Spellcasting -->
+        @if (_state.Spellcasting.Any())
+        {
+            <div class="card mb-3">
+                <div class="card-header">Spellcasting</div>
+                <div class="card-body">
+                    @foreach (var (classId, sc) in _state.Spellcasting)
+                    {
+                        <h5>@classId.Replace("class:", "") (CL @sc.CasterLevel, @sc.CastingType, @sc.CastingStat)</h5>
+                        <p>
+                            <strong>Spells/Day:</strong>
+                            @string.Join(" / ", sc.SpellsPerDay.OrderBy(kv => kv.Key).Select(kv => $"{kv.Key}th:{kv.Value}"))
+                        </p>
+                        @if (sc.SpellsKnown != null)
+                        {
+                            <p>
+                                <strong>Spells Known:</strong>
+                                @string.Join(" / ", sc.SpellsKnown.OrderBy(kv => kv.Key).Select(kv => $"{kv.Key}th:{kv.Value}"))
+                            </p>
+                        }
+                        @if (sc.SelectedSpells.Any())
+                        {
+                            <p class="mb-1"><strong>Selected Spells:</strong></p>
+                            <ul class="mb-3">
+                                @foreach (var group in sc.SelectedSpells.OrderBy(s => s.SpellLevel).GroupBy(s => s.SpellLevel))
+                                {
+                                    <li>@($"{group.Key}th: ")@foreach (var s in group)
+                                    {
+                                        _registry.TryGetSpell(s.SpellId, out var spDef);
+                                        <span title="@(spDef?.Description ?? "")">@(spDef?.Name ?? s.SpellId)</span>@(s != group.Last() ? ", " : "")
+                                    }</li>
+                                }
+                            </ul>
+                        }
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Warnings -->
+        @if (_state.Warnings.Any())
+        {
+            <div class="alert alert-warning">
+                <h5>Warnings</h5>
+                <ul>
+                    @foreach (var w in _state.Warnings)
+                    {
+                        <li>@w</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private string FormatCounter(string key, int value) => key switch
+    {
+        "sneak_attack_dice" => $"Sneak Attack +{value}d6",
+        "trap_sense_bonus" => $"Trap Sense +{value}",
+        "rage_uses" => $"Rage {value}/day",
+        "smite_evil_uses" => $"Smite Evil {value}/day",
+        "smite_good_uses" => $"Smite Good {value}/day",
+        "remove_disease_uses" => $"Remove Disease {value}/week",
+        "impromptu_sneak_attack_uses" => $"Impromptu Sneak Attack {value}/day",
+        "wild_shape_uses" => $"Wild Shape {value}/day",
+        "bardic_music_uses" => $"Bardic Music {value}/day",
+        "shadow_jump_distance" => $"Shadow Jump {value} ft.",
+        _ => $"{key}: {value}"
+    };
+
+    private bool _loading = true;
+    private string? _error;
+    private Character? _character;
+    private CharacterState? _state;
+    private ReplayStudio _engine = null!;
+    private ContentRegistry _registry = null!;
+    private int _viewHD = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _registry = Content.Registry;
+            _engine = Content.ReplayStudio;
+
+            // Try to load character from sessionStorage (passed from Builder)
+            var sessionJson = await JS.InvokeAsync<string?>("sessionStorage.getItem", "currentCharacter");
+            if (!string.IsNullOrEmpty(sessionJson))
+                _character = System.Text.Json.JsonSerializer.Deserialize<Character>(sessionJson, JsonOptions.Default);
+
+            if (_character == null)
+            {
+                _error = "No character loaded. Use the Builder to create a character, then click View Sheet.";
+                _loading = false;
+                return;
+            }
+
+            _viewHD = _character.Ticks.Count;
+            _state = _engine.Evaluate(_character, upToHD: _viewHD);
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private void OnSliderChanged()
+    {
+        if (_character != null)
+        {
+            _state = _engine.Evaluate(_character, upToHD: _viewHD);
+        }
+    }
+}

@@ -1,0 +1,208 @@
+[
+  {
+    "id": "weapon_proficiency_martial",
+    "name": "Martial Weapon Proficiency",
+    "description": "No penalty on attack rolls with all martial weapons.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "power_attack",
+    "name": "Power Attack",
+    "description": "Trade melee attack bonus for damage on a 1-for-1 basis, up to your BAB.",
+    "type": "general",
+    "prerequisites": [
+      { "$type": "MinAbility", "ability": "str", "value": 13 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "cleave",
+    "name": "Cleave",
+    "description": "If you deal enough damage to drop a creature, get an immediate extra melee attack against an adjacent foe.",
+    "type": "general",
+    "prerequisites": [
+      { "$type": "MinAbility", "ability": "str", "value": 13 },
+      { "$type": "HasFeat", "featId": "power_attack" }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "great_cleave",
+    "name": "Great Cleave",
+    "description": "As Cleave, but with no limit on the number of extra attacks per round.",
+    "type": "general",
+    "prerequisites": [
+      { "$type": "MinAbility", "ability": "str", "value": 13 },
+      { "$type": "HasFeat", "featId": "cleave" },
+      { "$type": "MinBAB", "value": 4 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_initiative",
+    "name": "Improved Initiative",
+    "description": "+4 bonus on initiative checks.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "toughness",
+    "name": "Toughness",
+    "description": "+3 hit points. Can be taken multiple times.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "AbilityScore", "abilityScore": "CON", "value": 0 }
+    ],
+    "repeatable": true
+  },
+  {
+    "id": "weapon_focus",
+    "name": "Weapon Focus",
+    "description": "+1 bonus on attack rolls with selected weapon.",
+    "type": "general",
+    "prerequisites": [
+      { "$type": "MinBAB", "value": 1 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": true,
+    "selectionRequired": "weapon"
+  },
+  {
+    "id": "combat_reflexes",
+    "name": "Combat Reflexes",
+    "description": "Make additional attacks of opportunity equal to your Dex modifier. Can make AoOs while flat-footed.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "dodge",
+    "name": "Dodge",
+    "description": "+1 dodge bonus to AC against a designated opponent.",
+    "type": "general",
+    "prerequisites": [
+      { "$type": "MinAbility", "ability": "dex", "value": 13 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "mobility",
+    "name": "Mobility",
+    "description": "+4 dodge bonus to AC against attacks of opportunity from movement.",
+    "type": "general",
+    "prerequisites": [
+      { "$type": "MinAbility", "ability": "dex", "value": 13 },
+      { "$type": "HasFeat", "featId": "dodge" }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "spring_attack",
+    "name": "Spring Attack",
+    "description": "Move before and after a melee attack in the same round without provoking from the target.",
+    "type": "general",
+    "prerequisites": [
+      { "$type": "MinAbility", "ability": "dex", "value": 13 },
+      { "$type": "HasFeat", "featId": "dodge" },
+      { "$type": "HasFeat", "featId": "mobility" },
+      { "$type": "MinBAB", "value": 4 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_bull_rush",
+    "name": "Improved Bull Rush",
+    "description": "+4 bonus on bull rush attempts. No attack of opportunity when bull rushing.",
+    "type": "general",
+    "prerequisites": [
+      { "$type": "MinAbility", "ability": "str", "value": 13 },
+      { "$type": "HasFeat", "featId": "power_attack" }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_sunder",
+    "name": "Improved Sunder",
+    "description": "+4 bonus on sunder attempts. No attack of opportunity when sundering.",
+    "type": "general",
+    "prerequisites": [
+      { "$type": "MinAbility", "ability": "str", "value": 13 },
+      { "$type": "HasFeat", "featId": "power_attack" }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "blind_fight",
+    "name": "Blind-Fight",
+    "description": "Reroll miss chance for concealment once. No AC penalty against invisible attackers.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "combat_expertise",
+    "name": "Combat Expertise",
+    "description": "Trade melee attack bonus for AC on a 1-for-1 basis, up to -5.",
+    "type": "general",
+    "prerequisites": [
+      { "$type": "MinAbility", "ability": "int", "value": 13 }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "improved_trip",
+    "name": "Improved Trip",
+    "description": "+4 bonus on trip attempts. No AoO when tripping. Free melee attack on successful trip.",
+    "type": "general",
+    "prerequisites": [
+      { "$type": "MinAbility", "ability": "int", "value": 13 },
+      { "$type": "HasFeat", "featId": "combat_expertise" }
+    ],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "iron_will",
+    "name": "Iron Will",
+    "description": "+2 bonus on Will saving throws.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "great_fortitude",
+    "name": "Great Fortitude",
+    "description": "+2 bonus on Fortitude saving throws.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  },
+  {
+    "id": "lightning_reflexes",
+    "name": "Lightning Reflexes",
+    "description": "+2 bonus on Reflex saving throws.",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false
+  }
+]

@@ -1,0 +1,113 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:barbarian",
+  "name": "Barbarian",
+  "hitDie": 12,
+  "skillPointsPerLevel": 4,
+  "classSkills": [
+    "climb", "craft", "handle_animal", "intimidate", "jump",
+    "listen", "ride", "survival", "swim"
+  ],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "poor",
+    "will": "poor"
+  },
+  "perLevelPermabuffs": [],
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "rage", "name": "Rage", "description": "+4 STR, +4 CON, +2 Will saves, -2 AC" }
+      },
+      { "$type": "ModifyCounter", "counterId": "rage_uses" },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "fast_movement", "name": "Fast Movement", "description": "+10 ft. land speed in medium or lighter armor" }
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "uncanny_dodge", "name": "Uncanny Dodge", "description": "Retains Dex bonus to AC when flat-footed" }
+      }
+    ],
+    "3": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "trap_sense", "name": "Trap Sense", "description": "Bonus on Reflex saves and AC against traps" }
+      },
+      { "$type": "ModifyCounter", "counterId": "trap_sense_bonus" }
+    ],
+    "4": [
+      { "$type": "ModifyCounter", "counterId": "rage_uses" }
+    ],
+    "5": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "improved_uncanny_dodge", "name": "Improved Uncanny Dodge", "description": "Cannot be flanked" }
+      }
+    ],
+    "6": [
+      { "$type": "ModifyCounter", "counterId": "trap_sense_bonus" }
+    ],
+    "7": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "NaturalArmor",
+        "value": 0
+      }
+    ],
+    "8": [
+      { "$type": "ModifyCounter", "counterId": "rage_uses" }
+    ],
+    "9": [
+      { "$type": "ModifyCounter", "counterId": "trap_sense_bonus" }
+    ],
+    "11": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "greater_rage", "name": "Greater Rage", "description": "+6 STR, +6 CON, +3 Will saves, -2 AC" }
+      }
+    ],
+    "12": [
+      { "$type": "ModifyCounter", "counterId": "trap_sense_bonus" },
+      { "$type": "ModifyCounter", "counterId": "rage_uses" }
+    ],
+    "14": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "indomitable_will", "name": "Indomitable Will", "description": "+4 bonus on Will saves while raging" }
+      }
+    ],
+    "15": [
+      { "$type": "ModifyCounter", "counterId": "trap_sense_bonus" }
+    ],
+    "17": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "tireless_rage", "name": "Tireless Rage", "description": "No longer fatigued after rage" }
+      }
+    ],
+    "18": [
+      { "$type": "ModifyCounter", "counterId": "trap_sense_bonus" }
+    ],
+    "20": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "mighty_rage", "name": "Mighty Rage", "description": "+8 STR, +8 CON, +4 Will saves, -2 AC" }
+      },
+      { "$type": "ModifyCounter", "counterId": "rage_uses" }
+    ]
+  },
+  "prerequisites": [
+    {
+      "$type": "AlignmentReq",
+      "allowed": ["cG", "cN", "cE", "nG", "n", "nE"]
+    }
+  ]
+}
+]

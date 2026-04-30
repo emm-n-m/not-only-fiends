@@ -1,0 +1,61 @@
+[
+{
+  "id": "template:familiar_standard",
+  "name": "Familiar (Standard Progression)",
+  "subtypeAdditions": [],
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": [],
+  "companionScalingPermabuffs": {
+    "1": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 6 },
+      { "$type": "GrantAbility", "ability": { "id": "fam_alertness", "name": "Alertness", "description": "Master gains the Alertness feat (+2 Listen, +2 Spot) while the familiar is within arm's reach." } },
+      { "$type": "GrantAbility", "ability": { "id": "fam_improved_evasion", "name": "Improved Evasion", "description": "On a successful Reflex save the familiar takes no damage; on a failed save it takes only half." } },
+      { "$type": "GrantAbility", "ability": { "id": "fam_share_spells", "name": "Share Spells", "description": "Master can have any spell cast on himself also affect the familiar if it is within 5 ft." } },
+      { "$type": "GrantAbility", "ability": { "id": "fam_empathic_link", "name": "Empathic Link", "description": "Master can communicate emotional sense with the familiar at up to 1 mile." } }
+    ],
+    "3": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 7 },
+      { "$type": "GrantAbility", "ability": { "id": "fam_deliver_touch_spells", "name": "Deliver Touch Spells", "description": "Familiar can deliver touch spells cast by the master (master casts, familiar delivers)." } }
+    ],
+    "5": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 8 },
+      { "$type": "GrantAbility", "ability": { "id": "fam_speak_with_master", "name": "Speak with Master", "description": "Familiar and master can communicate verbally in a private language." } }
+    ],
+    "7": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 9 },
+      { "$type": "GrantAbility", "ability": { "id": "fam_speak_with_animals", "name": "Speak with Animals of Its Kind", "description": "Familiar can converse with other animals of approximately the same kind, including dire varieties." } }
+    ],
+    "9": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 10 }
+    ],
+    "11": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 11 },
+      { "$type": "GrantAbility", "ability": { "id": "fam_spell_resistance", "name": "Spell Resistance", "description": "Spell resistance equal to master's level + 5." } }
+    ],
+    "13": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 12 },
+      { "$type": "GrantAbility", "ability": { "id": "fam_scry", "name": "Scry on Familiar", "description": "Master may scry on the familiar (as the scrying spell) once per day." } }
+    ],
+    "15": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 13 }
+    ],
+    "17": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 14 }
+    ],
+    "19": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
+      { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 15 }
+    ]
+  }
+}
+]

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "skill.schema.json",
+  "title": "D&D 3.5e Skill Definition",
+  "description": "Schema for SkillDefinition content files. Each file is a JSON array of skills. Self-contained for LLM use. Note: The SkillDefinition type is not yet implemented in the C# engine — skills are currently referenced by string ID only.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/SkillDefinition" },
+
+  "$defs": {
+
+    "Ability": {
+      "type": "string",
+      "enum": ["str", "dex", "con", "int", "wis", "cha"]
+    },
+
+    "SkillDefinition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique skill ID in snake_case. Must match the IDs used in classSkills on HDDrivers. Subspecialty skills use 'skill_subtype' format (e.g., 'knowledge_arcana', 'craft_alchemy', 'perform_sing')."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name (e.g., 'Balance', 'Knowledge (Arcana)', 'Use Magic Device')."
+        },
+        "keyAbility": {
+          "$ref": "#/$defs/Ability",
+          "description": "The ability score used for this skill's checks."
+        },
+        "trainedOnly": {
+          "type": "boolean",
+          "description": "True if the skill can only be used with at least 1 rank. False if usable untrained."
+        },
+        "armorCheckPenalty": {
+          "type": "boolean",
+          "description": "True if the armor check penalty applies to this skill."
+        },
+        "parentSkill": {
+          "type": ["string", "null"],
+          "description": "For subspecialty skills, the base skill category ID (e.g., 'knowledge' for 'knowledge_arcana'). Null for standalone skills."
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief description of what the skill does."
+        },
+        "synergies": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Synergy" },
+          "description": "Synergy bonuses granted by 5+ ranks in this skill."
+        },
+        "source": {
+          "type": "string",
+          "description": "Source book abbreviation (e.g., 'SRD', 'FC1', 'PHB')."
+        }
+      },
+      "required": ["id", "name", "keyAbility", "trainedOnly", "armorCheckPenalty", "description"],
+      "additionalProperties": false
+    },
+
+    "Synergy": {
+      "type": "object",
+      "properties": {
+        "targetSkillId": {
+          "type": "string",
+          "description": "The skill ID that receives the synergy bonus."
+        },
+        "bonus": {
+          "type": "integer",
+          "description": "The synergy bonus value (typically +2)."
+        },
+        "condition": {
+          "type": ["string", "null"],
+          "description": "Optional condition for the synergy (e.g., 'when acting in disguise' for Bluff → Disguise)."
+        }
+      },
+      "required": ["targetSkillId", "bonus"],
+      "additionalProperties": false
+    }
+  }
+}

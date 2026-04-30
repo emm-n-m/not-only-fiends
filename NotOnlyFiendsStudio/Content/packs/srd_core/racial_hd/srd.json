@@ -1,0 +1,177 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:animal",
+  "name": "Animal",
+  "hitDie": 8,
+  "skillPointsPerLevel": 2,
+  "classSkills": [],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "good",
+    "will": "poor"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+},
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:elemental",
+  "name": "Elemental",
+  "hitDie": 8,
+  "skillPointsPerLevel": 2,
+  "classSkills": ["listen", "spot"],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "good",
+    "will": "poor"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+},
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:fey",
+  "name": "Fey",
+  "hitDie": 6,
+  "skillPointsPerLevel": 6,
+  "classSkills": [],
+  "babProgression": "poor",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "good",
+    "will": "good"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+},
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:magical_beast",
+  "name": "Magical Beast",
+  "hitDie": 10,
+  "skillPointsPerLevel": 2,
+  "classSkills": [],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "good",
+    "will": "poor"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+},
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:monstrous_humanoid",
+  "name": "Monstrous Humanoid",
+  "hitDie": 8,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "climb", "craft", "hide", "listen", "move_silently",
+    "search", "spot", "survival"
+  ],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "good",
+    "will": "good"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+},
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:undead",
+  "name": "Undead",
+  "hitDie": 12,
+  "skillPointsPerLevel": 4,
+  "classSkills": [
+    "hide", "listen", "move_silently", "search", "spot"
+  ],
+  "babProgression": "poor",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "poor",
+    "will": "good"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+},
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:humanoid",
+  "name": "Humanoid",
+  "hitDie": 8,
+  "skillPointsPerLevel": 2,
+  "classSkills": [],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "poor",
+    "will": "poor"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+},
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:giant",
+  "name": "Giant",
+  "hitDie": 8,
+  "skillPointsPerLevel": 2,
+  "classSkills": ["climb", "jump", "listen", "spot"],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "poor",
+    "will": "poor"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+},
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:aberration",
+  "name": "Aberration",
+  "hitDie": 8,
+  "skillPointsPerLevel": 2,
+  "classSkills": [],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "poor",
+    "will": "good"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+},
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:plant",
+  "name": "Plant",
+  "hitDie": 8,
+  "skillPointsPerLevel": 2,
+  "classSkills": [],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "poor",
+    "will": "poor"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+}
+]

@@ -1,0 +1,27 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:outsider",
+  "name": "Outsider",
+  "hitDie": 8,
+  "skillPointsPerLevel": 8,
+  "classSkills": [
+    "bluff", "craft", "knowledge_planes", "listen", "search",
+    "sense_motive", "spot", "survival"
+  ],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "good",
+    "will": "good"
+  },
+  "prerequisites": [
+    {
+      "$type": "HasRace",
+      "raceId": "outsider"
+    }
+  ],
+  "levelPermabuffs": {}
+}
+]

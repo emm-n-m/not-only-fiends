@@ -1,0 +1,56 @@
+[
+{
+  "id": "template:animal_companion_standard",
+  "name": "Animal Companion (Standard Progression)",
+  "subtypeAdditions": [],
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": [],
+  "companionScalingPermabuffs": {
+    "1": [
+      { "$type": "GrantAbility", "ability": { "id": "ac_link", "name": "Link", "description": "Master can handle the companion as a free action and gains a +4 circumstance bonus on Wild Empathy and Handle Animal checks against it." } },
+      { "$type": "GrantAbility", "ability": { "id": "ac_share_spells", "name": "Share Spells", "description": "Master can have any spell cast on himself also affect the companion if it is within 5 ft." } }
+    ],
+    "3": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "STR", "value": 1 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "DEX", "value": 1 },
+      { "$type": "ModifyCounter", "counterId": "ac_bonus_tricks", "value": 1 },
+      { "$type": "GrantAbility", "ability": { "id": "ac_evasion", "name": "Evasion", "description": "If exposed to an effect that allows a Reflex save for half damage and the companion makes the save, it takes no damage instead." } }
+    ],
+    "6": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "STR", "value": 1 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "DEX", "value": 1 },
+      { "$type": "ModifyCounter", "counterId": "ac_bonus_tricks", "value": 1 },
+      { "$type": "GrantAbility", "ability": { "id": "ac_devotion", "name": "Devotion", "description": "+4 morale bonus on Will saves against enchantment spells and effects." } }
+    ],
+    "9": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "STR", "value": 1 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "DEX", "value": 1 },
+      { "$type": "ModifyCounter", "counterId": "ac_bonus_tricks", "value": 1 },
+      { "$type": "GrantAbility", "ability": { "id": "ac_multiattack", "name": "Multiattack", "description": "Treats Multiattack as a bonus feat (or +1 attack bonus on secondary natural attacks if it has only one natural attack)." } }
+    ],
+    "12": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "STR", "value": 1 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "DEX", "value": 1 },
+      { "$type": "ModifyCounter", "counterId": "ac_bonus_tricks", "value": 1 }
+    ],
+    "15": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "STR", "value": 1 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "DEX", "value": 1 },
+      { "$type": "ModifyCounter", "counterId": "ac_bonus_tricks", "value": 1 },
+      { "$type": "GrantAbility", "ability": { "id": "ac_improved_evasion", "name": "Improved Evasion", "description": "As Evasion, but the companion takes only half damage on a failed save and no damage on a successful one." } }
+    ],
+    "18": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "STR", "value": 1 },
+      { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "DEX", "value": 1 },
+      { "$type": "ModifyCounter", "counterId": "ac_bonus_tricks", "value": 1 }
+    ]
+  }
+}
+]

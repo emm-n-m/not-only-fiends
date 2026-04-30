@@ -1,0 +1,16 @@
+# Normalize all text files to LF in the repo, check out as OS-native
+* text=auto
+
+# Force LF for files that must have Unix line endings
+*.sh text eol=lf
+*.json text eol=lf
+
+# Force CRLF for Windows-only files
+*.sln text eol=crlf
+*.csproj text eol=crlf
+
+# Binary files — don't touch
+*.png binary
+*.jpg binary
+*.dll binary
+*.exe binary

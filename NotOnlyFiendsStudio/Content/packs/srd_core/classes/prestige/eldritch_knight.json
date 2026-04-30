@@ -1,0 +1,61 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:eldritch_knight",
+  "name": "Eldritch Knight",
+  "hitDie": 6,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "concentration", "craft", "decipher_script", "jump",
+    "knowledge_arcana", "knowledge_nobility", "ride",
+    "sense_motive", "spellcraft", "swim"
+  ],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "poor",
+    "will": "good"
+  },
+  "perLevelPermabuffs": [],
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "ek_bonus_feat", "name": "Bonus Feat", "description": "Eldritch Knight bonus feat at level 1." }
+      }
+    ],
+    "2": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
+    ],
+    "3": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
+    ],
+    "4": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
+    ],
+    "5": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
+    ],
+    "6": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
+    ],
+    "7": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
+    ],
+    "8": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
+    ],
+    "9": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
+    ],
+    "10": [
+      { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
+    ]
+  },
+  "prerequisites": [
+    { "$type": "HasFeat", "featId": "weapon_proficiency_martial" }
+  ],
+  "maxLevel": 10
+}
+]

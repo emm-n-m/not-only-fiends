@@ -1,0 +1,322 @@
+[
+{
+  "id": "companion_ape",
+  "name": "Ape",
+  "description": "Large animal companion with climb speed, low-light vision, and scent. Available at druid level 4+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "large",
+  "speeds": { "land": 30, "climb": 30 },
+  "abilityModifiers": { "str": 11, "dex": 5, "con": 4, "int": -8, "wis": 2, "cha": -3 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 5 },
+    { "$type": "GrantAbility", "ability": { "id": "ape_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
+    { "$type": "GrantAbility", "ability": { "id": "ape_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_bear_black",
+  "name": "Bear, Black",
+  "description": "Medium animal companion with climb and swim speeds, low-light vision, and scent. Available at druid level 4+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "medium",
+  "speeds": { "land": 40, "climb": 30, "swim": 30 },
+  "abilityModifiers": { "str": 9, "dex": 3, "con": 5, "int": -8, "wis": 2, "cha": -4 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 3 },
+    { "$type": "GrantAbility", "ability": { "id": "blackbear_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
+    { "$type": "GrantAbility", "ability": { "id": "blackbear_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_dire_bat",
+  "name": "Dire Bat",
+  "description": "Large flying animal companion with blindsense and low-light vision. Available at druid level 4+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "large",
+  "speeds": { "land": 20, "fly": 40 },
+  "abilityModifiers": { "str": 7, "dex": 12, "con": 7, "int": -8, "wis": 4, "cha": -4 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 4 },
+    { "$type": "GrantAbility", "ability": { "id": "direbat_blindsense", "name": "Blindsense 40 ft.", "description": "Notices and locates creatures within 40 feet using non-visual senses." } },
+    { "$type": "GrantAbility", "ability": { "id": "direbat_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_snake_constrictor",
+  "name": "Snake, Constrictor",
+  "description": "Medium animal companion with climb and swim speeds, scent, and an improved-grab constrict attack. Available at druid level 4+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "medium",
+  "speeds": { "land": 20, "climb": 20, "swim": 20 },
+  "abilityModifiers": { "str": 7, "dex": 7, "con": 3, "int": -9, "wis": 2, "cha": -8 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 3 },
+    { "$type": "GrantAbility", "ability": { "id": "constrictor_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
+    { "$type": "GrantAbility", "ability": { "id": "constrictor_improved_grab", "name": "Improved Grab", "description": "On a successful bite, can start a grapple as a free action without provoking attacks of opportunity." } },
+    { "$type": "GrantAbility", "ability": { "id": "constrictor_constrict", "name": "Constrict", "description": "On a successful grapple check, deals 1d3+4 damage." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_wolverine",
+  "name": "Wolverine",
+  "description": "Medium animal companion with burrow and climb speeds, low-light vision, scent, and rage. Available at druid level 4+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "medium",
+  "speeds": { "land": 30, "burrow": 10, "climb": 10 },
+  "abilityModifiers": { "str": 4, "dex": 5, "con": 9, "int": -8, "wis": 2, "cha": 0 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 3 },
+    { "$type": "GrantAbility", "ability": { "id": "wolverine_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
+    { "$type": "GrantAbility", "ability": { "id": "wolverine_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
+    { "$type": "GrantAbility", "ability": { "id": "wolverine_rage", "name": "Rage", "description": "When wounded: +4 Str, +4 Con, +2 Will, -2 AC for the duration of the encounter." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_crocodile",
+  "name": "Crocodile",
+  "description": "Medium animal companion with swim speed, hold breath, low-light vision, and an improved-grab bite. Available at druid level 4+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "medium",
+  "speeds": { "land": 20, "swim": 30 },
+  "abilityModifiers": { "str": 5, "dex": 4, "con": 5, "int": -9, "wis": 2, "cha": -8 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 4 },
+    { "$type": "GrantAbility", "ability": { "id": "croc_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
+    { "$type": "GrantAbility", "ability": { "id": "croc_hold_breath", "name": "Hold Breath", "description": "Can hold breath for a number of rounds equal to 4 \u00d7 Constitution score before risking drowning." } },
+    { "$type": "GrantAbility", "ability": { "id": "croc_improved_grab", "name": "Improved Grab", "description": "On a successful bite, can start a grapple as a free action." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_bear_brown",
+  "name": "Bear, Brown",
+  "description": "Large animal companion with swim speed, low-light vision, scent, and improved grab on its claw attack. Available at druid level 7+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "large",
+  "speeds": { "land": 40, "swim": 30 },
+  "abilityModifiers": { "str": 17, "dex": 3, "con": 9, "int": -8, "wis": 2, "cha": -4 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 5 },
+    { "$type": "GrantAbility", "ability": { "id": "brownbear_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
+    { "$type": "GrantAbility", "ability": { "id": "brownbear_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
+    { "$type": "GrantAbility", "ability": { "id": "brownbear_improved_grab", "name": "Improved Grab", "description": "On a successful claw, can start a grapple as a free action without provoking attacks of opportunity." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_dire_wolf",
+  "name": "Dire Wolf",
+  "description": "Large animal companion with low-light vision, scent, and trip on bite. Available at druid level 7+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "large",
+  "speeds": { "land": 50 },
+  "abilityModifiers": { "str": 15, "dex": 5, "con": 7, "int": -8, "wis": 2, "cha": 0 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 4 },
+    { "$type": "GrantAbility", "ability": { "id": "direwolf_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
+    { "$type": "GrantAbility", "ability": { "id": "direwolf_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
+    { "$type": "GrantAbility", "ability": { "id": "direwolf_trip", "name": "Trip", "description": "On a successful bite, can attempt to trip as a free action without provoking attacks of opportunity." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_lion",
+  "name": "Lion",
+  "description": "Large animal companion with low-light vision, scent, pounce, improved grab, and rake attacks. Available at druid level 7+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "large",
+  "speeds": { "land": 40 },
+  "abilityModifiers": { "str": 11, "dex": 7, "con": 5, "int": -8, "wis": 2, "cha": -4 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 3 },
+    { "$type": "GrantAbility", "ability": { "id": "lion_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
+    { "$type": "GrantAbility", "ability": { "id": "lion_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
+    { "$type": "GrantAbility", "ability": { "id": "lion_pounce", "name": "Pounce", "description": "Can make a full attack (including rake) on a charge." } },
+    { "$type": "GrantAbility", "ability": { "id": "lion_improved_grab", "name": "Improved Grab", "description": "On a successful bite, can start a grapple as a free action." } },
+    { "$type": "GrantAbility", "ability": { "id": "lion_rake", "name": "Rake", "description": "Two rake attacks for 1d4+3 each while grappling." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_tiger",
+  "name": "Tiger",
+  "description": "Large animal companion with low-light vision, scent, pounce, improved grab, and rake attacks. Available at druid level 7+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "large",
+  "speeds": { "land": 40 },
+  "abilityModifiers": { "str": 13, "dex": 5, "con": 7, "int": -8, "wis": 2, "cha": -4 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 3 },
+    { "$type": "GrantAbility", "ability": { "id": "tiger_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
+    { "$type": "GrantAbility", "ability": { "id": "tiger_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
+    { "$type": "GrantAbility", "ability": { "id": "tiger_pounce", "name": "Pounce", "description": "Can make a full attack (including rake) on a charge." } },
+    { "$type": "GrantAbility", "ability": { "id": "tiger_improved_grab", "name": "Improved Grab", "description": "On a successful bite, can start a grapple as a free action." } },
+    { "$type": "GrantAbility", "ability": { "id": "tiger_rake", "name": "Rake", "description": "Two rake attacks for 1d8+3 each while grappling." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_bear_polar",
+  "name": "Bear, Polar",
+  "description": "Large animal companion with swim speed, low-light vision, scent, and improved grab on its claw attack. Available at druid level 10+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "large",
+  "speeds": { "land": 40, "swim": 30 },
+  "abilityModifiers": { "str": 15, "dex": 3, "con": 7, "int": -8, "wis": 2, "cha": -4 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 5 },
+    { "$type": "GrantAbility", "ability": { "id": "polarbear_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
+    { "$type": "GrantAbility", "ability": { "id": "polarbear_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
+    { "$type": "GrantAbility", "ability": { "id": "polarbear_improved_grab", "name": "Improved Grab", "description": "On a successful claw, can start a grapple as a free action." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_dire_lion",
+  "name": "Dire Lion",
+  "description": "Large animal companion with low-light vision, scent, pounce, improved grab, and rake. Available at druid level 10+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "large",
+  "speeds": { "land": 40 },
+  "abilityModifiers": { "str": 15, "dex": 5, "con": 7, "int": -8, "wis": 2, "cha": 0 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 5 },
+    { "$type": "GrantAbility", "ability": { "id": "direlion_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
+    { "$type": "GrantAbility", "ability": { "id": "direlion_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
+    { "$type": "GrantAbility", "ability": { "id": "direlion_pounce", "name": "Pounce", "description": "Can make a full attack (including rake) on a charge." } },
+    { "$type": "GrantAbility", "ability": { "id": "direlion_improved_grab", "name": "Improved Grab", "description": "On a successful bite, can start a grapple as a free action." } },
+    { "$type": "GrantAbility", "ability": { "id": "direlion_rake", "name": "Rake", "description": "Two rake attacks for 1d4+5 each while grappling." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_bear_dire",
+  "name": "Bear, Dire",
+  "description": "Large animal companion with low-light vision, scent, and improved grab on its claw attack. Available at druid level 13+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "large",
+  "speeds": { "land": 40 },
+  "abilityModifiers": { "str": 21, "dex": 3, "con": 9, "int": -8, "wis": 2, "cha": 0 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 7 },
+    { "$type": "GrantAbility", "ability": { "id": "direbear_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
+    { "$type": "GrantAbility", "ability": { "id": "direbear_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
+    { "$type": "GrantAbility", "ability": { "id": "direbear_improved_grab", "name": "Improved Grab", "description": "On a successful claw, can start a grapple as a free action." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_elephant",
+  "name": "Elephant",
+  "description": "Huge animal companion with low-light vision, scent, and a trample attack. Available at druid level 13+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "huge",
+  "speeds": { "land": 40 },
+  "abilityModifiers": { "str": 20, "dex": 0, "con": 11, "int": -8, "wis": 3, "cha": -3 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 7 },
+    { "$type": "GrantAbility", "ability": { "id": "elephant_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
+    { "$type": "GrantAbility", "ability": { "id": "elephant_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
+    { "$type": "GrantAbility", "ability": { "id": "elephant_trample", "name": "Trample", "description": "Reflex DC 23 (Str-based) for half. Trample damage 2d8+15." } }
+  ],
+  "scalingFormulas": []
+},
+{
+  "id": "companion_tiger_dire",
+  "name": "Tiger, Dire",
+  "description": "Large animal companion with low-light vision, scent, pounce, improved grab, and rake. Available at druid level 16+.",
+  "type": "animal",
+  "subtypes": [],
+  "size": "large",
+  "speeds": { "land": 40 },
+  "abilityModifiers": { "str": 17, "dex": 5, "con": 7, "int": -8, "wis": 2, "cha": 0 },
+  "levelAdjustment": 0,
+  "bonusFeats": 0,
+  "bonusSkillPointsPerHD": 0,
+  "racialHDDriverId": "racial_hd:animal",
+  "racialPermabuffs": [
+    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 6 },
+    { "$type": "GrantAbility", "ability": { "id": "diretiger_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
+    { "$type": "GrantAbility", "ability": { "id": "diretiger_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
+    { "$type": "GrantAbility", "ability": { "id": "diretiger_pounce", "name": "Pounce", "description": "Can make a full attack (including rake) on a charge." } },
+    { "$type": "GrantAbility", "ability": { "id": "diretiger_improved_grab", "name": "Improved Grab", "description": "On a successful bite, can start a grapple as a free action." } },
+    { "$type": "GrantAbility", "ability": { "id": "diretiger_rake", "name": "Rake", "description": "Two rake attacks for 2d4+4 each while grappling." } }
+  ],
+  "scalingFormulas": []
+}
+]

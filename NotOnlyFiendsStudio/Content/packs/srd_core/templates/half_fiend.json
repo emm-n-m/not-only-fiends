@@ -1,0 +1,131 @@
+[
+{
+  "id": "template:half_fiend",
+  "name": "Half-Fiend",
+  "typeOverride": "outsider",
+  "subtypeAdditions": ["native"],
+  "abilityModifiers": {
+    "str": 4,
+    "dex": 4,
+    "con": 2,
+    "int": 4,
+    "wis": 0,
+    "cha": 2
+  },
+  "naturalArmor": 1,
+  "speedModifiers": {
+    "fly": 60
+  },
+  "levelAdjustment": 4,
+  "naturalAttacks": [
+    { "name": "Bite", "damage": "1d6", "count": 1, "isPrimary": true },
+    { "name": "Claw", "damage": "1d4", "count": 2, "isPrimary": true }
+  ],
+  "creationPermabuffs": [
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "hf_darkvision_60", "name": "Darkvision 60 ft.", "description": "Can see in the dark up to 60 feet." }
+    },
+    {
+      "$type": "ModifyAttribute",
+      "target": "Resistance",
+      "resistanceElement": "acid",
+      "value": 10
+    },
+    {
+      "$type": "ModifyAttribute",
+      "target": "Resistance",
+      "resistanceElement": "cold",
+      "value": 10
+    },
+    {
+      "$type": "ModifyAttribute",
+      "target": "Resistance",
+      "resistanceElement": "electricity",
+      "value": 10
+    },
+    {
+      "$type": "ModifyAttribute",
+      "target": "Resistance",
+      "resistanceElement": "fire",
+      "value": 10
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "hf_immunity_poison", "name": "Immunity to Poison", "description": "Immune to all poisons." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "hf_smite_good", "name": "Smite Good", "description": "Once per day, +CHA to attack, +HD to damage (max 20) vs good creature." }
+    }
+  ],
+  "scalingPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "hf_sla_darkness", "name": "Darkness", "usesPerDay": "3/day" }
+      }
+    ],
+    "3": [
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "hf_sla_desecrate", "name": "Desecrate", "usesPerDay": "1/day" }
+      }
+    ],
+    "5": [
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "hf_sla_unholy_blight", "name": "Unholy Blight", "usesPerDay": "1/day" }
+      }
+    ],
+    "7": [
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "hf_sla_poison", "name": "Poison", "usesPerDay": "3/day" }
+      }
+    ],
+    "9": [
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "hf_sla_contagion", "name": "Contagion", "usesPerDay": "1/day" }
+      }
+    ],
+    "11": [
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "hf_sla_blasphemy", "name": "Blasphemy", "usesPerDay": "1/day" }
+      }
+    ],
+    "13": [
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "hf_sla_unholy_aura", "name": "Unholy Aura", "usesPerDay": "3/day" }
+      }
+    ],
+    "15": [
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "hf_sla_haste", "name": "Haste", "usesPerDay": "3/day" }
+      }
+    ],
+    "17": [
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "hf_sla_horrid_wilting", "name": "Horrid Wilting", "usesPerDay": "1/day" }
+      }
+    ],
+    "19": [
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "hf_sla_destruction", "name": "Destruction", "usesPerDay": "1/day" }
+      }
+    ]
+  },
+  "scalingFormulas": [
+    {
+      "target": "SpellResistance",
+      "formula": { "expression": "TotalHD + 10" }
+    }
+  ]
+}
+]
