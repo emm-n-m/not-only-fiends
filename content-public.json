@@ -1,5 +1,6 @@
 {
   "publicPackIds": [
+    "pcgen_srd",
     "srd_core",
     "srd_epic",
     "srd_monsters",

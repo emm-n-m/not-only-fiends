@@ -1005,6 +1005,221 @@ def convert_classes(path: str) -> list[dict]:
     return results
 
 
+# ─── Equipment ──────────────────────────────────────────────────────────────
+
+WEAPON_DAMAGE_TYPES = {
+    'Slashing': 'slashing',
+    'Piercing': 'piercing',
+    'Bludgeoning': 'bludgeoning',
+}
+
+
+def _parse_cost_to_cp(cost_raw: str) -> int:
+    """Parse PCGen COST (gp by default) → copper pieces."""
+    cost = cost_raw.strip().rstrip('*')
+    if not cost:
+        return 0
+    try:
+        # PCGen mostly uses gp; some items use "0" for "negligible"
+        return int(float(cost) * 100)
+    except ValueError:
+        return 0
+
+
+def _critrange_low(critrange_raw: str) -> int:
+    """PCGen CRITRANGE: 1 = 20, 2 = 19-20, 3 = 18-20, etc. → return critRangeLow."""
+    try:
+        n = int(critrange_raw)
+        return 21 - n
+    except (TypeError, ValueError):
+        return 20
+
+
+def _critmult(critmult_raw: str) -> int:
+    """Parse 'x2' / 'x3' / 'x4' → integer multiplier."""
+    s = critmult_raw.strip().lower().lstrip('x')
+    try:
+        return int(s) if s else 2
+    except ValueError:
+        return 2
+
+
+def _equipment_id(name: str, prefix: str) -> str:
+    return f"{prefix}:{to_snake_case(name)}"
+
+
+def _classify_armor(type_chain: str) -> tuple[str, str | None]:
+    """
+    Inspect a TYPE chain and return (category, armor_kind).
+    category ∈ {'armor', 'shield'}; armor_kind ∈ {'light','medium','heavy','shield','towerShield'} or None.
+    """
+    parts = type_chain.split('.')
+    if 'Shield' in parts:
+        if 'Tower' in parts:
+            return 'shield', 'towerShield'
+        return 'shield', 'shield'
+    if 'Armor' in parts:
+        if 'Heavy' in parts:
+            return 'armor', 'heavy'
+        if 'Medium' in parts:
+            return 'armor', 'medium'
+        if 'Light' in parts:
+            return 'armor', 'light'
+        return 'armor', 'light'
+    return 'armor', None
+
+
+def _classify_weapon(type_chain: str) -> tuple[str, dict]:
+    """Inspect a Weapon TYPE chain and return ('weapon', extras dict)."""
+    parts = type_chain.split('.')
+    extras = {}
+    if 'Ranged' in parts:
+        extras['ranged'] = True
+    if 'Thrown' in parts:
+        extras['thrown'] = True
+    if 'Reach' in parts:
+        extras['reach'] = True
+    if 'Double' in parts:
+        extras['doubleWeapon'] = True
+    if 'Simple' in parts:
+        extras['proficiency'] = 'simple'
+    elif 'Martial' in parts:
+        extras['proficiency'] = 'martial'
+    elif 'Exotic' in parts:
+        extras['proficiency'] = 'exotic'
+    damage_types = [WEAPON_DAMAGE_TYPES[p] for p in parts if p in WEAPON_DAMAGE_TYPES]
+    if damage_types:
+        extras['damageType'] = '+'.join(damage_types)
+    return 'weapon', extras
+
+
+def _parse_combat_ac_bonus(bonuses, expected_type: str) -> int:
+    """Find a BONUS:COMBAT|AC|N|TYPE=<expected_type> entry and return N."""
+    if isinstance(bonuses, str):
+        bonuses = [bonuses]
+    for b in bonuses or []:
+        # Format: 'COMBAT|AC|2|TYPE=Armor'
+        segments = b.split('|')
+        if len(segments) < 3 or segments[0] != 'COMBAT' or segments[1] != 'AC':
+            continue
+        if any(seg.upper() == f"TYPE={expected_type.upper()}" for seg in segments[3:]):
+            try:
+                return int(segments[2])
+            except ValueError:
+                continue
+    return 0
+
+
+def convert_equipment(path: str) -> list[dict]:
+    """Convert a PCGen equipment LST (rsrd_equip_arms_and_armor.lst style) to EquipmentDefinition JSON."""
+    results = []
+    seen_ids = set()
+    for line in read_lst_lines(path):
+        tags = parse_lst_line(line)
+        name = tags.get('NAME', '').strip()
+        if not name:
+            continue
+        # Skip barding for now — PCGen lists them under same chain, we omit until we have mount support.
+        if name.startswith('Barding'):
+            continue
+        type_chain = tags.get('TYPE', '')
+        if not type_chain:
+            continue
+
+        # Use OUTPUTNAME for display when present.
+        display_name = tags.get('OUTPUTNAME', name).replace('[NAME]', name).strip()
+        weight_raw = (tags.get('WT', '0') or '0').strip()
+        try:
+            weight_lbs = max(0, int(round(float(weight_raw))))
+        except ValueError:
+            weight_lbs = 0
+        price_cp = _parse_cost_to_cp(tags.get('COST', '0'))
+
+        item: dict = {}
+
+        type_parts = type_chain.split('.')
+        if 'Weapon' in type_parts:
+            category, extras = _classify_weapon(type_chain)
+            damage = tags.get('DAMAGE', '').strip()
+            if not damage:
+                continue  # Skip ammo-without-damage entries
+            weapon: dict = {'damage': damage}
+            critrange = tags.get('CRITRANGE', '')
+            if critrange:
+                weapon['critRangeLow'] = _critrange_low(critrange)
+            critmult = tags.get('CRITMULT', '')
+            if critmult:
+                weapon['critMultiplier'] = _critmult(critmult)
+            range_ft = tags.get('RANGE', '')
+            if range_ft:
+                try:
+                    weapon['rangeFt'] = int(range_ft)
+                except ValueError:
+                    pass
+            wield = tags.get('WIELD', '')
+            if wield == 'Light':
+                weapon['light'] = True
+            elif wield in ('TwoHanded', 'TwoHandsOnly'):
+                weapon['twoHanded'] = True
+            weapon.update(extras)
+            item = {
+                'id': _equipment_id(name, 'weapon'),
+                'name': display_name,
+                'category': 'weapon',
+                'slot': 'weapon',
+                'weightLbs': weight_lbs,
+                'priceCp': price_cp,
+                'weapon': weapon,
+            }
+        elif 'Armor' in type_parts or 'Shield' in type_parts:
+            category, kind = _classify_armor(type_chain)
+            bonuses = tags.get('BONUS', '')
+            armor_type = 'Shield' if category == 'shield' else 'Armor'
+            ac_bonus = _parse_combat_ac_bonus(bonuses, armor_type)
+            armor_block: dict = {
+                'kind': kind or 'light',
+                'armorBonus': ac_bonus,
+            }
+            accheck = tags.get('ACCHECK', '')
+            if accheck:
+                try:
+                    armor_block['checkPenalty'] = int(accheck)
+                except ValueError:
+                    pass
+            maxdex = tags.get('MAXDEX', '')
+            if maxdex:
+                try:
+                    armor_block['maxDex'] = int(maxdex)
+                except ValueError:
+                    pass
+            spellfail = tags.get('SPELLFAILURE', '')
+            if spellfail:
+                try:
+                    armor_block['arcaneFailurePct'] = int(spellfail)
+                except ValueError:
+                    pass
+            slot = 'shield' if category == 'shield' else 'body'
+            item = {
+                'id': _equipment_id(name, 'armor' if category == 'armor' else 'shield'),
+                'name': display_name,
+                'category': category,
+                'slot': slot,
+                'weightLbs': weight_lbs,
+                'priceCp': price_cp,
+                'armor': armor_block,
+            }
+        else:
+            continue  # Skip mounts/accessories/other types
+
+        if item['id'] in seen_ids:
+            continue
+        seen_ids.add(item['id'])
+        results.append(item)
+
+    results.sort(key=lambda e: (e['category'], e['id']))
+    return results
+
+
 # ─── Main ───────────────────────────────────────────────────────────────────
 
 def write_json(data: list, output_path: str | None, default_name: str):
@@ -1025,12 +1240,13 @@ CONVERTERS = {
     'spells': (convert_spells, 'rsrd_spells.lst', 'srd_spells.json'),
     'domains': (convert_domains, 'rsrd_domains.lst', 'srd_domains.json'),
     'classes': (convert_classes, 'rsrd_classes.lst', 'srd_classes.json'),
+    'equipment': (convert_equipment, 'rsrd_equip_arms_and_armor.lst', 'srd_equipment.json'),
 }
 
 
 def main():
     parser = argparse.ArgumentParser(description='Convert PCGen LST files to NotOnlyFiendsStudio JSON')
-    parser.add_argument('command', choices=['skills', 'feats', 'spells', 'domains', 'classes', 'all'],
+    parser.add_argument('command', choices=['skills', 'feats', 'spells', 'domains', 'classes', 'equipment', 'all'],
                         help='Content type to convert')
     parser.add_argument('path', help='Path to LST file or RSRD basics directory (for "all")')
     parser.add_argument('--output', '-o', help='Output file path (default: stdout)')

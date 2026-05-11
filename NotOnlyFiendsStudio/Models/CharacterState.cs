@@ -93,6 +93,12 @@ public class CharacterState
     // Movement
     public Dictionary<MovementMode, int> Speeds { get; set; } = new();
 
+    // Equipment-derived. Computed post-tick after all class/race/template progression;
+    // never written from per-tick code.
+    public ArmorClass AC { get; set; } = new();
+    public List<AttackLine> AttackLines { get; set; } = new();
+    public EncumbranceState Encumbrance { get; set; } = new();
+
     // Companions/familiars/mounts/cohorts (master-side accumulator).
     // One entry per granter; tail pass recomputes EffectiveLevel against final state.
     public List<CompanionSlotState> CompanionSlots { get; set; } = new();
@@ -232,4 +238,71 @@ public class EffectiveLevelRule
 {
     public string TargetDriverId { get; set; } = string.Empty;
     public Formula BonusFormula { get; set; } = new();
+}
+
+public class ArmorClass
+{
+    public Dictionary<BonusType, int> Components { get; set; } = new();
+    public int DexContribution { get; set; }
+    public int? MaxDexCap { get; set; }
+    public int Total { get; set; } = 10;
+    public int Touch { get; set; } = 10;
+    public int FlatFooted { get; set; } = 10;
+}
+
+public class AttackLine
+{
+    public string Name { get; set; } = string.Empty;
+    public List<int> Bonuses { get; set; } = new();
+    public string Damage { get; set; } = string.Empty;
+    public string Crit { get; set; } = string.Empty;
+    public bool IsOffHand { get; set; }
+    public bool IsRanged { get; set; }
+    public string? Notes { get; set; }
+}
+
+public class EncumbranceState
+{
+    public int TotalWeightLbs { get; set; }
+    public LoadCategory Load { get; set; } = LoadCategory.Light;
+    public int LightMax { get; set; }
+    public int MediumMax { get; set; }
+    public int HeavyMax { get; set; }
+}
+
+public enum LoadCategory { Light, Medium, Heavy, OverLoad }
+
+// Transient collector used during the post-tick equipment pass. Equipment permabuffs
+// push contributions here; ReplayStudio's finalize step applies 3.5e stacking rules
+// per (target, bonus-type) and writes the resulting AC / saves / abilities / attack lines
+// back to CharacterState.
+public class EquipmentPass
+{
+    public Dictionary<(BonusTarget Target, BonusType Type), List<int>> Contributions { get; } = new();
+    public List<ArmorContribution> Armors { get; } = new();
+    public List<WeaponContribution> Weapons { get; } = new();
+    public int TotalWeightLbs { get; set; }
+
+    public void Add(BonusTarget target, BonusType type, int value)
+    {
+        var key = (target, type);
+        if (!Contributions.TryGetValue(key, out var list))
+            Contributions[key] = list = new List<int>();
+        list.Add(value);
+    }
+}
+
+public class ArmorContribution
+{
+    public ArmorProfile Profile { get; set; } = new();
+    public bool AsShield { get; set; }
+}
+
+public class WeaponContribution
+{
+    public string DisplayName { get; set; } = string.Empty;
+    public WeaponProfile Profile { get; set; } = new();
+    public int EnhancementBonus { get; set; }
+    public bool MainHand { get; set; } = true;
+    public bool TwoHanded { get; set; }
 }

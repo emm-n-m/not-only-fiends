@@ -1,0 +1,362 @@
+[
+  {
+    "id": "wondrous:cloak_of_resistance_1",
+    "name": "Cloak of Resistance +1",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 100000,
+    "description": "+1 resistance bonus on all saves.",
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "allSaves", "bonusType": "resistance", "value": { "expression": "1" } }
+    ]
+  },
+  {
+    "id": "wondrous:cloak_of_resistance_2",
+    "name": "Cloak of Resistance +2",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 400000,
+    "description": "+2 resistance bonus on all saves.",
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "allSaves", "bonusType": "resistance", "value": { "expression": "2" } }
+    ]
+  },
+  {
+    "id": "wondrous:cloak_of_resistance_3",
+    "name": "Cloak of Resistance +3",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 900000,
+    "description": "+3 resistance bonus on all saves.",
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "allSaves", "bonusType": "resistance", "value": { "expression": "3" } }
+    ]
+  },
+  {
+    "id": "wondrous:cloak_of_resistance_4",
+    "name": "Cloak of Resistance +4",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 1600000,
+    "description": "+4 resistance bonus on all saves.",
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "allSaves", "bonusType": "resistance", "value": { "expression": "4" } }
+    ]
+  },
+  {
+    "id": "wondrous:cloak_of_resistance_5",
+    "name": "Cloak of Resistance +5",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 2500000,
+    "description": "+5 resistance bonus on all saves.",
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "allSaves", "bonusType": "resistance", "value": { "expression": "5" } }
+    ]
+  },
+  {
+    "id": "wondrous:amulet_natural_armor_1",
+    "name": "Amulet of Natural Armor +1",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 200000,
+    "description": "+1 enhancement bonus to natural armor.",
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "naturalEnhancement", "value": { "expression": "1" } }
+    ]
+  },
+  {
+    "id": "wondrous:amulet_natural_armor_2",
+    "name": "Amulet of Natural Armor +2",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 800000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "naturalEnhancement", "value": { "expression": "2" } }
+    ]
+  },
+  {
+    "id": "wondrous:amulet_natural_armor_3",
+    "name": "Amulet of Natural Armor +3",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 1800000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "naturalEnhancement", "value": { "expression": "3" } }
+    ]
+  },
+  {
+    "id": "wondrous:amulet_natural_armor_4",
+    "name": "Amulet of Natural Armor +4",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 3200000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "naturalEnhancement", "value": { "expression": "4" } }
+    ]
+  },
+  {
+    "id": "wondrous:amulet_natural_armor_5",
+    "name": "Amulet of Natural Armor +5",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 5000000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "naturalEnhancement", "value": { "expression": "5" } }
+    ]
+  },
+  {
+    "id": "wondrous:bracers_armor_1",
+    "name": "Bracers of Armor +1",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 1,
+    "priceCp": 100000,
+    "description": "Grants a +1 armor bonus to AC.",
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "armor", "value": { "expression": "1" } }
+    ]
+  },
+  {
+    "id": "wondrous:bracers_armor_3",
+    "name": "Bracers of Armor +3",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 1,
+    "priceCp": 900000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "armor", "value": { "expression": "3" } }
+    ]
+  },
+  {
+    "id": "wondrous:bracers_armor_5",
+    "name": "Bracers of Armor +5",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 1,
+    "priceCp": 2500000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "armor", "value": { "expression": "5" } }
+    ]
+  },
+  {
+    "id": "wondrous:bracers_armor_8",
+    "name": "Bracers of Armor +8",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 1,
+    "priceCp": 6400000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "armor", "value": { "expression": "8" } }
+    ]
+  },
+  {
+    "id": "wondrous:gauntlets_ogre_power",
+    "name": "Gauntlets of Ogre Power",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 4,
+    "priceCp": 400000,
+    "description": "+2 enhancement bonus to Strength.",
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityStr", "bonusType": "enhancement", "value": { "expression": "2" } }
+    ]
+  },
+  {
+    "id": "wondrous:belt_giant_strength_4",
+    "name": "Belt of Giant Strength +4",
+    "category": "wondrous",
+    "slot": "waist",
+    "weightLbs": 1,
+    "priceCp": 1600000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityStr", "bonusType": "enhancement", "value": { "expression": "4" } }
+    ]
+  },
+  {
+    "id": "wondrous:belt_giant_strength_6",
+    "name": "Belt of Giant Strength +6",
+    "category": "wondrous",
+    "slot": "waist",
+    "weightLbs": 1,
+    "priceCp": 3600000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityStr", "bonusType": "enhancement", "value": { "expression": "6" } }
+    ]
+  },
+  {
+    "id": "wondrous:gloves_dex_2",
+    "name": "Gloves of Dexterity +2",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 0,
+    "priceCp": 400000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityDex", "bonusType": "enhancement", "value": { "expression": "2" } }
+    ]
+  },
+  {
+    "id": "wondrous:gloves_dex_4",
+    "name": "Gloves of Dexterity +4",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 0,
+    "priceCp": 1600000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityDex", "bonusType": "enhancement", "value": { "expression": "4" } }
+    ]
+  },
+  {
+    "id": "wondrous:gloves_dex_6",
+    "name": "Gloves of Dexterity +6",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 0,
+    "priceCp": 3600000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityDex", "bonusType": "enhancement", "value": { "expression": "6" } }
+    ]
+  },
+  {
+    "id": "wondrous:amulet_health_2",
+    "name": "Amulet of Health +2",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 400000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityCon", "bonusType": "enhancement", "value": { "expression": "2" } }
+    ]
+  },
+  {
+    "id": "wondrous:amulet_health_4",
+    "name": "Amulet of Health +4",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 1600000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityCon", "bonusType": "enhancement", "value": { "expression": "4" } }
+    ]
+  },
+  {
+    "id": "wondrous:amulet_health_6",
+    "name": "Amulet of Health +6",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 3600000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityCon", "bonusType": "enhancement", "value": { "expression": "6" } }
+    ]
+  },
+  {
+    "id": "wondrous:headband_intellect_2",
+    "name": "Headband of Intellect +2",
+    "category": "wondrous",
+    "slot": "head",
+    "weightLbs": 0,
+    "priceCp": 400000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityInt", "bonusType": "enhancement", "value": { "expression": "2" } }
+    ]
+  },
+  {
+    "id": "wondrous:headband_intellect_4",
+    "name": "Headband of Intellect +4",
+    "category": "wondrous",
+    "slot": "head",
+    "weightLbs": 0,
+    "priceCp": 1600000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityInt", "bonusType": "enhancement", "value": { "expression": "4" } }
+    ]
+  },
+  {
+    "id": "wondrous:headband_intellect_6",
+    "name": "Headband of Intellect +6",
+    "category": "wondrous",
+    "slot": "head",
+    "weightLbs": 0,
+    "priceCp": 3600000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityInt", "bonusType": "enhancement", "value": { "expression": "6" } }
+    ]
+  },
+  {
+    "id": "wondrous:periapt_wisdom_2",
+    "name": "Periapt of Wisdom +2",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 400000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityWis", "bonusType": "enhancement", "value": { "expression": "2" } }
+    ]
+  },
+  {
+    "id": "wondrous:periapt_wisdom_4",
+    "name": "Periapt of Wisdom +4",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 1600000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityWis", "bonusType": "enhancement", "value": { "expression": "4" } }
+    ]
+  },
+  {
+    "id": "wondrous:periapt_wisdom_6",
+    "name": "Periapt of Wisdom +6",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 3600000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityWis", "bonusType": "enhancement", "value": { "expression": "6" } }
+    ]
+  },
+  {
+    "id": "wondrous:cloak_charisma_2",
+    "name": "Cloak of Charisma +2",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 400000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityCha", "bonusType": "enhancement", "value": { "expression": "2" } }
+    ]
+  },
+  {
+    "id": "wondrous:cloak_charisma_4",
+    "name": "Cloak of Charisma +4",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 1600000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityCha", "bonusType": "enhancement", "value": { "expression": "4" } }
+    ]
+  },
+  {
+    "id": "wondrous:cloak_charisma_6",
+    "name": "Cloak of Charisma +6",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 3600000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityCha", "bonusType": "enhancement", "value": { "expression": "6" } }
+    ]
+  }
+]

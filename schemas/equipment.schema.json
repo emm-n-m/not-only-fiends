@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "equipment.schema.json",
+  "title": "D&D 3.5e Equipment Definition",
+  "description": "Schema for EquipmentDefinition content files. Each file is a JSON array of items.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/EquipmentDefinition" },
+
+  "$defs": {
+
+    "Ability": {
+      "type": "string",
+      "enum": ["str", "dex", "con", "int", "wis", "cha"]
+    },
+
+    "BonusType": {
+      "type": "string",
+      "enum": [
+        "armor", "shield", "natural", "naturalEnhancement", "enhancement",
+        "deflection", "dodge", "insight", "luck", "sacred", "profane",
+        "morale", "competence", "resistance", "circumstance", "size", "racial", "untyped"
+      ],
+      "description": "3.5e bonus-type taxonomy. Dodge and untyped stack with everything; others — highest of a given type wins per target."
+    },
+
+    "BonusTarget": {
+      "type": "string",
+      "enum": [
+        "ac", "attack", "damage",
+        "saveFort", "saveRef", "saveWill", "allSaves",
+        "abilityStr", "abilityDex", "abilityCon", "abilityInt", "abilityWis", "abilityCha",
+        "skillRanks", "sr", "naturalArmor"
+      ]
+    },
+
+    "EquipmentCategory": {
+      "type": "string",
+      "enum": [
+        "weapon", "armor", "shield", "wondrous", "ring", "rod", "staff",
+        "wand", "scroll", "potion", "gear", "ammunition", "other"
+      ]
+    },
+
+    "ArmorKind": {
+      "type": "string",
+      "enum": ["light", "medium", "heavy", "shield", "towerShield"]
+    },
+
+    "Formula": {
+      "type": "object",
+      "properties": {
+        "expression": { "type": "string" }
+      },
+      "required": ["expression"],
+      "additionalProperties": false
+    },
+
+    "Prerequisite": {
+      "type": "object",
+      "description": "See feat.schema.json for the full prerequisite shape. Common for equipment: HasFeat (proficiency), MinClassLevel, AlignmentReq.",
+      "properties": {
+        "$type": { "type": "string" }
+      },
+      "required": ["$type"]
+    },
+
+    "WeaponProfile": {
+      "type": "object",
+      "properties": {
+        "damage": { "type": "string", "description": "Medium-size damage dice, e.g., '1d8', '2d6'." },
+        "critRangeLow": { "type": "integer", "minimum": 18, "maximum": 20, "default": 20 },
+        "critMultiplier": { "type": "integer", "minimum": 2, "maximum": 4, "default": 2 },
+        "rangeFt": { "type": "integer", "minimum": 0, "default": 0 },
+        "damageType": { "type": "string", "description": "e.g., 'slashing', 'piercing', 'bludgeoning', 'piercing+slashing'." },
+        "twoHanded": { "type": "boolean", "default": false },
+        "light": { "type": "boolean", "default": false },
+        "reach": { "type": "boolean", "default": false },
+        "doubleWeapon": { "type": "boolean", "default": false },
+        "ranged": { "type": "boolean", "default": false },
+        "thrown": { "type": "boolean", "default": false },
+        "proficiency": { "type": "string", "enum": ["simple", "martial", "exotic"] }
+      },
+      "required": ["damage"],
+      "additionalProperties": false
+    },
+
+    "ArmorProfile": {
+      "type": "object",
+      "properties": {
+        "kind": { "$ref": "#/$defs/ArmorKind" },
+        "armorBonus": { "type": "integer", "minimum": 0 },
+        "maxDex": { "type": ["integer", "null"], "description": "Null = no dex cap." },
+        "checkPenalty": { "type": "integer", "maximum": 0, "description": "Stored as a non-positive integer (e.g., -6 for full plate)." },
+        "arcaneFailurePct": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "speed30": { "type": "integer", "default": 30 },
+        "speed20": { "type": "integer", "default": 20 }
+      },
+      "required": ["kind", "armorBonus"],
+      "additionalProperties": false
+    },
+
+    "UserPermabuff": {
+      "description": "Equipment-friendly subset of permabuffs.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantTypedBonus" },
+            "target": { "$ref": "#/$defs/BonusTarget" },
+            "bonusType": { "$ref": "#/$defs/BonusType" },
+            "value": { "$ref": "#/$defs/Formula" }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantArmorProfile" },
+            "profile": { "$ref": "#/$defs/ArmorProfile" },
+            "asShield": { "type": "boolean", "default": false }
+          },
+          "required": ["$type", "profile"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantWeaponLine" },
+            "profile": { "$ref": "#/$defs/WeaponProfile" },
+            "enhancementBonus": { "type": "integer", "default": 0 },
+            "mainHand": { "type": "boolean", "default": true },
+            "twoHanded": { "type": "boolean", "default": false },
+            "displayName": { "type": "string" }
+          },
+          "required": ["$type", "profile"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantImmunity" },
+            "immunity": { "type": "string" }
+          },
+          "required": ["$type", "immunity"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantDR" },
+            "value": { "type": "integer", "minimum": 1 },
+            "bypassedBy": { "type": "string" }
+          },
+          "required": ["$type", "value", "bypassedBy"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantSkillBonus" },
+            "skillId": { "type": "string" },
+            "value": { "type": "integer" }
+          },
+          "required": ["$type", "skillId", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "ModifyAttribute" },
+            "target": {
+              "type": "string",
+              "enum": ["naturalArmor", "spellResistance", "levelAdjustment", "resistance", "abilityScore", "allSaves"]
+            },
+            "value": { "type": "integer" },
+            "resistanceElement": { "type": "string" },
+            "abilityScore": { "$ref": "#/$defs/Ability" }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+
+    "EquipmentDefinition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique ID. Convention: '<category>:<snake_case>' — e.g., 'armor:full_plate', 'weapon:longsword', 'wondrous:cloak_of_resistance_3', 'ring:protection_2'."
+        },
+        "name": { "type": "string", "description": "Display name (e.g., 'Cloak of Resistance +3')." },
+        "category": { "$ref": "#/$defs/EquipmentCategory" },
+        "slot": {
+          "type": ["string", "null"],
+          "description": "Body slot for wearables (head, eyes, neck, shoulders, body, torso, waist, hands, ring, feet) or null/'weapon'/'shield' for held items / slotless / consumables."
+        },
+        "weightLbs": { "type": "integer", "minimum": 0, "default": 0 },
+        "priceCp": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Price in copper pieces (1 gp = 100 cp). Allows accurate representation of 1 sp / 5 cp items."
+        },
+        "description": { "type": "string" },
+        "prerequisites": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Prerequisite" },
+          "description": "Use prerequisites (proficiency feat, alignment requirement) to gate the item."
+        },
+        "grantedPermabuffs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/UserPermabuff" },
+          "description": "Mechanical effects when the item is equipped. Mundane gear has an empty array; weapons typically reference WeaponProfile via the 'weapon' field rather than a permabuff."
+        },
+        "weapon": { "$ref": "#/$defs/WeaponProfile" },
+        "armor": { "$ref": "#/$defs/ArmorProfile" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["id", "name", "category"],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "ring:protection_1",
+    "name": "Ring of Protection +1",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 200000,
+    "description": "+1 deflection bonus to AC.",
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "1" } }
+    ]
+  },
+  {
+    "id": "ring:protection_2",
+    "name": "Ring of Protection +2",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 800000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "2" } }
+    ]
+  },
+  {
+    "id": "ring:protection_3",
+    "name": "Ring of Protection +3",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 1800000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "3" } }
+    ]
+  },
+  {
+    "id": "ring:protection_4",
+    "name": "Ring of Protection +4",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 3200000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "4" } }
+    ]
+  },
+  {
+    "id": "ring:protection_5",
+    "name": "Ring of Protection +5",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 5000000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "5" } }
+    ]
+  }
+]

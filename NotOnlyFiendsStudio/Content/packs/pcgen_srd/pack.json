@@ -1,0 +1,9 @@
+{
+  "id": "pcgen_srd",
+  "name": "SRD via PCGen LST",
+  "description": "PCGen-derived SRD baseline content. Lower priority than srd_core; intended to fill gaps not yet hand-extracted. Currently provides arms-and-armor equipment baseline.",
+  "author": "Wizards of the Coast (OGL) — converted from PCGen rsrd_equip_arms_and_armor.lst",
+  "version": "3.5",
+  "priority": -10,
+  "depends": []
+}

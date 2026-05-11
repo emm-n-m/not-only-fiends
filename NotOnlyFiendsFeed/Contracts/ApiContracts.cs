@@ -65,6 +65,7 @@ public sealed class ContentCatalogResponse
     public List<ContentSummaryDto> Domains { get; set; } = new();
     public List<ContentSummaryDto> Skills { get; set; } = new();
     public List<ContentSummaryDto> ClassFeatures { get; set; } = new();
+    public List<EquipmentSummaryDto> Equipment { get; set; } = new();
     public int SpellCount { get; set; }
 }
 
@@ -105,6 +106,20 @@ public sealed class FeatSummaryDto
     public string? SelectionRequired { get; set; }
     public List<string> Tags { get; set; } = new();
     public List<string> Prerequisites { get; set; } = new();
+}
+
+public sealed class EquipmentSummaryDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public EquipmentCategory Category { get; set; }
+    public string? Slot { get; set; }
+    public int WeightLbs { get; set; }
+    public long PriceCp { get; set; }
+    public string? Description { get; set; }
+    public string? WeaponDamage { get; set; }
+    public int? ArmorBonus { get; set; }
+    public List<string> EffectSummary { get; set; } = new();
 }
 
 public sealed class SpellSummaryDto

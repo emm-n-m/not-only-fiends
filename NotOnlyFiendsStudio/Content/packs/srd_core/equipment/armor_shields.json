@@ -1,0 +1,291 @@
+[
+  {
+    "id": "armor:padded",
+    "name": "Padded",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 10,
+    "priceCp": 500,
+    "armor": {
+      "kind": "light",
+      "armorBonus": 1,
+      "maxDex": 8,
+      "checkPenalty": 0,
+      "arcaneFailurePct": 5,
+      "speed30": 30,
+      "speed20": 20
+    }
+  },
+  {
+    "id": "armor:leather",
+    "name": "Leather",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 15,
+    "priceCp": 1000,
+    "armor": {
+      "kind": "light",
+      "armorBonus": 2,
+      "maxDex": 6,
+      "checkPenalty": 0,
+      "arcaneFailurePct": 10,
+      "speed30": 30,
+      "speed20": 20
+    }
+  },
+  {
+    "id": "armor:studded_leather",
+    "name": "Studded Leather",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 20,
+    "priceCp": 2500,
+    "armor": {
+      "kind": "light",
+      "armorBonus": 3,
+      "maxDex": 5,
+      "checkPenalty": -1,
+      "arcaneFailurePct": 15,
+      "speed30": 30,
+      "speed20": 20
+    }
+  },
+  {
+    "id": "armor:chain_shirt",
+    "name": "Chain Shirt",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 25,
+    "priceCp": 10000,
+    "armor": {
+      "kind": "light",
+      "armorBonus": 4,
+      "maxDex": 4,
+      "checkPenalty": -2,
+      "arcaneFailurePct": 20,
+      "speed30": 30,
+      "speed20": 20
+    }
+  },
+  {
+    "id": "armor:hide",
+    "name": "Hide",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 25,
+    "priceCp": 1500,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 3,
+      "maxDex": 4,
+      "checkPenalty": -3,
+      "arcaneFailurePct": 20,
+      "speed30": 20,
+      "speed20": 15
+    }
+  },
+  {
+    "id": "armor:scale_mail",
+    "name": "Scale Mail",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 30,
+    "priceCp": 5000,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 4,
+      "maxDex": 3,
+      "checkPenalty": -4,
+      "arcaneFailurePct": 25,
+      "speed30": 20,
+      "speed20": 15
+    }
+  },
+  {
+    "id": "armor:chainmail",
+    "name": "Chainmail",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 40,
+    "priceCp": 15000,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 5,
+      "maxDex": 2,
+      "checkPenalty": -5,
+      "arcaneFailurePct": 30,
+      "speed30": 20,
+      "speed20": 15
+    }
+  },
+  {
+    "id": "armor:breastplate",
+    "name": "Breastplate",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 30,
+    "priceCp": 20000,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 5,
+      "maxDex": 3,
+      "checkPenalty": -4,
+      "arcaneFailurePct": 25,
+      "speed30": 20,
+      "speed20": 15
+    }
+  },
+  {
+    "id": "armor:splint_mail",
+    "name": "Splint Mail",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 45,
+    "priceCp": 20000,
+    "armor": {
+      "kind": "heavy",
+      "armorBonus": 6,
+      "maxDex": 0,
+      "checkPenalty": -7,
+      "arcaneFailurePct": 40,
+      "speed30": 20,
+      "speed20": 15
+    }
+  },
+  {
+    "id": "armor:banded_mail",
+    "name": "Banded Mail",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 35,
+    "priceCp": 25000,
+    "armor": {
+      "kind": "heavy",
+      "armorBonus": 6,
+      "maxDex": 1,
+      "checkPenalty": -6,
+      "arcaneFailurePct": 35,
+      "speed30": 20,
+      "speed20": 15
+    }
+  },
+  {
+    "id": "armor:half_plate",
+    "name": "Half-Plate",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 60000,
+    "armor": {
+      "kind": "heavy",
+      "armorBonus": 7,
+      "maxDex": 0,
+      "checkPenalty": -7,
+      "arcaneFailurePct": 40,
+      "speed30": 20,
+      "speed20": 15
+    }
+  },
+  {
+    "id": "armor:full_plate",
+    "name": "Full Plate",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 150000,
+    "armor": {
+      "kind": "heavy",
+      "armorBonus": 8,
+      "maxDex": 1,
+      "checkPenalty": -6,
+      "arcaneFailurePct": 35,
+      "speed30": 20,
+      "speed20": 15
+    }
+  },
+  {
+    "id": "shield:buckler",
+    "name": "Buckler",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 5,
+    "priceCp": 1500,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 1,
+      "checkPenalty": -1,
+      "arcaneFailurePct": 5
+    }
+  },
+  {
+    "id": "shield:light_wooden",
+    "name": "Shield, Light Wooden",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 5,
+    "priceCp": 300,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 1,
+      "checkPenalty": -1,
+      "arcaneFailurePct": 5
+    }
+  },
+  {
+    "id": "shield:light_steel",
+    "name": "Shield, Light Steel",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 6,
+    "priceCp": 900,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 1,
+      "checkPenalty": -1,
+      "arcaneFailurePct": 5
+    }
+  },
+  {
+    "id": "shield:heavy_wooden",
+    "name": "Shield, Heavy Wooden",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 10,
+    "priceCp": 700,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 2,
+      "checkPenalty": -2,
+      "arcaneFailurePct": 15
+    }
+  },
+  {
+    "id": "shield:heavy_steel",
+    "name": "Shield, Heavy Steel",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 15,
+    "priceCp": 2000,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 2,
+      "checkPenalty": -2,
+      "arcaneFailurePct": 15
+    }
+  },
+  {
+    "id": "shield:tower",
+    "name": "Shield, Tower",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 45,
+    "priceCp": 3000,
+    "armor": {
+      "kind": "towerShield",
+      "armorBonus": 4,
+      "maxDex": 2,
+      "checkPenalty": -10,
+      "arcaneFailurePct": 50
+    }
+  }
+]

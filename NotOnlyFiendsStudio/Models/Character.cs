@@ -232,7 +232,10 @@ public class SpellSelection
 
 public class EquipmentEntry
 {
-    public string ItemId { get; set; } = string.Empty;
+    public string ItemId { get; set; } = string.Empty;       // display label; kept for free-form/homebrew entries
+    public string? ContentId { get; set; }                    // resolves via IContentLookup.TryGetEquipment
     public string Slot { get; set; } = string.Empty;
-    public List<Permabuff> Permabuffs { get; set; } = new();
+    public bool MainHand { get; set; } = true;                // weapon hand assignment
+    public bool TwoHanded { get; set; }
+    public List<Permabuff> Permabuffs { get; set; } = new(); // inline permabuffs (homebrew, or overrides on top of content)
 }

@@ -124,32 +124,20 @@ public static class PcgConverter
         foreach (var feat in data.Feats)
         {
             var featId = mapper.MapFeat(feat.Key);
-            FeatDefinition? featDef = null;
-            if (registry != null && !registry.TryGetFeat(featId, out featDef))
+            if (registry != null && !registry.TryGetFeat(featId, out _))
             {
                 result.Warnings.Add($"Feat '{feat.Key}' maps to '{featId}' but not found in content");
                 result.DroppedFeats.Add(feat.Key);
                 continue;
             }
 
-            // PCGen stores multiple selections as comma-separated APPLIEDTO values
-            // (e.g. "Enchantment,Transmutation" for two takings of Spell Focus).
-            // For feats with selectionRequired, encode each selection as a variant
-            // ID like "spell_focus_enchantment" so the engine can distinguish them.
-            // For repeatable feats without a selection (e.g. Toughness with ",,"),
-            // just repeat the base ID per entry.
-            var selections = string.IsNullOrEmpty(feat.AppliedTo)
-                ? new[] { "" }
-                : feat.AppliedTo.Split(',');
+            // Repeatable feats: PCGen stores multiple selections as comma-separated APPLIEDTO values
+            var count = 1;
+            if (!string.IsNullOrEmpty(feat.AppliedTo))
+                count = feat.AppliedTo.Split(',').Length;
 
-            foreach (var sel in selections)
-            {
-                var trimmed = sel.Trim();
-                if (trimmed.Length > 0 && featDef?.SelectionRequired != null)
-                    featIds.Add($"{featId}_{PcgIdMapper.DefaultIdTransform(trimmed)}");
-                else
-                    featIds.Add(featId);
-            }
+            for (int n = 0; n < count; n++)
+                featIds.Add(featId);
         }
 
         // Build domain selections
@@ -221,47 +209,41 @@ public static class PcgConverter
             }
         }
 
+        // Feats go on the LAST valid tick. At the final HD, prerequisites
+        // (caster level, BAB, skill ranks) are satisfied, the max-ranks cap covers
+        // any legal allocation, and the accumulated feat-slot budget is available
+        // (FeatSlots persist across ticks).
+        if (character.Ticks.Count > 0 && featIds.Count > 0)
+            character.Ticks[^1].Choices.FeatIds = featIds;
+
         // Skill allocations are distributed across ticks by bought-class. PCGen records
         // CLASSBOUGHT:[CLASS:X|RANKS:Y] per skill rank, telling us which class/racial HD
         // paid for each rank. Placing the allocation on a matching-class tick lets the
         // engine's CurrentTickClassSkills resolve the correct cost (class vs cross-class)
         // naturally — especially important for racial class skills that aren't class
         // skills for subsequent class ticks (e.g. Aranea's Climb during Sorcerer levels).
-        // Skills are placed BEFORE feats so feat-placement prereqs (MinSkillRanks etc.)
-        // see them in per-HD state.
         if (character.Ticks.Count > 0 && skillBuys.Count > 0)
         {
             // tickIndex -> skillId -> cumulative halfRanks
-            var perTickSkills = new Dictionary<int, Dictionary<string, int>>();
+            var perTick = new Dictionary<int, Dictionary<string, int>>();
             foreach (var (skillId, preferredDriverId, halfRanks) in skillBuys)
             {
                 var tickIdx = ResolveTickForBuy(character.Ticks, preferredDriverId);
-                if (!perTickSkills.TryGetValue(tickIdx, out var map))
+                if (!perTick.TryGetValue(tickIdx, out var map))
                 {
                     map = new Dictionary<string, int>();
-                    perTickSkills[tickIdx] = map;
+                    perTick[tickIdx] = map;
                 }
                 map[skillId] = map.GetValueOrDefault(skillId) + halfRanks;
             }
 
-            foreach (var (tickIdx, map) in perTickSkills)
+            foreach (var (tickIdx, map) in perTick)
             {
                 character.Ticks[tickIdx].Choices.SkillAllocations = map
                     .Select(kv => new SkillAllocation { SkillId = kv.Key, HalfRanks = kv.Value })
                     .OrderBy(a => a.SkillId, StringComparer.Ordinal)
                     .ToList();
             }
-        }
-
-        // Feat placement: distribute across natural feat-slot HDs so prestige class
-        // entry prereqs see feats they depend on. Without a registry we can't introspect
-        // prereqs or feat slots, so fall back to the legacy last-tick dump.
-        if (character.Ticks.Count > 0 && featIds.Count > 0)
-        {
-            if (registry != null)
-                PlaceFeatsAcrossTicks(character, featIds, registry);
-            else
-                character.Ticks[^1].Choices.FeatIds = featIds;
         }
 
         // PCGen's STAT:X|SCORE is the base score before racial/template/equipment
@@ -278,189 +260,6 @@ public static class PcgConverter
 
         result.Character = character;
         return result;
-    }
-
-    /// <summary>
-    /// Distribute feats across the character's natural feat-slot HDs so that prestige class
-    /// entry prereqs (e.g. Dark Temptress requiring Spell Focus (Enchantment) at HD 20) see
-    /// feats they depend on. Strategy:
-    ///   1. Replay the character with no feats to capture per-HD state.
-    ///   2. Derive the unrestricted feat-slot HDs from how state.FeatSlots grows tick-by-tick
-    ///      (this picks up race bonus feats and any class GrantFeatSlot permabuffs without us
-    ///      having to model them separately).
-    ///   3. Compute each feat's earliest valid HD against per-HD state, ignoring HasFeat-style
-    ///      prereqs (those are handled by ordering).
-    ///   4. Topologically order by HasFeat / HasFeatSelections so dependents come after deps.
-    ///   5. Walk in that order and place each feat at the earliest unused slot HD that is
-    ///      &gt;= its earliest valid HD and strictly later than every placed feat-prereq.
-    ///   6. Overflow (more feats than unrestricted slots) goes to the last tick — the engine
-    ///      will warn or absorb them via class bonus slots.
-    /// </summary>
-    private static void PlaceFeatsAcrossTicks(Character character, List<string> featIds, ContentRegistry registry)
-    {
-        int totalHD = character.Ticks.Count;
-        int lastTickIdx = totalHD - 1;
-        var rules = GameRules.Standard35e();
-        var engine = new ReplayStudio(registry, rules);
-
-        // 1. Capture state at end of each HD with no feats placed.
-        var statesAtEndOf = new CharacterState?[totalHD + 1];
-        for (int hd = 0; hd <= totalHD; hd++)
-        {
-            try { statesAtEndOf[hd] = engine.Evaluate(character, hd); }
-            catch { statesAtEndOf[hd] = null; }
-        }
-
-        // If the engine couldn't evaluate the final state, give up and fall back to last-tick.
-        if (statesAtEndOf[totalHD] == null)
-        {
-            character.Ticks[lastTickIdx].Choices.FeatIds = featIds;
-            return;
-        }
-
-        // 2. Derive unrestricted feat-slot HDs from state diffs across ticks.
-        var slotHDs = new List<int>();
-        int prevUnrestricted = 0;
-        for (int hd = 1; hd <= totalHD; hd++)
-        {
-            var st = statesAtEndOf[hd];
-            if (st == null) continue;
-            int curUnrestricted = st.FeatSlots.Count(s => s.Restriction == null);
-            int newSlots = curUnrestricted - prevUnrestricted;
-            for (int n = 0; n < newSlots; n++) slotHDs.Add(hd);
-            prevUnrestricted = curUnrestricted;
-        }
-
-        // 3. Earliest HD at which each unique feat's non-feat prereqs are satisfied.
-        int EarliestValidHd(string featId)
-        {
-            if (!registry.TryGetFeat(featId, out var feat) || feat == null) return 1;
-            for (int hd = 1; hd <= totalHD; hd++)
-            {
-                var st = statesAtEndOf[hd - 1]; // state at start of HD H = end of HD H-1
-                if (st == null) continue;
-                bool ok = true;
-                foreach (var p in feat.Prerequisites)
-                {
-                    if (p is HasFeat or HasFeatSelections or HasFeatOfType or HasFeatWithTag) continue;
-                    if (!p.IsMet(st)) { ok = false; break; }
-                }
-                if (ok) return hd;
-            }
-            return totalHD;
-        }
-
-        var earliest = featIds.Distinct().ToDictionary(f => f, EarliestValidHd);
-
-        // 4. Topological order over HasFeat / HasFeatSelections inter-feat dependencies.
-        var ordered = TopoSortFeats(featIds, registry);
-
-        // 5. Greedy slot assignment.
-        var availableSlots = new List<int>(slotHDs);
-        var placedHd = new Dictionary<string, int>();
-        var perTick = new Dictionary<int, List<string>>();
-
-        foreach (var featId in ordered)
-        {
-            int minHd = earliest.GetValueOrDefault(featId, 1);
-
-            if (registry.TryGetFeat(featId, out var feat) && feat != null)
-            {
-                foreach (var p in feat.Prerequisites)
-                {
-                    string? depId = p switch
-                    {
-                        HasFeat hf => hf.FeatId,
-                        HasFeatSelections hfs => hfs.FeatId,
-                        _ => null
-                    };
-                    if (depId == null) continue;
-                    foreach (var (placed, hd) in placedHd)
-                    {
-                        if (placed == depId || placed.StartsWith(depId + "_", StringComparison.Ordinal))
-                            if (hd + 1 > minHd) minHd = hd + 1;
-                    }
-                }
-            }
-
-            int chosenIdx = -1;
-            for (int i = 0; i < availableSlots.Count; i++)
-                if (availableSlots[i] >= minHd) { chosenIdx = i; break; }
-
-            int chosenHd;
-            if (chosenIdx >= 0)
-            {
-                chosenHd = availableSlots[chosenIdx];
-                availableSlots.RemoveAt(chosenIdx);
-            }
-            else
-            {
-                chosenHd = totalHD;
-            }
-
-            int tickIdx = chosenHd - 1;
-            if (!perTick.TryGetValue(tickIdx, out var list))
-                perTick[tickIdx] = list = new List<string>();
-            list.Add(featId);
-            placedHd[featId] = chosenHd;
-        }
-
-        // 6. Apply.
-        foreach (var (tickIdx, list) in perTick)
-            character.Ticks[tickIdx].Choices.FeatIds = list;
-    }
-
-    /// <summary>
-    /// Stable order: feats whose HasFeat / HasFeatSelections prereqs match other feats in the
-    /// list come after their prereqs. Ties broken by original index. Cycles are broken by
-    /// returning depth 0 for any feat already on the recursion stack.
-    /// </summary>
-    private static List<string> TopoSortFeats(List<string> featIds, ContentRegistry registry)
-    {
-        var setOfFeats = new HashSet<string>(featIds);
-        var memo = new Dictionary<string, int>();
-        var inProgress = new HashSet<string>();
-
-        int Depth(string fid)
-        {
-            if (memo.TryGetValue(fid, out var d)) return d;
-            if (!inProgress.Add(fid)) return 0;
-
-            int max = 0;
-            if (registry.TryGetFeat(fid, out var feat) && feat != null)
-            {
-                foreach (var p in feat.Prerequisites)
-                {
-                    string? depId = p switch
-                    {
-                        HasFeat hf => hf.FeatId,
-                        HasFeatSelections hfs => hfs.FeatId,
-                        _ => null
-                    };
-                    if (depId == null) continue;
-                    foreach (var other in setOfFeats)
-                    {
-                        if (other == fid) continue;
-                        if (other == depId || other.StartsWith(depId + "_", StringComparison.Ordinal))
-                        {
-                            int childDepth = Depth(other) + 1;
-                            if (childDepth > max) max = childDepth;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            inProgress.Remove(fid);
-            memo[fid] = max;
-            return max;
-        }
-
-        return featIds
-            .Select((fid, i) => (fid, i, depth: Depth(fid)))
-            .OrderBy(x => x.depth).ThenBy(x => x.i)
-            .Select(x => x.fid)
-            .ToList();
     }
 
     /// <summary>

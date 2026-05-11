@@ -1,0 +1,335 @@
+[
+  {
+    "id": "weapon:dagger",
+    "name": "Dagger",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 1,
+    "priceCp": 200,
+    "weapon": {
+      "damage": "1d4",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "rangeFt": 10,
+      "damageType": "piercing+slashing",
+      "light": true,
+      "thrown": true,
+      "proficiency": "simple"
+    }
+  },
+  {
+    "id": "weapon:club",
+    "name": "Club",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 3,
+    "priceCp": 0,
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 2,
+      "rangeFt": 10,
+      "damageType": "bludgeoning",
+      "thrown": true,
+      "proficiency": "simple"
+    }
+  },
+  {
+    "id": "weapon:quarterstaff",
+    "name": "Quarterstaff",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 0,
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 2,
+      "damageType": "bludgeoning",
+      "doubleWeapon": true,
+      "twoHanded": true,
+      "proficiency": "simple"
+    }
+  },
+  {
+    "id": "weapon:mace_heavy",
+    "name": "Mace, Heavy",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 8,
+    "priceCp": 1200,
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 2,
+      "damageType": "bludgeoning",
+      "proficiency": "simple"
+    }
+  },
+  {
+    "id": "weapon:shortsword",
+    "name": "Shortsword",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 1000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "damageType": "piercing",
+      "light": true,
+      "proficiency": "martial"
+    }
+  },
+  {
+    "id": "weapon:longsword",
+    "name": "Longsword",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 1500,
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "damageType": "slashing",
+      "proficiency": "martial"
+    }
+  },
+  {
+    "id": "weapon:greatsword",
+    "name": "Greatsword",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 8,
+    "priceCp": 5000,
+    "weapon": {
+      "damage": "2d6",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "damageType": "slashing",
+      "twoHanded": true,
+      "proficiency": "martial"
+    }
+  },
+  {
+    "id": "weapon:greataxe",
+    "name": "Greataxe",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 12,
+    "priceCp": 2000,
+    "weapon": {
+      "damage": "1d12",
+      "critMultiplier": 3,
+      "damageType": "slashing",
+      "twoHanded": true,
+      "proficiency": "martial"
+    }
+  },
+  {
+    "id": "weapon:rapier",
+    "name": "Rapier",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 2000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 18,
+      "critMultiplier": 2,
+      "damageType": "piercing",
+      "proficiency": "martial"
+    }
+  },
+  {
+    "id": "weapon:scimitar",
+    "name": "Scimitar",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 1500,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 18,
+      "critMultiplier": 2,
+      "damageType": "slashing",
+      "proficiency": "martial"
+    }
+  },
+  {
+    "id": "weapon:warhammer",
+    "name": "Warhammer",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 5,
+    "priceCp": 1200,
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 3,
+      "damageType": "bludgeoning",
+      "proficiency": "martial"
+    }
+  },
+  {
+    "id": "weapon:battleaxe",
+    "name": "Battleaxe",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 6,
+    "priceCp": 1000,
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 3,
+      "damageType": "slashing",
+      "proficiency": "martial"
+    }
+  },
+  {
+    "id": "weapon:halberd",
+    "name": "Halberd",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 12,
+    "priceCp": 1000,
+    "weapon": {
+      "damage": "1d10",
+      "critMultiplier": 3,
+      "damageType": "piercing+slashing",
+      "twoHanded": true,
+      "proficiency": "martial"
+    }
+  },
+  {
+    "id": "weapon:longspear",
+    "name": "Longspear",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 9,
+    "priceCp": 500,
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 3,
+      "damageType": "piercing",
+      "twoHanded": true,
+      "reach": true,
+      "proficiency": "simple"
+    }
+  },
+  {
+    "id": "weapon:javelin",
+    "name": "Javelin",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 100,
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 2,
+      "rangeFt": 30,
+      "damageType": "piercing",
+      "ranged": true,
+      "thrown": true,
+      "proficiency": "simple"
+    }
+  },
+  {
+    "id": "weapon:longbow",
+    "name": "Longbow",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 3,
+    "priceCp": 7500,
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 3,
+      "rangeFt": 100,
+      "damageType": "piercing",
+      "ranged": true,
+      "twoHanded": true,
+      "proficiency": "martial"
+    }
+  },
+  {
+    "id": "weapon:shortbow",
+    "name": "Shortbow",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 3000,
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 3,
+      "rangeFt": 60,
+      "damageType": "piercing",
+      "ranged": true,
+      "twoHanded": true,
+      "proficiency": "martial"
+    }
+  },
+  {
+    "id": "weapon:crossbow_light",
+    "name": "Crossbow, Light",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 3500,
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "rangeFt": 80,
+      "damageType": "piercing",
+      "ranged": true,
+      "twoHanded": true,
+      "proficiency": "simple"
+    }
+  },
+  {
+    "id": "weapon:crossbow_heavy",
+    "name": "Crossbow, Heavy",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 8,
+    "priceCp": 5000,
+    "weapon": {
+      "damage": "1d10",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "rangeFt": 120,
+      "damageType": "piercing",
+      "ranged": true,
+      "twoHanded": true,
+      "proficiency": "simple"
+    }
+  },
+  {
+    "id": "weapon:sling",
+    "name": "Sling",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "weapon": {
+      "damage": "1d4",
+      "critMultiplier": 2,
+      "rangeFt": 50,
+      "damageType": "bludgeoning",
+      "ranged": true,
+      "proficiency": "simple"
+    }
+  },
+  {
+    "id": "weapon:unarmed_strike",
+    "name": "Unarmed Strike",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "weapon": {
+      "damage": "1d3",
+      "critMultiplier": 2,
+      "damageType": "bludgeoning",
+      "light": true,
+      "proficiency": "simple"
+    }
+  }
+]

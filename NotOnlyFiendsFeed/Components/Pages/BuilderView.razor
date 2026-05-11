@@ -641,25 +641,63 @@ else
     <div class="card mb-3">
         <div class="card-header">
             Equipment (@_character.Equipment.Count)
-            <button class="btn btn-sm btn-success float-end" @onclick="AddEquipmentEntry">+ Add Item</button>
         </div>
         <div class="card-body">
+            <!-- Add from catalog -->
+            <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                <select class="form-select form-select-sm" style="width:160px"
+                        @bind="_equipmentPickerCategory" @bind:after="ResetEquipmentSelection">
+                    <option value="weapon">Weapons</option>
+                    <option value="armor">Armor</option>
+                    <option value="shield">Shields</option>
+                    <option value="wondrous">Wondrous</option>
+                    <option value="ring">Rings</option>
+                    <option value="rod">Rods</option>
+                    <option value="staff">Staves</option>
+                    <option value="wand">Wands</option>
+                    <option value="scroll">Scrolls</option>
+                    <option value="potion">Potions</option>
+                    <option value="gear">Gear</option>
+                    <option value="ammunition">Ammunition</option>
+                </select>
+                <select class="form-select form-select-sm" style="flex:1 1 240px" @bind="_equipmentPickerSelection">
+                    <option value="">-- pick an item --</option>
+                    @foreach (var eq in _equipmentCatalog.Where(e => string.Equals(e.Category.ToString(), _equipmentPickerCategory, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        <option value="@eq.Id">@eq.Name@(eq.WeightLbs > 0 ? $" — {eq.WeightLbs} lb" : "")</option>
+                    }
+                </select>
+                <button class="btn btn-sm btn-success" @onclick="AddCatalogItem" disabled="@string.IsNullOrEmpty(_equipmentPickerSelection)">+ Add</button>
+                <button class="btn btn-sm btn-outline-secondary" @onclick="AddCustomEquipmentEntry">+ Custom</button>
+            </div>
+
             @if (!_character.Equipment.Any())
             {
-                <p class="text-muted mb-0">No equipment. Add items with stat-boosting effects.</p>
+                <p class="text-muted mb-0">No equipment. Pick from the catalog above or add a custom item.</p>
             }
             @for (int i = 0; i < _character.Equipment.Count; i++)
             {
                 var eqIndex = i;
                 var item = _character.Equipment[eqIndex];
+                var contentDef = string.IsNullOrEmpty(item.ContentId)
+                    ? null
+                    : _equipmentCatalog.FirstOrDefault(e => e.Id == item.ContentId);
                 <div class="border rounded p-2 mb-2">
                     <div class="row align-items-center">
                         <div class="col-md-3">
-                            <input type="text" class="form-control form-control-sm" placeholder="Item name"
-                                   @bind="item.ItemId" @bind:after="OnCharacterChanged" />
+                            @if (contentDef != null)
+                            {
+                                <strong>@contentDef.Name</strong>
+                                <div class="text-muted small">@contentDef.Category@(contentDef.Slot != null ? $" — {contentDef.Slot}" : "")</div>
+                            }
+                            else
+                            {
+                                <input type="text" class="form-control form-control-sm" placeholder="Item name"
+                                       @bind="item.ItemId" @bind:after="OnCharacterChanged" />
+                            }
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select form-select-sm" @bind="item.Slot">
+                            <select class="form-select form-select-sm" value="@item.Slot" @onchange="(e) => { item.Slot = e.Value?.ToString() ?? string.Empty; OnCharacterChanged(); }">
                                 <option value="">No slot</option>
                                 <option value="head">Head</option>
                                 <option value="eyes">Eyes</option>
@@ -669,15 +707,44 @@ else
                                 <option value="torso">Torso</option>
                                 <option value="waist">Waist</option>
                                 <option value="hands">Hands</option>
-                                <option value="ring1">Ring 1</option>
-                                <option value="ring2">Ring 2</option>
+                                <option value="ring">Ring</option>
                                 <option value="feet">Feet</option>
                                 <option value="weapon">Weapon</option>
                                 <option value="shield">Shield</option>
                                 <option value="slotless">Slotless</option>
                             </select>
                         </div>
+                        <div class="col-md-2">
+                            @if (contentDef?.Category == EquipmentCategory.Weapon)
+                            {
+                                <div class="form-check form-check-sm">
+                                    <input type="checkbox" class="form-check-input" id="mh-@eqIndex"
+                                           checked="@item.MainHand" @onchange="(e) => { item.MainHand = (bool)e.Value!; OnCharacterChanged(); }" />
+                                    <label class="form-check-label small" for="mh-@eqIndex">Main hand</label>
+                                </div>
+                                <div class="form-check form-check-sm">
+                                    <input type="checkbox" class="form-check-input" id="th-@eqIndex"
+                                           checked="@item.TwoHanded" @onchange="(e) => { item.TwoHanded = (bool)e.Value!; OnCharacterChanged(); }" />
+                                    <label class="form-check-label small" for="th-@eqIndex">Two-handed</label>
+                                </div>
+                            }
+                        </div>
                         <div class="col">
+                            @if (contentDef != null)
+                            {
+                                @foreach (var buff in contentDef.GrantedPermabuffs)
+                                {
+                                    <span class="badge bg-info me-1">@FormatPermabuff(buff)</span>
+                                }
+                                @if (contentDef.Weapon != null)
+                                {
+                                    <span class="badge bg-secondary me-1">@contentDef.Weapon.Damage @contentDef.Weapon.DamageType</span>
+                                }
+                                @if (contentDef.Armor != null)
+                                {
+                                    <span class="badge bg-secondary me-1">@contentDef.Armor.Kind +@contentDef.Armor.ArmorBonus</span>
+                                }
+                            }
                             @foreach (var buff in item.Permabuffs)
                             {
                                 <span class="badge bg-info me-1">@FormatPermabuff(buff)</span>
@@ -687,40 +754,43 @@ else
                             <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveEquipmentEntry(eqIndex)">Remove</button>
                         </div>
                     </div>
-                    <div class="mt-1 d-flex flex-wrap gap-1">
-                        <span class="text-muted me-1" style="font-size:0.8rem">Add effect:</span>
-                        <select class="form-select form-select-sm" style="width:180px"
-                                @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v)) AddEquipmentEffect(eqIndex, v); }">
-                            <option value="">Effect...</option>
-                            <optgroup label="Ability Bonus">
-                                @foreach (var ab in Enum.GetValues<Ability>())
-                                {
-                                    <option value="ability_2_@ab">+2 @ab</option>
-                                    <option value="ability_4_@ab">+4 @ab</option>
-                                    <option value="ability_6_@ab">+6 @ab</option>
-                                }
-                            </optgroup>
-                            <optgroup label="Armor">
-                                @for (int n = 1; n <= 5; n++)
-                                {
-                                    var val = n;
-                                    <option value="nat_armor_@val">+@val Natural Armor</option>
-                                }
-                            </optgroup>
-                            <optgroup label="Resistance">
-                                @for (int n = 1; n <= 5; n++)
-                                {
-                                    var val = n;
-                                    <option value="save_resist_@val">+@val Resistance (saves)</option>
-                                }
-                            </optgroup>
-                            <optgroup label="Spell Resistance">
-                                <option value="sr_13">SR 13</option>
-                                <option value="sr_17">SR 17</option>
-                                <option value="sr_21">SR 21</option>
-                            </optgroup>
-                        </select>
-                    </div>
+                    @if (contentDef == null)
+                    {
+                        <div class="mt-1 d-flex flex-wrap gap-1">
+                            <span class="text-muted me-1" style="font-size:0.8rem">Add effect:</span>
+                            <select class="form-select form-select-sm" style="width:180px"
+                                    @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v)) AddEquipmentEffect(eqIndex, v); }">
+                                <option value="">Effect...</option>
+                                <optgroup label="Ability Bonus">
+                                    @foreach (var ab in Enum.GetValues<Ability>())
+                                    {
+                                        <option value="ability_2_@ab">+2 @ab</option>
+                                        <option value="ability_4_@ab">+4 @ab</option>
+                                        <option value="ability_6_@ab">+6 @ab</option>
+                                    }
+                                </optgroup>
+                                <optgroup label="Armor">
+                                    @for (int n = 1; n <= 5; n++)
+                                    {
+                                        var val = n;
+                                        <option value="nat_armor_@val">+@val Natural Armor</option>
+                                    }
+                                </optgroup>
+                                <optgroup label="Resistance">
+                                    @for (int n = 1; n <= 5; n++)
+                                    {
+                                        var val = n;
+                                        <option value="save_resist_@val">+@val Resistance (saves)</option>
+                                    }
+                                </optgroup>
+                                <optgroup label="Spell Resistance">
+                                    <option value="sr_13">SR 13</option>
+                                    <option value="sr_17">SR 17</option>
+                                    <option value="sr_21">SR 21</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    }
                 </div>
             }
         </div>
@@ -758,6 +828,7 @@ else
                     <div class="col-md-3">
                         <h5>Combat</h5>
                         <p>HP: @_state.HP | BAB: +@_state.EffectiveBAB</p>
+                        <p>AC: @_state.AC.Total | Touch @_state.AC.Touch | FF @_state.AC.FlatFooted</p>
                         <p>Fort: +@_state.EffectiveSaves.Fort | Ref: +@_state.EffectiveSaves.Ref | Will: +@_state.EffectiveSaves.Will</p>
                     </div>
                     <div class="col-md-3">
@@ -813,6 +884,56 @@ else
                                 {
                                     <span class="badge bg-primary me-1" title="@(sla.Description ?? "")">@sla.Name@(sla.UsesPerDay != null ? $" ({sla.UsesPerDay}/day)" : "")</span>
                                 }
+                            </div>
+                        }
+                    </div>
+                }
+                @if (_state.AC.Components.Any() || _state.AttackLines.Any() || _state.Encumbrance.TotalWeightLbs > 0)
+                {
+                    <div class="row mt-3">
+                        @if (_state.AC.Components.Any())
+                        {
+                            <div class="col-md-4">
+                                <h5>AC Breakdown</h5>
+                                <div class="small">
+                                    <div>Total: <strong>@_state.AC.Total</strong></div>
+                                    <div>Touch: @_state.AC.Touch | Flat-Footed: @_state.AC.FlatFooted</div>
+                                    @foreach (var c in _state.AC.Components.OrderByDescending(kv => kv.Value))
+                                    {
+                                        <div>+@c.Value @c.Key</div>
+                                    }
+                                    @if (_state.AC.DexContribution != 0)
+                                    {
+                                        <div>@(_state.AC.DexContribution >= 0 ? "+" : "")@_state.AC.DexContribution Dex@(_state.AC.MaxDexCap.HasValue ? $" (cap {_state.AC.MaxDexCap})" : "")</div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        @if (_state.AttackLines.Any())
+                        {
+                            <div class="col-md-4">
+                                <h5>Attacks</h5>
+                                @foreach (var line in _state.AttackLines)
+                                {
+                                    var bonusStr = string.Join("/", line.Bonuses.Select(b => (b >= 0 ? "+" : "") + b));
+                                    <div class="small">
+                                        <strong>@line.Name@(line.IsOffHand ? " (off-hand)" : "")</strong>: @bonusStr, @line.Damage, @line.Crit
+                                    </div>
+                                }
+                            </div>
+                        }
+                        @if (_state.Encumbrance.TotalWeightLbs > 0 || _state.Encumbrance.HeavyMax > 0)
+                        {
+                            <div class="col-md-4">
+                                <h5>Encumbrance</h5>
+                                <div class="small">
+                                    <div><strong>@_state.Encumbrance.TotalWeightLbs lb</strong> — @_state.Encumbrance.Load</div>
+                                    <div class="text-muted">Light ≤ @_state.Encumbrance.LightMax · Med ≤ @_state.Encumbrance.MediumMax · Heavy ≤ @_state.Encumbrance.HeavyMax</div>
+                                    @if (_state.Speeds.TryGetValue(MovementMode.Land, out var landSpeed))
+                                    {
+                                        <div>Speed: @landSpeed ft</div>
+                                    }
+                                </div>
                             </div>
                         }
                     </div>
@@ -1010,6 +1131,9 @@ else
     private readonly Dictionary<int, List<CompanionSlotState>> _tickNewCompanionSlots = new();
     private List<DomainDefinition> _domains = new();
     private List<ClassFeatureDefinition> _classFeatures = new();
+    private List<EquipmentDefinition> _equipmentCatalog = new();
+    private string _equipmentPickerCategory = "weapon";
+    private string _equipmentPickerSelection = "";
     private readonly HashSet<int> _expandedHdTicks = new();
     private readonly HashSet<int> _expandedSkillTicks = new();
     private readonly HashSet<int> _expandedSpellTicks = new();
@@ -1041,6 +1165,7 @@ else
             _skills = registry.GetAllSkills().OrderBy(s => s.Name).ToList();
             _domains = registry.GetAllDomains().OrderBy(d => d.Name).ToList();
             _classFeatures = registry.GetAllClassFeatures().ToList();
+            _equipmentCatalog = registry.GetAllEquipment().OrderBy(e => e.Category).ThenBy(e => e.Name).ToList();
             RefreshAvailableCharacters();
 
             // Route param: /builder/{id} loads an existing character from the store.
@@ -1778,9 +1903,32 @@ else
         OnCharacterChanged();
     }
 
-    private void AddEquipmentEntry()
+    private void AddCustomEquipmentEntry()
     {
         _character.Equipment.Add(new EquipmentEntry { ItemId = "New Item", Slot = "slotless" });
+        OnCharacterChanged();
+    }
+
+    private void AddCatalogItem()
+    {
+        if (string.IsNullOrEmpty(_equipmentPickerSelection)) return;
+        var def = _equipmentCatalog.FirstOrDefault(e => e.Id == _equipmentPickerSelection);
+        if (def == null) return;
+        _character.Equipment.Add(new EquipmentEntry
+        {
+            ContentId = def.Id,
+            ItemId = def.Name,
+            Slot = def.Slot ?? string.Empty,
+            MainHand = def.Category == EquipmentCategory.Weapon,
+            TwoHanded = def.Weapon?.TwoHanded ?? false
+        });
+        _equipmentPickerSelection = "";
+        OnCharacterChanged();
+    }
+
+    private void ResetEquipmentSelection()
+    {
+        _equipmentPickerSelection = "";
     }
 
     private void RemoveEquipmentEntry(int index)
@@ -1852,8 +2000,34 @@ else
                 AttributeTarget.AbilityScore => $"Set {sa.AbilityScore} = {sa.Value}",
                 _ => $"Set {sa.Target} = {sa.Value}"
             },
+            GrantTypedBonus tb => FormatTypedBonus(tb),
+            GrantArmorProfile ap => $"{(ap.AsShield ? "Shield" : "Armor")} +{ap.Profile.ArmorBonus}{(ap.Profile.MaxDex.HasValue ? $" (max dex {ap.Profile.MaxDex})" : "")}",
+            GrantWeaponLine w => string.IsNullOrEmpty(w.DisplayName) ? w.Profile.Damage : $"{w.DisplayName} ({w.Profile.Damage})",
             _ => buff.GetType().Name
         };
+    }
+
+    private static string FormatTypedBonus(GrantTypedBonus tb)
+    {
+        var sign = tb.Value.Expression.StartsWith("-") ? "" : "+";
+        var target = tb.Target switch
+        {
+            BonusTarget.AC => "AC",
+            BonusTarget.AllSaves => "Saves",
+            BonusTarget.SaveFort => "Fort",
+            BonusTarget.SaveRef => "Ref",
+            BonusTarget.SaveWill => "Will",
+            BonusTarget.AbilityStr => "Str",
+            BonusTarget.AbilityDex => "Dex",
+            BonusTarget.AbilityCon => "Con",
+            BonusTarget.AbilityInt => "Int",
+            BonusTarget.AbilityWis => "Wis",
+            BonusTarget.AbilityCha => "Cha",
+            BonusTarget.NaturalArmor => "Natural Armor",
+            BonusTarget.SR => "SR",
+            _ => tb.Target.ToString()
+        };
+        return $"{sign}{tb.Value.Expression} {tb.BonusType} to {target}";
     }
 
     private sealed record TickSpellSummary(

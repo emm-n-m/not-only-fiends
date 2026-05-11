@@ -28,6 +28,9 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(GrantCapability), "GrantCapability")]
 [JsonDerivedType(typeof(GrantCompanionSlot), "GrantCompanionSlot")]
 [JsonDerivedType(typeof(ModifyLeadershipScore), "ModifyLeadershipScore")]
+[JsonDerivedType(typeof(GrantTypedBonus), "GrantTypedBonus")]
+[JsonDerivedType(typeof(GrantArmorProfile), "GrantArmorProfile")]
+[JsonDerivedType(typeof(GrantWeaponLine), "GrantWeaponLine")]
 public abstract class Permabuff
 {
     public abstract void Apply(PermabuffContext ctx);
@@ -615,5 +618,93 @@ public class ModifyLeadershipScore : Permabuff
     public override void Apply(PermabuffContext ctx)
     {
         ctx.State.LeadershipScoreModifier += Value;
+    }
+}
+
+// --- Equipment Permabuffs ---
+// These three types are intended for use during the post-tick equipment pass.
+// When ctx.EquipmentPass is set, they push contributions to the collector and the
+// finalize step applies 3.5e stacking rules. Outside the equipment pass they fall
+// back to direct application (legacy compatibility for tests using ad-hoc states).
+
+public class GrantTypedBonus : Permabuff
+{
+    public BonusTarget Target { get; set; }
+    public BonusType BonusType { get; set; } = BonusType.Untyped;
+    public Formula Value { get; set; } = new();
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        var v = Value.Evaluate(ctx.State);
+        if (ctx.EquipmentPass != null)
+        {
+            ctx.EquipmentPass.Add(Target, BonusType, v);
+            return;
+        }
+        ApplyDirect(ctx.State, v);
+    }
+
+    private void ApplyDirect(CharacterState state, int v)
+    {
+        switch (Target)
+        {
+            case BonusTarget.SaveFort: state.BaseSaves.Fort += v; break;
+            case BonusTarget.SaveRef: state.BaseSaves.Ref += v; break;
+            case BonusTarget.SaveWill: state.BaseSaves.Will += v; break;
+            case BonusTarget.AllSaves:
+                state.BaseSaves.Fort += v;
+                state.BaseSaves.Ref += v;
+                state.BaseSaves.Will += v;
+                break;
+            case BonusTarget.NaturalArmor: state.NaturalArmor += v; break;
+            case BonusTarget.SR: state.SpellResistance = (state.SpellResistance ?? 0) + v; break;
+            case BonusTarget.AbilityStr: AddAbility(state, Ability.STR, v); break;
+            case BonusTarget.AbilityDex: AddAbility(state, Ability.DEX, v); break;
+            case BonusTarget.AbilityCon: AddAbility(state, Ability.CON, v); break;
+            case BonusTarget.AbilityInt: AddAbility(state, Ability.INT, v); break;
+            case BonusTarget.AbilityWis: AddAbility(state, Ability.WIS, v); break;
+            case BonusTarget.AbilityCha: AddAbility(state, Ability.CHA, v); break;
+            // AC / Attack / Damage / SkillRanks are only meaningful in equipment pass
+        }
+    }
+
+    private static void AddAbility(CharacterState state, Ability ability, int v)
+    {
+        var current = state.AbilityScores.GetScore(ability);
+        state.AbilityScores.SetScore(ability, current + v);
+    }
+}
+
+public class GrantArmorProfile : Permabuff
+{
+    public ArmorProfile Profile { get; set; } = new();
+    public bool AsShield { get; set; }
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        if (ctx.EquipmentPass != null)
+            ctx.EquipmentPass.Armors.Add(new ArmorContribution { Profile = Profile, AsShield = AsShield });
+    }
+}
+
+public class GrantWeaponLine : Permabuff
+{
+    public WeaponProfile Profile { get; set; } = new();
+    public int EnhancementBonus { get; set; }
+    public bool MainHand { get; set; } = true;
+    public bool TwoHanded { get; set; }
+    public string DisplayName { get; set; } = string.Empty;
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        if (ctx.EquipmentPass != null)
+            ctx.EquipmentPass.Weapons.Add(new WeaponContribution
+            {
+                Profile = Profile,
+                EnhancementBonus = EnhancementBonus,
+                MainHand = MainHand,
+                TwoHanded = TwoHanded,
+                DisplayName = DisplayName
+            });
     }
 }

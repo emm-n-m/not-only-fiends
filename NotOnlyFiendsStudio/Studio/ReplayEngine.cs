@@ -217,9 +217,10 @@ public class ReplayStudio
 
         ctx.CurrentDriverId = null;
 
-        // 5. Apply equipment (stub)
-        foreach (var item in character.Equipment)
-            ApplyEquipment(ctx, item);
+        // 5. Apply equipment as a structured post-tick pass:
+        //    resolve content → apply permabuffs (typed contributions collected in
+        //    ctx.EquipmentPass) → finalize AC, attack lines, encumbrance.
+        EvaluateEquipment(ctx, character);
 
         // 6. Tail pass — companion / leadership finalization.
         FinalizeCompanionAndLeadership(ctx, character);
@@ -714,10 +715,273 @@ public class ReplayStudio
         }
     }
 
-    private void ApplyEquipment(PermabuffContext ctx, EquipmentEntry item)
+    private void EvaluateEquipment(PermabuffContext ctx, Character character)
     {
-        foreach (var buff in item.Permabuffs)
-            buff.Apply(ctx);
+        var state = ctx.State;
+        var pass = new EquipmentPass();
+        ctx.EquipmentPass = pass;
+        try
+        {
+            foreach (var item in character.Equipment)
+            {
+                EquipmentDefinition? def = null;
+                if (!string.IsNullOrEmpty(item.ContentId))
+                    ctx.Content?.TryGetEquipment(item.ContentId!, out def);
+
+                // Apply granted permabuffs from content, then any inline permabuffs on the entry.
+                if (def != null)
+                {
+                    foreach (var buff in def.GrantedPermabuffs)
+                        buff.Apply(ctx);
+                    pass.TotalWeightLbs += def.WeightLbs;
+                    // Auto-derive weapon/armor profile from content when not already pushed by permabuffs.
+                    if (def.Weapon != null && !pass.Weapons.Any(w => ReferenceEquals(w.Profile, def.Weapon)))
+                    {
+                        pass.Weapons.Add(new WeaponContribution
+                        {
+                            Profile = def.Weapon,
+                            MainHand = item.MainHand,
+                            TwoHanded = item.TwoHanded,
+                            DisplayName = def.Name
+                        });
+                    }
+                    if (def.Armor != null && !pass.Armors.Any(a => ReferenceEquals(a.Profile, def.Armor)))
+                    {
+                        pass.Armors.Add(new ArmorContribution
+                        {
+                            Profile = def.Armor,
+                            AsShield = def.Category == EquipmentCategory.Shield
+                        });
+                    }
+                }
+                foreach (var buff in item.Permabuffs)
+                    buff.Apply(ctx);
+            }
+
+            FinalizeEquipment(state, pass);
+        }
+        finally
+        {
+            ctx.EquipmentPass = null;
+        }
+    }
+
+    private void FinalizeEquipment(CharacterState state, EquipmentPass pass)
+    {
+        // --- Ability score bonuses (typed; e.g., +4 enhancement STR from gauntlets) ---
+        foreach (var (key, values) in pass.Contributions)
+        {
+            var (target, type) = key;
+            var agg = BonusStack.Aggregate(type, values);
+            switch (target)
+            {
+                case BonusTarget.AbilityStr: AddAbility(state, Ability.STR, agg); break;
+                case BonusTarget.AbilityDex: AddAbility(state, Ability.DEX, agg); break;
+                case BonusTarget.AbilityCon: AddAbility(state, Ability.CON, agg); break;
+                case BonusTarget.AbilityInt: AddAbility(state, Ability.INT, agg); break;
+                case BonusTarget.AbilityWis: AddAbility(state, Ability.WIS, agg); break;
+                case BonusTarget.AbilityCha: AddAbility(state, Ability.CHA, agg); break;
+                case BonusTarget.SaveFort: state.BaseSaves.Fort += agg; break;
+                case BonusTarget.SaveRef: state.BaseSaves.Ref += agg; break;
+                case BonusTarget.SaveWill: state.BaseSaves.Will += agg; break;
+                case BonusTarget.AllSaves:
+                    state.BaseSaves.Fort += agg;
+                    state.BaseSaves.Ref += agg;
+                    state.BaseSaves.Will += agg;
+                    break;
+                case BonusTarget.NaturalArmor: state.NaturalArmor += agg; break;
+                case BonusTarget.SR: state.SpellResistance = (state.SpellResistance ?? 0) + agg; break;
+            }
+        }
+
+        // --- Armor / Shield contributions: highest of each kind wins; dex cap = min(maxdex) ---
+        var armorContribs = pass.Armors.Where(a => !a.AsShield && a.Profile.Kind != ArmorKind.Shield && a.Profile.Kind != ArmorKind.TowerShield).ToList();
+        var shieldContribs = pass.Armors.Where(a => a.AsShield || a.Profile.Kind == ArmorKind.Shield || a.Profile.Kind == ArmorKind.TowerShield).ToList();
+
+        var bestArmor = armorContribs.OrderByDescending(a => a.Profile.ArmorBonus).FirstOrDefault();
+        var bestShield = shieldContribs.OrderByDescending(a => a.Profile.ArmorBonus).FirstOrDefault();
+
+        state.AC.Components.Clear();
+        if (bestArmor != null) state.AC.Components[BonusType.Armor] = bestArmor.Profile.ArmorBonus;
+        if (bestShield != null) state.AC.Components[BonusType.Shield] = bestShield.Profile.ArmorBonus;
+
+        // Aggregate AC typed contributions (deflection, dodge, natural enhancement, etc.).
+        foreach (var (key, values) in pass.Contributions)
+        {
+            if (key.Target != BonusTarget.AC) continue;
+            var agg = BonusStack.Aggregate(key.Type, values);
+            if (agg == 0) continue;
+            state.AC.Components[key.Type] =
+                state.AC.Components.GetValueOrDefault(key.Type) +
+                (BonusStack.IsStacking(key.Type) ? agg : Math.Max(0, agg - state.AC.Components.GetValueOrDefault(key.Type)));
+        }
+
+        // Carry natural armor that race/template applied to state.NaturalArmor.
+        if (state.NaturalArmor > 0)
+        {
+            // Combine with any natural AC contributed via typed bonuses (running max for non-stacking).
+            var prior = state.AC.Components.GetValueOrDefault(BonusType.Natural);
+            state.AC.Components[BonusType.Natural] = Math.Max(prior, state.NaturalArmor);
+        }
+
+        // Dex cap: minimum MaxDex across worn armor + shield (null = uncapped).
+        int? maxDex = null;
+        foreach (var contrib in armorContribs.Concat(shieldContribs))
+            if (contrib.Profile.MaxDex.HasValue)
+                maxDex = maxDex.HasValue ? Math.Min(maxDex.Value, contrib.Profile.MaxDex.Value) : contrib.Profile.MaxDex.Value;
+
+        var dexMod = AbilityScoreSet.Modifier(state.AbilityScores.DEX);
+        var dexContrib = maxDex.HasValue ? Math.Min(dexMod, maxDex.Value) : dexMod;
+        state.AC.MaxDexCap = maxDex;
+        state.AC.DexContribution = dexContrib;
+
+        var componentTotal = state.AC.Components.Values.Sum();
+        state.AC.Total = 10 + componentTotal + dexContrib;
+        // Touch AC excludes Armor, Shield, Natural, NaturalEnhancement.
+        var touchExcluded = new HashSet<BonusType> { BonusType.Armor, BonusType.Shield, BonusType.Natural, BonusType.NaturalEnhancement };
+        var touchSum = state.AC.Components.Where(kv => !touchExcluded.Contains(kv.Key)).Sum(kv => kv.Value);
+        state.AC.Touch = 10 + touchSum + dexContrib;
+        // Flat-footed AC excludes Dex and Dodge.
+        var flatComponents = state.AC.Components.Where(kv => kv.Key != BonusType.Dodge).Sum(kv => kv.Value);
+        state.AC.FlatFooted = 10 + flatComponents;
+
+        // --- Attack lines from equipped weapons ---
+        FinalizeAttackLines(state, pass);
+
+        // --- Encumbrance + speed reduction ---
+        FinalizeEncumbrance(state, pass, armorContribs, shieldContribs);
+    }
+
+    private static void AddAbility(CharacterState state, Ability ability, int value)
+    {
+        var current = state.AbilityScores.GetScore(ability);
+        state.AbilityScores.SetScore(ability, current + value);
+    }
+
+    private void FinalizeAttackLines(CharacterState state, EquipmentPass pass)
+    {
+        state.AttackLines.Clear();
+        if (pass.Weapons.Count == 0) return;
+
+        var mainHand = pass.Weapons.FirstOrDefault(w => w.MainHand) ?? pass.Weapons[0];
+        var offHand = pass.Weapons.FirstOrDefault(w => !w.MainHand);
+        var twoWeaponFighting = state.Feats.Contains("two_weapon_fighting");
+
+        var bab = state.EffectiveBAB;
+        var strMod = AbilityScoreSet.Modifier(state.AbilityScores.STR);
+        var dexMod = AbilityScoreSet.Modifier(state.AbilityScores.DEX);
+
+        // Generic typed attack bonus aggregation (excluding the weapon's own enhancement).
+        int typedAttackBonus = 0;
+        foreach (var (key, values) in pass.Contributions)
+        {
+            if (key.Target != BonusTarget.Attack) continue;
+            typedAttackBonus += BonusStack.Aggregate(key.Type, values);
+        }
+
+        // SRD TWF penalties:
+        //   no feat, heavy off-hand: -6 / -10
+        //   no feat, light off-hand: -4 / -8     (light off-hand reduces both by 2)
+        //   TWF feat, heavy off-hand: -4 / -4    (feat: primary -2, off -6 less)
+        //   TWF feat, light off-hand: -2 / -2
+        int mainPenalty = 0, offPenalty = 0;
+        if (offHand != null)
+        {
+            var light = offHand.Profile.Light;
+            if (twoWeaponFighting && light) { mainPenalty = -2; offPenalty = -2; }
+            else if (twoWeaponFighting) { mainPenalty = -4; offPenalty = -4; }
+            else if (light) { mainPenalty = -4; offPenalty = -8; }
+            else { mainPenalty = -6; offPenalty = -10; }
+        }
+
+        state.AttackLines.Add(BuildLine(mainHand, bab, strMod, dexMod, typedAttackBonus,
+            attackPenalty: mainPenalty,
+            isOffHand: false));
+
+        if (offHand != null)
+        {
+            state.AttackLines.Add(BuildLine(offHand, bab, strMod, dexMod, typedAttackBonus,
+                attackPenalty: offPenalty,
+                isOffHand: true));
+        }
+    }
+
+    private static AttackLine BuildLine(WeaponContribution w, int bab, int strMod, int dexMod, int typedAttackBonus, int attackPenalty, bool isOffHand)
+    {
+        var profile = w.Profile;
+        var abilityMod = profile.Ranged && !profile.Thrown ? dexMod : strMod;
+        var damageMod = profile.Ranged && !profile.Thrown
+            ? 0
+            : (isOffHand ? FloorDivBy2(strMod) : (w.TwoHanded ? (strMod * 3) / 2 : strMod));
+        var attackBase = bab + abilityMod + w.EnhancementBonus + typedAttackBonus + attackPenalty;
+
+        var iterations = isOffHand ? 1 : IterativeCount(bab);
+        var bonuses = new List<int>();
+        for (int i = 0; i < iterations; i++)
+            bonuses.Add(attackBase - 5 * i);
+
+        var damageBonus = damageMod + w.EnhancementBonus;
+        var damageStr = damageBonus == 0
+            ? profile.Damage
+            : (damageBonus > 0 ? $"{profile.Damage}+{damageBonus}" : $"{profile.Damage}{damageBonus}");
+        var critStr = profile.CritRangeLow >= 20
+            ? $"x{profile.CritMultiplier}"
+            : $"{profile.CritRangeLow}-20/x{profile.CritMultiplier}";
+
+        return new AttackLine
+        {
+            Name = string.IsNullOrEmpty(w.DisplayName) ? (profile.Ranged ? "Ranged" : "Melee") : w.DisplayName,
+            Bonuses = bonuses,
+            Damage = damageStr,
+            Crit = critStr,
+            IsOffHand = isOffHand,
+            IsRanged = profile.Ranged
+        };
+    }
+
+    private static int IterativeCount(int bab)
+    {
+        if (bab >= 16) return 4;
+        if (bab >= 11) return 3;
+        if (bab >= 6) return 2;
+        return 1;
+    }
+
+    // Negative-safe halving (toward -infinity for off-hand STR-half damage).
+    private static int FloorDivBy2(int v) => v >= 0 ? v / 2 : -((-v + 1) / 2);
+
+    private void FinalizeEncumbrance(CharacterState state, EquipmentPass pass, List<ArmorContribution> armors, List<ArmorContribution> shields)
+    {
+        var (light, medium, heavy) = _rules.GetCarryingCapacity(state.AbilityScores.STR);
+        state.Encumbrance.LightMax = light;
+        state.Encumbrance.MediumMax = medium;
+        state.Encumbrance.HeavyMax = heavy;
+        state.Encumbrance.TotalWeightLbs = pass.TotalWeightLbs;
+        state.Encumbrance.Load = pass.TotalWeightLbs <= light ? LoadCategory.Light
+            : pass.TotalWeightLbs <= medium ? LoadCategory.Medium
+            : pass.TotalWeightLbs <= heavy ? LoadCategory.Heavy
+            : LoadCategory.OverLoad;
+
+        // Speed reduction: medium/heavy armor or medium/heavy load reduces base 30 → 20.
+        var landSpeed = state.Speeds.GetValueOrDefault(MovementMode.Land);
+        if (landSpeed <= 0) return;
+
+        var armorReducesSpeed = armors.Concat(shields).Any(a =>
+            a.Profile.Kind == ArmorKind.Medium || a.Profile.Kind == ArmorKind.Heavy ||
+            a.Profile.Kind == ArmorKind.TowerShield);
+        var loadReducesSpeed = state.Encumbrance.Load >= LoadCategory.Medium;
+
+        if (armorReducesSpeed || loadReducesSpeed)
+        {
+            // Use the worst armor's speed-30 reduction if armor is the cause; otherwise standard medium-load reduction.
+            var worstArmor = armors.Where(a => a.Profile.Kind == ArmorKind.Medium || a.Profile.Kind == ArmorKind.Heavy)
+                .OrderBy(a => a.Profile.Speed30)
+                .FirstOrDefault();
+            var reduced = worstArmor != null && landSpeed == 30 ? worstArmor.Profile.Speed30 :
+                          worstArmor != null && landSpeed == 20 ? worstArmor.Profile.Speed20 :
+                          (landSpeed == 30 ? 20 : (landSpeed * 2 / 3 / 5) * 5);
+            state.Speeds[MovementMode.Land] = reduced;
+        }
     }
 
     private static bool FeatMatchesRestriction(FeatDefinition? feat, string restriction) => restriction switch

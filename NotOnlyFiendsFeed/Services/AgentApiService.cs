@@ -32,7 +32,8 @@ public sealed class AgentApiService
             ["domains"] = _content.GetAllDomains().Count(),
             ["skills"] = _content.GetAllSkills().Count(),
             ["classFeatures"] = _content.GetAllClassFeatures().Count(),
-            ["spells"] = _content.GetAllSpells().Count()
+            ["spells"] = _content.GetAllSpells().Count(),
+            ["equipment"] = _content.GetAllEquipment().Count()
         }
     };
 
@@ -69,6 +70,11 @@ public sealed class AgentApiService
             .OrderBy(cf => cf.Name)
             .Select(cf => MapSummary(cf.Id, cf.Name, cf.Description))
             .ToList(),
+        Equipment = _content.GetAllEquipment()
+            .OrderBy(e => e.Category)
+            .ThenBy(e => e.Name)
+            .Select(MapEquipment)
+            .ToList(),
         SpellCount = _content.GetAllSpells().Count()
     };
 
@@ -101,6 +107,20 @@ public sealed class AgentApiService
     public IEnumerable<ContentSummaryDto> GetClassFeatures() => _content.GetAllClassFeatures()
         .OrderBy(cf => cf.Name)
         .Select(cf => MapSummary(cf.Id, cf.Name, cf.Description));
+
+    public IEnumerable<EquipmentSummaryDto> GetEquipment(EquipmentCategory? category = null, string? query = null)
+    {
+        var equipment = _content.GetAllEquipment();
+        if (category.HasValue)
+            equipment = equipment.Where(e => e.Category == category.Value);
+        if (!string.IsNullOrWhiteSpace(query))
+            equipment = equipment.Where(e =>
+                e.Id.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                e.Name.Contains(query, StringComparison.OrdinalIgnoreCase));
+        return equipment.OrderBy(e => e.Name).Select(MapEquipment);
+    }
+
+    public EquipmentDefinition GetEquipmentById(string id) => _content.GetEquipment(id);
 
     public IEnumerable<SpellSummaryDto> GetSpells(string? listId = null, int? maxSpellLevel = null, string? query = null)
     {
@@ -532,5 +552,28 @@ public sealed class AgentApiService
         School = spell.School,
         ClassLevels = new Dictionary<string, int>(spell.ClassLevels),
         Description = spell.Description
+    };
+
+    private static EquipmentSummaryDto MapEquipment(EquipmentDefinition eq) => new()
+    {
+        Id = eq.Id,
+        Name = eq.Name,
+        Category = eq.Category,
+        Slot = eq.Slot,
+        WeightLbs = eq.WeightLbs,
+        PriceCp = eq.PriceCp,
+        Description = eq.Description,
+        WeaponDamage = eq.Weapon?.Damage,
+        ArmorBonus = eq.Armor?.ArmorBonus,
+        EffectSummary = eq.GrantedPermabuffs.Select(SummarizePermabuff).ToList()
+    };
+
+    private static string SummarizePermabuff(Permabuff buff) => buff switch
+    {
+        GrantTypedBonus tb => $"{(tb.Value.Expression.StartsWith("-") ? "" : "+")}{tb.Value.Expression} {tb.BonusType} to {tb.Target}",
+        GrantArmorProfile ap => $"{(ap.AsShield ? "Shield" : "Armor")} +{ap.Profile.ArmorBonus}",
+        GrantWeaponLine w => string.IsNullOrEmpty(w.DisplayName) ? "Weapon" : w.DisplayName,
+        ModifyAttribute ma => $"Modify {ma.Target} {(ma.Value >= 0 ? "+" : "")}{ma.Value}",
+        _ => buff.GetType().Name
     };
 }

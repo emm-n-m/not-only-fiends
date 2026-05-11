@@ -36,3 +36,28 @@ public enum AttributeTarget
     AbilityScore,
     AllSaves
 }
+
+// 3.5e bonus-type taxonomy. Stacking rule: Dodge and Untyped stack with everything
+// (including themselves); all other types only the highest of a given type applies
+// per target (AC, attack, save, ability). See BonusStack helper in Studio/.
+public enum BonusType
+{
+    Armor,
+    Shield,
+    Natural,
+    NaturalEnhancement,
+    Enhancement,
+    Deflection,
+    Dodge,
+    Insight,
+    Luck,
+    Sacred,
+    Profane,
+    Morale,
+    Competence,
+    Resistance,
+    Circumstance,
+    Size,
+    Racial,
+    Untyped
+}

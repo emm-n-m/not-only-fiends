@@ -64,6 +64,10 @@ app.MapGet("/api/content/spells", (AgentApiService api, string? listId, int? max
     TypedResults.Ok(api.GetSpells(listId, maxSpellLevel, q)));
 app.MapGet("/api/content/spells/{id}", (string id, AgentApiService api) => Lookup(() => api.GetSpell(id)));
 
+app.MapGet("/api/content/equipment", (AgentApiService api, NotOnlyFiendsStudio.Models.EquipmentCategory? category, string? q) =>
+    TypedResults.Ok(api.GetEquipment(category, q)));
+app.MapGet("/api/content/equipment/{id}", (string id, AgentApiService api) => Lookup(() => api.GetEquipmentById(id)));
+
 app.MapPost("/api/characters/evaluate", (EvaluateCharacterRequest request, AgentApiService api) =>
     RunEngine(() => api.Evaluate(request)));
 

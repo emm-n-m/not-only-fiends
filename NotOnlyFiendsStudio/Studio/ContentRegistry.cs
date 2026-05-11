@@ -14,6 +14,7 @@ public class ContentRegistry : IContentLookup
     private readonly Dictionary<string, SpellDefinition> _spells = new();
     private readonly Dictionary<string, SkillDefinition> _skills = new();
     private readonly Dictionary<string, ClassFeatureDefinition> _classFeatures = new();
+    private readonly Dictionary<string, EquipmentDefinition> _equipment = new();
 
     public ConflictResolution OnConflict { get; set; } = ConflictResolution.LastWins;
 
@@ -37,6 +38,8 @@ public class ContentRegistry : IContentLookup
             "skills", skill => Register(_skills, skill, sk => sk.Id)));
         RegisterContentType(new ContentTypeHandler<ClassFeatureDefinition>(
             "class_features", cf => Register(_classFeatures, cf, c => c.Id)));
+        RegisterContentType(new ContentTypeHandler<EquipmentDefinition>(
+            "equipment", eq => Register(_equipment, eq, e => e.Id)));
     }
 
     private void Register<T>(Dictionary<string, T> dict, T item, Func<T, string> getId)
@@ -76,6 +79,7 @@ public class ContentRegistry : IContentLookup
     public void RegisterSpell(SpellDefinition spell) => Register(_spells, spell, s => s.Id);
     public void RegisterSkill(SkillDefinition skill) => Register(_skills, skill, sk => sk.Id);
     public void RegisterClassFeature(ClassFeatureDefinition cf) => Register(_classFeatures, cf, c => c.Id);
+    public void RegisterEquipment(EquipmentDefinition equipment) => Register(_equipment, equipment, e => e.Id);
 
     // --- Lookups ---
 
@@ -138,6 +142,14 @@ public class ContentRegistry : IContentLookup
     public bool TryGetClassFeature(string id, out ClassFeatureDefinition? cf) =>
         _classFeatures.TryGetValue(id, out cf);
 
+    public EquipmentDefinition GetEquipment(string id) =>
+        _equipment.TryGetValue(id, out var equipment)
+            ? equipment
+            : throw new KeyNotFoundException($"Equipment not found: {id}");
+
+    public bool TryGetEquipment(string id, out EquipmentDefinition? equipment) =>
+        _equipment.TryGetValue(id, out equipment);
+
     public ClassFeatureOption? GetClassFeatureOption(string featureType, string optionId)
     {
         if (!_classFeatures.TryGetValue(featureType, out var cf)) return null;
@@ -153,6 +165,7 @@ public class ContentRegistry : IContentLookup
     public IEnumerable<DomainDefinition> GetAllDomains() => _domains.Values;
     public IEnumerable<SpellDefinition> GetAllSpells() => _spells.Values;
     public IEnumerable<SkillDefinition> GetAllSkills() => _skills.Values;
+    public IEnumerable<EquipmentDefinition> GetAllEquipment() => _equipment.Values;
     public IEnumerable<SpellDefinition> GetSpellsForList(string spellListId, int? maxSpellLevel = null) =>
         _spells.Values
             .Where(s => s.ClassLevels.TryGetValue(spellListId, out var level)
@@ -321,6 +334,15 @@ public class ContentRegistry : IContentLookup
 
         foreach (var spell in _spells.Values)
             ValidateSpell(spell);
+
+        // Equipment validation: empty IDs, broken permabuff refs, slot category sanity
+        foreach (var eq in _equipment.Values)
+        {
+            if (string.IsNullOrWhiteSpace(eq.Id))
+                _errors.Add(new ContentError(ContentErrorKind.MissingId, "Equipment has empty ID"));
+            ValidatePermabuffList(eq.GrantedPermabuffs, $"Equipment '{eq.Id}'");
+            ValidatePrerequisites(eq.Prerequisites, $"Equipment '{eq.Id}'");
+        }
     }
 
     private void ValidatePrerequisites(List<Prerequisite> prerequisites, string context)

@@ -15,6 +15,22 @@ public class ContentValidationTests
     }
 
     [Fact]
+    public void SRDEquipment_LoadsCatalog()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+
+        // Seed catalog should have weapons, armor, shields, wondrous, and rings.
+        Assert.True(registry.TryGetEquipment("weapon:longsword", out var longsword));
+        Assert.Equal("1d8", longsword!.Weapon!.Damage);
+        Assert.True(registry.TryGetEquipment("armor:full_plate", out var fp));
+        Assert.Equal(8, fp!.Armor!.ArmorBonus);
+        Assert.True(registry.TryGetEquipment("shield:heavy_steel", out _));
+        Assert.True(registry.TryGetEquipment("wondrous:cloak_of_resistance_3", out _));
+        Assert.True(registry.TryGetEquipment("ring:protection_2", out _));
+        Assert.True(registry.TryGetEquipment("wondrous:gauntlets_ogre_power", out _));
+    }
+
+    [Fact]
     public void BrokenRacialHDReference_ProducesError()
     {
         var registry = new ContentRegistry();
