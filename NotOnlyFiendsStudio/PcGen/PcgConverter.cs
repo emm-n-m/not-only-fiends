@@ -12,6 +12,7 @@ public class PcgConversionResult
     public List<string> DroppedClasses { get; set; } = new();
     public List<string> DroppedTemplates { get; set; } = new();
     public List<string> DroppedDomains { get; set; } = new();
+    public List<string> DroppedEquipment { get; set; } = new();
     public bool RaceDropped { get; set; }
 
     public string Summary
@@ -25,6 +26,7 @@ public class PcgConversionResult
             if (DroppedSkills.Count > 0) parts.Add($"{DroppedSkills.Count} skill(s) missing");
             if (DroppedTemplates.Count > 0) parts.Add($"{DroppedTemplates.Count} template(s) missing");
             if (DroppedDomains.Count > 0) parts.Add($"{DroppedDomains.Count} domain(s) missing");
+            if (DroppedEquipment.Count > 0) parts.Add($"{DroppedEquipment.Count} equipment item(s) missing");
             return parts.Count == 0 ? "Clean import" : string.Join(", ", parts);
         }
     }
@@ -257,6 +259,46 @@ public static class PcgConverter
         character.BaseAbilityScores.INT -= appliedAbilityIncreases.GetValueOrDefault(Ability.INT);
         character.BaseAbilityScores.WIS -= appliedAbilityIncreases.GetValueOrDefault(Ability.WIS);
         character.BaseAbilityScores.CHA -= appliedAbilityIncreases.GetValueOrDefault(Ability.CHA);
+
+        // Equipment: active-set items get their PCGen slot translated to the engine vocabulary;
+        // weapon-slot items go in MainHand/OffHand/TwoHanded. Items in non-active sets (alternate
+        // loadouts) are imported as "carried" so the user keeps them on the character but they
+        // don't contribute to AC/attack math. Unmapped names are warned and skipped — the
+        // regression report surfaces them so PcgIdMapper.EquipmentOverrides or the catalog can grow.
+        foreach (var raw in data.Equipment)
+        {
+            var id = mapper.MapEquipment(raw.Name, registry);
+            if (id == null)
+            {
+                result.Warnings.Add($"Equipment '{raw.Name}' has no engine mapping — skipped");
+                result.DroppedEquipment.Add(raw.Name);
+                continue;
+            }
+
+            var entry = new EquipmentEntry
+            {
+                ItemId = raw.Name,
+                ContentId = id,
+            };
+
+            if (raw.InActiveSet && raw.SlotName != null && mapper.IsWeaponSlot(raw.SlotName))
+            {
+                var (mh, th) = mapper.InferHand(raw.SlotName);
+                entry.Slot = string.Empty;
+                entry.MainHand = mh;
+                entry.TwoHanded = th;
+            }
+            else if (raw.InActiveSet && raw.SlotName != null)
+            {
+                entry.Slot = mapper.MapSlot(raw.SlotName);
+            }
+            else
+            {
+                entry.Slot = "carried";
+            }
+
+            character.Equipment.Add(entry);
+        }
 
         result.Character = character;
         return result;

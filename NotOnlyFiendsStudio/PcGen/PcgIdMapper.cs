@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using NotOnlyFiendsStudio.Studio;
 
 namespace NotOnlyFiendsStudio.PcGen;
 
@@ -124,6 +125,43 @@ public class PcgIdMapper
         ["Knowledge (The Planes)"] = "knowledge_planes",
     };
 
+    private static readonly Dictionary<string, string> EquipmentOverrides = new(StringComparer.OrdinalIgnoreCase)
+    {
+        // Populated as PcgImportRegression surfaces names that don't match the catalog
+        // exactly (e.g. abbreviations, parenthetical color suffixes). Catalog ID on the right.
+    };
+
+    // Body-slot labels that PCGen uses in EQUIPSET — translated to the engine's slot vocabulary
+    // (which mirrors EquipmentDefinition.Slot in the content catalog).
+    private static readonly Dictionary<string, string> BodySlotMap = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Head"] = "head",
+        ["Eyes"] = "eyes",
+        ["Neck"] = "neck",
+        ["Shoulders"] = "shoulders",
+        ["Body"] = "body",
+        ["Torso"] = "torso",
+        ["Arms"] = "arms",
+        ["Hands"] = "hands",
+        ["Wrists"] = "wrists",
+        ["Fingers"] = "ring",
+        ["Ring"] = "ring",
+        ["Waist"] = "waist",
+        ["Feet"] = "feet",
+        ["Foot"] = "feet",
+    };
+
+    // PCGen slot labels that mean "held weapon" rather than a body slot.
+    private static readonly HashSet<string> WeaponSlotLabels = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Equipped",
+        "Primary Weapon",
+        "Secondary Weapon",
+        "Off-hand",
+        "Two Hand",
+        "Both Hands",
+    };
+
     public string? MapRace(string pcgenRace)
     {
         return RaceMap.GetValueOrDefault(pcgenRace);
@@ -157,6 +195,46 @@ public class PcgIdMapper
     {
         return "template:" + DefaultIdTransform(pcgenTemplateName);
     }
+
+    /// <summary>
+    /// Resolves a PCGen item name (e.g. "Belt of Giant Strength +6") to a catalog ID.
+    /// Strategy: explicit override → exact name match in registry → name with "+N" stripped.
+    /// Returns null if nothing matches; caller is expected to warn and skip.
+    /// </summary>
+    public string? MapEquipment(string pcgenName, ContentRegistry? registry)
+    {
+        if (EquipmentOverrides.TryGetValue(pcgenName, out var ovr))
+            return ovr;
+
+        if (registry == null) return null;
+
+        if (registry.TryGetEquipmentByName(pcgenName, out var def))
+            return def!.Id;
+
+        // Strip enhancement suffix ("Cloak of Resistance +3" → "Cloak of Resistance") for a second try.
+        var stripped = Regex.Replace(pcgenName, @"\s*\+\d+\s*$", "").Trim();
+        if (stripped != pcgenName && registry.TryGetEquipmentByName(stripped, out def))
+            return def!.Id;
+
+        return null;
+    }
+
+    public bool IsWeaponSlot(string pcgSlot) => WeaponSlotLabels.Contains(pcgSlot);
+
+    /// <summary>
+    /// Translates a PCGen EQUIPSET body slot label to the engine's slot vocabulary.
+    /// Unknown labels fall back to "carried" so unrecognized assignments don't pretend to be equipped.
+    /// </summary>
+    public string MapSlot(string pcgSlot) =>
+        BodySlotMap.TryGetValue(pcgSlot, out var s) ? s : "carried";
+
+    public (bool MainHand, bool TwoHanded) InferHand(string pcgSlot) => pcgSlot.ToLowerInvariant() switch
+    {
+        "primary weapon" or "equipped" => (true, false),
+        "secondary weapon" or "off-hand" => (false, false),
+        "two hand" or "both hands" => (true, true),
+        _ => (true, false),
+    };
 
     public static string DefaultIdTransform(string name)
     {

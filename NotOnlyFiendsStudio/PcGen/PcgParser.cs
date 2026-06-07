@@ -55,6 +55,12 @@ public static class PcgParser
     {
         var data = new PcgCharacterData();
 
+        // Equipment needs deferred resolution: CALCEQUIPSET appears after the EQUIPSET lines,
+        // which in turn appear after the EQUIPNAME lines. Buffer the slot assignments and
+        // join them against the items + active-set ID at end-of-file.
+        var slotAssignments = new List<(string SetId, string Slot, string ItemName)>();
+        string? activeSetId = null;
+
         foreach (var rawLine in lines)
         {
             var line = rawLine.Trim();
@@ -83,7 +89,15 @@ public static class PcgParser
                 ParseSpell(line, data);
             else if (line.StartsWith("DOMAIN:") && !line.StartsWith("DOMAIN:Air|DOMAIN:") /* skip DEITY domain list */)
                 ParseDomain(line, data);
+            else if (line.StartsWith("EQUIPNAME:"))
+                ParseEquipmentItem(line, data);
+            else if (line.StartsWith("EQUIPSET:"))
+                ParseEquipmentSet(line, slotAssignments);
+            else if (line.StartsWith("CALCEQUIPSET:"))
+                activeSetId = line["CALCEQUIPSET:".Length..].Trim();
         }
+
+        ResolveEquipmentSlots(data, slotAssignments, activeSetId);
 
         return data;
     }
@@ -286,6 +300,85 @@ public static class PcgParser
             Name = name,
             SourceClass = sourceClass,
         });
+    }
+
+    // PCGen models natural attacks (Bite, Claw, Sting, Tail Slap, Wing…) as auto-equipped
+    // EQUIPNAME rows. In our engine they live on the race/template, not the equipment list,
+    // so these rows would always be unmappable. Skip them at parse time rather than warning.
+    private static readonly Regex NaturalAttackSuffix =
+        new(@"\(Natural/(Primary|Secondary)\)\s*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    private static void ParseEquipmentItem(string line, PcgCharacterData data)
+    {
+        var rest = line["EQUIPNAME:".Length..];
+        var firstPipe = rest.IndexOf('|');
+        var name = firstPipe >= 0 ? rest[..firstPipe] : rest;
+
+        if (NaturalAttackSuffix.IsMatch(name))
+            return;
+
+        var fields = ParseFields(line);
+
+        var raw = new PcgEquipmentRaw { Name = name };
+        if (fields.TryGetValue("QUANTITY", out var q)
+            && double.TryParse(q, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var qv))
+            raw.Quantity = qv;
+        if (fields.TryGetValue("WT", out var w)
+            && double.TryParse(w, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var wv))
+            raw.WeightLbs = wv;
+        // PCGen COST is gold pieces; engine stores copper pieces (1 gp = 100 cp).
+        if (fields.TryGetValue("COST", out var c)
+            && double.TryParse(c, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var cv))
+            raw.PriceCp = (long)(cv * 100);
+
+        data.Equipment.Add(raw);
+    }
+
+    private static void ParseEquipmentSet(string line, List<(string SetId, string Slot, string ItemName)> assignments)
+    {
+        // Format: EQUIPSET:<slotLabel>|ID:<id>|VALUE:<itemName>|...
+        // Set headers (e.g. "EQUIPSET:Default Set|ID:0.1|USETEMPMODS:Y") have no VALUE — skip them.
+        var rest = line["EQUIPSET:".Length..];
+        var firstPipe = rest.IndexOf('|');
+        if (firstPipe < 0) return;
+        var slot = rest[..firstPipe];
+
+        var fields = ParseFields(line);
+        if (!fields.TryGetValue("ID", out var id)) return;
+        if (!fields.TryGetValue("VALUE", out var value)) return;
+
+        assignments.Add((id, slot, value));
+    }
+
+    private static void ResolveEquipmentSlots(
+        PcgCharacterData data,
+        List<(string SetId, string Slot, string ItemName)> assignments,
+        string? activeSetId)
+    {
+        // Sort so active-set assignments are tried first. An EQUIPNAME row is one physical item;
+        // each EQUIPSET row claims one. If the same name appears in multiple sets, the active set
+        // wins the assignment for that physical item.
+        var sorted = assignments
+            .OrderByDescending(a => IsInActiveSet(a.SetId, activeSetId))
+            .ToList();
+
+        foreach (var (setId, slot, itemName) in sorted)
+        {
+            var item = data.Equipment.FirstOrDefault(
+                e => e.SlotName == null
+                  && string.Equals(e.Name, itemName, StringComparison.Ordinal));
+            if (item == null) continue;
+
+            item.SlotName = slot;
+            item.InActiveSet = IsInActiveSet(setId, activeSetId);
+        }
+    }
+
+    private static bool IsInActiveSet(string setId, string? activeSetId)
+    {
+        if (string.IsNullOrEmpty(activeSetId)) return false;
+        return setId == activeSetId
+            || setId.StartsWith(activeSetId + ".", StringComparison.Ordinal);
     }
 
     private static Dictionary<string, string> ParseFields(string line)

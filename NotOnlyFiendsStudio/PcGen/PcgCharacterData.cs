@@ -15,6 +15,7 @@ public class PcgCharacterData
     public List<PcgTemplateEntry> Templates { get; set; } = new();
     public List<PcgSpellEntry> Spells { get; set; } = new();
     public List<PcgDomainEntry> Domains { get; set; } = new();
+    public List<PcgEquipmentRaw> Equipment { get; set; } = new();
 
     public int TotalClassLevels => Classes.Sum(c => c.Level);
 }

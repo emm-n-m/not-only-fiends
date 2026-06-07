@@ -161,6 +161,28 @@
     ]
   },
   {
+    "id": "wondrous:bracers_armor_9",
+    "name": "Bracers of Armor +9",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 1,
+    "priceCp": 8100000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "armor", "value": { "expression": "9" } }
+    ]
+  },
+  {
+    "id": "wondrous:bracers_armor_10",
+    "name": "Bracers of Armor +10",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 1,
+    "priceCp": 10000000,
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "armor", "value": { "expression": "10" } }
+    ]
+  },
+  {
     "id": "wondrous:gauntlets_ogre_power",
     "name": "Gauntlets of Ogre Power",
     "category": "wondrous",

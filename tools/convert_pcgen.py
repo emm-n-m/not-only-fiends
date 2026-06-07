@@ -1110,6 +1110,112 @@ def _parse_combat_ac_bonus(bonuses, expected_type: str) -> int:
     return 0
 
 
+# PCGen STAT abbreviations → engine BonusTarget enum names (camelCase).
+_STAT_TO_TARGET = {
+    'STR': 'abilityStr', 'DEX': 'abilityDex', 'CON': 'abilityCon',
+    'INT': 'abilityInt', 'WIS': 'abilityWis', 'CHA': 'abilityCha',
+}
+
+# PCGen SAVE token sets that mean "all three saves" → use the engine's AllSaves target instead
+# of emitting three permabuffs.
+_ALL_SAVES_TOKENS = {
+    'ALL',
+    'FORTITUDE,REFLEX,WILL',
+    'FORT,REF,WILL',
+}
+
+# PCGen SAVE single tokens → engine save target.
+_SAVE_TO_TARGET = {
+    'FORTITUDE': 'saveFort', 'FORT': 'saveFort',
+    'REFLEX': 'saveRef', 'REF': 'saveRef',
+    'WILL': 'saveWill',
+}
+
+# Engine BonusType vocabulary (lowercase camelCase as emitted in JSON).
+_BONUS_TYPE_NORMALIZED = {
+    'ARMOR': 'armor', 'SHIELD': 'shield', 'NATURAL': 'natural',
+    'NATURALARMOR': 'natural', 'NATURALARMORENHANCEMENT': 'naturalEnhancement',
+    'NATURALENHANCEMENT': 'naturalEnhancement',
+    'ENHANCEMENT': 'enhancement', 'DEFLECTION': 'deflection', 'DODGE': 'dodge',
+    'INSIGHT': 'insight', 'LUCK': 'luck', 'SACRED': 'sacred', 'PROFANE': 'profane',
+    'MORALE': 'morale', 'COMPETENCE': 'competence', 'RESISTANCE': 'resistance',
+    'CIRCUMSTANCE': 'circumstance', 'SIZE': 'size', 'RACIAL': 'racial',
+}
+
+
+def _extract_bonus_type(segments: list[str]) -> str:
+    """Pull 'enhancement' out of segments like ['…','TYPE=Enhancement']. Default 'untyped'."""
+    for seg in segments:
+        if seg.upper().startswith('TYPE='):
+            raw = seg.split('=', 1)[1].strip()
+            return _BONUS_TYPE_NORMALIZED.get(raw.upper(), 'untyped')
+    return 'untyped'
+
+
+def _parse_bonus_permabuffs(bonuses) -> list[dict]:
+    """
+    Convert PCGen BONUS tags into engine `GrantTypedBonus` permabuffs.
+    Recognized shapes (all others are silently skipped — VAR-based BONUSes encode psionic
+    points, energy resistance, etc., which the engine doesn't model as typed bonuses):
+      BONUS:STAT|<STAT>|N|TYPE=<Type>            → ability score bonus
+      BONUS:COMBAT|AC|N|TYPE=<Type>              → AC bonus
+      BONUS:SAVE|<SaveSet>|N|TYPE=<Type>         → save bonus (single save or all-saves)
+    """
+    if isinstance(bonuses, str):
+        bonuses = [bonuses]
+    permabuffs: list[dict] = []
+    for b in bonuses or []:
+        segments = b.split('|')
+        if len(segments) < 3:
+            continue
+        kind = segments[0].upper()
+
+        try:
+            value = int(segments[2])
+        except ValueError:
+            continue
+
+        target: str | None = None
+        if kind == 'STAT':
+            target = _STAT_TO_TARGET.get(segments[1].upper())
+        elif kind == 'COMBAT' and segments[1].upper() == 'AC':
+            target = 'ac'
+        elif kind == 'SAVE':
+            save_token = segments[1].upper()
+            if save_token in _ALL_SAVES_TOKENS:
+                target = 'allSaves'
+            else:
+                target = _SAVE_TO_TARGET.get(save_token)
+
+        if target is None:
+            continue
+
+        permabuffs.append({
+            '$type': 'GrantTypedBonus',
+            'target': target,
+            'bonusType': _extract_bonus_type(segments),
+            'value': {'expression': str(value)},
+        })
+
+    return permabuffs
+
+
+# PCGen TYPE subtype (Cape/Bracer/Amulet/…) → engine body-slot string + ID prefix.
+# Items whose TYPE chain is just `Magic.Epic.Wondrous` (no further subtype) get no slot.
+_WONDROUS_SUBTYPE_TO_SLOT = {
+    'Cape': 'shoulders',
+    'Bracer': 'wrists',
+    'Amulet': 'neck',
+    'Belt': 'waist',
+    'Headgear': 'head',
+    'Glove': 'hands',
+    'Boot': 'feet',
+    'Periapt': 'neck',
+    'Eyegear': 'eyes',
+    'Cloak': 'shoulders',
+}
+
+
 def convert_equipment(path: str) -> list[dict]:
     """Convert a PCGen equipment LST (rsrd_equip_arms_and_armor.lst style) to EquipmentDefinition JSON."""
     results = []
@@ -1208,8 +1314,38 @@ def convert_equipment(path: str) -> list[dict]:
                 'priceCp': price_cp,
                 'armor': armor_block,
             }
+        elif 'Wondrous' in type_parts or 'Ring' in type_parts:
+            # Map the most specific wondrous subtype to a body slot, falling back to None for
+            # generic "Magic.Epic.Wondrous" items (e.g. Boots of Speed listed without a subtype).
+            slot: str | None = None
+            id_prefix = 'ring' if 'Ring' in type_parts else 'wondrous'
+            if id_prefix == 'ring':
+                slot = 'ring'
+            else:
+                for part in type_parts:
+                    if part in _WONDROUS_SUBTYPE_TO_SLOT:
+                        slot = _WONDROUS_SUBTYPE_TO_SLOT[part]
+                        break
+
+            permabuffs = _parse_bonus_permabuffs(tags.get('BONUS', ''))
+            # Skip items we can't represent yet — extracting a name with no mechanical effect
+            # just gives the importer a match that does nothing, which is misleading.
+            if not permabuffs:
+                continue
+
+            category = 'ring' if id_prefix == 'ring' else 'wondrous'
+            item = {
+                'id': _equipment_id(name, id_prefix),
+                'name': display_name,
+                'category': category,
+                'weightLbs': weight_lbs,
+                'priceCp': price_cp,
+                'grantedPermabuffs': permabuffs,
+            }
+            if slot is not None:
+                item['slot'] = slot
         else:
-            continue  # Skip mounts/accessories/other types
+            continue  # Skip mounts/accessories/rod/staff/artifact types
 
         if item['id'] in seen_ids:
             continue
@@ -1241,12 +1377,13 @@ CONVERTERS = {
     'domains': (convert_domains, 'rsrd_domains.lst', 'srd_domains.json'),
     'classes': (convert_classes, 'rsrd_classes.lst', 'srd_classes.json'),
     'equipment': (convert_equipment, 'rsrd_equip_arms_and_armor.lst', 'srd_equipment.json'),
+    'equipment_epic': (convert_equipment, '../epic/rsrd_equip_epic.lst', 'srd_equipment_epic.json'),
 }
 
 
 def main():
     parser = argparse.ArgumentParser(description='Convert PCGen LST files to NotOnlyFiendsStudio JSON')
-    parser.add_argument('command', choices=['skills', 'feats', 'spells', 'domains', 'classes', 'equipment', 'all'],
+    parser.add_argument('command', choices=['skills', 'feats', 'spells', 'domains', 'classes', 'equipment', 'equipment_epic', 'all'],
                         help='Content type to convert')
     parser.add_argument('path', help='Path to LST file or RSRD basics directory (for "all")')
     parser.add_argument('--output', '-o', help='Output file path (default: stdout)')

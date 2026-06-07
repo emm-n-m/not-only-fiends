@@ -15,6 +15,7 @@ public class ContentRegistry : IContentLookup
     private readonly Dictionary<string, SkillDefinition> _skills = new();
     private readonly Dictionary<string, ClassFeatureDefinition> _classFeatures = new();
     private readonly Dictionary<string, EquipmentDefinition> _equipment = new();
+    private Dictionary<string, EquipmentDefinition>? _equipmentByName;
 
     public ConflictResolution OnConflict { get; set; } = ConflictResolution.LastWins;
 
@@ -39,7 +40,7 @@ public class ContentRegistry : IContentLookup
         RegisterContentType(new ContentTypeHandler<ClassFeatureDefinition>(
             "class_features", cf => Register(_classFeatures, cf, c => c.Id)));
         RegisterContentType(new ContentTypeHandler<EquipmentDefinition>(
-            "equipment", eq => Register(_equipment, eq, e => e.Id)));
+            "equipment", RegisterEquipment));
     }
 
     private void Register<T>(Dictionary<string, T> dict, T item, Func<T, string> getId)
@@ -79,7 +80,11 @@ public class ContentRegistry : IContentLookup
     public void RegisterSpell(SpellDefinition spell) => Register(_spells, spell, s => s.Id);
     public void RegisterSkill(SkillDefinition skill) => Register(_skills, skill, sk => sk.Id);
     public void RegisterClassFeature(ClassFeatureDefinition cf) => Register(_classFeatures, cf, c => c.Id);
-    public void RegisterEquipment(EquipmentDefinition equipment) => Register(_equipment, equipment, e => e.Id);
+    public void RegisterEquipment(EquipmentDefinition equipment)
+    {
+        Register(_equipment, equipment, e => e.Id);
+        _equipmentByName = null;
+    }
 
     // --- Lookups ---
 
@@ -149,6 +154,18 @@ public class ContentRegistry : IContentLookup
 
     public bool TryGetEquipment(string id, out EquipmentDefinition? equipment) =>
         _equipment.TryGetValue(id, out equipment);
+
+    /// <summary>
+    /// Look up equipment by display name (case-insensitive). First duplicate name wins.
+    /// Used by PCGen import to resolve EQUIPNAME → catalog ID.
+    /// </summary>
+    public bool TryGetEquipmentByName(string name, out EquipmentDefinition? equipment)
+    {
+        _equipmentByName ??= _equipment.Values
+            .GroupBy(e => e.Name, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+        return _equipmentByName.TryGetValue(name, out equipment);
+    }
 
     public ClassFeatureOption? GetClassFeatureOption(string featureType, string optionId)
     {

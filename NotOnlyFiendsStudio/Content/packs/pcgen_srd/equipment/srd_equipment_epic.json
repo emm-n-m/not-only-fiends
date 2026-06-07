@@ -1,0 +1,1864 @@
+[
+  {
+    "id": "armor:antimagic_armor",
+    "name": "Antimagic Armor",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 150000,
+    "armor": {
+      "kind": "heavy",
+      "armorBonus": 8,
+      "checkPenalty": -6,
+      "maxDex": 1,
+      "arcaneFailurePct": 35
+    }
+  },
+  {
+    "id": "armor:armor_of_the_abyssal_horde",
+    "name": "Armor of the Abyssal Horde",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 150000,
+    "armor": {
+      "kind": "heavy",
+      "armorBonus": 8,
+      "checkPenalty": -6,
+      "maxDex": 1,
+      "arcaneFailurePct": 35
+    }
+  },
+  {
+    "id": "armor:armor_of_the_celestial_battalion",
+    "name": "Armor of the Celestial Battalion",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 20,
+    "priceCp": 15000,
+    "armor": {
+      "kind": "light",
+      "armorBonus": 5,
+      "checkPenalty": -1,
+      "maxDex": 10,
+      "arcaneFailurePct": 10
+    }
+  },
+  {
+    "id": "armor:dragonskin_armor_black",
+    "name": "Dragonskin Armor (Black)",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 150000,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 8,
+      "checkPenalty": -6,
+      "maxDex": 1,
+      "arcaneFailurePct": 35
+    }
+  },
+  {
+    "id": "armor:dragonskin_armor_blue",
+    "name": "Dragonskin Armor (Blue)",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 150000,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 8,
+      "checkPenalty": -6,
+      "maxDex": 1,
+      "arcaneFailurePct": 35
+    }
+  },
+  {
+    "id": "armor:dragonskin_armor_brass",
+    "name": "Dragonskin Armor (Brass)",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 150000,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 8,
+      "checkPenalty": -6,
+      "maxDex": 1,
+      "arcaneFailurePct": 35
+    }
+  },
+  {
+    "id": "armor:dragonskin_armor_bronze",
+    "name": "Dragonskin Armor (Bronze)",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 150000,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 8,
+      "checkPenalty": -6,
+      "maxDex": 1,
+      "arcaneFailurePct": 35
+    }
+  },
+  {
+    "id": "armor:dragonskin_armor_copper",
+    "name": "Dragonskin Armor (Copper)",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 150000,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 8,
+      "checkPenalty": -6,
+      "maxDex": 1,
+      "arcaneFailurePct": 35
+    }
+  },
+  {
+    "id": "armor:dragonskin_armor_gold",
+    "name": "Dragonskin Armor (Gold)",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 150000,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 8,
+      "checkPenalty": -6,
+      "maxDex": 1,
+      "arcaneFailurePct": 35
+    }
+  },
+  {
+    "id": "armor:dragonskin_armor_green",
+    "name": "Dragonskin Armor (Green)",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 150000,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 8,
+      "checkPenalty": -6,
+      "maxDex": 1,
+      "arcaneFailurePct": 35
+    }
+  },
+  {
+    "id": "armor:dragonskin_armor_red",
+    "name": "Dragonskin Armor (Red)",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 150000,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 8,
+      "checkPenalty": -6,
+      "maxDex": 1,
+      "arcaneFailurePct": 35
+    }
+  },
+  {
+    "id": "armor:dragonskin_armor_silver",
+    "name": "Dragonskin Armor (Silver)",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 150000,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 8,
+      "checkPenalty": -6,
+      "maxDex": 1,
+      "arcaneFailurePct": 35
+    }
+  },
+  {
+    "id": "armor:dragonskin_armor_white",
+    "name": "Dragonskin Armor (White)",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 150000,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 8,
+      "checkPenalty": -6,
+      "maxDex": 1,
+      "arcaneFailurePct": 35
+    }
+  },
+  {
+    "id": "armor:golem_armor",
+    "name": "Golem Armor",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 0,
+    "armor": {
+      "kind": "heavy",
+      "armorBonus": 8,
+      "checkPenalty": -6,
+      "maxDex": 1,
+      "arcaneFailurePct": 35
+    }
+  },
+  {
+    "id": "armor:invulnerable_coat",
+    "name": "Invulnerable Coat",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 25,
+    "priceCp": 0,
+    "armor": {
+      "kind": "light",
+      "armorBonus": 4,
+      "checkPenalty": -2,
+      "maxDex": 4,
+      "arcaneFailurePct": 20
+    }
+  },
+  {
+    "id": "armor:shapeshifters_armor",
+    "name": "Shapeshifter's Armor",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 25,
+    "priceCp": 1500,
+    "armor": {
+      "kind": "medium",
+      "armorBonus": 3,
+      "checkPenalty": -3,
+      "maxDex": 4,
+      "arcaneFailurePct": 20
+    }
+  },
+  {
+    "id": "armor:warlords_breastplate",
+    "name": "Warlord's Breastplate",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 30,
+    "priceCp": 20000,
+    "armor": {
+      "kind": "light",
+      "armorBonus": 5,
+      "checkPenalty": -5,
+      "maxDex": 3,
+      "arcaneFailurePct": 25
+    }
+  },
+  {
+    "id": "ring:ring_of_adamant_law",
+    "name": "Ring of Adamant Law",
+    "category": "ring",
+    "weightLbs": 0,
+    "priceCp": 25000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "deflection",
+        "value": {
+          "expression": "4"
+        }
+      },
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "4"
+        }
+      }
+    ],
+    "slot": "ring"
+  },
+  {
+    "id": "ring:ring_of_chaotic_fury",
+    "name": "Ring of Chaotic Fury",
+    "category": "ring",
+    "weightLbs": 0,
+    "priceCp": 25000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "deflection",
+        "value": {
+          "expression": "4"
+        }
+      },
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "4"
+        }
+      }
+    ],
+    "slot": "ring"
+  },
+  {
+    "id": "ring:ring_of_ineffable_evil",
+    "name": "Ring of Ineffable Evil",
+    "category": "ring",
+    "weightLbs": 0,
+    "priceCp": 25000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "deflection",
+        "value": {
+          "expression": "4"
+        }
+      },
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "4"
+        }
+      }
+    ],
+    "slot": "ring"
+  },
+  {
+    "id": "ring:ring_of_protection_10",
+    "name": "Ring of Protection +10",
+    "category": "ring",
+    "weightLbs": 0,
+    "priceCp": 200000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "deflection",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "slot": "ring"
+  },
+  {
+    "id": "ring:ring_of_protection_6",
+    "name": "Ring of Protection +6",
+    "category": "ring",
+    "weightLbs": 0,
+    "priceCp": 72000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "deflection",
+        "value": {
+          "expression": "6"
+        }
+      }
+    ],
+    "slot": "ring"
+  },
+  {
+    "id": "ring:ring_of_protection_7",
+    "name": "Ring of Protection +7",
+    "category": "ring",
+    "weightLbs": 0,
+    "priceCp": 98000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "deflection",
+        "value": {
+          "expression": "7"
+        }
+      }
+    ],
+    "slot": "ring"
+  },
+  {
+    "id": "ring:ring_of_protection_8",
+    "name": "Ring of Protection +8",
+    "category": "ring",
+    "weightLbs": 0,
+    "priceCp": 128000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "deflection",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "slot": "ring"
+  },
+  {
+    "id": "ring:ring_of_protection_9",
+    "name": "Ring of Protection +9",
+    "category": "ring",
+    "weightLbs": 0,
+    "priceCp": 162000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "deflection",
+        "value": {
+          "expression": "9"
+        }
+      }
+    ],
+    "slot": "ring"
+  },
+  {
+    "id": "ring:ring_of_virtuous_good",
+    "name": "Ring of Virtuous Good",
+    "category": "ring",
+    "weightLbs": 0,
+    "priceCp": 25000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "deflection",
+        "value": {
+          "expression": "4"
+        }
+      },
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "4"
+        }
+      }
+    ],
+    "slot": "ring"
+  },
+  {
+    "id": "shield:bulwark_of_the_great_dragon_black",
+    "name": "Bulwark of the Great Dragon (Black)",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 15,
+    "priceCp": 2000,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 2,
+      "checkPenalty": -2,
+      "arcaneFailurePct": 15
+    }
+  },
+  {
+    "id": "shield:bulwark_of_the_great_dragon_blue",
+    "name": "Bulwark of the Great Dragon (Blue)",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 15,
+    "priceCp": 2000,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 2,
+      "checkPenalty": -2,
+      "arcaneFailurePct": 15
+    }
+  },
+  {
+    "id": "shield:bulwark_of_the_great_dragon_brass",
+    "name": "Bulwark of the Great Dragon (Brass)",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 15,
+    "priceCp": 2000,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 2,
+      "checkPenalty": -2,
+      "arcaneFailurePct": 15
+    }
+  },
+  {
+    "id": "shield:bulwark_of_the_great_dragon_bronze",
+    "name": "Bulwark of the Great Dragon (Bronze)",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 15,
+    "priceCp": 2000,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 2,
+      "checkPenalty": -2,
+      "arcaneFailurePct": 15
+    }
+  },
+  {
+    "id": "shield:bulwark_of_the_great_dragon_copper",
+    "name": "Bulwark of the Great Dragon (Copper)",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 15,
+    "priceCp": 2000,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 2,
+      "checkPenalty": -2,
+      "arcaneFailurePct": 15
+    }
+  },
+  {
+    "id": "shield:bulwark_of_the_great_dragon_gold",
+    "name": "Bulwark of the Great Dragon (Gold)",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 15,
+    "priceCp": 2000,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 2,
+      "checkPenalty": -2,
+      "arcaneFailurePct": 15
+    }
+  },
+  {
+    "id": "shield:bulwark_of_the_great_dragon_green",
+    "name": "Bulwark of the Great Dragon (Green)",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 15,
+    "priceCp": 2000,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 2,
+      "checkPenalty": -2,
+      "arcaneFailurePct": 15
+    }
+  },
+  {
+    "id": "shield:bulwark_of_the_great_dragon_red",
+    "name": "Bulwark of the Great Dragon (Red)",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 15,
+    "priceCp": 2000,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 2,
+      "checkPenalty": -2,
+      "arcaneFailurePct": 15
+    }
+  },
+  {
+    "id": "shield:bulwark_of_the_great_dragon_silver",
+    "name": "Bulwark of the Great Dragon (Silver)",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 15,
+    "priceCp": 2000,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 2,
+      "checkPenalty": -2,
+      "arcaneFailurePct": 15
+    }
+  },
+  {
+    "id": "shield:bulwark_of_the_great_dragon_white",
+    "name": "Bulwark of the Great Dragon (White)",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 15,
+    "priceCp": 2000,
+    "armor": {
+      "kind": "shield",
+      "armorBonus": 2,
+      "checkPenalty": -2,
+      "arcaneFailurePct": 15
+    }
+  },
+  {
+    "id": "weapon:armor_of_the_abyssal_horde_claw_attack",
+    "name": "Armor of the Abyssal Horde Claw Attack",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 0,
+    "priceCp": -5030000,
+    "weapon": {
+      "damage": "1d10",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "light": true,
+      "proficiency": "simple",
+      "damageType": "piercing+slashing"
+    }
+  },
+  {
+    "id": "weapon:axe_of_the_dwarvish_lords",
+    "name": "Axe of the Dwarvish Lords",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 15,
+    "priceCp": 0,
+    "weapon": {
+      "damage": "1d10",
+      "critRangeLow": 20,
+      "critMultiplier": 3,
+      "twoHanded": true,
+      "proficiency": "martial",
+      "damageType": "slashing"
+    }
+  },
+  {
+    "id": "weapon:backstabber",
+    "name": "Backstabber",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 1000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "light": true,
+      "proficiency": "martial",
+      "damageType": "piercing"
+    }
+  },
+  {
+    "id": "weapon:battleaxe_epic_might",
+    "name": "+8 Battleaxe",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 6,
+    "priceCp": 0,
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 20,
+      "critMultiplier": 3,
+      "proficiency": "martial",
+      "damageType": "slashing"
+    }
+  },
+  {
+    "id": "weapon:boulder",
+    "name": "Boulder",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 20,
+    "priceCp": 0,
+    "weapon": {
+      "damage": "2d8",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "ranged": true
+    }
+  },
+  {
+    "id": "weapon:chaosbringer",
+    "name": "Chaosbringer",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 12,
+    "priceCp": 2000,
+    "weapon": {
+      "damage": "1d12",
+      "critRangeLow": 20,
+      "critMultiplier": 3,
+      "twoHanded": true,
+      "proficiency": "martial",
+      "damageType": "slashing"
+    }
+  },
+  {
+    "id": "weapon:elven_greatbow",
+    "name": "Elven Greatbow",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 3,
+    "priceCp": 10000,
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 20,
+      "critMultiplier": 3,
+      "rangeFt": 110,
+      "ranged": true,
+      "proficiency": "martial",
+      "damageType": "piercing"
+    }
+  },
+  {
+    "id": "weapon:everwhirling_chain",
+    "name": "Everwhirling Chain",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 10,
+    "priceCp": 2500,
+    "weapon": {
+      "damage": "2d4",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "reach": true,
+      "proficiency": "exotic",
+      "damageType": "piercing"
+    }
+  },
+  {
+    "id": "weapon:finaldeath",
+    "name": "Finaldeath",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 6,
+    "priceCp": 800,
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "proficiency": "simple",
+      "damageType": "bludgeoning+piercing"
+    }
+  },
+  {
+    "id": "weapon:gripsoul",
+    "name": "Gripsoul",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 1500,
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "proficiency": "martial",
+      "damageType": "slashing"
+    }
+  },
+  {
+    "id": "weapon:holy_devastator",
+    "name": "Holy Devastator",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 1500,
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "proficiency": "martial",
+      "damageType": "slashing"
+    }
+  },
+  {
+    "id": "weapon:leshay_weapon",
+    "name": "Leshay Weapon",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "weapon": {
+      "damage": "1d10",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "light": true,
+      "proficiency": "exotic",
+      "damageType": "slashing"
+    }
+  },
+  {
+    "id": "weapon:longspear_epic_might",
+    "name": "+10 Longspear",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 9,
+    "priceCp": 0,
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 20,
+      "critMultiplier": 3,
+      "twoHanded": true,
+      "reach": true,
+      "proficiency": "simple",
+      "damageType": "piercing"
+    }
+  },
+  {
+    "id": "weapon:longsword_epic_might",
+    "name": "+3 Longsword of Fiery Blasting",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 0,
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "proficiency": "martial",
+      "damageType": "slashing"
+    }
+  },
+  {
+    "id": "weapon:mace_of_ruin",
+    "name": "Mace of Ruin",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 8,
+    "priceCp": 1200,
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:quarterstaff_of_alacrity",
+    "name": "Quarterstaff of Alacrity",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 0,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:rod_besiegement",
+    "name": "Rod of Rod (Besiegement)",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 5,
+    "priceCp": 44774500,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "light": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:rod_epic_might",
+    "name": "Rod of Rod (Epic Might)",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 10,
+    "priceCp": 429043200,
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:rod_fortification",
+    "name": "Rod of Rod (Fortification)",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 6,
+    "priceCp": 46566500,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "light": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:rod_wyrm_black",
+    "name": "Rod of the Black Wyrm",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 156260000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:rod_wyrm_blue",
+    "name": "Rod of the Blue Wyrm",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 178220000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:rod_wyrm_brass",
+    "name": "Rod of the Brass Wyrm",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 145820000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:rod_wyrm_bronze",
+    "name": "Rod of the Bronze Wyrm",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 167060000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:rod_wyrm_copper",
+    "name": "Rod of the Copper Wyrm",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 156260000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:rod_wyrm_gold",
+    "name": "Rod of the Gold Wyrm",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 189740000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:rod_wyrm_green",
+    "name": "Rod of the Green Wyrm",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 167060000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:rod_wyrm_red",
+    "name": "Rod of the Red Wyrm",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 189740000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:rod_wyrm_silver",
+    "name": "Rod of the Silver Wyrm",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 178220000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:rod_wyrm_white",
+    "name": "Rod of the White Wyrm",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 145820000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:shortspear_epic_might",
+    "name": "+10 Shortspear",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 3,
+    "priceCp": 0,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 3,
+      "rangeFt": 20,
+      "ranged": true,
+      "thrown": true,
+      "proficiency": "simple",
+      "damageType": "piercing"
+    }
+  },
+  {
+    "id": "weapon:souldrinker",
+    "name": "Souldrinker",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 6,
+    "priceCp": 3500,
+    "weapon": {
+      "damage": "1d10",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "proficiency": "martial",
+      "damageType": "slashing"
+    }
+  },
+  {
+    "id": "weapon:staff_fiery_power",
+    "name": "Staff of Staff (Fiery Power)",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 50000000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:staff_natures_fury",
+    "name": "Staff of Staff (Nature's Fury)",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 50000000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:staff_planar_might_bane_outsiders_chaotic",
+    "name": "Staff of Planar Might (Chaotic Outsider Bane)",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 46000000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:staff_planar_might_bane_outsiders_evil",
+    "name": "Staff of Planar Might (Evil Outsider Bane)",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 46000000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:staff_planar_might_bane_outsiders_good",
+    "name": "Staff of Planar Might (Good Outsider Bane)",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 46000000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:staff_planar_might_bane_outsiders_lawful",
+    "name": "Staff of Planar Might (Lawful Outsider Bane)",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 46000000,
+    "weapon": {
+      "damage": "1d6",
+      "critRangeLow": 20,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "simple",
+      "damageType": "bludgeoning"
+    }
+  },
+  {
+    "id": "weapon:stormbrand",
+    "name": "Stormbrand",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 8,
+    "priceCp": 5000,
+    "weapon": {
+      "damage": "2d6",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "twoHanded": true,
+      "proficiency": "martial",
+      "damageType": "slashing"
+    }
+  },
+  {
+    "id": "weapon:unholy_despoiler",
+    "name": "Unholy Despoiler",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 1500,
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "proficiency": "martial",
+      "damageType": "slashing"
+    }
+  },
+  {
+    "id": "wondrous:amulet_of_epic_natural_armor_10",
+    "name": "Amulet of Epic Natural Armor +10",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 200000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "naturalEnhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "slot": "neck"
+  },
+  {
+    "id": "wondrous:amulet_of_epic_natural_armor_6",
+    "name": "Amulet of Epic Natural Armor +6",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 72000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "naturalEnhancement",
+        "value": {
+          "expression": "6"
+        }
+      }
+    ],
+    "slot": "neck"
+  },
+  {
+    "id": "wondrous:amulet_of_epic_natural_armor_7",
+    "name": "Amulet of Epic Natural Armor +7",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 98000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "naturalEnhancement",
+        "value": {
+          "expression": "7"
+        }
+      }
+    ],
+    "slot": "neck"
+  },
+  {
+    "id": "wondrous:amulet_of_epic_natural_armor_8",
+    "name": "Amulet of Epic Natural Armor +8",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 128000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "naturalEnhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "slot": "neck"
+  },
+  {
+    "id": "wondrous:amulet_of_epic_natural_armor_9",
+    "name": "Amulet of Epic Natural Armor +9",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 162000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "naturalEnhancement",
+        "value": {
+          "expression": "9"
+        }
+      }
+    ],
+    "slot": "neck"
+  },
+  {
+    "id": "wondrous:belt_of_epic_strength_10",
+    "name": "Belt of Epic Strength +10",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 100000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityStr",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "slot": "waist"
+  },
+  {
+    "id": "wondrous:belt_of_epic_strength_12",
+    "name": "Belt of Epic Strength +12",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 144000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityStr",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "slot": "waist"
+  },
+  {
+    "id": "wondrous:belt_of_epic_strength_8",
+    "name": "Belt of Epic Strength +8",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 64000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityStr",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "slot": "waist"
+  },
+  {
+    "id": "wondrous:boots_of_swiftness",
+    "name": "Boots of Swiftness",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 25600000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityDex",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "6"
+        }
+      }
+    ],
+    "slot": "feet"
+  },
+  {
+    "id": "wondrous:bracers_of_epic_armor_11",
+    "name": "Bracers of Epic Armor +11",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 121000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "armor",
+        "value": {
+          "expression": "11"
+        }
+      }
+    ],
+    "slot": "wrists"
+  },
+  {
+    "id": "wondrous:bracers_of_epic_armor_12",
+    "name": "Bracers of Epic Armor +12",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 144000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "armor",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "slot": "wrists"
+  },
+  {
+    "id": "wondrous:bracers_of_epic_armor_13",
+    "name": "Bracers of Epic Armor +13",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 169000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "armor",
+        "value": {
+          "expression": "13"
+        }
+      }
+    ],
+    "slot": "wrists"
+  },
+  {
+    "id": "wondrous:bracers_of_epic_armor_14",
+    "name": "Bracers of Epic Armor +14",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 196000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "armor",
+        "value": {
+          "expression": "14"
+        }
+      }
+    ],
+    "slot": "wrists"
+  },
+  {
+    "id": "wondrous:bracers_of_epic_armor_15",
+    "name": "Bracers of Epic Armor +15",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 225000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "armor",
+        "value": {
+          "expression": "15"
+        }
+      }
+    ],
+    "slot": "wrists"
+  },
+  {
+    "id": "wondrous:bracers_of_epic_health_10",
+    "name": "Bracers of Epic Health +10",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 100000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCon",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "slot": "wrists"
+  },
+  {
+    "id": "wondrous:bracers_of_epic_health_12",
+    "name": "Bracers of Epic Health +12",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 144000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCon",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "slot": "wrists"
+  },
+  {
+    "id": "wondrous:bracers_of_epic_health_8",
+    "name": "Bracers of Epic Health +8",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 64000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCon",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "slot": "wrists"
+  },
+  {
+    "id": "wondrous:bracers_of_relentless_might",
+    "name": "Bracers of Relentless Might",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 438400000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCon",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      },
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityStr",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "slot": "wrists"
+  },
+  {
+    "id": "wondrous:cloak_of_epic_charisma_10",
+    "name": "Cloak of Epic Charisma +10",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 100000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCha",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "slot": "shoulders"
+  },
+  {
+    "id": "wondrous:cloak_of_epic_charisma_12",
+    "name": "Cloak of Epic Charisma +12",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 144000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCha",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "slot": "shoulders"
+  },
+  {
+    "id": "wondrous:cloak_of_epic_charisma_8",
+    "name": "Cloak of Epic Charisma +8",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 64000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCha",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "slot": "shoulders"
+  },
+  {
+    "id": "wondrous:cloak_of_epic_resistance_10",
+    "name": "Cloak of Epic Resistance +10",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 100000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "slot": "shoulders"
+  },
+  {
+    "id": "wondrous:cloak_of_epic_resistance_6",
+    "name": "Cloak of Epic Resistance +6",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 36000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "6"
+        }
+      }
+    ],
+    "slot": "shoulders"
+  },
+  {
+    "id": "wondrous:cloak_of_epic_resistance_7",
+    "name": "Cloak of Epic Resistance +7",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 49000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "7"
+        }
+      }
+    ],
+    "slot": "shoulders"
+  },
+  {
+    "id": "wondrous:cloak_of_epic_resistance_8",
+    "name": "Cloak of Epic Resistance +8",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 64000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "slot": "shoulders"
+  },
+  {
+    "id": "wondrous:cloak_of_epic_resistance_9",
+    "name": "Cloak of Epic Resistance +9",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 81000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "9"
+        }
+      }
+    ],
+    "slot": "shoulders"
+  },
+  {
+    "id": "wondrous:gloves_of_epic_dexterity_10",
+    "name": "Gloves of Epic Dexterity +10",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 100000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityDex",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "slot": "hands"
+  },
+  {
+    "id": "wondrous:gloves_of_epic_dexterity_12",
+    "name": "Gloves of Epic Dexterity +12",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 144000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityDex",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "slot": "hands"
+  },
+  {
+    "id": "wondrous:gloves_of_epic_dexterity_8",
+    "name": "Gloves of Epic Dexterity +8",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 64000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityDex",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "slot": "hands"
+  },
+  {
+    "id": "wondrous:headband_of_epic_intellect_10",
+    "name": "Headband of Epic Intellect +10",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 100000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityInt",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "slot": "head"
+  },
+  {
+    "id": "wondrous:headband_of_epic_intellect_12",
+    "name": "Headband of Epic Intellect +12",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 144000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityInt",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "slot": "head"
+  },
+  {
+    "id": "wondrous:headband_of_epic_intellect_8",
+    "name": "Headband of Epic Intellect +8",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 64000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityInt",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "slot": "head"
+  },
+  {
+    "id": "wondrous:periapt_of_epic_wisdom_10",
+    "name": "Periapt of Epic Wisdom +10",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 100000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityWis",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "slot": "neck"
+  },
+  {
+    "id": "wondrous:periapt_of_epic_wisdom_12",
+    "name": "Periapt of Epic Wisdom +12",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 144000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityWis",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "slot": "neck"
+  },
+  {
+    "id": "wondrous:periapt_of_epic_wisdom_8",
+    "name": "Periapt of Epic Wisdom +8",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 64000000,
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityWis",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "slot": "neck"
+  }
+]

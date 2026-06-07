@@ -78,6 +78,7 @@ public class PcgImportRegression
                     DroppedSkills = result.DroppedSkills,
                     DroppedTemplates = result.DroppedTemplates,
                     DroppedDomains = result.DroppedDomains,
+                    DroppedEquipment = result.DroppedEquipment,
                 });
             }
             catch (Exception ex)
@@ -178,6 +179,7 @@ public class PcgImportRegression
             TopUnmappedSkills = Tally(chars.SelectMany(c => c.DroppedSkills)),
             TopUnmappedTemplates = Tally(chars.SelectMany(c => c.DroppedTemplates)),
             TopUnmappedDomains = Tally(chars.SelectMany(c => c.DroppedDomains)),
+            TopUnmappedEquipment = Tally(chars.SelectMany(c => c.DroppedEquipment)),
         };
     }
 
@@ -300,6 +302,7 @@ public class PcgImportRegression
         WriteTally("Top unmapped skills", r.Aggregate.TopUnmappedSkills);
         WriteTally("Top unmapped templates", r.Aggregate.TopUnmappedTemplates);
         WriteTally("Top unmapped domains", r.Aggregate.TopUnmappedDomains);
+        WriteTally("Top unmapped equipment", r.Aggregate.TopUnmappedEquipment);
 
         if (r.ParseFailures.Count > 0)
         {
@@ -326,6 +329,7 @@ public class PcgImportRegression
             if (c.DroppedSkills.Count > 0) sb.AppendLine($"- Dropped skills: {string.Join(", ", c.DroppedSkills.Distinct())}");
             if (c.DroppedTemplates.Count > 0) sb.AppendLine($"- Dropped templates: {string.Join(", ", c.DroppedTemplates.Distinct())}");
             if (c.DroppedDomains.Count > 0) sb.AppendLine($"- Dropped domains: {string.Join(", ", c.DroppedDomains.Distinct())}");
+            if (c.DroppedEquipment.Count > 0) sb.AppendLine($"- Dropped equipment: {string.Join(", ", c.DroppedEquipment.Distinct())}");
             sb.AppendLine();
         }
 
@@ -364,6 +368,7 @@ public class PcgImportRegression
         delta.TallyChanges["Skills"] = DiffTally(baseline.Aggregate.TopUnmappedSkills, fresh.Aggregate.TopUnmappedSkills);
         delta.TallyChanges["Templates"] = DiffTally(baseline.Aggregate.TopUnmappedTemplates, fresh.Aggregate.TopUnmappedTemplates);
         delta.TallyChanges["Domains"] = DiffTally(baseline.Aggregate.TopUnmappedDomains, fresh.Aggregate.TopUnmappedDomains);
+        delta.TallyChanges["Equipment"] = DiffTally(baseline.Aggregate.TopUnmappedEquipment, fresh.Aggregate.TopUnmappedEquipment);
 
         var baseFail = baseline.ParseFailures.ToDictionary(f => f.File, StringComparer.OrdinalIgnoreCase);
         var freshFail = fresh.ParseFailures.ToDictionary(f => f.File, StringComparer.OrdinalIgnoreCase);
@@ -401,6 +406,8 @@ public class PcgImportRegression
         var templatesResolved = b.DroppedTemplates.Except(f.DroppedTemplates, StringComparer.OrdinalIgnoreCase).ToList();
         var domainsAdded = f.DroppedDomains.Except(b.DroppedDomains, StringComparer.OrdinalIgnoreCase).ToList();
         var domainsResolved = b.DroppedDomains.Except(f.DroppedDomains, StringComparer.OrdinalIgnoreCase).ToList();
+        var equipmentAdded = f.DroppedEquipment.Except(b.DroppedEquipment, StringComparer.OrdinalIgnoreCase).ToList();
+        var equipmentResolved = b.DroppedEquipment.Except(f.DroppedEquipment, StringComparer.OrdinalIgnoreCase).ToList();
         var raceIdChanged = !string.Equals(b.RaceId, f.RaceId, StringComparison.Ordinal) || b.RaceDropped != f.RaceDropped;
 
         var anyChange = oldStatus != newStatus
@@ -410,6 +417,7 @@ public class PcgImportRegression
             || skillsAdded.Count > 0 || skillsResolved.Count > 0
             || templatesAdded.Count > 0 || templatesResolved.Count > 0
             || domainsAdded.Count > 0 || domainsResolved.Count > 0
+            || equipmentAdded.Count > 0 || equipmentResolved.Count > 0
             || raceIdChanged;
 
         if (!anyChange) return null;
@@ -435,6 +443,8 @@ public class PcgImportRegression
             TemplatesResolved = templatesResolved,
             DomainsAdded = domainsAdded,
             DomainsResolved = domainsResolved,
+            EquipmentAdded = equipmentAdded,
+            EquipmentResolved = equipmentResolved,
         };
     }
 
@@ -505,6 +515,8 @@ public class PcgImportRegression
                 WriteListChange(sb, "Dropped templates resolved", c.TemplatesResolved);
                 WriteListChange(sb, "Dropped domains added", c.DomainsAdded);
                 WriteListChange(sb, "Dropped domains resolved", c.DomainsResolved);
+                WriteListChange(sb, "Dropped equipment added", c.EquipmentAdded);
+                WriteListChange(sb, "Dropped equipment resolved", c.EquipmentResolved);
                 sb.AppendLine();
             }
         }
@@ -612,6 +624,7 @@ public class PcgImportRegression
         public List<TallyEntry> TopUnmappedSkills { get; set; } = new();
         public List<TallyEntry> TopUnmappedTemplates { get; set; } = new();
         public List<TallyEntry> TopUnmappedDomains { get; set; } = new();
+        public List<TallyEntry> TopUnmappedEquipment { get; set; } = new();
     }
 
     private sealed class TallyEntry
@@ -635,6 +648,7 @@ public class PcgImportRegression
         public List<string> DroppedSkills { get; set; } = new();
         public List<string> DroppedTemplates { get; set; } = new();
         public List<string> DroppedDomains { get; set; } = new();
+        public List<string> DroppedEquipment { get; set; } = new();
     }
 
     private sealed class ParseFailure
@@ -686,6 +700,8 @@ public class PcgImportRegression
         public List<string> TemplatesResolved { get; set; } = new();
         public List<string> DomainsAdded { get; set; } = new();
         public List<string> DomainsResolved { get; set; } = new();
+        public List<string> EquipmentAdded { get; set; } = new();
+        public List<string> EquipmentResolved { get; set; } = new();
     }
 
     private sealed class TallyDelta

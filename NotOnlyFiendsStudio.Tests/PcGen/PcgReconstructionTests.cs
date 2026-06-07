@@ -353,8 +353,9 @@ public class PcgReconstructionTests
         Assert.Equal(6, state.ClassLevels["class:cleric"]);
 
         // PCGen's STAT already bakes in level-up increases. STAT:WIS:17 = rolled 16 +
-        // 1 HD-4 increase, so the engine reconstructs 16 + 1 = 17 (matches PCGen display).
-        Assert.Equal(17, state.AbilityScores.WIS);
+        // 1 HD-4 increase, so the engine reconstructs the base as 16 + 1 = 17.
+        // Equipment then adds Periapt of Wisdom +2 → final WIS = 19 (matches PCGen display).
+        Assert.Equal(19, state.AbilityScores.WIS);
         Assert.Equal(9, state.AbilityScores.STR);
 
         // HP: Studio uses deterministic formula (max first HD, average thereafter)
@@ -368,11 +369,11 @@ public class PcgReconstructionTests
         Assert.Equal(4, state.BaseBAB);
 
         // Saves: Cleric = Fort good, Ref poor, Will good
-        // Good save at level 6: 2 + 6/2 = 5
-        // Poor save at level 6: 6/3 = 2
-        Assert.Equal(5, state.BaseSaves.Fort);
-        Assert.Equal(2, state.BaseSaves.Ref);
-        Assert.Equal(5, state.BaseSaves.Will);
+        // Good save at level 6: 2 + 6/2 = 5, plus Cloak of Resistance +1 = 6
+        // Poor save at level 6: 6/3 = 2, plus Cloak of Resistance +1 = 3
+        Assert.Equal(6, state.BaseSaves.Fort);
+        Assert.Equal(3, state.BaseSaves.Ref);
+        Assert.Equal(6, state.BaseSaves.Will);
 
         // Skills: verify ranks are present
         foreach (var skill in data.Skills)
