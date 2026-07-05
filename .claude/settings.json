@@ -15,20 +15,20 @@
       "Bash(dotnet test:*)",
       "Skill(gap-analysis)",
       "Skill(gap-analysis:*)",
-      "Bash(/c/pandoc-3.9/pandoc.exe -f rtf -t plain --wrap=none \"c:/Users/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/MonstersO-R.rtf\")",
-      "Read(//c/Users/USER/AppData/Local/PCGen/6.08.00RC10/data/35e//**)",
-      "Bash(ls /c/Users/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/*.rtf)",
-      "Bash(/c/pandoc-3.9/pandoc.exe -f rtf -t plain --wrap=none \"/c/Users/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/MonstersDi-Do.rtf\")",
+      "Bash(/mnt/c/pandoc-3.9/pandoc.exe -f rtf -t plain --wrap=none \"/home/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/MonstersO-R.rtf\")",
+      "Read(//mnt/c/Users/USER/AppData/Local/PCGen/6.08.00RC10/data/35e//**)",
+      "Bash(ls /home/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/*.rtf)",
+      "Bash(/mnt/c/pandoc-3.9/pandoc.exe -f rtf -t plain --wrap=none \"/home/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/MonstersDi-Do.rtf\")",
       "Read(//tmp/**)",
-      "Bash(/c/pandoc-3.9/pandoc.exe -f rtf -t plain --wrap=none \"/c/Users/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/MonstersE-F.rtf\")",
-      "Bash(/c/pandoc-3.9/pandoc.exe -f rtf -t plain --wrap=none \"/c/Users/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/MonstersM-N.rtf\")",
-      "Bash(/c/pandoc-3.9/pandoc.exe -f rtf -t plain --wrap=none \"/c/Users/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/MonstersT-Z.rtf\")",
-      "Bash(/c/pandoc-3.9/pandoc.exe -f rtf -t plain --wrap=none \"/c/Users/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/MonstersD-De.rtf\")",
-      "Bash(find /c/Users/USER/AppData/Local/PCGen/6.08.00RC10/data/35e/wizards_of_the_coast/ -type d -name *epic*)"
+      "Bash(/mnt/c/pandoc-3.9/pandoc.exe -f rtf -t plain --wrap=none \"/home/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/MonstersE-F.rtf\")",
+      "Bash(/mnt/c/pandoc-3.9/pandoc.exe -f rtf -t plain --wrap=none \"/home/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/MonstersM-N.rtf\")",
+      "Bash(/mnt/c/pandoc-3.9/pandoc.exe -f rtf -t plain --wrap=none \"/home/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/MonstersT-Z.rtf\")",
+      "Bash(/mnt/c/pandoc-3.9/pandoc.exe -f rtf -t plain --wrap=none \"/home/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/MonstersD-De.rtf\")",
+      "Bash(find /mnt/c/Users/USER/AppData/Local/PCGen/6.08.00RC10/data/35e/wizards_of_the_coast/ -type d -name *epic*)"
     ],
     "additionalDirectories": [
-      "C:\\Users\\USER\\source\\repos\\not-only-fiends\\.claude\\skills",
-      "\\tmp"
+      "/home/USER/source/repos/not-only-fiends/.claude/skills",
+      "/tmp"
     ]
   }
 }
