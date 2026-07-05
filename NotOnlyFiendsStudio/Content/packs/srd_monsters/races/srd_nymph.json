@@ -39,8 +39,9 @@
         "ability": { "id": "nymph_wild_empathy", "name": "Wild Empathy (Ex)", "description": "This power works like the druid's wild empathy class feature, except that a nymph has a +6 racial bonus on the check." }
       },
       {
-        "$type": "GrantAbility",
-        "ability": { "id": "nymph_druid_spellcasting", "name": "Spells (Druid)", "description": "A nymph casts divine spells as a 7th-level druid (typical spells prepared 6/5/4/3/1, save DC 13 + spell level)." }
+        "$type": "GrantRacialSpellcasting",
+        "classId": "class:druid",
+        "levelFormula": { "expression": "7" }
       },
       {
         "$type": "GrantSLA",

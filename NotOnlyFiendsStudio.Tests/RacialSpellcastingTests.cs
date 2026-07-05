@@ -80,4 +80,70 @@ public class RacialSpellcastingTests
         Assert.True(state.Spellcasting.TryGetValue("class:sorcerer", out var sc));
         Assert.Equal(1, sc!.CasterLevel);
     }
+
+    private static Character BuildRacial(string raceId, string racialHdDriver, int racialHD,
+        string? classDriver, int classLevels)
+    {
+        var character = new Character
+        {
+            Name = "Test",
+            Alignment = Alignment.N,
+            RaceId = raceId,
+            BaseAbilityScores = new AbilityScoreSet { STR = 12, DEX = 12, CON = 12, INT = 16, WIS = 16, CHA = 16 }
+        };
+        for (int i = 0; i < racialHD; i++)
+            character.Ticks.Add(new Tick { DriverId = racialHdDriver });
+        for (int i = 0; i < classLevels; i++)
+            character.Ticks.Add(new Tick { DriverId = classDriver! });
+        return character;
+    }
+
+    [Fact]
+    public void Couatl_NineOutsiderHD_NoClassLevels_SeedsSorcererAtCL9()
+    {
+        // SRD: "A couatl casts spells as a 9th-level sorcerer."
+        var (_, engine) = CreateStudio();
+        var state = engine.Evaluate(BuildRacial("couatl", "racial_hd:outsider", 9, null, 0));
+
+        Assert.True(state.Spellcasting.TryGetValue("class:sorcerer", out var sc),
+            "Expected couatl to cast as a sorcerer (seeded by finalize step)");
+        Assert.Equal(9, sc!.CasterLevel);
+    }
+
+    [Fact]
+    public void Nymph_NoClassLevels_SeedsDruidAtCL7()
+    {
+        // SRD: "A nymph casts divine spells as a 7th-level druid."
+        var (_, engine) = CreateStudio();
+        var state = engine.Evaluate(BuildRacial("nymph", "racial_hd:fey", 6, null, 0));
+
+        Assert.True(state.Spellcasting.TryGetValue("class:druid", out var sc));
+        Assert.Equal(7, sc!.CasterLevel);
+    }
+
+    [Fact]
+    public void Nymph_PlusSixDruidLevels_StacksToCL13()
+    {
+        // Nymph (druid 7) + 6 Druid class levels → effective Druid 13 ("Nymph Archdruid")
+        var (_, engine) = CreateStudio();
+        var state = engine.Evaluate(BuildRacial("nymph", "racial_hd:fey", 6, "class:druid", 6));
+
+        Assert.True(state.Spellcasting.TryGetValue("class:druid", out var sc));
+        Assert.Equal(13, sc!.CasterLevel);
+    }
+
+    [Fact]
+    public void Couatl_PlusLoremaster_AdvancesRacialSorcasterToCL12()
+    {
+        // Couatl (sorcerer 9) + 3 Loremaster levels advance the racial arcane casting → CL 12.
+        // Regression guard for the seed-before-first-class-tick ordering: a spellcasting-advancement
+        // PrC taken by a racial-only caster must find the racial casting to advance it.
+        var (_, engine) = CreateStudio();
+        var state = engine.Evaluate(BuildRacial("couatl", "racial_hd:outsider", 9, "class:loremaster", 3));
+
+        Assert.True(state.Spellcasting.TryGetValue("class:sorcerer", out var sc),
+            "Loremaster should have found the couatl's racial sorcerer casting");
+        Assert.Equal(12, sc!.CasterLevel);
+        Assert.DoesNotContain(state.Warnings, w => w.Contains("no matching spellcasting class"));
+    }
 }

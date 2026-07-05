@@ -125,6 +125,14 @@ public class CharacterSheet
     public int? SpellResistance { get; set; }
     public int NaturalArmor { get; set; }
     public Dictionary<string, List<string>> ClassFeatureSelections { get; set; } = new();
+
+    /// <summary>
+    /// Per-class spellcasting summary keyed by class id (e.g. "class:sorcerer"). Includes the
+    /// effective caster level — which for racial casters (Couatl, Nymph, Aranea) reflects the
+    /// racial grant plus any stacking class levels (e.g. Nymph + 6 Druid → CL 13).
+    /// </summary>
+    public Dictionary<string, SpellcastingSummary> Spellcasting { get; set; } = new();
+
     public List<string> Warnings { get; set; } = new();
 
     public static CharacterSheet FromState(CharacterState state) => new()
@@ -150,7 +158,38 @@ public class CharacterSheet
         SpellResistance = state.SpellResistance,
         NaturalArmor = state.NaturalArmor,
         ClassFeatureSelections = state.ClassFeatureSelections,
+        Spellcasting = state.Spellcasting.ToDictionary(
+            kv => kv.Key,
+            kv => SpellcastingSummary.FromState(kv.Value)),
         Warnings = state.Warnings
+    };
+}
+
+/// <summary>
+/// Serializable, display-oriented view of a single caster class on the sheet. Mirrors the
+/// evaluation-time <see cref="SpellcastingState"/> minus internal progression/selection detail.
+/// </summary>
+public class SpellcastingSummary
+{
+    public string ClassId { get; set; } = string.Empty;
+    public CastingType CastingType { get; set; }
+    public Ability CastingStat { get; set; }
+    public int CasterLevel { get; set; }
+    public int MaxSpellLevel { get; set; }
+    public Dictionary<int, int> SpellsPerDay { get; set; } = new();
+    public Dictionary<int, int>? SpellsKnown { get; set; }
+    public Dictionary<int, int> DomainBonusSlots { get; set; } = new();
+
+    public static SpellcastingSummary FromState(SpellcastingState sc) => new()
+    {
+        ClassId = sc.ClassId,
+        CastingType = sc.CastingType,
+        CastingStat = sc.CastingStat,
+        CasterLevel = sc.CasterLevel,
+        MaxSpellLevel = sc.MaxSpellLevel,
+        SpellsPerDay = new Dictionary<int, int>(sc.SpellsPerDay),
+        SpellsKnown = sc.SpellsKnown is null ? null : new Dictionary<int, int>(sc.SpellsKnown),
+        DomainBonusSlots = new Dictionary<int, int>(sc.DomainBonusSlots),
     };
 }
 

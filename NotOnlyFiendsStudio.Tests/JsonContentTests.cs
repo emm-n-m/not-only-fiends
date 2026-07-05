@@ -120,8 +120,9 @@ public class JsonContentTests
         Assert.Equal(8, rhd.HitDie);
         Assert.Equal(8, rhd.SkillPointsPerLevel);
         Assert.Equal(BABProgression.Good, rhd.BABProgression);
-        Assert.Single(rhd.Prerequisites);
-        Assert.IsType<HasRace>(rhd.Prerequisites[0]);
+        // No prerequisites: racial HD is attached via the race's racialHDDriverId, so a
+        // literal HasRace("outsider") gate only mis-fired on specific outsiders (imp, couatl, …).
+        Assert.Empty(rhd.Prerequisites);
     }
 
     [Fact]

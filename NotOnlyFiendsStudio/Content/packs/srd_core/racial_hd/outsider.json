@@ -16,12 +16,7 @@
     "ref": "good",
     "will": "good"
   },
-  "prerequisites": [
-    {
-      "$type": "HasRace",
-      "raceId": "outsider"
-    }
-  ],
+  "prerequisites": [],
   "levelPermabuffs": {}
 }
 ]

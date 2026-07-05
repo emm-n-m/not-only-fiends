@@ -47,6 +47,7 @@ public class ReplayStudio
         // 4. Process each tick
         var driverLevelCounters = new Dictionary<string, int>();
         var effectiveHighWater = new Dictionary<string, int>();
+        var racialSpellcastingSeeded = false;
         var maxTick = Math.Min(upToHD ?? character.Ticks.Count, character.Ticks.Count);
 
         for (int i = 0; i < maxTick; i++)
@@ -98,6 +99,17 @@ public class ReplayStudio
                 effectiveLevel += rule.BonusFormula.Evaluate(state);
             var previousEffective = effectiveHighWater.GetValueOrDefault(tick.DriverId, 0);
             effectiveHighWater[tick.DriverId] = effectiveLevel;
+
+            // c1. Seed racial spellcasting before the first class tick, so class-granted
+            // AdvanceSpellcasting (e.g. Loremaster/Archmage) can find and advance it. Racial HD
+            // always precede class levels, so RacialHD() formulas are final by this point. Seeding
+            // is idempotent — a same-type class (e.g. Nymph's own Druid levels) overwrites the
+            // seed with its effective (stacked) caster level, so no double counting occurs.
+            if (!racialSpellcastingSeeded && driver is HDDriver clsHd && clsHd.Kind == DriverKind.Class)
+            {
+                FinalizeRacialSpellcasting(ctx, race);
+                racialSpellcastingSeeded = true;
+            }
 
             // d. Get and apply driver permabuffs
             var buffs = driver.GetPermabuffs(state, driverLevel, _rules, effectiveLevel, previousEffective);

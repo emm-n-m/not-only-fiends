@@ -47,8 +47,9 @@
         "ability": { "id": "couatl_telepathy_90", "name": "Telepathy 90 ft.", "description": "A couatl can communicate telepathically with any creature within 90 feet that has a language." }
       },
       {
-        "$type": "GrantAbility",
-        "ability": { "id": "couatl_spells", "name": "Spells", "description": "A couatl casts spells as a 9th-level sorcerer (typical spells known 6/7/7/7/4; save DC 13 + spell level). It may choose spells known from the sorcerer list, the cleric list, and the Air, Good, and Law domain lists. Cleric and domain spells are arcane for a couatl and require no divine focus." }
+        "$type": "GrantRacialSpellcasting",
+        "classId": "class:sorcerer",
+        "levelFormula": { "expression": "9" }
       },
       {
         "$type": "GrantSLA",
