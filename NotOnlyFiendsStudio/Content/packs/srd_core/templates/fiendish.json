@@ -1,0 +1,76 @@
+[
+{
+  "id": "template:fiendish",
+  "name": "Fiendish",
+  "subtypeAdditions": ["extraplanar"],
+  "levelAdjustment": 2,
+  "creationPermabuffs": [
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "fiendish_darkvision_60", "name": "Darkvision 60 ft.", "description": "Can see in the dark up to 60 feet." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "fiendish_smite_good", "name": "Smite Good", "description": "Once per day the creature can make a normal melee attack to deal extra damage equal to its HD total (maximum +20) against a good foe." }
+    }
+  ],
+  "scalingPermabuffs": {
+    "1": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "Resistance",
+        "resistanceElement": "cold",
+        "value": 5
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "Resistance",
+        "resistanceElement": "fire",
+        "value": 5
+      }
+    ],
+    "4": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "fiendish_dr_5_magic", "name": "DR 5/magic", "description": "Damage reduction 5/magic (creatures with 4 or more Hit Dice)." }
+      }
+    ],
+    "8": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "Resistance",
+        "resistanceElement": "cold",
+        "value": 5
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "Resistance",
+        "resistanceElement": "fire",
+        "value": 5
+      }
+    ],
+    "12": [
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "fiendish_dr_10_magic", "name": "DR 10/magic", "description": "Damage reduction 10/magic (creatures with 12 or more Hit Dice). Supersedes the earlier DR 5/magic." }
+      }
+    ]
+  },
+  "scalingFormulas": [
+    {
+      "target": "SpellResistance",
+      "formula": { "expression": "TotalHD + 5" }
+    }
+  ]
+},
+{
+  "id": "template:fiendish_animal",
+  "name": "Fiendish (Animal)",
+  "typeOverride": "magicalBeast",
+  "subtypeAdditions": ["augmented"],
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+}
+]

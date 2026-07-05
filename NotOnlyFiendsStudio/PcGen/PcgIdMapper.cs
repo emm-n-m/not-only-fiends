@@ -18,10 +18,15 @@ public class PcgIdMapper
         ["Medusa"] = "medusa",
         ["Worg"] = "worg",
         ["Sahuagin (Mutant)"] = "sahuagin_mutant",
+        ["Satyr"] = "satyr",
+        ["Couatl"] = "couatl",
+        ["Nymph"] = "nymph",
 
         // SRD companions/familiars
         ["Companion ~ Snake (Viper/Tiny)"] = "companion_snake_viper_tiny",
         ["Companion ~ Snake (Viper/Medium)"] = "companion_snake_viper_medium",
+        ["Snake (Constrictor)"] = "companion_snake_constrictor",
+        ["Companion ~ Tiger"] = "companion_tiger",
         ["Companion ~ Devil (Imp)"] = "companion_devil_imp",
         ["Companion ~ Raven"] = "companion_raven",
         ["Companion ~ Leopard"] = "companion_leopard",

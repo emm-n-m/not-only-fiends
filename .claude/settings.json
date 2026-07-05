@@ -11,6 +11,8 @@
       "Bash(dotnet package search xunit --exact-match --take 1000)",
       "Bash(dotnet package search xunit.runner.visualstudio --exact-match --take 1000)",
       "Bash(dotnet package search coverlet.collector --exact-match --take 1000)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet test:*)",
       "Skill(gap-analysis)",
       "Skill(gap-analysis:*)",
       "Bash(/c/pandoc-3.9/pandoc.exe -f rtf -t plain --wrap=none \"c:/Users/USER/source/repos/not-only-fiends/NotOnlyFiendsStudio/Content/srd/MonstersO-R.rtf\")",

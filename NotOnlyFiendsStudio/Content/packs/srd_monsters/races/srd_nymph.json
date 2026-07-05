@@ -1,0 +1,53 @@
+[
+  {
+    "id": "nymph",
+    "name": "Nymph",
+    "description": "Medium fey with 6 RHD. Enchantingly beautiful woodland spirit with DR 10/cold iron, blinding beauty, unearthly grace, and 7th-level druid spellcasting. LA +7.",
+    "type": "fey",
+    "subtypes": [],
+    "size": "medium",
+    "speeds": { "land": 30, "swim": 20 },
+    "abilityModifiers": { "str": 0, "dex": 6, "con": 2, "int": 6, "wis": 6, "cha": 8 },
+    "levelAdjustment": 7,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:fey",
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 0 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "nymph_low_light_vision", "name": "Low-Light Vision", "description": "A nymph can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "nymph_blinding_beauty", "name": "Blinding Beauty (Su)", "description": "Affects all humanoids within 30 feet of the nymph. Those who look directly at her must succeed on a DC 17 Fortitude save or be blinded permanently as though by the blindness spell. A nymph can suppress or resume this ability as a free action. The save DC is Charisma-based." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "nymph_stunning_glance", "name": "Stunning Glance (Su)", "description": "As a standard action, a wrathful nymph can stun a creature within 30 feet with a look. The target must succeed on a DC 17 Fortitude save or be stunned for 2d4 rounds. The save DC is Charisma-based." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "nymph_unearthly_grace", "name": "Unearthly Grace (Su)", "description": "A nymph adds her Charisma modifier as a bonus on all her saving throws, and as a deflection bonus to her Armor Class." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "nymph_dr_cold_iron", "name": "DR 10/cold iron", "description": "Damage reduction 10/cold iron." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "nymph_wild_empathy", "name": "Wild Empathy (Ex)", "description": "This power works like the druid's wild empathy class feature, except that a nymph has a +6 racial bonus on the check." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "nymph_druid_spellcasting", "name": "Spells (Druid)", "description": "A nymph casts divine spells as a 7th-level druid (typical spells prepared 6/5/4/3/1, save DC 13 + spell level)." }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "nymph_dimension_door", "name": "Dimension Door", "usesPerDay": "1/day", "casterLevel": 7 }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "swim", "value": 8 }
+    ],
+    "scalingFormulas": []
+  }
+]

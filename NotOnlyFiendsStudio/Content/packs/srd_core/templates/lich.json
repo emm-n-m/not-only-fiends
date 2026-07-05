@@ -1,0 +1,77 @@
+[
+{
+  "id": "template:lich",
+  "name": "Lich",
+  "typeOverride": "undead",
+  "subtypeAdditions": ["augmented"],
+  "abilityModifiers": { "str": 0, "dex": 0, "con": 0, "int": 2, "wis": 2, "cha": 2 },
+  "naturalArmor": 5,
+  "levelAdjustment": 4,
+  "creationPermabuffs": [
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "lich_undead_traits", "name": "Undead Traits", "description": "No Constitution score. Uses CHA for HP and Fort saves. Immune to poison, sleep, paralysis, stunning, disease, death effects, critical hits, nonlethal damage, ability drain, energy drain, fatigue, exhaustion, and any effect requiring a Fortitude save unless it also works on objects. Darkvision 60 ft." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "lich_fear_aura", "name": "Fear Aura (Su)", "description": "Creatures of less than 5 HD in a 60-foot radius that look at the lich must succeed on a Will save (DC 10 + 1/2 lich's HD + lich's CHA modifier) or be affected as by a fear spell from a sorcerer of the lich's level. A creature that saves cannot be affected again by the same lich's aura for 24 hours." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "lich_touch_attack", "name": "Touch Attack (Su)", "description": "Once per round touch attack using negative energy deals 1d8+5 points of damage to living creatures; a Will save (DC 10 + 1/2 lich's HD + lich's CHA modifier) halves the damage." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "lich_paralyzing_touch", "name": "Paralyzing Touch (Su)", "description": "Any living creature hit by the lich's touch attack must succeed on a Fortitude save (DC 10 + 1/2 lich's HD + lich's CHA modifier) or be permanently paralyzed. Remove paralysis or any spell that removes a curse frees the victim; the effect cannot be dispelled." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "lich_turn_resistance", "name": "+4 Turn Resistance (Ex)", "description": "A lich has +4 turn resistance." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "lich_dr", "name": "DR 15/bludgeoning and magic (Su)", "description": "Damage reduction 15/bludgeoning and magic. The lich's natural weapons are treated as magic weapons for the purpose of overcoming damage reduction." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "lich_immunities", "name": "Immunities (Ex)", "description": "Immune to cold, electricity, polymorph (though it can use polymorph effects on itself), and mind-affecting attacks." }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": { "id": "lich_rejuvenation", "name": "Rejuvenation (Su)", "description": "Unless its phylactery is located and destroyed, a lich reappears 1d10 days after its apparent death, rebuilt by the life force stored in its phylactery." }
+    },
+    {
+      "$type": "GrantSkillBonus",
+      "skillId": "hide",
+      "value": 8
+    },
+    {
+      "$type": "GrantSkillBonus",
+      "skillId": "listen",
+      "value": 8
+    },
+    {
+      "$type": "GrantSkillBonus",
+      "skillId": "move_silently",
+      "value": 8
+    },
+    {
+      "$type": "GrantSkillBonus",
+      "skillId": "search",
+      "value": 8
+    },
+    {
+      "$type": "GrantSkillBonus",
+      "skillId": "sense_motive",
+      "value": 8
+    },
+    {
+      "$type": "GrantSkillBonus",
+      "skillId": "spot",
+      "value": 8
+    }
+  ],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+}
+]

@@ -1,0 +1,13 @@
+[
+{
+  "id": "template:int_bonus_+2",
+  "name": "Int Bonus +2",
+  "abilityModifiers": {
+    "int": 2
+  },
+  "levelAdjustment": 0,
+  "creationPermabuffs": [],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+}
+]

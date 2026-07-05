@@ -1,0 +1,84 @@
+[
+  {
+    "id": "couatl",
+    "name": "Couatl",
+    "description": "Large native outsider with 9 RHD. Winged feathered serpent with a venomous bite, constrict, ethereal jaunt, telepathy, psionics, and 9th-level sorcerer spellcasting. LA +7.",
+    "type": "outsider",
+    "subtypes": ["native"],
+    "size": "large",
+    "speeds": { "land": 20, "fly": 60 },
+    "abilityModifiers": { "str": 8, "dex": 6, "con": 4, "int": 6, "wis": 8, "cha": 6 },
+    "levelAdjustment": 7,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:outsider",
+    "racialPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 9 },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "couatl_darkvision_60", "name": "Darkvision 60 ft.", "description": "A couatl can see in the dark up to 60 feet." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "couatl_bite", "name": "Bite (Ex)", "description": "Natural weapon: Bite (1d3 plus poison). A couatl's bite is a primary natural attack that delivers its poison." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "couatl_poison", "name": "Poison (Ex)", "description": "Injury poison delivered by the bite, Fortitude DC 16, initial damage 2d4 Str, secondary damage 4d4 Str. The save DC is Constitution-based." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "couatl_improved_grab", "name": "Improved Grab (Ex)", "description": "To use this ability, a couatl must hit a creature of up to two size categories larger with its bite attack. It can then attempt to start a grapple as a free action without provoking an attack of opportunity. If it wins the grapple check, it establishes a hold and can constrict." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "couatl_constrict", "name": "Constrict (Ex)", "description": "A couatl deals 2d8+6 points of damage with a successful grapple check." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "couatl_change_shape", "name": "Change Shape (Su)", "description": "A couatl can assume the form of any Small or Medium humanoid." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "couatl_ethereal_jaunt", "name": "Ethereal Jaunt (Su)", "description": "A couatl can shift from the Material Plane to the Ethereal Plane and back again as a free action, as the ethereal jaunt spell (caster level 9th)." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "couatl_telepathy_90", "name": "Telepathy 90 ft.", "description": "A couatl can communicate telepathically with any creature within 90 feet that has a language." }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": { "id": "couatl_spells", "name": "Spells", "description": "A couatl casts spells as a 9th-level sorcerer (typical spells known 6/7/7/7/4; save DC 13 + spell level). It may choose spells known from the sorcerer list, the cleric list, and the Air, Good, and Law domain lists. Cleric and domain spells are arcane for a couatl and require no divine focus." }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "couatl_detect_chaos", "name": "Detect Chaos", "usesPerDay": "at will", "casterLevel": 9 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "couatl_detect_evil", "name": "Detect Evil", "usesPerDay": "at will", "casterLevel": 9 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "couatl_detect_good", "name": "Detect Good", "usesPerDay": "at will", "casterLevel": 9 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "couatl_detect_law", "name": "Detect Law", "usesPerDay": "at will", "casterLevel": 9 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "couatl_detect_thoughts", "name": "Detect Thoughts", "usesPerDay": "at will", "casterLevel": 9, "saveDC": 15 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "couatl_invisibility", "name": "Invisibility", "usesPerDay": "at will", "casterLevel": 9 }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": { "id": "couatl_plane_shift", "name": "Plane Shift", "usesPerDay": "at will", "casterLevel": 9, "saveDC": 20 }
+      }
+    ],
+    "scalingFormulas": []
+  }
+]
