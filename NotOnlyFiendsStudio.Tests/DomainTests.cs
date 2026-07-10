@@ -205,11 +205,16 @@ public class DomainTests
         var registry = TestContentHelper.LoadAllPacks();
 
         var allDomains = registry.GetAllDomains().ToList();
-        Assert.Equal(23, allDomains.Count);
+        Assert.Equal(35, allDomains.Count); // 23 core + 12 deity domains
 
         // Spot check SRD
         Assert.True(registry.TryGetDomain("domain:knowledge", out var knowledge));
         Assert.Equal("Knowledge", knowledge!.Name);
+
+        // Deity domains (srd_deity.json) and their new spells
+        Assert.True(registry.TryGetDomain("domain:madness", out var madness));
+        Assert.Equal("touch_of_madness", madness!.BonusSpells[2]);
+        Assert.Contains(registry.GetSpellsForList("domain:creation"), s => s.Id == "genesis");
     }
 
     [RequiresPrivatePacksFact]

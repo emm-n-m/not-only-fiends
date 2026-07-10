@@ -15,6 +15,7 @@ public class PcgIdMapper
         ["Elf ~ Drow"] = "drow",
         ["Devil (Imp)"] = "devil_imp",
         ["Devil (Erinyes)"] = "devil_erinyes",
+        ["Demon (Succubus)"] = "demon_succubus",
         ["Medusa"] = "medusa",
         ["Worg"] = "worg",
         ["Sahuagin (Mutant)"] = "sahuagin_mutant",

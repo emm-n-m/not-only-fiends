@@ -357,5 +357,225 @@
     { "$type": "GrantAbility", "ability": { "id": "sahuagin_speak_sharks", "name": "Speak with Sharks", "description": "Telepathically communicate with sharks up to 150 feet away." } }
   ],
   "scalingFormulas": []
-}
+},
+  {
+    "id": "demon_succubus",
+    "name": "Demon (Succubus)",
+    "description": "Medium chaotic evil outsider (demon). A seductive shapechanger with an energy-draining kiss, flight, at-will charm monster and greater teleport, spell resistance 18, telepathy, and tongues.",
+    "type": "outsider",
+    "subtypes": [
+      "chaotic",
+      "evil",
+      "extraplanar"
+    ],
+    "size": "medium",
+    "speeds": {
+      "land": 30,
+      "fly": 50
+    },
+    "abilityModifiers": {
+      "str": 3,
+      "dex": 3,
+      "con": 3,
+      "int": 6,
+      "wis": 4,
+      "cha": 16
+    },
+    "levelAdjustment": 6,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:outsider",
+    "racialClassSkillAdditions": [
+      "bluff",
+      "concentration",
+      "diplomacy",
+      "disguise",
+      "escape_artist",
+      "hide",
+      "intimidate",
+      "knowledge",
+      "listen",
+      "move_silently",
+      "search",
+      "spot",
+      "survival",
+      "use_rope"
+    ],
+    "racialClassSkillRemovals": [
+      "craft"
+    ],
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 9
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "succubus_darkvision_60",
+          "name": "Darkvision 60 ft.",
+          "description": "See in the dark up to 60 feet."
+        }
+      },
+      {
+        "$type": "GrantDR",
+        "value": 10,
+        "bypassedBy": "cold iron or good"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "electricity"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "poison"
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "resistance",
+        "resistanceElement": "acid",
+        "value": 10
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "resistance",
+        "resistanceElement": "cold",
+        "value": 10
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "resistance",
+        "resistanceElement": "fire",
+        "value": 10
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "succubus_change_shape",
+          "name": "Change Shape",
+          "description": "Can assume the form of any Small or Medium humanoid and maintain the guise indefinitely (as change shape)."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "succubus_energy_drain",
+          "name": "Energy Drain",
+          "description": "A kiss or embrace (a grapple if unwilling) bestows one negative level and acts as a suggestion to accept another kiss (DC 21 Will negates). Fortitude DC 21 to remove the negative level. Charisma-based."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "succubus_summon_demon",
+          "name": "Summon Demon",
+          "description": "Once per day can attempt to summon 1 vrock with a 30% chance of success (as a 3rd-level spell)."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "succubus_sr",
+          "name": "Spell Resistance 18",
+          "description": "Spell resistance 18."
+        }
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "spellResistance",
+        "value": 18
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "succubus_telepathy",
+          "name": "Telepathy 100 ft.",
+          "description": "Can communicate telepathically with any creature within 100 ft. that has a language."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "succubus_tongues",
+          "name": "Tongues",
+          "description": "Permanent tongues ability (as the spell, caster level 12)."
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "succubus_charm_monster",
+          "name": "Charm Monster",
+          "usesPerDay": "at will",
+          "casterLevel": 12
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "succubus_detect_good",
+          "name": "Detect Good",
+          "usesPerDay": "at will",
+          "casterLevel": 12
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "succubus_detect_thoughts",
+          "name": "Detect Thoughts",
+          "usesPerDay": "at will",
+          "casterLevel": 12
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "succubus_ethereal_jaunt",
+          "name": "Ethereal Jaunt (self plus 50 lbs. only)",
+          "usesPerDay": "at will",
+          "casterLevel": 12
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "succubus_suggestion",
+          "name": "Suggestion",
+          "usesPerDay": "at will",
+          "casterLevel": 12
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "succubus_greater_teleport",
+          "name": "Greater Teleport (self plus 50 lbs. only)",
+          "usesPerDay": "at will",
+          "casterLevel": 12
+        }
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "dodge"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "mobility"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "persuasive"
+      }
+    ],
+    "scalingFormulas": [
+      {
+        "target": "spellResistance",
+        "formula": {
+          "expression": "TotalHD + 12"
+        }
+      }
+    ]
+  }
 ]

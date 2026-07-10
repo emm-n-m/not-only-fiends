@@ -12,10 +12,16 @@ public class SpellContentTests
 
         var allSpells = registry.GetAllSpells().ToList();
 
-        Assert.Equal(604, allSpells.Count);
+        Assert.Equal(617, allSpells.Count);
         Assert.True(registry.TryGetSpell("acid_arrow", out var acidArrow));
         Assert.Equal("Acid Arrow", acidArrow!.Name);
         Assert.Equal("conjuration", acidArrow.School);
+
+        // Alignment "smite" spells are domain-only; the Good/Chaos/Law/Evil
+        // domains already reference them by ID.
+        Assert.True(registry.TryGetSpell("holy_smite", out var holySmite));
+        Assert.Equal(4, holySmite!.ClassLevels["domain:good"]);
+        Assert.Contains(registry.GetSpellsForList("domain:chaos"), s => s.Id == "chaos_hammer");
     }
 
     [Fact]

@@ -1,0 +1,194 @@
+[
+  {
+    "id": "accurate_jaunt",
+    "name": "Accurate Jaunt",
+    "description": "When you use teleport, you can roll the targeting roll twice, taking whichever result you prefer. When you use plane shift or shadow walk, you likewise make the roll to determine your destination twice, choosing the better (usually lower) result. Spelltouched feat (prerequisite: exposure to greater teleport, plane shift, teleport, or shadow walk spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "bladeproof_skin",
+    "name": "Bladeproof Skin",
+    "description": "You gain damage reduction 3/bludgeoning. Your skin imposes an armor check penalty of 2 (which stacks with the armor check penalty from armor and shield). Spelltouched feat (prerequisite: exposure to stoneskin or iron body spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "breadth_of_knowledge",
+    "name": "Breadth of Knowledge",
+    "description": "All Knowledge checks you make are treated as trained checks, even if you have no ranks in the specific skill. If you have at least one rank in the specific Knowledge skill in question, you gain a +1 bonus on the check. Spelltouched feat (prerequisite: exposure to legend lore or vision spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "conductivity",
+    "name": "Conductivity",
+    "description": "Whenever you take damage from an electricity effect, you may send a line of electricity arcing from your body at any single target within 30 feet. This bolt deals half the damage you just took; a Reflex save (DC 16 + your Cha modifier) halves this damage. Spelltouched feat (prerequisite: exposure to call lightning, lightning bolt, or chain lightning spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "controlled_immolation",
+    "name": "Controlled Immolation",
+    "description": "If you catch on fire, you take no damage from the flames. A creature striking you with its body or a handheld weapon takes 1d6 points of fire damage. The fire persists on your body for 1d4 rounds. This feat does not protect you from other sources of fire damage, only from the effects of catching on fire, and it does not protect your equipment. Spelltouched feat (prerequisite: exposure to fireball or delayed blast fireball spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "eyes_to_the_sky",
+    "name": "Eyes to the Sky",
+    "description": "You automatically spot the magical sensor created by a spell of the scrying subtype (arcane eye, clairaudience/clairvoyance, greater scrying, or scrying) if it is within 40 feet of you. Spelltouched feat (prerequisite: exposure to scrying or greater scrying spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "false_pretenses",
+    "name": "False Pretenses",
+    "description": "When you succeed on a save against a charm or compulsion effect, the character trying to charm or compel you believes that you failed your save. You can play along voluntarily if you wish. If the effect involves telepathic commands, you continue to receive them, although you are not obligated to follow them. Spelltouched feat (prerequisite: exposure to charm or dominate spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "ineluctable_echo",
+    "name": "Ineluctable Echo",
+    "description": "When you are targeted by a power word spell, whoever speaks the power word is also affected by it (as if he had cast it on himself). Likewise, when you are within the area of a wail of the banshee spell, the caster also hears the wail and must succeed on a Fortitude save (using his own save DC) or die. This feat does not protect you against those spells; you experience their effects normally. Spelltouched feat (prerequisite: exposure to wail of the banshee or any power word spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "life_leech",
+    "name": "Life Leech",
+    "description": "Each dying or stable creature within 30 feet of you (any creature with -1 to -9 hit points) loses an additional 1 hit point at the beginning of your turn. You gain the same amount as temporary hit points that last for 10 minutes. You cannot suppress this effect, which functions on both friend and foe. Spelltouched feat (prerequisite: exposure to death touch domain granted power or death knell spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "live_my_nightmare",
+    "name": "Live My Nightmare",
+    "description": "Whenever someone successfully targets you with a divination spell or effect, you can send that caster a nightmarish vision functioning as a phantasmal killer spell, except that the form comes from your dreams. The creature must succeed on a Will save (DC 14 + your Cha modifier) to disbelieve and a Fortitude save (DC 14 + your Cha modifier) to avoid dying from fear. Spelltouched feat (prerequisite: exposure to phantasmal killer spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "momentary_alteration",
+    "name": "Momentary Alteration",
+    "description": "Choose one specific form that you have turned yourself into with the alter self spell. Once per day, you can use alter self as a spell-like ability to turn yourself into this form for 1 minute. Spelltouched feat (prerequisite: exposure to alter self spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "omniscient_whispers",
+    "name": "Omniscient Whispers",
+    "description": "Once per week, you can tune into the voices you hear, getting the answer to a question much as if you had asked it with a commune spell. Using this feat renders you exhausted. Spelltouched feat (prerequisite: exposure to commune or contact other plane spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "photosynthetic_skin",
+    "name": "Photosynthetic Skin",
+    "description": "Whenever you are outside during the day, you gain a +2 enhancement bonus to your natural armor (characters who do not have natural armor ordinarily have a natural armor bonus of +0). Spelltouched feat (prerequisite: exposure to barkskin spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "polar_chill",
+    "name": "Polar Chill",
+    "description": "Once per day, you can make the ground icy in a 20-foot-radius spread around you. Each square becomes covered with ice (two squares of movement to enter, +5 to the DC of Balance and Tumble checks, DC 10 Balance to run or charge across). The ice remains for 1 minute or until exposed to fire. You cannot use this feat if you are not touching the ground or if the air temperature is above 100 degrees. Spelltouched feat (prerequisite: exposure to cone of cold or ice storm spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "residual_rebound",
+    "name": "Residual Rebound",
+    "description": "If you roll a natural 20 on a save against a targeted spell, it turns back on the caster as if affected by a spell turning spell. Unlike spell turning, it can function against touch range spells. It only works on targeted spells that allow a saving throw, so area spells such as fireball do not rebound. Spelltouched feat (prerequisite: exposure to spell resistance or spell turning spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  },
+  {
+    "id": "stench_of_the_dead",
+    "name": "Stench of the Dead",
+    "description": "You exude a carrion stench that causes any creature adjacent to you to make a Fortitude save (DC 12 + your Cha modifier) or become sickened as long as it remains adjacent to you and for 1d4 rounds thereafter. You cannot suppress the stench voluntarily. Spelltouched feat (prerequisite: exposure to ghoul touch or vampiric touch spell.)",
+    "type": "general",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "repeatable": false,
+    "tags": [
+      "spelltouched"
+    ]
+  }
+]

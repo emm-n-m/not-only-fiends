@@ -602,6 +602,29 @@
     "target": "you"
   },
   {
+    "id": "armor_of_darkness",
+    "name": "Armor of Darkness",
+    "school": "abjuration",
+    "classLevels": {
+      "domain:darkness": 4
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": true
+    },
+    "castingTime": "1 standard action",
+    "range": "touch",
+    "duration": "10/level minutes",
+    "savingThrow": "Will negates (harmless)",
+    "spellResistance": "yes (harmless)",
+    "description": "Grants a +3 deflection bonus to AC (+1 per four caster levels, max +8), darkvision 60 ft., and +2 on saves against holy, good, or light effects. Undead subjects also gain +4 turn resistance.",
+    "descriptors": [
+      "darkness"
+    ],
+    "target": "Creature touched"
+  },
+  {
     "id": "astral_projection",
     "name": "Astral Projection",
     "school": "necromancy",
@@ -1136,6 +1159,53 @@
     "target": "Creature touched"
   },
   {
+    "id": "bolt_of_glory",
+    "name": "Bolt of Glory",
+    "school": "evocation",
+    "classLevels": {
+      "domain:glory": 6
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": true
+    },
+    "castingTime": "1 standard action",
+    "range": "close (25 ft. + 5 ft./2 levels)",
+    "duration": "Instantaneous",
+    "savingThrow": "None",
+    "spellResistance": "yes",
+    "description": "Ranged touch ray of positive energy. Deals (min(CASTERLEVEL,14)/2)d6 damage (max 7d6) to creatures of the Material/Elemental Planes and neutral outsiders, or (min(CASTERLEVEL,15))d6 (max 15d6) to undead, evil outsiders, and creatures of the Negative Energy Plane. Good outsiders are unharmed.",
+    "descriptors": [
+      "good"
+    ],
+    "effect": "Ray"
+  },
+  {
+    "id": "bolts_of_bedevilment",
+    "name": "Bolts of Bedevilment",
+    "school": "enchantment",
+    "subschool": "compulsion",
+    "classLevels": {
+      "domain:madness": 5
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false
+    },
+    "castingTime": "1 standard action",
+    "range": "medium (100 ft. + 10 ft./level)",
+    "duration": "1/level rounds",
+    "savingThrow": "Will negates",
+    "spellResistance": "yes",
+    "description": "One ray attack per round; a struck living creature is dazed (takes no action) for 1d3 rounds. Will negates.",
+    "descriptors": [
+      "mind-affecting"
+    ],
+    "effect": "Ray"
+  },
+  {
     "id": "break_enchantment",
     "name": "Break Enchantment",
     "school": "abjuration",
@@ -1454,6 +1524,29 @@
     "spellResistance": "no",
     "description": "Your staff becomes a treant on command.",
     "target": "Your touched staff"
+  },
+  {
+    "id": "chaos_hammer",
+    "name": "Chaos Hammer",
+    "school": "evocation",
+    "classLevels": {
+      "domain:chaos": 4
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false
+    },
+    "castingTime": "1 standard action",
+    "range": "medium (100 ft. + 10 ft./level)",
+    "duration": "Instantaneous (1d6 rounds); see text",
+    "savingThrow": "Will partial; see text",
+    "spellResistance": "yes",
+    "description": "Deals (min(CASTERLEVEL,10)/2)d8 damage to lawful creatures ((min(CASTERLEVEL,10))d6 to lawful outsiders) and slows them 1d6 rounds; Will save halves damage and negates slow. Neutral creatures take half damage (Will quarters); chaotic creatures unaffected.",
+    "descriptors": [
+      "chaotic"
+    ],
+    "area": "20-ft.-radius burst"
   },
   {
     "id": "charm_animal",
@@ -2367,6 +2460,28 @@
     "description": "Swarms of centipedes attack at your command.",
     "subschool": "summoning",
     "target": "(CASTERLEVEL/2) swarms of centipedes"
+  },
+  {
+    "id": "crown_of_glory",
+    "name": "Crown of Glory",
+    "school": "evocation",
+    "classLevels": {
+      "domain:glory": 8
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": true,
+      "material": "Gems worth at least 200 gp"
+    },
+    "castingTime": "1 full-round action",
+    "range": "personal",
+    "duration": "1/level minutes",
+    "savingThrow": "Will negates",
+    "spellResistance": "yes",
+    "description": "You gain a +4 enhancement bonus to Charisma. Creatures of fewer than 8 HD must attend to you and are enthralled unless they make a Will save before acting hostilely; you may issue up to three mass suggestions to such creatures. Creatures of 8+ HD are unaffected.",
+    "descriptors": [],
+    "area": "120-ft.-radius emanation centered on you"
   },
   {
     "id": "crushing_despair",
@@ -5247,6 +5362,30 @@
     "target": "One living creature"
   },
   {
+    "id": "genesis",
+    "name": "Genesis",
+    "school": "conjuration",
+    "subschool": "creation",
+    "classLevels": {
+      "domain:creation": 9
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "material": "see text",
+      "xpCost": "5,000 XP"
+    },
+    "castingTime": "1 week",
+    "range": "180 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "None",
+    "spellResistance": "no",
+    "description": "Creates a small, finite, growing demiplane on the Ethereal Plane. Cannot create life or construction. Further castings from inside enlarge it by 60 ft. radius.",
+    "descriptors": [],
+    "effect": "A demiplane on the Ethereal Plane centered on your location"
+  },
+  {
     "id": "gentle_repose",
     "name": "Gentle Repose",
     "school": "necromancy",
@@ -6191,6 +6330,29 @@
       "good"
     ],
     "area": "(CASTERLEVEL) creatures in a 20-ft.-radius burst centered on you"
+  },
+  {
+    "id": "holy_smite",
+    "name": "Holy Smite",
+    "school": "evocation",
+    "classLevels": {
+      "domain:good": 4
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false
+    },
+    "castingTime": "1 standard action",
+    "range": "medium (100 ft. + 10 ft./level)",
+    "duration": "Instantaneous (1 round); see text",
+    "savingThrow": "Will partial; see text",
+    "spellResistance": "yes",
+    "description": "Deals (min(CASTERLEVEL,10)/2)d8 damage to evil creatures ((min(CASTERLEVEL,10))d6 to evil outsiders) and blinds them 1 round; Will save halves damage and negates blindness. Neutral creatures take half damage (Will quarters); good creatures unaffected.",
+    "descriptors": [
+      "good"
+    ],
+    "area": "20-ft.-radius burst"
   },
   {
     "id": "holy_sword",
@@ -8498,6 +8660,29 @@
     "spellResistance": "yes  (object)",
     "description": "Opens or closes small or light things.",
     "target": "Object weighing up to 30 lb. or portal that can be opened or closed"
+  },
+  {
+    "id": "order_s_wrath",
+    "name": "Order's Wrath",
+    "school": "evocation",
+    "classLevels": {
+      "domain:law": 4
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false
+    },
+    "castingTime": "1 standard action",
+    "range": "medium (100 ft. + 10 ft./level)",
+    "duration": "Instantaneous (1 round); see text",
+    "savingThrow": "Will partial; see text",
+    "spellResistance": "yes",
+    "description": "Deals (min(CASTERLEVEL,10)/2)d8 damage to chaotic creatures ((min(CASTERLEVEL,10))d6 to chaotic outsiders) and dazes them 1 round; Will save halves damage and negates daze. Neutral creatures take half damage (Will quarters); lawful creatures unaffected.",
+    "descriptors": [
+      "lawful"
+    ],
+    "area": "Nonlawful creatures within a burst that fills a 30-ft. cube"
   },
   {
     "id": "overland_flight",
@@ -11807,6 +11992,27 @@
     "target": "(CASTERLEVEL/3) living creatures touched"
   },
   {
+    "id": "status_greater",
+    "name": "Status, Greater",
+    "school": "divination",
+    "classLevels": {
+      "domain:community": 4
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": true
+    },
+    "castingTime": "1 standard action",
+    "range": "touch",
+    "duration": "1/level hours",
+    "savingThrow": "Will negates (harmless)",
+    "spellResistance": "yes (harmless)",
+    "description": "As status, but you can also cast harmless touch-range spells of 2nd level or lower on a linked subject through the link.",
+    "descriptors": [],
+    "target": "(CASTERLEVEL/3) living creatures touched"
+  },
+  {
     "id": "stinking_cloud",
     "name": "Stinking Cloud",
     "school": "conjuration",
@@ -12507,6 +12713,28 @@
     "area": "80-ft.-radius burst"
   },
   {
+    "id": "surelife",
+    "name": "Surelife",
+    "school": "abjuration",
+    "classLevels": {
+      "domain:repose": 8
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "material": "see text"
+    },
+    "castingTime": "1 round",
+    "range": "personal",
+    "duration": "(CASTERLEVEL/2) minutes",
+    "savingThrow": "None",
+    "spellResistance": "no",
+    "description": "Protects you from one specified natural condition that would otherwise cause certain death. Ineffective against spells or the actions of creatures, and does not protect carried items.",
+    "descriptors": [],
+    "target": "You"
+  },
+  {
     "id": "symbol_of_death",
     "name": "Symbol of Death",
     "school": "necromancy",
@@ -13070,6 +13298,30 @@
     "target": "Living creature touched"
   },
   {
+    "id": "touch_of_madness",
+    "name": "Touch of Madness",
+    "school": "enchantment",
+    "subschool": "compulsion",
+    "classLevels": {
+      "domain:madness": 2
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false
+    },
+    "castingTime": "1 standard action",
+    "range": "touch",
+    "duration": "1/level rounds",
+    "savingThrow": "Will negates",
+    "spellResistance": "yes",
+    "description": "Melee touch dazes one living creature (takes no action) for 1 round per caster level. Will negates.",
+    "descriptors": [
+      "mind-affecting"
+    ],
+    "target": "Creature touched"
+  },
+  {
     "id": "transformation",
     "name": "Transformation",
     "school": "transmutation",
@@ -13251,6 +13503,31 @@
     "target": "you"
   },
   {
+    "id": "true_creation",
+    "name": "True Creation",
+    "school": "conjuration",
+    "subschool": "creation",
+    "classLevels": {
+      "domain:creation": 8,
+      "domain:artifice": 8
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "material": "see text",
+      "xpCost": "see text"
+    },
+    "castingTime": "10 minutes",
+    "range": "0 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "None",
+    "spellResistance": "no",
+    "description": "Creates a permanent, nonmagical, unattended object of nonliving matter up to 1 cu. ft./level. Unlike minor/major creation, these objects can serve as material components. XP cost equals the item's gp value (minimum 1 XP).",
+    "descriptors": [],
+    "effect": "Unattended, nonmagical object of nonliving matter, up to 1 cu. ft./level"
+  },
+  {
     "id": "true_resurrection",
     "name": "True Resurrection",
     "school": "conjuration",
@@ -13415,6 +13692,29 @@
       "evil"
     ],
     "area": "(CASTERLEVEL) creatures in a 20-ft.-radius burst centered on you"
+  },
+  {
+    "id": "unholy_blight",
+    "name": "Unholy Blight",
+    "school": "evocation",
+    "classLevels": {
+      "domain:evil": 4
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false
+    },
+    "castingTime": "1 standard action",
+    "range": "medium (100 ft. + 10 ft./level)",
+    "duration": "Instantaneous (1d4 rounds); see text",
+    "savingThrow": "Will partial",
+    "spellResistance": "yes",
+    "description": "Deals (min(CASTERLEVEL,10)/2)d8 damage to good creatures ((min(CASTERLEVEL,10))d6 to good outsiders) and sickens them 1d4 rounds; Will save halves damage and negates sickness. Neutral creatures take half damage (Will quarters); evil creatures unaffected.",
+    "descriptors": [
+      "evil"
+    ],
+    "area": "20-ft.-radius spread"
   },
   {
     "id": "unseen_servant",

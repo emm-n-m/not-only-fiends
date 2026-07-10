@@ -1,0 +1,314 @@
+[
+  {
+    "id": "domain:artifice",
+    "name": "Artifice",
+    "description": "Gain a +4 bonus on Craft checks, and cast conjuration (creation) spells at +1 caster level (+3 if you also have the Creation domain).",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "domain_artifice_power",
+          "name": "Artifice Domain Power",
+          "description": "Gain a +4 bonus on Craft checks, and cast conjuration (creation) spells at +1 caster level (+3 if you also have the Creation domain)."
+        }
+      }
+    ],
+    "bonusSpells": {
+      "1": "animate_rope",
+      "2": "wood_shape",
+      "3": "stone_shape",
+      "4": "minor_creation",
+      "5": "fabricate",
+      "6": "major_creation",
+      "7": "hardening",
+      "8": "true_creation",
+      "9": "prismatic_sphere"
+    }
+  },
+  {
+    "id": "domain:community",
+    "name": "Community",
+    "description": "Use calm emotions as a spell-like ability once per day, and gain a +2 competence bonus on Diplomacy checks.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "domain_community_power",
+          "name": "Community Domain Power",
+          "description": "Use calm emotions as a spell-like ability once per day, and gain a +2 competence bonus on Diplomacy checks."
+        }
+      }
+    ],
+    "bonusSpells": {
+      "1": "bless",
+      "2": "status",
+      "3": "prayer",
+      "4": "status_greater",
+      "5": "telepathic_bond",
+      "6": "heroes_feast",
+      "7": "refuge",
+      "8": "sympathy",
+      "9": "heal_mass"
+    }
+  },
+  {
+    "id": "domain:creation",
+    "name": "Creation",
+    "description": "Cast conjuration (creation) spells at +2 caster level (+3 if you also have the Artifice domain).",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "domain_creation_power",
+          "name": "Creation Domain Power",
+          "description": "Cast conjuration (creation) spells at +2 caster level (+3 if you also have the Artifice domain)."
+        }
+      }
+    ],
+    "bonusSpells": {
+      "1": "create_water",
+      "2": "minor_image",
+      "3": "create_food_and_water",
+      "4": "minor_creation",
+      "5": "major_creation",
+      "6": "heroes_feast",
+      "7": "permanent_image",
+      "8": "true_creation",
+      "9": "genesis"
+    }
+  },
+  {
+    "id": "domain:darkness",
+    "name": "Darkness",
+    "description": "Free Blind-Fight feat.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "domain_darkness_power",
+          "name": "Darkness Domain Power",
+          "description": "Free Blind-Fight feat."
+        }
+      }
+    ],
+    "bonusSpells": {
+      "1": "obscuring_mist",
+      "2": "blindness_deafness",
+      "3": "blacklight",
+      "4": "armor_of_darkness",
+      "5": "summon_monster_v",
+      "6": "prying_eyes",
+      "7": "nightmare",
+      "8": "power_word_blind",
+      "9": "power_word_kill"
+    }
+  },
+  {
+    "id": "domain:glory",
+    "name": "Glory",
+    "description": "Turn undead with a +2 bonus on the turning check and +1d6 to the turning damage roll.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "domain_glory_power",
+          "name": "Glory Domain Power",
+          "description": "Turn undead with a +2 bonus on the turning check and +1d6 to the turning damage roll."
+        }
+      }
+    ],
+    "bonusSpells": {
+      "1": "disrupt_undead",
+      "2": "bless_weapon",
+      "3": "searing_light",
+      "4": "holy_smite",
+      "5": "holy_sword",
+      "6": "bolt_of_glory",
+      "7": "sunbeam",
+      "8": "crown_of_glory",
+      "9": "gate"
+    }
+  },
+  {
+    "id": "domain:liberation",
+    "name": "Liberation",
+    "description": "Gain a +2 morale bonus on saving throws against enchantment spells and effects.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "domain_liberation_power",
+          "name": "Liberation Domain Power",
+          "description": "Gain a +2 morale bonus on saving throws against enchantment spells and effects."
+        }
+      }
+    ],
+    "bonusSpells": {
+      "1": "remove_fear",
+      "2": "remove_paralysis",
+      "3": "remove_curse",
+      "4": "freedom_of_movement",
+      "5": "break_enchantment",
+      "6": "dispel_magic_greater",
+      "7": "refuge",
+      "8": "mind_blank",
+      "9": "freedom"
+    }
+  },
+  {
+    "id": "domain:madness",
+    "name": "Madness",
+    "description": "Gain an Insanity score equal to half your class level; add it to Wisdom for spellcasting and subtract it for other Wisdom uses. Once per day, use your Insanity score as a positive modifier on one Wisdom-based roll.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "domain_madness_power",
+          "name": "Madness Domain Power",
+          "description": "Gain an Insanity score equal to half your class level; add it to Wisdom for spellcasting and subtract it for other Wisdom uses. Once per day, use your Insanity score as a positive modifier on one Wisdom-based roll."
+        }
+      }
+    ],
+    "bonusSpells": {
+      "1": "confusion_lesser",
+      "2": "touch_of_madness",
+      "3": "rage",
+      "4": "confusion",
+      "5": "bolts_of_bedevilment",
+      "6": "phantasmal_killer",
+      "7": "insanity",
+      "8": "maddening_scream",
+      "9": "weird"
+    }
+  },
+  {
+    "id": "domain:nobility",
+    "name": "Nobility",
+    "description": "Once per day, a spell-like ability inspires allies who can hear you, granting a +2 morale bonus on saves, attack rolls, ability checks, skill checks, and weapon damage rolls for a number of rounds equal to your Charisma bonus.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "domain_nobility_power",
+          "name": "Nobility Domain Power",
+          "description": "Once per day, a spell-like ability inspires allies who can hear you, granting a +2 morale bonus on saves, attack rolls, ability checks, skill checks, and weapon damage rolls for a number of rounds equal to your Charisma bonus."
+        }
+      }
+    ],
+    "bonusSpells": {
+      "1": "divine_favor",
+      "2": "enthrall",
+      "3": "magic_vestment",
+      "4": "discern_lies",
+      "5": "command_greater",
+      "6": "geas_quest",
+      "7": "repulsion",
+      "8": "demand",
+      "9": "storm_of_vengeance"
+    }
+  },
+  {
+    "id": "domain:repose",
+    "name": "Repose",
+    "description": "Use a death touch once per day. As a spell-like death effect, make a melee touch attack and roll 1d6 per cleric level; if the total equals or exceeds the living creature's current hit points, it dies.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "domain_repose_power",
+          "name": "Repose Domain Power",
+          "description": "Use a death touch once per day. As a spell-like death effect, make a melee touch attack and roll 1d6 per cleric level; if the total equals or exceeds the living creature's current hit points, it dies."
+        }
+      }
+    ],
+    "bonusSpells": {
+      "1": "deathwatch",
+      "2": "gentle_repose",
+      "3": "speak_with_dead",
+      "4": "death_ward",
+      "5": "slay_living",
+      "6": "undeath_to_death",
+      "7": "destruction",
+      "8": "surelife",
+      "9": "wail_of_the_banshee"
+    }
+  },
+  {
+    "id": "domain:rune",
+    "name": "Rune",
+    "description": "Free Scribe Scroll feat.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "domain_rune_power",
+          "name": "Rune Domain Power",
+          "description": "Free Scribe Scroll feat."
+        }
+      }
+    ],
+    "bonusSpells": {
+      "1": "erase",
+      "2": "secret_page",
+      "3": "glyph_of_warding",
+      "4": "explosive_runes",
+      "5": "planar_binding_lesser",
+      "6": "glyph_of_warding_greater",
+      "7": "instant_summons",
+      "8": "symbol_of_death",
+      "9": "teleportation_circle"
+    }
+  },
+  {
+    "id": "domain:skalykind",
+    "name": "Scalykind",
+    "description": "Rebuke or command reptilian animals and snakes (as an evil cleric rebukes undead) a number of times per day equal to 3 + your Charisma modifier.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "domain_skalykind_power",
+          "name": "Scalykind Domain Power",
+          "description": "Rebuke or command reptilian animals and snakes (as an evil cleric rebukes undead) a number of times per day equal to 3 + your Charisma modifier."
+        }
+      }
+    ],
+    "bonusSpells": {
+      "1": "magic_fang",
+      "2": "animal_trance",
+      "3": "magic_fang_greater",
+      "4": "poison",
+      "5": "animal_growth",
+      "6": "eyebite",
+      "7": "creeping_doom",
+      "8": "animal_shapes",
+      "9": "shapechange"
+    }
+  },
+  {
+    "id": "domain:weather",
+    "name": "Weather",
+    "description": "Survival is a class skill.",
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "domain_weather_power",
+          "name": "Weather Domain Power",
+          "description": "Survival is a class skill."
+        }
+      }
+    ],
+    "bonusSpells": {
+      "1": "obscuring_mist",
+      "2": "fog_cloud",
+      "3": "call_lightning",
+      "4": "sleet_storm",
+      "5": "call_lightning_storm",
+      "6": "control_winds",
+      "7": "control_weather",
+      "8": "whirlwind",
+      "9": "storm_of_vengeance"
+    }
+  }
+]
