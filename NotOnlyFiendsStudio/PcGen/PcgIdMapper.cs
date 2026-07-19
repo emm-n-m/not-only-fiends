@@ -123,7 +123,10 @@ public class PcgIdMapper
 
     private static readonly Dictionary<string, string> FeatOverrides = new(StringComparer.OrdinalIgnoreCase)
     {
-        // Add overrides for feats whose names don't follow the algorithmic transform
+        // Add overrides for feats whose names don't follow the algorithmic transform.
+        // The '/' in "Claws/Fangs" survives DefaultIdTransform, yielding "claws/fangs";
+        // the AEG Infernal Pact chain feat is stored as "claws_fangs".
+        ["Claws/Fangs"] = "claws_fangs",
     };
 
     private static readonly Dictionary<string, string> SkillOverrides = new(StringComparer.OrdinalIgnoreCase)
