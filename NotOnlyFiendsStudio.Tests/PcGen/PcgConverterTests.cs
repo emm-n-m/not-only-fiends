@@ -96,6 +96,46 @@ public class PcgConverterTests
     }
 
     [Fact]
+    public void Convert_SelectableFeat_PreservesSchoolAndSkillInFeatId()
+    {
+        var data = CreateClericData();
+        // PCGen records the chosen school/skill in APPLIEDTO; each comma-separated
+        // value is a separate taking of the repeatable feat.
+        data.Feats.Add(new PcgFeatEntry
+        { Key = "Spell Focus", AppliedTo = "Conjuration,Evocation", Types = new() { "General" } });
+        data.Feats.Add(new PcgFeatEntry
+        { Key = "Skill Focus", AppliedTo = "Knowledge (Arcana)", Types = new() { "General" } });
+
+        var mapper = new PcgIdMapper();
+        var registry = TestContentHelper.LoadAllPacks();
+        var result = PcgConverter.Convert(data, mapper, registry);
+
+        var feats = result.Character.Ticks[^1].Choices.FeatIds!;
+        Assert.Contains("spell_focus_conjuration", feats);
+        Assert.Contains("spell_focus_evocation", feats);
+        Assert.Contains("skill_focus_knowledge_arcana", feats);
+        // The bare id must not be stored: prestige classes such as Cosmic Descryer
+        // and Archmage gate on the variant ids.
+        Assert.DoesNotContain("spell_focus", feats);
+        Assert.DoesNotContain("skill_focus", feats);
+    }
+
+    [Fact]
+    public void Convert_SelectableFeat_EmptyAppliedTo_FallsBackToBaseId()
+    {
+        var data = CreateClericData();
+        // No selection recorded — still one taking, but no variant suffix to add.
+        data.Feats.Add(new PcgFeatEntry { Key = "Spell Focus", Types = new() { "General" } });
+
+        var mapper = new PcgIdMapper();
+        var registry = TestContentHelper.LoadAllPacks();
+        var result = PcgConverter.Convert(data, mapper, registry);
+
+        var feats = result.Character.Ticks[^1].Choices.FeatIds!;
+        Assert.Single(feats, f => f == "spell_focus");
+    }
+
+    [Fact]
     public void Convert_NonRepeatableFeat_NoAppliedTo_AddedOnce()
     {
         var data = CreateClericData();

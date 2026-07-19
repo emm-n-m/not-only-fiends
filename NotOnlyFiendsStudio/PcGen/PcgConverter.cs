@@ -126,20 +126,40 @@ public static class PcgConverter
         foreach (var feat in data.Feats)
         {
             var featId = mapper.MapFeat(feat.Key);
-            if (registry != null && !registry.TryGetFeat(featId, out _))
+            FeatDefinition? featDef = null;
+            if (registry != null && !registry.TryGetFeat(featId, out featDef))
             {
                 result.Warnings.Add($"Feat '{feat.Key}' maps to '{featId}' but not found in content");
                 result.DroppedFeats.Add(feat.Key);
                 continue;
             }
 
-            // Repeatable feats: PCGen stores multiple selections as comma-separated APPLIEDTO values
-            var count = 1;
-            if (!string.IsNullOrEmpty(feat.AppliedTo))
-                count = feat.AppliedTo.Split(',').Length;
+            // Repeatable feats: PCGen stores each taking as a comma-separated APPLIEDTO value.
+            // One entry per element (an empty element still counts as a taking, e.g. "APPLIEDTO:,,"
+            // means the feat was taken three times with no selection).
+            var selections = string.IsNullOrEmpty(feat.AppliedTo)
+                ? new[] { string.Empty }
+                : feat.AppliedTo.Split(',');
 
-            for (int n = 0; n < count; n++)
-                featIds.Add(featId);
+            foreach (var raw in selections)
+            {
+                // For feats with a selection (Spell Focus → school, Skill Focus → skill,
+                // Weapon Focus → weapon) encode the choice into the id, e.g.
+                // "spell_focus_conjuration". Prestige classes gate on those variant ids;
+                // storing the bare "spell_focus" would fail their prerequisites.
+                var selection = raw.Trim();
+                if (featDef?.SelectionRequired != null && selection.Length > 0)
+                {
+                    var suffix = featDef.SelectionRequired == "skill"
+                        ? mapper.MapSkill(selection)
+                        : PcgIdMapper.DefaultIdTransform(selection);
+                    featIds.Add($"{featId}_{suffix}");
+                }
+                else
+                {
+                    featIds.Add(featId);
+                }
+            }
         }
 
         // Build domain selections
