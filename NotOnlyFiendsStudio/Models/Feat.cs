@@ -11,4 +11,12 @@ public class FeatDefinition
     public bool Repeatable { get; set; }
     public string? SelectionRequired { get; set; }
     public List<string> Tags { get; set; } = new();
+
+    /// <summary>
+    /// False for entries that exist only to be granted (class proficiencies, marker feats)
+    /// and are not feats a character may choose with a slot. Such feats are hidden from
+    /// <c>GetAvailableFeats</c> but still satisfy <see cref="HasFeat"/> prerequisites once
+    /// granted. Defaults to true so ordinary content needs no change.
+    /// </summary>
+    public bool Selectable { get; set; } = true;
 }

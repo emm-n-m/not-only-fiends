@@ -18,6 +18,9 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(HasFeatOfType), "HasFeatOfType")]
 [JsonDerivedType(typeof(HasFeatWithTag), "HasFeatWithTag")]
 [JsonDerivedType(typeof(HasFeatSelections), "HasFeatSelections")]
+[JsonDerivedType(typeof(MinSkillRanksAcross), "MinSkillRanksAcross")]
+[JsonDerivedType(typeof(HasFeatOfAnyType), "HasFeatOfAnyType")]
+[JsonDerivedType(typeof(HasSpontaneousCasting), "HasSpontaneousCasting")]
 public abstract class Prerequisite
 {
     public abstract bool IsMet(CharacterState state);
@@ -182,4 +185,60 @@ public class HasFeatSelections : Prerequisite
     public override string Description => MinCount == 1
         ? $"Feat: {FeatId}"
         : $"{MinCount} selections of {FeatId}";
+}
+
+/// <summary>
+/// Requires <see cref="MinCount"/> of the listed skills to each have at least
+/// <see cref="Value"/> ranks. Models 3.5e's "Knowledge (any two) 10 ranks" style
+/// requirements, where the specific skills are the player's choice.
+/// </summary>
+public class MinSkillRanksAcross : Prerequisite
+{
+    public List<string> SkillIds { get; set; } = new();
+
+    /// <summary>Whole ranks, as with <see cref="MinSkillRanks"/>. State stores half-ranks.</summary>
+    public int Value { get; set; }
+
+    public int MinCount { get; set; } = 1;
+
+    public override bool IsMet(CharacterState state) =>
+        SkillIds.Count(id => state.SkillRanks.GetValueOrDefault(id) >= Value * 2) >= MinCount;
+
+    public override string Description =>
+        $"{MinCount} of ({string.Join(", ", SkillIds)}) at {Value} ranks";
+}
+
+/// <summary>
+/// Requires <see cref="MinCount"/> feats drawn from any of <see cref="FeatTypes"/>
+/// combined. Distinct from stacking several <see cref="HasFeatOfType"/> entries, which
+/// would AND together and demand the count from each type separately.
+/// </summary>
+public class HasFeatOfAnyType : Prerequisite
+{
+    public List<FeatType> FeatTypes { get; set; } = new();
+    public int MinCount { get; set; } = 1;
+
+    public override bool IsMet(CharacterState state) =>
+        FeatTypes.Sum(type => state.FeatTypeCounts.GetValueOrDefault(type)) >= MinCount;
+
+    public override string Description =>
+        $"Any {MinCount} {string.Join(" or ", FeatTypes)} feats";
+}
+
+/// <summary>
+/// Requires a class that casts without preparation (sorcerer, bard). Spontaneous casters
+/// are the ones with a spells-known table, so that is what identifies them here.
+/// </summary>
+public class HasSpontaneousCasting : Prerequisite
+{
+    public CastingType? CastingType { get; set; }
+
+    public override bool IsMet(CharacterState state) =>
+        state.Spellcasting.Values.Any(s =>
+            s.SpellsKnown != null
+            && (!CastingType.HasValue || s.CastingType == CastingType.Value));
+
+    public override string Description => CastingType.HasValue
+        ? $"Able to cast {CastingType.Value} spells without preparation"
+        : "Able to cast spells without preparation";
 }

@@ -66,6 +66,7 @@
   "perLevelPermabuffs": [],
   "levelPermabuffs": {
     "1": [
+      { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
       {
         "$type": "GrantAbility",
         "ability": {

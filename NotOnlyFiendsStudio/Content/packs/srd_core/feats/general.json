@@ -1,15 +1,17 @@
 [
   {
     "id": "weapon_proficiency_martial",
-    "name": "Martial Weapon Proficiency",
-    "description": "No penalty on attack rolls with all martial weapons.",
+    "name": "Martial Weapon Proficiency (all)",
+    "description": "No penalty on attack rolls with all martial weapons. Granted by martial classes; not a feat a character may select — take martial_weapon_proficiency for a single weapon.",
     "type": "general",
     "prerequisites": [],
     "grantedPermabuffs": [],
-    "repeatable": false
+    "repeatable": false,
+    "selectable": false
   },
   {
     "id": "power_attack",
+    "tags": ["fighter_bonus"],
     "name": "Power Attack",
     "description": "Trade melee attack bonus for damage on a 1-for-1 basis, up to your BAB.",
     "type": "general",
@@ -21,6 +23,7 @@
   },
   {
     "id": "cleave",
+    "tags": ["fighter_bonus"],
     "name": "Cleave",
     "description": "If you deal enough damage to drop a creature, get an immediate extra melee attack against an adjacent foe.",
     "type": "general",
@@ -33,6 +36,7 @@
   },
   {
     "id": "great_cleave",
+    "tags": ["fighter_bonus"],
     "name": "Great Cleave",
     "description": "As Cleave, but with no limit on the number of extra attacks per round.",
     "type": "general",
@@ -46,6 +50,7 @@
   },
   {
     "id": "improved_initiative",
+    "tags": ["fighter_bonus"],
     "name": "Improved Initiative",
     "description": "+4 bonus on initiative checks.",
     "type": "general",
@@ -66,6 +71,7 @@
   },
   {
     "id": "weapon_focus",
+    "tags": ["fighter_bonus"],
     "name": "Weapon Focus",
     "description": "+1 bonus on attack rolls with selected weapon.",
     "type": "general",
@@ -78,6 +84,7 @@
   },
   {
     "id": "combat_reflexes",
+    "tags": ["fighter_bonus"],
     "name": "Combat Reflexes",
     "description": "Make additional attacks of opportunity equal to your Dex modifier. Can make AoOs while flat-footed.",
     "type": "general",
@@ -87,6 +94,7 @@
   },
   {
     "id": "dodge",
+    "tags": ["fighter_bonus"],
     "name": "Dodge",
     "description": "+1 dodge bonus to AC against a designated opponent.",
     "type": "general",
@@ -98,6 +106,7 @@
   },
   {
     "id": "mobility",
+    "tags": ["fighter_bonus"],
     "name": "Mobility",
     "description": "+4 dodge bonus to AC against attacks of opportunity from movement.",
     "type": "general",
@@ -110,6 +119,7 @@
   },
   {
     "id": "spring_attack",
+    "tags": ["fighter_bonus"],
     "name": "Spring Attack",
     "description": "Move before and after a melee attack in the same round without provoking from the target.",
     "type": "general",
@@ -124,6 +134,7 @@
   },
   {
     "id": "improved_bull_rush",
+    "tags": ["fighter_bonus"],
     "name": "Improved Bull Rush",
     "description": "+4 bonus on bull rush attempts. No attack of opportunity when bull rushing.",
     "type": "general",
@@ -136,6 +147,7 @@
   },
   {
     "id": "improved_sunder",
+    "tags": ["fighter_bonus"],
     "name": "Improved Sunder",
     "description": "+4 bonus on sunder attempts. No attack of opportunity when sundering.",
     "type": "general",
@@ -148,6 +160,7 @@
   },
   {
     "id": "blind_fight",
+    "tags": ["fighter_bonus"],
     "name": "Blind-Fight",
     "description": "Reroll miss chance for concealment once. No AC penalty against invisible attackers.",
     "type": "general",
@@ -157,6 +170,7 @@
   },
   {
     "id": "combat_expertise",
+    "tags": ["fighter_bonus"],
     "name": "Combat Expertise",
     "description": "Trade melee attack bonus for AC on a 1-for-1 basis, up to -5.",
     "type": "general",
@@ -168,6 +182,7 @@
   },
   {
     "id": "improved_trip",
+    "tags": ["fighter_bonus"],
     "name": "Improved Trip",
     "description": "+4 bonus on trip attempts. No AoO when tripping. Free melee attack on successful trip.",
     "type": "general",

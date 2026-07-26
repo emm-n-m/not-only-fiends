@@ -171,6 +171,26 @@ public sealed class NextStepRequest
     public List<string>? CandidateDriverIds { get; set; }
 }
 
+/// <summary>
+/// How much choice-option data to inline into each driver preview — feats, domains
+/// and class features alike. Every candidate driver repeats these lists, so they
+/// dominate the response; previews therefore default to <see cref="None"/>. The
+/// intended flow is: read the summary, narrow to the drivers you care about with
+/// <see cref="NextStepRequest.CandidateDriverIds"/>, then re-request at
+/// <see cref="Full"/>.
+/// </summary>
+public enum OptionDetail
+{
+    /// <summary>Counts only — no option list.</summary>
+    None,
+
+    /// <summary>Option IDs only, no names, descriptions or prerequisites.</summary>
+    Ids,
+
+    /// <summary>Complete option objects.</summary>
+    Full
+}
+
 public sealed class NextStepResponse
 {
     public int NextHd { get; set; }
@@ -186,7 +206,11 @@ public sealed class DriverPreviewDto
     public DriverSummaryDto Driver { get; set; } = new();
     public CharacterPreviewDto Preview { get; set; } = new();
     public PendingChoicesDto PendingChoices { get; set; } = new();
-    public List<FeatSummaryDto> QualifiedFeats { get; set; } = new();
+
+    // No QualifiedFeats here: it was always identical to the "standard" slot's options
+    // in PendingChoices, duplicating the largest field in the response once per
+    // candidate driver. EvaluateCharacterResponse still carries it, where it is not
+    // redundant — that response can have qualified feats with no pending slots to fill.
 }
 
 public sealed class CharacterPreviewDto
@@ -213,15 +237,35 @@ public sealed class PendingChoicesDto
 public sealed class FeatChoiceGroupDto
 {
     public string SlotType { get; set; } = string.Empty;
+
+    /// <summary>Number of slots of this type to fill.</summary>
     public int Count { get; set; }
-    public List<FeatSummaryDto> Options { get; set; } = new();
+
+    /// <summary>Number of legal options. Always populated, at every <see cref="OptionDetail"/>.</summary>
+    public int OptionCount { get; set; }
+
+    /// <summary>Populated at <see cref="OptionDetail.Ids"/>.</summary>
+    public List<string>? OptionIds { get; set; }
+
+    /// <summary>Populated at <see cref="OptionDetail.Full"/>.</summary>
+    public List<FeatSummaryDto>? Options { get; set; }
 }
 
 public sealed class DomainChoiceGroupDto
 {
     public string OwnerClassId { get; set; } = string.Empty;
+
+    /// <summary>Number of domains to pick.</summary>
     public int Count { get; set; }
-    public List<ContentSummaryDto> Options { get; set; } = new();
+
+    /// <summary>Number of legal options. Always populated, at every <see cref="OptionDetail"/>.</summary>
+    public int OptionCount { get; set; }
+
+    /// <summary>Populated at <see cref="OptionDetail.Ids"/>.</summary>
+    public List<string>? OptionIds { get; set; }
+
+    /// <summary>Populated at <see cref="OptionDetail.Full"/>.</summary>
+    public List<ContentSummaryDto>? Options { get; set; }
 }
 
 public sealed class ClassFeatureChoiceGroupDto
@@ -231,7 +275,15 @@ public sealed class ClassFeatureChoiceGroupDto
     public int Count { get; set; }
     public List<string> ExistingSelections { get; set; } = new();
     public DynamicChoiceSourceDto? DynamicSource { get; set; }
-    public List<ChoiceOptionDto> Options { get; set; } = new();
+
+    /// <summary>Number of legal options. Always populated, at every <see cref="OptionDetail"/>.</summary>
+    public int OptionCount { get; set; }
+
+    /// <summary>Populated at <see cref="OptionDetail.Ids"/>.</summary>
+    public List<string>? OptionIds { get; set; }
+
+    /// <summary>Populated at <see cref="OptionDetail.Full"/>.</summary>
+    public List<ChoiceOptionDto>? Options { get; set; }
 }
 
 public sealed class DynamicChoiceSourceDto

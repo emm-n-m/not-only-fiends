@@ -88,6 +88,20 @@ public class ReplayStudioTests
             }
         });
 
+        // Skills referenced by these tests. Allocations against an unregistered id now warn,
+        // so the fixture has to declare the ones it exercises.
+        foreach (var (id, ability) in new[]
+                 {
+                     ("climb", "str"), ("jump", "str"), ("swim", "str"),
+                     ("bluff", "cha"), ("hide", "dex"), ("move_silently", "dex"),
+                     ("intimidate", "cha"), ("ride", "dex"), ("spot", "wis"),
+                     ("listen", "wis"), ("tumble", "dex"), ("concentration", "con"),
+                     ("spellcraft", "int"), ("knowledge_arcana", "int"),
+                 })
+        {
+            registry.RegisterSkill(new SkillDefinition { Id = id, Name = id, KeyAbility = ability });
+        }
+
         return registry;
     }
 
@@ -258,6 +272,9 @@ public class ReplayStudioTests
             Id = "power_attack",
             Name = "Power Attack",
             Type = FeatType.General,
+            // Fighter-bonus eligibility is a tag, not a type: Power Attack is a general feat
+            // that a fighter may also take with a bonus slot.
+            Tags = new List<string> { ReplayStudio.FighterBonusTag },
             Prerequisites = new List<Prerequisite> { new MinAbility { Ability = Ability.STR, Value = 13 } }
         });
 
@@ -289,7 +306,7 @@ public class ReplayStudioTests
         Assert.Contains("power_attack", state.Feats);
         // HD 1 gives 1 standard feat + 1 Human bonus = 2 standard
         // Fighter level 1 gives 1 bonus feat (fighter_bonus restriction)
-        // Power Attack is General → matches fighter_bonus restriction → consumes bonus slot
+        // Power Attack carries the fighter_bonus tag → consumes the bonus slot first
         Assert.Equal(2, state.PendingFeatSlots);
         Assert.Equal(0, state.PendingBonusFeatSlots);
     }

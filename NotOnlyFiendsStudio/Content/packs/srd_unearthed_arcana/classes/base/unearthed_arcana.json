@@ -47,6 +47,7 @@
   "perLevelPermabuffs": [],
   "levelPermabuffs": {
     "1": [
+      { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
       {
         "$type": "GrantAbility",
         "ability": { "id": "cc_lore", "name": "Lore", "description": "Like a bard's bardic knowledge, using cleric level + INT modifier." }

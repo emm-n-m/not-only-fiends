@@ -1,0 +1,378 @@
+using NotOnlyFiendsStudio.Models;
+using NotOnlyFiendsStudio.Studio;
+
+namespace NotOnlyFiendsStudio.Tests;
+
+/// <summary>
+/// Regression coverage for rules-accuracy gaps found by driving the REST API as an agent:
+/// silently-accepted illegal choices, and prestige/class content that was missing the
+/// prerequisites and proficiencies the 3.5e SRD specifies.
+/// </summary>
+public class RulesAccuracyTests
+{
+    private static readonly Lazy<ContentRegistry> Content = new(TestContentHelper.LoadAllPacks);
+
+    private static Character Human(params Tick[] ticks) => new()
+    {
+        Name = "Rules Test",
+        RaceId = "human",
+        BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 14, CON = 14, INT = 16, WIS = 12, CHA = 14 },
+        Ticks = ticks.ToList()
+    };
+
+    private static CharacterState Evaluate(Character character) =>
+        new ReplayStudio(Content.Value).Evaluate(character);
+
+    // ---- validation gaps -------------------------------------------------
+
+    [Fact]
+    public void UnknownSkillId_Warns()
+    {
+        var state = Evaluate(Human(new Tick
+        {
+            DriverId = "class:fighter",
+            Choices = new TickChoices
+            {
+                SkillAllocations = new List<SkillAllocation>
+                {
+                    new() { SkillId = "underwater_basketweaving", HalfRanks = 8 }
+                }
+            }
+        }));
+
+        Assert.Contains(state.Warnings, w => w.Contains("unknown skill 'underwater_basketweaving'"));
+    }
+
+    [Fact]
+    public void DuplicateNonRepeatableFeat_WarnsAndIsNotApplied()
+    {
+        var state = Evaluate(Human(new Tick
+        {
+            DriverId = "class:fighter",
+            Choices = new TickChoices { FeatIds = new List<string> { "dodge", "dodge" } }
+        }));
+
+        Assert.Contains(state.Warnings, w => w.Contains("duplicate feat 'dodge'"));
+        Assert.Single(state.Feats, f => f == "dodge");
+    }
+
+    [Fact]
+    public void RepeatableFeat_TakenTwice_DoesNotWarn()
+    {
+        var state = Evaluate(Human(new Tick
+        {
+            DriverId = "class:fighter",
+            Choices = new TickChoices
+            {
+                // Weapon Focus is repeatable (once per weapon).
+                FeatIds = new List<string> { "weapon_focus", "weapon_focus" }
+            }
+        }));
+
+        Assert.DoesNotContain(state.Warnings, w => w.Contains("duplicate feat"));
+    }
+
+    [Fact]
+    public void UnknownSpellId_Warns()
+    {
+        var state = Evaluate(Human(new Tick
+        {
+            DriverId = "class:wizard",
+            Choices = new TickChoices
+            {
+                SpellSelections = new List<SpellSelection>
+                {
+                    new() { ClassId = "class:wizard", SpellLevel = 1, SpellId = "fake_spell_xyz" }
+                }
+            }
+        }));
+
+        Assert.Contains(state.Warnings, w => w.Contains("unknown spell 'fake_spell_xyz'"));
+    }
+
+    [Fact]
+    public void SpellNotOnClassList_Warns()
+    {
+        // cure_light_wounds is a cleric spell, not a wizard one.
+        var state = Evaluate(Human(new Tick
+        {
+            DriverId = "class:wizard",
+            Choices = new TickChoices
+            {
+                SpellSelections = new List<SpellSelection>
+                {
+                    new() { ClassId = "class:wizard", SpellLevel = 1, SpellId = "cure_light_wounds" }
+                }
+            }
+        }));
+
+        Assert.Contains(state.Warnings, w => w.Contains("not on the class:wizard spell list"));
+    }
+
+    [Fact]
+    public void SpellAtWrongLevelForClass_Warns()
+    {
+        var state = Evaluate(Human(new Tick
+        {
+            DriverId = "class:wizard",
+            Choices = new TickChoices
+            {
+                // magic_missile is a 1st-level wizard spell.
+                SpellSelections = new List<SpellSelection>
+                {
+                    new() { ClassId = "class:wizard", SpellLevel = 0, SpellId = "magic_missile" }
+                }
+            }
+        }));
+
+        Assert.Contains(state.Warnings, w => w.Contains("is level 1 for class:wizard, not 0"));
+    }
+
+    [Fact]
+    public void SpontaneousCaster_ExceedingSpellsKnown_Warns()
+    {
+        // A 1st-level sorcerer knows 2 first-level spells.
+        var state = Evaluate(Human(new Tick
+        {
+            DriverId = "class:sorcerer",
+            Choices = new TickChoices
+            {
+                SpellSelections = new List<SpellSelection>
+                {
+                    new() { ClassId = "class:sorcerer", SpellLevel = 1, SpellId = "magic_missile" },
+                    new() { ClassId = "class:sorcerer", SpellLevel = 1, SpellId = "shield" },
+                    new() { ClassId = "class:sorcerer", SpellLevel = 1, SpellId = "mage_armor" },
+                }
+            }
+        }));
+
+        Assert.Contains(state.Warnings, w => w.Contains("knows 3 level-1 spells, exceeding 2"));
+    }
+
+    [Fact]
+    public void PreparedCaster_HasNoSpellsKnownCap()
+    {
+        // A wizard's spellbook is unbounded — scribing many spells is legal.
+        var many = new[] { "magic_missile", "shield", "mage_armor", "burning_hands", "true_strike" }
+            .Select(id => new SpellSelection { ClassId = "class:wizard", SpellLevel = 1, SpellId = id })
+            .ToList();
+
+        var state = Evaluate(Human(new Tick
+        {
+            DriverId = "class:wizard",
+            Choices = new TickChoices { SpellSelections = many }
+        }));
+
+        Assert.DoesNotContain(state.Warnings, w => w.Contains("exceeding"));
+    }
+
+    // ---- fighter bonus feat restriction ----------------------------------
+
+    [Fact]
+    public void FighterBonusSlot_ExcludesNonCombatGeneralFeats()
+    {
+        var studio = new ReplayStudio(Content.Value);
+        var state = Evaluate(Human(new Tick { DriverId = "class:fighter" }));
+
+        var options = studio.GetAvailableFeats(state, "fighter_bonus").Select(f => f.Id).ToHashSet();
+
+        // On the SRD fighter bonus list...
+        Assert.Contains("power_attack", options);
+        Assert.Contains("combat_reflexes", options);
+        Assert.Contains("weapon_finesse", options);
+        // ...and emphatically not.
+        Assert.DoesNotContain("skill_focus", options);
+        Assert.DoesNotContain("acrobatic", options);
+        Assert.DoesNotContain("negotiator", options);
+        Assert.DoesNotContain("self_sufficient", options);
+    }
+
+    [Fact]
+    public void FighterBonusSlot_IsMuchNarrowerThanStandardSlot()
+    {
+        var studio = new ReplayStudio(Content.Value);
+        var state = Evaluate(Human(new Tick { DriverId = "class:fighter" }));
+
+        var bonus = studio.GetAvailableFeats(state, "fighter_bonus").Count;
+        var standard = studio.GetAvailableFeats(state).Count;
+
+        Assert.True(bonus < standard / 2,
+            $"fighter_bonus offered {bonus} of {standard} feats — restriction is not being applied");
+    }
+
+    [Fact]
+    public void GrantOnlyFeat_ChosenWithASlot_Warns()
+    {
+        // A wizard gets no martial proficiency, so this pick is not caught as a duplicate —
+        // it has to be rejected on its own merits.
+        var state = Evaluate(Human(new Tick
+        {
+            DriverId = "class:wizard",
+            Choices = new TickChoices { FeatIds = new List<string> { "weapon_proficiency_martial" } }
+        }));
+
+        Assert.Contains(state.Warnings, w => w.Contains("cannot be selected"));
+        Assert.DoesNotContain("weapon_proficiency_martial", state.Feats);
+    }
+
+    [Fact]
+    public void GrantOnlyFeats_AreNotSelectable()
+    {
+        var studio = new ReplayStudio(Content.Value);
+        var state = Evaluate(Human(new Tick { DriverId = "class:fighter" }));
+
+        // The blanket "all martial weapons" proficiency is granted by classes, never chosen.
+        Assert.DoesNotContain("weapon_proficiency_martial",
+            studio.GetAvailableFeats(state).Select(f => f.Id));
+        // The real SRD feat (one weapon at a time) stays selectable.
+        Assert.Contains("martial_weapon_proficiency",
+            studio.GetAvailableFeats(state).Select(f => f.Id));
+    }
+
+    // ---- class proficiencies ---------------------------------------------
+
+    [Theory]
+    [InlineData("class:fighter", "simple_weapon_proficiency", "weapon_proficiency_martial", "armor_proficiency_heavy", "tower_shield_proficiency")]
+    [InlineData("class:barbarian", "simple_weapon_proficiency", "weapon_proficiency_martial", "armor_proficiency_medium", "shield_proficiency")]
+    [InlineData("class:cleric", "simple_weapon_proficiency", "armor_proficiency_heavy", "shield_proficiency", "armor_proficiency_light")]
+    [InlineData("class:rogue", "simple_weapon_proficiency", "armor_proficiency_light", "armor_proficiency_light", "armor_proficiency_light")]
+    public void MartialClasses_GrantTheirProficiencies(string driverId, params string[] expected)
+    {
+        var state = Evaluate(Human(new Tick { DriverId = driverId }));
+
+        foreach (var featId in expected.Distinct())
+            Assert.Contains(featId, state.Feats);
+    }
+
+    [Fact]
+    public void ProficiencyGrants_DoNotConsumeFeatSlots()
+    {
+        var plain = Evaluate(Human(new Tick { DriverId = "class:wizard" }));
+        var martial = Evaluate(Human(new Tick { DriverId = "class:fighter" }));
+
+        // Fighter gets an extra fighter-bonus slot, but the proficiency grants themselves
+        // must not eat into the standard slots a wizard also receives.
+        Assert.Equal(plain.PendingFeatSlots, martial.PendingFeatSlots);
+    }
+
+    [Fact]
+    public void Wizard_DoesNotGetBlanketWeaponProficiency()
+    {
+        var state = Evaluate(Human(new Tick { DriverId = "class:wizard" }));
+
+        Assert.DoesNotContain("simple_weapon_proficiency", state.Feats);
+        Assert.DoesNotContain("weapon_proficiency_martial", state.Feats);
+        Assert.DoesNotContain("armor_proficiency_light", state.Feats);
+    }
+
+    // ---- prestige class prerequisites -------------------------------------
+
+    [Theory]
+    [InlineData("class:loremaster")]
+    [InlineData("class:mystic_theurge")]
+    [InlineData("class:shadowdancer")]
+    [InlineData("class:dragon_disciple")]
+    [InlineData("class:eldritch_knight")]
+    [InlineData("class:archmage")]
+    public void PrestigeClasses_DeclarePrerequisites(string driverId)
+    {
+        var driver = (HDDriver)Content.Value.GetDriver(driverId);
+
+        Assert.NotEmpty(driver.Prerequisites);
+    }
+
+    [Fact]
+    public void PrestigeClasses_AreNotOfferedToAnUnqualifiedLowLevelCharacter()
+    {
+        var studio = new ReplayStudio(Content.Value);
+        var state = Evaluate(Human(new Tick { DriverId = "class:fighter" }));
+
+        foreach (var id in new[]
+                 {
+                     "class:loremaster", "class:mystic_theurge", "class:shadowdancer",
+                     "class:dragon_disciple", "class:eldritch_knight", "class:archmage"
+                 })
+        {
+            var driver = (HDDriver)Content.Value.GetDriver(id);
+            Assert.False(driver.Prerequisites.All(p => p.IsMet(state)),
+                $"{id} should not be available to a 1st-level fighter");
+        }
+    }
+
+    [Fact]
+    public void EldritchKnight_RequiresMartialProficiencyAndThirdLevelArcane()
+    {
+        var driver = (HDDriver)Content.Value.GetDriver("class:eldritch_knight");
+
+        // Fighter 1 alone gives the proficiency but no arcane casting.
+        var fighterOnly = Evaluate(Human(new Tick { DriverId = "class:fighter" }));
+        Assert.False(driver.Prerequisites.All(p => p.IsMet(fighterOnly)));
+
+        // Fighter 1 / Wizard 5 reaches 3rd-level arcane spells and qualifies.
+        var ticks = new List<Tick> { new() { DriverId = "class:fighter" } };
+        for (var i = 0; i < 5; i++) ticks.Add(new Tick { DriverId = "class:wizard" });
+        var qualified = Evaluate(Human(ticks.ToArray()));
+
+        Assert.True(driver.Prerequisites.All(p => p.IsMet(qualified)),
+            string.Join("; ", driver.Prerequisites.Where(p => !p.IsMet(qualified)).Select(p => p.Description)));
+    }
+
+    [Fact]
+    public void EldritchKnight_HasGoodFortitudeSave()
+    {
+        var driver = (HDDriver)Content.Value.GetDriver("class:eldritch_knight");
+
+        Assert.Equal(ProgressionRate.Good, driver.SaveProgression.Fort);
+        Assert.Equal(ProgressionRate.Poor, driver.SaveProgression.Will);
+    }
+
+    // ---- new prerequisite primitives --------------------------------------
+
+    [Fact]
+    public void MinSkillRanksAcross_CountsDistinctSkillsAtThreshold()
+    {
+        var prereq = new MinSkillRanksAcross
+        {
+            SkillIds = new List<string> { "knowledge_arcana", "knowledge_religion", "knowledge_nature" },
+            Value = 10,
+            MinCount = 2
+        };
+
+        var state = new CharacterState();
+        state.SkillRanks["knowledge_arcana"] = 20;   // 10 ranks
+        Assert.False(prereq.IsMet(state));
+
+        state.SkillRanks["knowledge_religion"] = 18; // 9 ranks — short
+        Assert.False(prereq.IsMet(state));
+
+        state.SkillRanks["knowledge_religion"] = 20; // 10 ranks
+        Assert.True(prereq.IsMet(state));
+    }
+
+    [Fact]
+    public void HasFeatOfAnyType_SumsAcrossTypes()
+    {
+        var prereq = new HasFeatOfAnyType
+        {
+            FeatTypes = new List<FeatType> { FeatType.Metamagic, FeatType.ItemCreation },
+            MinCount = 3
+        };
+
+        var state = new CharacterState();
+        state.FeatTypeCounts[FeatType.Metamagic] = 2;
+        Assert.False(prereq.IsMet(state));
+
+        // One of each type still totals three.
+        state.FeatTypeCounts[FeatType.ItemCreation] = 1;
+        Assert.True(prereq.IsMet(state));
+    }
+
+    [Fact]
+    public void HasSpontaneousCasting_DistinguishesSorcererFromWizard()
+    {
+        var prereq = new HasSpontaneousCasting { CastingType = CastingType.Arcane };
+
+        Assert.True(prereq.IsMet(Evaluate(Human(new Tick { DriverId = "class:sorcerer" }))));
+        Assert.False(prereq.IsMet(Evaluate(Human(new Tick { DriverId = "class:wizard" }))));
+    }
+}

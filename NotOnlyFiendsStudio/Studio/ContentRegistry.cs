@@ -147,6 +147,9 @@ public class ContentRegistry : IContentLookup
     public bool TryGetClassFeature(string id, out ClassFeatureDefinition? cf) =>
         _classFeatures.TryGetValue(id, out cf);
 
+    public bool TryGetSkill(string id, out SkillDefinition? skill) =>
+        _skills.TryGetValue(id, out skill);
+
     public EquipmentDefinition GetEquipment(string id) =>
         _equipment.TryGetValue(id, out var equipment)
             ? equipment

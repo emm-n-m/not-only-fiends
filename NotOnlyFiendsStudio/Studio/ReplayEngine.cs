@@ -468,17 +468,47 @@ public class ReplayStudio
         var available = new List<FeatDefinition>();
         foreach (var feat in _content.GetAllFeats())
         {
+            if (!feat.Selectable)
+                continue;
+
             if (!feat.Repeatable && state.Feats.Contains(feat.Id))
                 continue;
 
-            if (restriction == "fighter_bonus" &&
-                feat.Type != FeatType.FighterBonus && feat.Type != FeatType.General)
+            if (restriction != null && !FeatMatchesRestriction(feat, restriction))
                 continue;
 
             if (feat.Prerequisites.All(p => p.IsMet(state)))
                 available.Add(feat);
         }
         return available;
+    }
+
+    /// <summary>
+    /// Spontaneous casters (sorcerer, bard) know a fixed number of spells per level; prepared
+    /// casters have <c>SpellsKnown == null</c> because a wizard's spellbook is unbounded, so
+    /// they are skipped. Domain picks are granted rather than known and do not count.
+    /// </summary>
+    private static void CheckSpellsKnownLimits(CharacterState state)
+    {
+        foreach (var sc in state.Spellcasting.Values)
+        {
+            if (sc.SpellsKnown == null) continue;
+
+            var selectedByLevel = sc.SelectedSpells
+                .Where(s => !s.ClassId.StartsWith("domain:", StringComparison.Ordinal))
+                .GroupBy(s => s.SpellLevel);
+
+            foreach (var group in selectedByLevel)
+            {
+                var limit = sc.SpellsKnown.GetValueOrDefault(group.Key);
+                var chosen = group.Count();
+                if (chosen > limit)
+                {
+                    state.Warnings.Add(
+                        $"HD {state.TotalHD}: {sc.ClassId} knows {chosen} level-{group.Key} spells, exceeding {limit}");
+                }
+            }
+        }
     }
 
     private void ApplyTickChoices(PermabuffContext ctx, TickChoices choices)
@@ -490,6 +520,23 @@ public class ReplayStudio
             foreach (var featId in choices.FeatIds)
             {
                 _content.TryGetFeat(featId, out var featDef);
+
+                // A non-repeatable feat taken twice is illegal; GetAvailableFeats already
+                // filters these out, so reaching here means the choice bypassed that list.
+                if (featDef is { Repeatable: false } && state.Feats.Contains(featId))
+                {
+                    state.Warnings.Add(
+                        $"HD {state.TotalHD}: duplicate feat '{featId}' — {featDef.Name} is not repeatable");
+                    continue;
+                }
+
+                // Grant-only entries (class proficiencies, markers) are not choosable with a slot.
+                if (featDef is { Selectable: false })
+                {
+                    state.Warnings.Add(
+                        $"HD {state.TotalHD}: feat '{featId}' cannot be selected — {featDef.Name} is granted, not chosen");
+                    continue;
+                }
 
                 // Resolve slot BEFORE mutating state: matching restricted-bonus slot first,
                 // then fall back to unrestricted. If nothing fits, drop the feat entirely.
@@ -540,6 +587,11 @@ public class ReplayStudio
         {
             foreach (var alloc in choices.SkillAllocations)
             {
+                // Unknown ids would otherwise silently consume skill points and materialise
+                // a phantom skill on the sheet, so surface them the way unknown feats are.
+                if (!_content.TryGetSkill(alloc.SkillId, out _))
+                    state.Warnings.Add($"HD {state.TotalHD}: unknown skill '{alloc.SkillId}'");
+
                 state.SkillRanks.TryAdd(alloc.SkillId, 0);
                 var newTotal = state.SkillRanks[alloc.SkillId] + alloc.HalfRanks;
 
@@ -657,6 +709,26 @@ public class ReplayStudio
                         $"HD {state.TotalHD}: spell '{selection.SpellId}' at level {selection.SpellLevel} exceeds max spell level {sc.MaxSpellLevel} for {selection.ClassId}");
                 }
 
+                if (!_content.TryGetSpell(selection.SpellId, out var spellDef) || spellDef == null)
+                {
+                    state.Warnings.Add($"HD {state.TotalHD}: unknown spell '{selection.SpellId}'");
+                }
+                else if (!selection.ClassId.StartsWith("domain:", StringComparison.Ordinal))
+                {
+                    // Domain picks come from the domain's own list, so only class picks are
+                    // checked against the class spell list.
+                    if (!spellDef.ClassLevels.TryGetValue(routedClassId, out var listLevel))
+                    {
+                        state.Warnings.Add(
+                            $"HD {state.TotalHD}: spell '{selection.SpellId}' is not on the {routedClassId} spell list");
+                    }
+                    else if (listLevel != selection.SpellLevel)
+                    {
+                        state.Warnings.Add(
+                            $"HD {state.TotalHD}: spell '{selection.SpellId}' is level {listLevel} for {routedClassId}, not {selection.SpellLevel}");
+                    }
+                }
+
                 // Preserve original ClassId (which may be "domain:*") so the UI can render the source list.
                 sc.SelectedSpells.Add(new SpellSelection
                 {
@@ -665,6 +737,8 @@ public class ReplayStudio
                     SpellId = selection.SpellId
                 });
             }
+
+            CheckSpellsKnownLimits(state);
         }
 
         // Class feature selections (High Arcana, Loremaster Secrets, etc.)
@@ -996,11 +1070,20 @@ public class ReplayStudio
         }
     }
 
-    private static bool FeatMatchesRestriction(FeatDefinition? feat, string restriction) => restriction switch
+    /// <summary>
+    /// Fighter-bonus eligibility is orthogonal to <see cref="FeatType"/>: Power Attack is a
+    /// general feat *and* a fighter bonus feat, which a single type enum cannot express. The
+    /// "fighter_bonus" tag carries that second axis, so a feat qualifies via either the
+    /// dedicated type or the tag — not merely by being General.
+    /// </summary>
+    public static bool FeatMatchesRestriction(FeatDefinition? feat, string restriction) => restriction switch
     {
-        "fighter_bonus" => feat?.Type is FeatType.FighterBonus or FeatType.General,
+        "fighter_bonus" => feat != null
+            && (feat.Type == FeatType.FighterBonus || feat.Tags.Contains(FighterBonusTag)),
         _ => false
     };
+
+    public const string FighterBonusTag = "fighter_bonus";
 
     private bool ValidateDynamicSelection(CharacterState state, DynamicOptionSource source, string optionId, string featureType)
     {

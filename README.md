@@ -146,6 +146,30 @@ The same app serves both the Blazor UI and the REST API. Key endpoints:
 
 OpenAPI metadata is served at `/openapi/v1.json`.
 
+### Sizing the next-step response
+
+`GET /api/characters/{id}/next-step` returns a preview of every legal next HD. Each
+preview carries its own feat / domain / class-feature choices, so inlining full option
+lists repeats the whole feat catalogue once per candidate driver — that alone was ~99%
+of the payload. Two knobs control it:
+
+- `optionDetail=none|ids|full` (default `none`) — how much option data to inline into
+  the previews. At every level each choice group reports `optionCount`, so you can see
+  how many options exist without paying for the list.
+- `driverIds=class:wizard,class:fighter` — restrict previews to specific drivers.
+
+The intended flow is to read the cheap summary, then re-request only the drivers you're
+actually weighing:
+
+```bash
+curl "$API/api/characters/$ID/next-step"                                    #  ~93 KB, all drivers
+curl "$API/api/characters/$ID/next-step?driverIds=class:wizard&optionDetail=full"   # options for one
+```
+
+`currentPendingChoices` always carries full options regardless of `optionDetail` — it
+describes a single state rather than one per driver, and it's what actually has to be
+filled in. Pass `includePreviews=false` to drop the previews entirely (~19 KB).
+
 ## Agent skills
 
 The `.claude/` directory ships Claude Code skills and subagents for content extraction and analysis. They live with the codebase so they evolve alongside the engine.

@@ -19,6 +19,11 @@
   "perLevelPermabuffs": [],
   "levelPermabuffs": {
     "1": [
+      { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "weapon_proficiency_martial" },
+      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
+      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_medium" },
+      { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
       {
         "$type": "GrantAbility",
         "ability": { "id": "rage", "name": "Rage", "description": "+4 STR, +4 CON, +2 Will saves, -2 AC" }

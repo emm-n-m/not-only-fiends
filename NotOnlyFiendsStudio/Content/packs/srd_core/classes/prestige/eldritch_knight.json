@@ -13,9 +13,9 @@
   ],
   "babProgression": "good",
   "saveProgression": {
-    "fort": "poor",
+    "fort": "good",
     "ref": "poor",
-    "will": "good"
+    "will": "poor"
   },
   "perLevelPermabuffs": [],
   "levelPermabuffs": {
@@ -54,7 +54,8 @@
     ]
   },
   "prerequisites": [
-    { "$type": "HasFeat", "featId": "weapon_proficiency_martial" }
+    { "$type": "HasFeat", "featId": "weapon_proficiency_martial" },
+    { "$type": "CanCastSpellLevel", "spellLevel": 3, "castingType": "Arcane" }
   ],
   "maxLevel": 10
 }

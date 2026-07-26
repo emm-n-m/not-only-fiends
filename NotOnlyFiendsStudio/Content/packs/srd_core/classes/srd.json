@@ -154,6 +154,7 @@
     },
     "levelPermabuffs": {
       "1": [
+        { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
         {
           "$type": "GrantAbility",
           "ability": {
@@ -501,6 +502,13 @@
     },
     "levelPermabuffs": {
       "1": [
+        { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
+        { "$type": "GrantBonusFeat", "featId": "weapon_proficiency_martial" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_medium" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_heavy" },
+        { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
+        { "$type": "GrantBonusFeat", "featId": "tower_shield_proficiency" },
         {
           "$type": "GrantAbility",
           "ability": {
@@ -1102,6 +1110,9 @@
     },
     "levelPermabuffs": {
       "1": [
+        { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
+        { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
         {
           "$type": "GrantAbility",
           "ability": {
@@ -1538,7 +1549,10 @@
       ]
     },
     "perLevelPermabuffs": [],
-    "prerequisites": [],
+    "prerequisites": [
+      { "$type": "MinSkillRanks", "skillId": "knowledge_arcana", "value": 8 },
+      { "$type": "HasSpontaneousCasting", "castingType": "Arcane" }
+    ],
     "maxLevel": 10
   },
   {
@@ -1745,6 +1759,9 @@
     },
     "levelPermabuffs": {
       "1": [
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_medium" },
+        { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
         {
           "$type": "GrantAbility",
           "ability": {
@@ -2178,6 +2195,9 @@
     },
     "levelPermabuffs": {
       "1": [
+        { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
+        { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
         {
           "$type": "GrantAbility",
           "ability": {
@@ -2406,7 +2426,20 @@
     "perLevelPermabuffs": [
       { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
     ],
-    "prerequisites": [],
+    "prerequisites": [
+      {
+        "$type": "MinSkillRanksAcross",
+        "skillIds": [
+        "knowledge_arcana", "knowledge_architecture", "knowledge_dungeoneering",
+        "knowledge_geography", "knowledge_history", "knowledge_local",
+        "knowledge_nature", "knowledge_nobility", "knowledge_planes", "knowledge_religion"
+        ],
+        "value": 10,
+        "minCount": 2
+      },
+      { "$type": "HasFeatOfAnyType", "featTypes": ["Metamagic", "ItemCreation"], "minCount": 3 },
+      { "$type": "CanCastSpellLevel", "spellLevel": 3 }
+    ],
     "maxLevel": 10
   },
   {
@@ -2699,7 +2732,12 @@
       { "$type": "AdvanceSpellcasting", "castingType": "arcane" },
       { "$type": "AdvanceSpellcasting", "castingType": "divine" }
     ],
-    "prerequisites": [],
+    "prerequisites": [
+      { "$type": "MinSkillRanks", "skillId": "knowledge_arcana", "value": 6 },
+      { "$type": "MinSkillRanks", "skillId": "knowledge_religion", "value": 6 },
+      { "$type": "CanCastSpellLevel", "spellLevel": 2, "castingType": "Arcane" },
+      { "$type": "CanCastSpellLevel", "spellLevel": 2, "castingType": "Divine" }
+    ],
     "maxLevel": 10
   },
   {
@@ -2833,6 +2871,12 @@
     },
     "levelPermabuffs": {
       "1": [
+        { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
+        { "$type": "GrantBonusFeat", "featId": "weapon_proficiency_martial" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_medium" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_heavy" },
+        { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
         {
           "$type": "GrantAbility",
           "ability": {
@@ -3135,6 +3179,10 @@
     },
     "levelPermabuffs": {
       "1": [
+        { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
+        { "$type": "GrantBonusFeat", "featId": "weapon_proficiency_martial" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
+        { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
         {
           "$type": "GrantAbility",
           "ability": {
@@ -3332,6 +3380,8 @@
     },
     "levelPermabuffs": {
       "1": [
+        { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
         {
           "$type": "GrantAbility",
           "ability": {
@@ -3594,7 +3644,14 @@
       ]
     },
     "perLevelPermabuffs": [],
-    "prerequisites": [],
+    "prerequisites": [
+      { "$type": "MinSkillRanks", "skillId": "hide", "value": 10 },
+      { "$type": "MinSkillRanks", "skillId": "move_silently", "value": 8 },
+      { "$type": "MinSkillRanks", "skillId": "perform_dance", "value": 5 },
+      { "$type": "HasFeat", "featId": "combat_reflexes" },
+      { "$type": "HasFeat", "featId": "dodge" },
+      { "$type": "HasFeat", "featId": "mobility" }
+    ],
     "maxLevel": 10
   },
   {
@@ -3718,6 +3775,13 @@
     },
     "levelPermabuffs": {
       "1": [
+        { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
+        { "$type": "GrantBonusFeat", "featId": "weapon_proficiency_martial" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_medium" },
+        { "$type": "GrantBonusFeat", "featId": "armor_proficiency_heavy" },
+        { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
+        { "$type": "GrantBonusFeat", "featId": "tower_shield_proficiency" },
         {
           "$type": "GrantAbility",
           "ability": {

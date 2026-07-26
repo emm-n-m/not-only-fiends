@@ -32,6 +32,35 @@ var app = builder.Build();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
+// Minimal-API model binding rejects a malformed body before any endpoint handler runs, so
+// the RunStore/RunEngine wrappers never see it and the client gets a 400 with an empty
+// body — nothing to act on. Translate those into the same ErrorResponse shape everything
+// else uses. Scoped to /api so Blazor's own request handling is untouched.
+app.Use(async (context, next) =>
+{
+    if (!context.Request.Path.StartsWithSegments("/api"))
+    {
+        await next(context);
+        return;
+    }
+
+    try
+    {
+        await next(context);
+    }
+    catch (BadHttpRequestException ex) when (!context.Response.HasStarted)
+    {
+        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        await context.Response.WriteAsJsonAsync(new ErrorResponse
+        {
+            Code = "malformed_request",
+            // The inner JsonException names the offending property path and value, which is
+            // the part a caller actually needs to fix.
+            Message = ex.InnerException?.Message ?? ex.Message
+        });
+    }
+});
+
 app.MapOpenApi();
 
 // API endpoints
@@ -71,8 +100,8 @@ app.MapGet("/api/content/equipment/{id}", (string id, AgentApiService api) => Lo
 app.MapPost("/api/characters/evaluate", (EvaluateCharacterRequest request, AgentApiService api) =>
     RunEngine(() => api.Evaluate(request)));
 
-app.MapPost("/api/characters/next-step", (NextStepRequest request, AgentApiService api) =>
-    RunEngine(() => api.GetNextStep(request)));
+app.MapPost("/api/characters/next-step", (NextStepRequest request, string? optionDetail, AgentApiService api) =>
+    RunEngine(() => api.GetNextStep(request, ParseOptionDetail(optionDetail, OptionDetail.None))));
 
 app.MapGet("/api/characters", (CharacterStore store) =>
     RunStore(() =>
@@ -129,8 +158,16 @@ app.MapGet("/api/characters/{id}/state", (string id, AgentApiService api) =>
         return Results.Ok(api.EvaluateAndEnvelope(id, character).State);
     }));
 
-app.MapGet("/api/characters/{id}/next-step", (string id, bool? includePreviews, AgentApiService api) =>
-    RunMutation(() => Results.Ok(api.GetNextStepById(id, includePreviews ?? false))));
+// Previews are on by default now that they no longer inline feat option lists.
+// Narrow with ?driverIds=a,b then re-request ?optionDetail=full to get options for
+// just the drivers under consideration.
+app.MapGet("/api/characters/{id}/next-step",
+    (string id, bool? includePreviews, string? optionDetail, string? driverIds, AgentApiService api) =>
+        RunMutation(() => Results.Ok(api.GetNextStepById(
+            id,
+            includePreviews ?? true,
+            ParseOptionDetail(optionDetail, OptionDetail.None),
+            ParseCsv(driverIds)))));
 
 app.MapPost("/api/characters/{id}/ticks", (string id, NotOnlyFiendsStudio.Models.Tick tick, AgentApiService api) =>
     RunMutation(() => Results.Ok(api.AppendTick(id, tick))));
@@ -167,6 +204,22 @@ app.MapRazorComponents<NotOnlyFiendsFeed.Components.App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();
+
+static OptionDetail ParseOptionDetail(string? value, OptionDetail fallback)
+{
+    if (string.IsNullOrWhiteSpace(value))
+        return fallback;
+
+    return Enum.TryParse<OptionDetail>(value, ignoreCase: true, out var parsed)
+        ? parsed
+        : throw new ArgumentException(
+            $"Unknown optionDetail '{value}'. Expected one of: none, ids, full.");
+}
+
+static List<string>? ParseCsv(string? value) =>
+    string.IsNullOrWhiteSpace(value)
+        ? null
+        : value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
 
 static IResult Lookup<T>(Func<T> fetch)
 {

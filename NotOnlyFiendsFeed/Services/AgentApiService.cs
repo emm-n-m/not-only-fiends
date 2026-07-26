@@ -252,12 +252,20 @@ public sealed class AgentApiService
         return EvaluateAndEnvelope(id, character);
     }
 
-    public NextStepResponse GetNextStepById(string id, bool includePreviews)
+    public NextStepResponse GetNextStepById(
+        string id,
+        bool includePreviews,
+        OptionDetail optionDetail = OptionDetail.None,
+        List<string>? candidateDriverIds = null)
     {
         var character = _characterStore.Get(id);
-        var request = new NextStepRequest { Character = character };
+        var request = new NextStepRequest
+        {
+            Character = character,
+            CandidateDriverIds = candidateDriverIds
+        };
         return includePreviews
-            ? GetNextStep(request)
+            ? GetNextStep(request, optionDetail)
             : GetNextStepLite(request);
     }
 
@@ -323,7 +331,13 @@ public sealed class AgentApiService
         };
     }
 
-    public NextStepResponse GetNextStep(NextStepRequest request)
+    /// <summary>
+    /// Previews every legal next HD. <paramref name="optionDetail"/> applies only to the
+    /// driver previews, which repeat their option lists once per candidate driver;
+    /// <see cref="NextStepResponse.CurrentPendingChoices"/> is always fully populated
+    /// because it describes a single state and is what the caller must actually fill.
+    /// </summary>
+    public NextStepResponse GetNextStep(NextStepRequest request, OptionDetail optionDetail = OptionDetail.Full)
     {
         var currentState = _replayStudio.Evaluate(request.Character);
         var nextHd = currentState.TotalHD + 1;
@@ -333,7 +347,7 @@ public sealed class AgentApiService
 
         var previews = GetAvailableDrivers(currentState, request.Character)
             .Where(driver => candidateIds == null || candidateIds.Contains(driver.Id))
-            .Select(driver => BuildDriverPreview(request.Character, driver))
+            .Select(driver => BuildDriverPreview(request.Character, driver, optionDetail))
             .ToList();
 
         return new NextStepResponse
@@ -347,7 +361,7 @@ public sealed class AgentApiService
         };
     }
 
-    private DriverPreviewDto BuildDriverPreview(Character character, HDDriver driver)
+    private DriverPreviewDto BuildDriverPreview(Character character, HDDriver driver, OptionDetail optionDetail)
     {
         var projectedCharacter = CloneCharacter(character);
         projectedCharacter.Ticks.Add(new Tick
@@ -372,8 +386,7 @@ public sealed class AgentApiService
                 UnspentSkillPoints = projectedState.UnspentSkillPoints,
                 Warnings = projectedState.Warnings.ToList()
             },
-            PendingChoices = BuildPendingChoices(projectedState),
-            QualifiedFeats = GetQualifiedFeats(projectedState)
+            PendingChoices = BuildPendingChoices(projectedState, optionDetail)
         };
     }
 
@@ -392,38 +405,22 @@ public sealed class AgentApiService
             .ThenBy(driver => driver.Name);
     }
 
-    private PendingChoicesDto BuildPendingChoices(CharacterState state) => new()
+    private PendingChoicesDto BuildPendingChoices(CharacterState state, OptionDetail optionDetail = OptionDetail.Full) => new()
     {
         FeatChoices = state.FeatSlots
             .GroupBy(slot => slot.Restriction ?? "standard")
-            .Select(group => new FeatChoiceGroupDto
-            {
-                SlotType = group.Key,
-                Count = group.Count(),
-                Options = _replayStudio.GetAvailableFeats(state, group.Key == "standard" ? null : group.Key)
-                    .OrderBy(feat => feat.Name)
-                    .Select(MapFeat)
-                    .ToList()
-            })
+            .Select(group => BuildFeatChoiceGroup(state, group.Key, group.Count(), optionDetail))
             .OrderBy(group => group.SlotType)
             .ToList(),
         DomainChoices = state.PendingDomainSelections
             .Where(entry => entry.Value > 0)
             .OrderBy(entry => entry.Key)
-            .Select(entry => new DomainChoiceGroupDto
-            {
-                OwnerClassId = entry.Key,
-                Count = entry.Value,
-                Options = _content.GetAllDomains()
-                    .OrderBy(domain => domain.Name)
-                    .Select(domain => MapSummary(domain.Id, domain.Name, domain.Description))
-                    .ToList()
-            })
+            .Select(entry => BuildDomainChoiceGroup(entry.Key, entry.Value, optionDetail))
             .ToList(),
         ClassFeatureChoices = state.PendingClassFeatureSelections
             .Where(entry => entry.Value > 0)
             .OrderBy(entry => entry.Key)
-            .Select(entry => BuildClassFeatureChoiceGroup(state, entry.Key, entry.Value))
+            .Select(entry => BuildClassFeatureChoiceGroup(state, entry.Key, entry.Value, optionDetail))
             .ToList(),
         SpellLists = state.Spellcasting.Values
             .OrderBy(spellcasting => spellcasting.ClassId)
@@ -441,9 +438,33 @@ public sealed class AgentApiService
             .ToList()
     };
 
-    private ClassFeatureChoiceGroupDto BuildClassFeatureChoiceGroup(CharacterState state, string featureType, int count)
+    private DomainChoiceGroupDto BuildDomainChoiceGroup(string ownerClassId, int count, OptionDetail optionDetail)
+    {
+        var options = _content.GetAllDomains().OrderBy(domain => domain.Name).ToList();
+
+        return new DomainChoiceGroupDto
+        {
+            OwnerClassId = ownerClassId,
+            Count = count,
+            OptionCount = options.Count,
+            OptionIds = optionDetail == OptionDetail.Ids
+                ? options.Select(domain => domain.Id).ToList()
+                : null,
+            Options = optionDetail == OptionDetail.Full
+                ? options.Select(domain => MapSummary(domain.Id, domain.Name, domain.Description)).ToList()
+                : null
+        };
+    }
+
+    private ClassFeatureChoiceGroupDto BuildClassFeatureChoiceGroup(
+        CharacterState state,
+        string featureType,
+        int count,
+        OptionDetail optionDetail)
     {
         var classFeature = GetClassFeature(featureType);
+        var options = BuildClassFeatureOptions(state, classFeature);
+
         return new ClassFeatureChoiceGroupDto
         {
             FeatureType = featureType,
@@ -458,7 +479,11 @@ public sealed class AgentApiService
                     FeatType = classFeature.DynamicSource.FeatType,
                     Tag = classFeature.DynamicSource.Tag
                 },
-            Options = BuildClassFeatureOptions(state, classFeature)
+            OptionCount = options.Count,
+            OptionIds = optionDetail == OptionDetail.Ids
+                ? options.Select(option => option.Id).ToList()
+                : null,
+            Options = optionDetail == OptionDetail.Full ? options : null
         };
     }
 
@@ -496,6 +521,31 @@ public sealed class AgentApiService
             .Concat(dynamicOptions)
             .OrderBy(option => option.Name)
             .ToList();
+    }
+
+    private FeatChoiceGroupDto BuildFeatChoiceGroup(
+        CharacterState state,
+        string slotType,
+        int slotCount,
+        OptionDetail optionDetail)
+    {
+        var options = _replayStudio
+            .GetAvailableFeats(state, slotType == "standard" ? null : slotType)
+            .OrderBy(feat => feat.Name)
+            .ToList();
+
+        return new FeatChoiceGroupDto
+        {
+            SlotType = slotType,
+            Count = slotCount,
+            OptionCount = options.Count,
+            OptionIds = optionDetail == OptionDetail.Ids
+                ? options.Select(feat => feat.Id).ToList()
+                : null,
+            Options = optionDetail == OptionDetail.Full
+                ? options.Select(MapFeat).ToList()
+                : null
+        };
     }
 
     private List<FeatSummaryDto> GetQualifiedFeats(CharacterState state) => _replayStudio
