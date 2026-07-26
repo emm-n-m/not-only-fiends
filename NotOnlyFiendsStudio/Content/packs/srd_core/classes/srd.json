@@ -280,7 +280,13 @@
       ]
     },
     "perLevelPermabuffs": [],
-    "prerequisites": [],
+    "prerequisites": [
+      {"$type": "MinBAB", "value": 6},
+      {"$type": "HasFeat", "featId": "point_blank_shot"},
+      {"$type": "HasFeat", "featId": "precise_shot"},
+      {"$type": "HasFeat", "featId": "weapon_focus"},
+      {"$type": "CanCastSpellLevel", "spellLevel": 1, "castingType": "Arcane"}
+    ],
     "maxLevel": 10
   },
   {
@@ -395,17 +401,12 @@
       { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
     ],
     "prerequisites": [
-      {
-        "$type": "AlignmentReq",
-        "allowed": [
-          "cE",
-          "cG",
-          "cN",
-          "n",
-          "nE",
-          "nG"
-        ]
-      }
+      {"$type": "AlignmentReq", "allowed": ["cE", "cG", "cN", "n", "nE", "nG"]},
+      {"$type": "MinSkillRanks", "skillId": "decipher_script", "value": 7},
+      {"$type": "MinSkillRanks", "skillId": "disable_device", "value": 7},
+      {"$type": "MinSkillRanks", "skillId": "escape_artist", "value": 7},
+      {"$type": "MinSkillRanks", "skillId": "knowledge_arcana", "value": 4},
+      {"$type": "CanCastSpellLevel", "spellLevel": 3, "castingType": "Arcane"}
     ],
     "maxLevel": 10
   },
@@ -464,7 +465,7 @@
       { "$type": "MinSkillRanks", "skillId": "knowledge_arcana", "value": 15 },
       { "$type": "MinSkillRanks", "skillId": "spellcraft", "value": 15 },
       { "$type": "HasSpellcasting", "castingType": "Arcane" },
-      { "$type": "CanCastSpellLevel", "spellLevel": 7 }
+      { "$type": "CanCastSpellLevel", "spellLevel": 7, "castingType": "Arcane" }
     ],
     "maxLevel": 5
   },
@@ -781,14 +782,10 @@
     },
     "perLevelPermabuffs": [],
     "prerequisites": [
-      {
-        "$type": "AlignmentReq",
-        "allowed": [
-          "cE",
-          "lE",
-          "nE"
-        ]
-      }
+      {"$type": "AlignmentReq", "allowed": ["cE", "lE", "nE"]},
+      {"$type": "MinSkillRanks", "skillId": "disguise", "value": 4},
+      {"$type": "MinSkillRanks", "skillId": "hide", "value": 8},
+      {"$type": "MinSkillRanks", "skillId": "move_silently", "value": 8}
     ],
     "maxLevel": 10
   },
@@ -1384,14 +1381,13 @@
     },
     "perLevelPermabuffs": [],
     "prerequisites": [
-      {
-        "$type": "AlignmentReq",
-        "allowed": [
-          "cE",
-          "lE",
-          "nE"
-        ]
-      }
+      {"$type": "AlignmentReq", "allowed": ["cE", "lE", "nE"]},
+      {"$type": "MinBAB", "value": 6},
+      {"$type": "MinSkillRanks", "skillId": "hide", "value": 5},
+      {"$type": "MinSkillRanks", "skillId": "knowledge_religion", "value": 2},
+      {"$type": "HasFeat", "featId": "cleave"},
+      {"$type": "HasFeat", "featId": "improved_sunder"},
+      {"$type": "HasFeat", "featId": "power_attack"}
     ],
     "maxLevel": 10
   },
@@ -2068,7 +2064,14 @@
       ]
     },
     "perLevelPermabuffs": [],
-    "prerequisites": [],
+    "prerequisites": [
+      {"$type": "MinBAB", "value": 6},
+      {"$type": "MinSkillRanksAcross", "skillIds": ["perform_act", "perform_comedy", "perform_dance", "perform_keyboard_instruments", "perform_oratory", "perform_percussion_instruments", "perform_sing", "perform_string_instruments", "perform_wind_instruments"], "value": 3, "minCount": 1},
+      {"$type": "MinSkillRanks", "skillId": "tumble", "value": 5},
+      {"$type": "HasFeat", "featId": "dodge"},
+      {"$type": "HasFeat", "featId": "mobility"},
+      {"$type": "HasFeat", "featId": "weapon_finesse"}
+    ],
     "maxLevel": 10
   },
   {
@@ -2168,14 +2171,12 @@
     },
     "perLevelPermabuffs": [],
     "prerequisites": [
-      {
-        "$type": "AlignmentReq",
-        "allowed": [
-          "lE",
-          "lG",
-          "lN"
-        ]
-      }
+      {"$type": "AlignmentReq", "allowed": ["lE", "lG", "lN"]},
+      {"$type": "HasRace", "raceId": "dwarf"},
+      {"$type": "MinBAB", "value": 7},
+      {"$type": "HasFeat", "featId": "dodge"},
+      {"$type": "HasFeat", "featId": "endurance"},
+      {"$type": "HasFeat", "featId": "toughness"}
     ],
     "maxLevel": 10
   },
@@ -2197,7 +2198,6 @@
       "1": [
         { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
         { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
-        { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
         {
           "$type": "GrantAbility",
           "ability": {
@@ -2265,7 +2265,11 @@
     "perLevelPermabuffs": [
       { "$type": "AdvanceSpellcasting", "castingType": "divine" }
     ],
-    "prerequisites": [],
+    "prerequisites": [
+      {"$type": "MinSkillRanks", "skillId": "knowledge_religion", "value": 15},
+      {"$type": "HasFeatOfType", "featType": "Metamagic", "minCount": 1},
+      {"$type": "CanCastSpellLevel", "spellLevel": 7, "castingType": "Divine"}
+    ],
     "maxLevel": 5
   },
   {
@@ -2327,7 +2331,10 @@
       ]
     },
     "perLevelPermabuffs": [],
-    "prerequisites": [],
+    "prerequisites": [
+      {"$type": "MinSkillRanks", "skillId": "knowledge_geography", "value": 8},
+      {"$type": "HasFeat", "featId": "endurance"}
+    ],
     "maxLevel": 10
   },
   {
@@ -2424,7 +2431,7 @@
       ]
     },
     "perLevelPermabuffs": [
-      { "$type": "AdvanceSpellcasting", "castingType": "arcane" }
+      { "$type": "AdvanceSpellcasting" }
     ],
     "prerequisites": [
       {
@@ -2438,6 +2445,7 @@
         "minCount": 2
       },
       { "$type": "HasFeatOfAnyType", "featTypes": ["Metamagic", "ItemCreation"], "minCount": 3 },
+      {"$type": "HasFeat", "featId": "skill_focus"},
       { "$type": "CanCastSpellLevel", "spellLevel": 3 }
     ],
     "maxLevel": 10
@@ -3747,9 +3755,12 @@
       ]
     },
     "perLevelPermabuffs": [
-      { "$type": "AdvanceSpellcasting", "castingType": "divine" }
+      { "$type": "AdvanceSpellcasting" }
     ],
-    "prerequisites": [],
+    "prerequisites": [
+      {"$type": "HasFeat", "featId": "spell_focus"},
+      {"$type": "CanCastSpellLevel", "spellLevel": 4, "castingType": "Divine"}
+    ],
     "maxLevel": 5
   },
   {

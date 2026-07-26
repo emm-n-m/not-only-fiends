@@ -8,8 +8,7 @@
   "skillPointsPerLevel": 6,
   "classSkills": [
     "concentration", "craft", "decipher_script", "diplomacy", "heal",
-    "knowledge_arcana", "knowledge_history", "knowledge_nature",
-    "knowledge_nobility", "knowledge_planes", "knowledge_religion",
+    "knowledge",
     "profession", "speak_language", "spellcraft"
   ],
   "babProgression": "poor",
@@ -48,6 +47,7 @@
   "levelPermabuffs": {
     "1": [
       { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
       {
         "$type": "GrantAbility",
         "ability": { "id": "cc_lore", "name": "Lore", "description": "Like a bard's bardic knowledge, using cleric level + INT modifier." }
@@ -108,6 +108,12 @@
   "perLevelPermabuffs": [],
   "levelPermabuffs": {
     "1": [
+      { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "weapon_proficiency_martial" },
+      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
+      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_medium" },
+      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_heavy" },
+      { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
       {
         "$type": "GrantAbility",
         "ability": { "id": "pot_aura_evil", "name": "Aura of Evil", "description": "Evil aura power equals class level." }
@@ -209,6 +215,10 @@
   "perLevelPermabuffs": [],
   "levelPermabuffs": {
     "1": [
+      { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "weapon_proficiency_martial" },
+      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
+      { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
       {
         "$type": "GrantAbility",
         "ability": { "id": "pr_favored_enemy", "name": "Favored Enemy", "description": "Select a favored enemy type. +2 bonus on Bluff, Listen, Sense Motive, Spot, Survival checks and weapon damage rolls." }

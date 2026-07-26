@@ -265,20 +265,182 @@ public class RulesAccuracyTests
         Assert.DoesNotContain("armor_proficiency_light", state.Feats);
     }
 
-    // ---- prestige class prerequisites -------------------------------------
+    // ---- SRD audit findings ----------------------------------------------
+    // Each of the following was found by diffing content against the SRD text and carries
+    // the quote that settles it.
+
+    [Fact]
+    public void Expert_IsNotProficientWithShields()
+    {
+        // "The expert is proficient in the use of all simple weapons and with light armor
+        //  but not shields." (npcClasses.html)
+        var state = Evaluate(Human(new Tick { DriverId = "class:expert" }));
+
+        Assert.Contains("simple_weapon_proficiency", state.Feats);
+        Assert.Contains("armor_proficiency_light", state.Feats);
+        Assert.DoesNotContain("shield_proficiency", state.Feats);
+    }
+
+    [Fact]
+    public void CloisteredCleric_IsProficientWithLightArmor()
+    {
+        // "Cloistered clerics are proficient with simple weapons and with light armor."
+        var state = Evaluate(Human(new Tick { DriverId = "class:cloistered_cleric" }));
+
+        Assert.Contains("simple_weapon_proficiency", state.Feats);
+        Assert.Contains("armor_proficiency_light", state.Feats);
+    }
+
+    [Fact]
+    public void CloisteredCleric_HasAllKnowledgeSkillsAsClassSkills()
+    {
+        // UA: class skill list "includes ... all Knowledge skills".
+        var state = Evaluate(Human(new Tick { DriverId = "class:cloistered_cleric" }));
+
+        foreach (var knowledge in new[]
+                 {
+                     "knowledge_arcana", "knowledge_architecture", "knowledge_dungeoneering",
+                     "knowledge_geography", "knowledge_history", "knowledge_local",
+                     "knowledge_nature", "knowledge_nobility", "knowledge_planes",
+                     "knowledge_religion"
+                 })
+        {
+            Assert.Contains(knowledge, state.ClassSkills);
+        }
+    }
 
     [Theory]
+    // UA: both variants have "all the standard <base> class features, except as noted below",
+    // and weapon/armour proficiency is not among the exceptions.
+    [InlineData("class:paladin_of_tyranny", "weapon_proficiency_martial", "armor_proficiency_heavy")]
+    [InlineData("class:planar_ranger", "weapon_proficiency_martial", "armor_proficiency_light")]
+    public void UnearthedArcanaVariants_InheritBaseClassProficiencies(
+        string driverId, string a, string b)
+    {
+        var state = Evaluate(Human(new Tick { DriverId = driverId }));
+
+        Assert.Contains("simple_weapon_proficiency", state.Feats);
+        Assert.Contains(a, state.Feats);
+        Assert.Contains(b, state.Feats);
+    }
+
+    [Fact]
+    public void Giant_HasAverageBaseAttackBonus()
+    {
+        // "Base attack bonus equal to 3/4 total Hit Dice (as cleric)." (monsterTypes.html)
+        var driver = (HDDriver)Content.Value.GetDriver("racial_hd:giant");
+
+        Assert.Equal(BABProgression.Average, driver.BABProgression);
+    }
+
+    [Fact]
+    public void Humanoid_HasGoodReflexSaves()
+    {
+        // "Good Reflex saves (usually; a humanoid's good save varies)." (monsterTypes.html)
+        var driver = (HDDriver)Content.Value.GetDriver("racial_hd:humanoid");
+
+        Assert.Equal(ProgressionRate.Good, driver.SaveProgression.Ref);
+        Assert.Equal(ProgressionRate.Poor, driver.SaveProgression.Fort);
+    }
+
+    [Theory]
+    // "+1 level of existing class" — neither is restricted to one casting type in the SRD,
+    // so a divine Loremaster and an arcane Thaumaturgist must both advance.
     [InlineData("class:loremaster")]
-    [InlineData("class:mystic_theurge")]
-    [InlineData("class:shadowdancer")]
-    [InlineData("class:dragon_disciple")]
-    [InlineData("class:eldritch_knight")]
-    [InlineData("class:archmage")]
-    public void PrestigeClasses_DeclarePrerequisites(string driverId)
+    [InlineData("class:thaumaturgist")]
+    public void AdvancementIsNotRestrictedToOneCastingType(string driverId)
     {
         var driver = (HDDriver)Content.Value.GetDriver(driverId);
 
-        Assert.NotEmpty(driver.Prerequisites);
+        var advance = driver.PerLevelPermabuffs.OfType<AdvanceSpellcasting>().Single();
+        Assert.Null(advance.CastingType);
+    }
+
+    [Fact]
+    public void DivineLoremaster_AdvancesItsDivineCasting()
+    {
+        // The concrete consequence of the above: a cleric Loremaster used to gain nothing.
+        var ticks = new List<Tick>();
+        for (var i = 0; i < 10; i++) ticks.Add(new Tick { DriverId = "class:cleric" });
+        var beforeEntry = Evaluate(Human(ticks.ToArray()));
+        var clericLevel = beforeEntry.Spellcasting["class:cleric"].CasterLevel;
+
+        ticks.Add(new Tick { DriverId = "class:loremaster" });
+        var after = Evaluate(Human(ticks.ToArray()));
+
+        Assert.Equal(clericLevel + 1, after.Spellcasting["class:cleric"].CasterLevel);
+    }
+
+    // ---- prestige class prerequisites -------------------------------------
+
+    /// <summary>
+    /// Every SRD prestige class. These are the ones a character opts into, so an empty
+    /// prerequisite list silently permits an illegal build — the defect this whole audit
+    /// was chasing. Alignment alone is not enough for classes whose SRD Requirements
+    /// section also lists skills, feats, BAB or spellcasting.
+    /// </summary>
+    public static TheoryData<string, int> SrdPrestigeClasses() => new()
+    {
+        { "class:arcane_archer", 5 },
+        { "class:arcane_trickster", 6 },
+        { "class:archmage", 6 },
+        { "class:assassin", 4 },
+        { "class:blackguard", 7 },
+        { "class:dragon_disciple", 2 },
+        { "class:duelist", 6 },
+        { "class:dwarven_defender", 6 },
+        { "class:eldritch_knight", 2 },
+        { "class:hierophant", 3 },
+        { "class:horizon_walker", 2 },
+        { "class:loremaster", 4 },
+        { "class:mystic_theurge", 4 },
+        { "class:shadowdancer", 6 },
+        { "class:thaumaturgist", 2 },
+    };
+
+    [Theory]
+    [MemberData(nameof(SrdPrestigeClasses))]
+    public void PrestigeClasses_DeclareTheirSrdPrerequisites(string driverId, int expectedCount)
+    {
+        var driver = (HDDriver)Content.Value.GetDriver(driverId);
+
+        Assert.Equal(expectedCount, driver.Prerequisites.Count);
+    }
+
+    [Theory]
+    [MemberData(nameof(SrdPrestigeClasses))]
+    public void PrestigeClasses_RejectAFreshFirstLevelCharacter(string driverId, int _)
+    {
+        // A 1st-level human fighter qualifies for none of them.
+        var state = Evaluate(Human(new Tick { DriverId = "class:fighter" }));
+        var driver = (HDDriver)Content.Value.GetDriver(driverId);
+
+        Assert.False(driver.Prerequisites.All(p => p.IsMet(state)),
+            $"{driverId} is available to a 1st-level fighter");
+    }
+
+    [Fact]
+    public void DuelistRequiresPerformRanks_ViaAnyPerformSubskill()
+    {
+        // "Skills: Perform 3 ranks" — Perform is an umbrella, so any single sub-skill counts.
+        var driver = (HDDriver)Content.Value.GetDriver("class:duelist");
+        var perform = driver.Prerequisites.OfType<MinSkillRanksAcross>().Single();
+
+        var state = new CharacterState();
+        state.SkillRanks["perform_dance"] = 4;   // 2 ranks — short
+        Assert.False(perform.IsMet(state));
+
+        state.SkillRanks["perform_dance"] = 6;   // 3 ranks
+        Assert.True(perform.IsMet(state));
+    }
+
+    [Fact]
+    public void DwarvenDefender_RequiresBeingADwarf()
+    {
+        // "Race: Dwarf."
+        var driver = (HDDriver)Content.Value.GetDriver("class:dwarven_defender");
+
+        Assert.Contains(driver.Prerequisites.OfType<HasRace>(), r => r.RaceId == "dwarf");
     }
 
     [Fact]

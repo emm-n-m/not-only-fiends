@@ -321,13 +321,21 @@ public class GrantFeatSlot : Permabuff
 
 public class AdvanceSpellcasting : Permabuff
 {
-    public CastingType CastingType { get; set; }
+    /// <summary>
+    /// Restricts advancement to one casting type. Null means any existing spellcasting class,
+    /// which is what the SRD specifies for Loremaster and Thaumaturgist ("+1 level of existing
+    /// class"); with several candidates the caller picks via
+    /// <c>ClassFeatureChoices["advance_spellcasting"]</c>, exactly as for a restricted type.
+    /// </summary>
+    public CastingType? CastingType { get; set; }
+
+    private string TypeLabel => CastingType?.ToString() ?? "any";
 
     public override void Apply(PermabuffContext ctx)
     {
         var state = ctx.State;
         var matches = state.Spellcasting.Values
-            .Where(s => s.CastingType == CastingType)
+            .Where(s => !CastingType.HasValue || s.CastingType == CastingType.Value)
             .ToList();
 
         if (matches.Count == 1)
@@ -338,7 +346,7 @@ public class AdvanceSpellcasting : Permabuff
         }
         else if (matches.Count == 0)
         {
-            state.Warnings.Add($"AdvanceSpellcasting({CastingType}): no matching spellcasting class found");
+            state.Warnings.Add($"AdvanceSpellcasting({TypeLabel}): no matching spellcasting class found");
         }
         else
         {
@@ -357,7 +365,7 @@ public class AdvanceSpellcasting : Permabuff
             else
             {
                 var classNames = string.Join(", ", matches.Select(m => m.ClassId));
-                state.Warnings.Add($"AdvanceSpellcasting({CastingType}): multiple matching classes ({classNames}), selection required via ClassFeatureChoices[\"advance_spellcasting\"]");
+                state.Warnings.Add($"AdvanceSpellcasting({TypeLabel}): multiple matching classes ({classNames}), selection required via ClassFeatureChoices[\"advance_spellcasting\"]");
             }
         }
     }

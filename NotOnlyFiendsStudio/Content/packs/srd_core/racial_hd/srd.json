@@ -116,8 +116,8 @@
   "classSkills": [],
   "babProgression": "average",
   "saveProgression": {
-    "fort": "good",
-    "ref": "poor",
+    "fort": "poor",
+    "ref": "good",
     "will": "poor"
   },
   "prerequisites": [],
@@ -131,7 +131,7 @@
   "hitDie": 8,
   "skillPointsPerLevel": 2,
   "classSkills": ["climb", "jump", "listen", "spot"],
-  "babProgression": "good",
+  "babProgression": "average",
   "saveProgression": {
     "fort": "good",
     "ref": "poor",
