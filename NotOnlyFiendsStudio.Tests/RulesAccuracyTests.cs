@@ -343,6 +343,26 @@ public class RulesAccuracyTests
         Assert.Equal(ProgressionRate.Poor, driver.SaveProgression.Fort);
     }
 
+    [Fact]
+    public void AirElemental_HasGoodReflexSave()
+    {
+        // "Good saves depend on the element: Fortitude (earth, water) or Reflex (air, fire)."
+        var driver = (HDDriver)Content.Value.GetDriver("racial_hd:elemental_air");
+
+        Assert.Equal(ProgressionRate.Good, driver.SaveProgression.Ref);
+        Assert.Equal(ProgressionRate.Poor, driver.SaveProgression.Fort);
+    }
+
+    [Fact]
+    public void WaterElemental_HasGoodFortitudeSave()
+    {
+        // "Good saves depend on the element: Fortitude (earth, water) or Reflex (air, fire)."
+        var driver = (HDDriver)Content.Value.GetDriver("racial_hd:elemental_water");
+
+        Assert.Equal(ProgressionRate.Good, driver.SaveProgression.Fort);
+        Assert.Equal(ProgressionRate.Poor, driver.SaveProgression.Ref);
+    }
+
     [Theory]
     // "+1 level of existing class" — neither is restricted to one casting type in the SRD,
     // so a divine Loremaster and an arcane Thaumaturgist must both advance.
@@ -371,6 +391,26 @@ public class RulesAccuracyTests
         Assert.Equal(clericLevel + 1, after.Spellcasting["class:cleric"].CasterLevel);
     }
 
+    [Fact]
+    public void Hierophant_AdvancesCasterLevelButNotSpellsPerDay()
+    {
+        // "Levels in the hierophant prestige class, even though they do not advance spell
+        // progression in the character's base class, still stack with the character's base
+        // spellcasting levels to determine caster level." Caster level should advance;
+        // spells per day should not.
+        var ticks = new List<Tick>();
+        for (var i = 0; i < 13; i++) ticks.Add(new Tick { DriverId = "class:cleric" });
+        var before = Evaluate(Human(ticks.ToArray()));
+        var clericLevel = before.Spellcasting["class:cleric"].CasterLevel;
+        var spellsPerDayBefore = before.Spellcasting["class:cleric"].SpellsPerDay;
+
+        ticks.Add(new Tick { DriverId = "class:hierophant" });
+        var after = Evaluate(Human(ticks.ToArray()));
+
+        Assert.Equal(clericLevel + 1, after.Spellcasting["class:cleric"].CasterLevel);
+        Assert.Equal(spellsPerDayBefore, after.Spellcasting["class:cleric"].SpellsPerDay);
+    }
+
     // ---- prestige class prerequisites -------------------------------------
 
     /// <summary>
@@ -386,6 +426,7 @@ public class RulesAccuracyTests
         { "class:archmage", 6 },
         { "class:assassin", 4 },
         { "class:blackguard", 7 },
+        { "class:cosmic_descryer", 3 },
         { "class:dragon_disciple", 2 },
         { "class:duelist", 6 },
         { "class:dwarven_defender", 6 },
@@ -417,6 +458,56 @@ public class RulesAccuracyTests
 
         Assert.False(driver.Prerequisites.All(p => p.IsMet(state)),
             $"{driverId} is available to a 1st-level fighter");
+    }
+
+    [Fact]
+    public void Shadowdancer_GrantsCorrectProficiencies()
+    {
+        // Shadowdancer gains a weapon/armor list, not "no new proficiencies."
+        var driver = (HDDriver)Content.Value.GetDriver("class:shadowdancer");
+        var prof = driver.LevelPermabuffs[1].OfType<GrantAbility>()
+            .Single(a => a.Ability.Id == "weapon_and_armor_proficiency");
+
+        Assert.DoesNotContain("no new", prof.Ability.Description, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("light armor", prof.Ability.Description, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("not with shields", prof.Ability.Description, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData(6)]
+    [InlineData(8)]
+    [InlineData(9)]
+    public void Shadowdancer_HasLevelPermabuffsAtGapLevels(int level)
+    {
+        var driver = (HDDriver)Content.Value.GetDriver("class:shadowdancer");
+
+        Assert.True(driver.LevelPermabuffs.TryGetValue(level, out var buffs) && buffs.Count > 0,
+            $"shadowdancer has no levelPermabuffs at level {level}");
+    }
+
+    [Fact]
+    public void Shadowdancer_ShadowJumpDistanceDoublesEveryTwoLevels()
+    {
+        // "At 4th level, a shadowdancer can jump up to a total of 20 feet each day this
+        // way; this total distance increases by 20 feet at 6th level and every two levels
+        // thereafter" — 20/40/80/160 ft. at 4th/6th/8th/10th.
+        var driver = (HDDriver)Content.Value.GetDriver("class:shadowdancer");
+
+        Assert.Contains(driver.LevelPermabuffs[6].OfType<GrantAbility>(), a => a.Ability.Id == "shadow_jump_40");
+        Assert.Contains(driver.LevelPermabuffs[8].OfType<GrantAbility>(), a => a.Ability.Id == "shadow_jump_80");
+        Assert.Contains(driver.LevelPermabuffs[10].OfType<GrantAbility>(), a => a.Ability.Id == "shadow_jump_160");
+    }
+
+    [Fact]
+    public void Shadowdancer_ShadowCompanionGainsHDAtSixthAndNinthLevel()
+    {
+        // "Every third level gained by the shadowdancer adds +2 HD ... to her shadow
+        // companion" — companion granted at 3rd, so the increases land on 6th and 9th
+        // (10th is maxLevel, so there's no 12th to worry about).
+        var driver = (HDDriver)Content.Value.GetDriver("class:shadowdancer");
+
+        Assert.Contains(driver.LevelPermabuffs[6].OfType<GrantAbility>(), a => a.Ability.Id == "shadow_companion_hd_increase");
+        Assert.Contains(driver.LevelPermabuffs[9].OfType<GrantAbility>(), a => a.Ability.Id == "shadow_companion_hd_increase");
     }
 
     [Fact]
@@ -459,6 +550,16 @@ public class RulesAccuracyTests
     }
 
     [Fact]
+    public void Loremaster_GrantsBonusLanguageAtFourthAndEighthLevel()
+    {
+        // "Bonus Languages: At 4th and 8th level..."
+        var driver = (HDDriver)Content.Value.GetDriver("class:loremaster");
+
+        Assert.Contains(driver.LevelPermabuffs[4].OfType<GrantAbility>(), a => a.Ability.Id == "bonus_languages");
+        Assert.Contains(driver.LevelPermabuffs[8].OfType<GrantAbility>(), a => a.Ability.Id == "bonus_languages");
+    }
+
+    [Fact]
     public void Thaumaturgist_RequiresSpellFocusInConjurationSpecifically()
     {
         // "Feats: Spell Focus (conjuration)." — one named school, so pin it exactly.
@@ -472,6 +573,27 @@ public class RulesAccuracyTests
         var right = new CharacterState();
         right.Feats.Add("spell_focus_conjuration");
         Assert.True(spellFocus.IsMet(right));
+    }
+
+    [Fact]
+    public void CosmicDescryer_RequiresAnEnergyResistanceEpicFeat()
+    {
+        // "Feats: ... Epic Feats: Energy Resistance." No generic "energy_resistance" feat
+        // exists — there are five, one per element (energy_resistance_acid/cold/electricity/
+        // fire/sonic). HasFeatSelections' FeatId-or-FeatId+"_" prefix match already covers
+        // "any one of them" without a new Prerequisite primitive.
+        // "Ability to cast gate" is a separate gap, deferred to TODO.md §2's KnowsSpell
+        // primitive (not yet implemented) rather than forked here.
+        var driver = (HDDriver)Content.Value.GetDriver("class:cosmic_descryer");
+        var energyResistance = driver.Prerequisites.OfType<HasFeatSelections>()
+            .Single(f => f.FeatId == "energy_resistance");
+
+        var noFeat = new CharacterState();
+        Assert.False(energyResistance.IsMet(noFeat));
+
+        var withFeat = new CharacterState();
+        withFeat.Feats.Add("energy_resistance_fire");
+        Assert.True(energyResistance.IsMet(withFeat));
     }
 
     [Fact]

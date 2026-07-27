@@ -329,6 +329,14 @@ public class AdvanceSpellcasting : Permabuff
     /// </summary>
     public CastingType? CastingType { get; set; }
 
+    /// <summary>
+    /// When true, only <see cref="SpellcastingState.CasterLevel"/> advances — spells per day/known
+    /// are left untouched. Used by prestige classes that stack for caster level but do not advance
+    /// spell progression (e.g. Hierophant: "even though they do not advance spell progression...
+    /// still stack with the character's base spellcasting levels to determine caster level").
+    /// </summary>
+    public bool CasterLevelOnly { get; set; }
+
     private string TypeLabel => CastingType?.ToString() ?? "any";
 
     public override void Apply(PermabuffContext ctx)
@@ -342,7 +350,7 @@ public class AdvanceSpellcasting : Permabuff
         {
             var sc = matches[0];
             sc.CasterLevel++;
-            UpdateSpellcastingFromProgression(ctx, sc);
+            if (!CasterLevelOnly) UpdateSpellcastingFromProgression(ctx, sc);
         }
         else if (matches.Count == 0)
         {
@@ -360,7 +368,7 @@ public class AdvanceSpellcasting : Permabuff
             if (selected != null)
             {
                 selected.CasterLevel++;
-                UpdateSpellcastingFromProgression(ctx, selected);
+                if (!CasterLevelOnly) UpdateSpellcastingFromProgression(ctx, selected);
             }
             else
             {

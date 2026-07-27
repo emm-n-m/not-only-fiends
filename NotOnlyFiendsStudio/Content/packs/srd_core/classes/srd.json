@@ -2263,7 +2263,7 @@
       ]
     },
     "perLevelPermabuffs": [
-      { "$type": "AdvanceSpellcasting", "castingType": "divine" }
+      { "$type": "AdvanceSpellcasting", "castingType": "divine", "casterLevelOnly": true }
     ],
     "prerequisites": [
       {"$type": "MinSkillRanks", "skillId": "knowledge_religion", "value": 15},
@@ -2415,6 +2415,16 @@
       ],
       "7": [
         { "$type": "GrantClassFeatureSelection", "featureType": "loremaster_secret" }
+      ],
+      "8": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "bonus_languages",
+            "name": "Bonus Languages",
+            "description": "Can choose another new language at 8th level."
+          }
+        }
       ],
       "9": [
         { "$type": "GrantClassFeatureSelection", "featureType": "loremaster_secret" }
@@ -3546,7 +3556,7 @@
           "ability": {
             "id": "weapon_and_armor_proficiency",
             "name": "Weapon and Armor Proficiency",
-            "description": "Gains no new weapon or armor proficiencies."
+            "description": "Shadowdancers are proficient with the club, crossbow (hand, light, or heavy), dagger (any type), dart, mace, morningstar, quarterstaff, rapier, sap, shortbow (normal and composite), and short sword. Shadowdancers are proficient with light armor but not with shields."
           }
         },
         {
@@ -3630,6 +3640,24 @@
           }
         }
       ],
+      "6": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "shadow_jump_40",
+            "name": "Shadow Jump",
+            "description": "Total shadow jump distance increases to 40 feet per day."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "shadow_companion_hd_increase",
+            "name": "Shadow Companion Growth",
+            "description": "Shadow companion gains +2 HD (and the requisite base attack and base save bonus increases)."
+          }
+        }
+      ],
       "7": [
         {
           "$type": "GrantAbility",
@@ -3640,6 +3668,26 @@
           }
         }
       ],
+      "8": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "shadow_jump_80",
+            "name": "Shadow Jump",
+            "description": "Total shadow jump distance increases to 80 feet per day."
+          }
+        }
+      ],
+      "9": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "shadow_companion_hd_increase",
+            "name": "Shadow Companion Growth",
+            "description": "Shadow companion gains +2 HD (and the requisite base attack and base save bonus increases)."
+          }
+        }
+      ],
       "10": [
         {
           "$type": "GrantAbility",
@@ -3647,6 +3695,14 @@
             "id": "improved_evasion",
             "name": "Improved Evasion",
             "description": "On a failed Reflex save against an area attack, takes half damage instead of full; no damage on success."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "shadow_jump_160",
+            "name": "Shadow Jump",
+            "description": "Total shadow jump distance increases to 160 feet per day."
           }
         }
       ]

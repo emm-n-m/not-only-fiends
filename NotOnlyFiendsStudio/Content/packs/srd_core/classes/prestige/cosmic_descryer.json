@@ -86,7 +86,8 @@
   },
   "prerequisites": [
     { "$type": "HasFeat", "featId": "spell_focus_conjuration" },
-    { "$type": "MinSkillRanks", "skillId": "knowledge_planes", "value": 24 }
+    { "$type": "MinSkillRanks", "skillId": "knowledge_planes", "value": 24 },
+    { "$type": "HasFeatSelections", "featId": "energy_resistance", "minCount": 1 }
   ],
   "maxLevel": 10
 }

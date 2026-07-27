@@ -374,7 +374,8 @@ public class ContentRegistry : IContentLookup
                 _errors.Add(new ContentError(ContentErrorKind.BrokenReference,
                     $"{context} has HasFeat prerequisite referencing unknown feat '{hasFeat.FeatId}'"));
 
-            if (prereq is HasFeatSelections hasFeatSel && !_feats.ContainsKey(hasFeatSel.FeatId))
+            if (prereq is HasFeatSelections hasFeatSel && !_feats.ContainsKey(hasFeatSel.FeatId)
+                && !_feats.Keys.Any(id => id.StartsWith(hasFeatSel.FeatId + "_", StringComparison.Ordinal)))
                 _errors.Add(new ContentError(ContentErrorKind.BrokenReference,
                     $"{context} has HasFeatSelections prerequisite referencing unknown feat '{hasFeatSel.FeatId}'"));
 

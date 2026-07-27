@@ -14,7 +14,7 @@ Found by diffing content against `NotOnlyFiendsStudio/Content/srd_html/` (the SR
 Each needs a regression test in `NotOnlyFiendsStudio.Tests/RulesAccuracyTests.cs` alongside
 the fix — that file is the home for SRD-verified assertions.
 
-### Hierophant grants 5 caster levels it should not — HIGH
+### Hierophant grants 5 caster levels it should not — HIGH — **Fixed**
 
 `class:hierophant` has `perLevelPermabuffs: [AdvanceSpellcasting divine]`, which fires at all
 five levels. The SRD is precise:
@@ -24,26 +24,45 @@ five levels. The SRD is precise:
 > determine caster level.
 
 So caster level *should* advance; spells per day should *not*. `AdvanceSpellcasting.Apply`
-does both (`sc.CasterLevel++` then `UpdateSpellcastingFromProgression`). Needs a
-`CasterLevelOnly` flag on the permabuff, then set it on hierophant.
+did both (`sc.CasterLevel++` then `UpdateSpellcastingFromProgression`). Added a
+`CasterLevelOnly` flag on the permabuff (`Permabuff.cs`), set it on hierophant. Regression:
+`Hierophant_AdvancesCasterLevelButNotSpellsPerDay`.
 
-### Elemental saves are element-dependent — HIGH
+### Elemental saves are element-dependent — HIGH — **Fixed**
 
 > Good saves depend on the element: Fortitude (earth, water) or Reflex (air, fire).
 
-`racial_hd:elemental` is a single generic driver hardcoded to the air/fire answer, so
-`companion_elemental_water_small` gets the wrong save. Needs either per-element drivers
-(`racial_hd:elemental_earth` …) or a subtype mechanism on racial HD.
+`racial_hd:elemental` was a single generic driver hardcoded to the air/fire answer, so
+`companion_elemental_water_small` got the wrong save. Split into `racial_hd:elemental_air`
+and `racial_hd:elemental_water` (only elements with an existing companion race); kept the
+old generic `racial_hd:elemental` id as-is for PCGen import fallback
+(`PcgIdMapper.cs` maps PCGen's generic "Elemental" creature type to it, with no per-element
+data to disambiguate). Regressions: `AirElemental_HasGoodReflexSave`,
+`WaterElemental_HasGoodFortitudeSave`.
 
 ### Smaller gaps
 
-- **Shadowdancer** — no `levelPermabuffs` at 6, 8, 9 (shadow jump 40 ft., shadow jump 80 ft.,
-  summon shadow). Its proficiency note also says "gains no new weapon or armor proficiencies"
-  where the SRD grants a specific weapon list plus light armour.
-- **Loremaster** — bonus language granted at 4th only; SRD says "at 4th and 8th level".
-- **Cosmic Descryer** — prerequisite "Epic Feats: Energy Resistance" could not be added
-  because no `energy_resistance` feat exists in the content. Its BAB and save progressions
-  are **unverifiable**: `cosmicDescryer.html` has no attack or save columns at all.
+- **Shadowdancer** — **Fixed.** Added `levelPermabuffs` at 6 (shadow jump 40 ft. + shadow
+  companion +2 HD), 8 (shadow jump 80 ft.), 9 (shadow companion +2 HD — this was the "summon
+  shadow" gap; the companion is granted once at 3rd level, HD increases every third level
+  thereafter), and 10 (shadow jump 160 ft. — not originally listed here, but the same SRD
+  progression implies it and it was fixed in the same pass). Proficiency note corrected from
+  "gains no new weapon or armor proficiencies" to the actual SRD weapon list plus light
+  armor (no shields). Regressions: `Shadowdancer_GrantsCorrectProficiencies`,
+  `Shadowdancer_HasLevelPermabuffsAtGapLevels`, `Shadowdancer_ShadowJumpDistanceDoublesEveryTwoLevels`,
+  `Shadowdancer_ShadowCompanionGainsHDAtSixthAndNinthLevel`.
+- **Loremaster** — **Fixed.** Bonus language now also granted at 8th level (was 4th only).
+  Regression: `Loremaster_GrantsBonusLanguageAtFourthAndEighthLevel`.
+- **Cosmic Descryer** — ~~prerequisite "Epic Feats: Energy Resistance" could not be added
+  because no `energy_resistance` feat exists in the content.~~ **Fixed**: no generic
+  `energy_resistance` feat exists, but five element-specific ones do
+  (`energy_resistance_acid/cold/electricity/fire/sonic`), and `HasFeatSelections`' existing
+  `FeatId`-or-`FeatId + "_"` prefix match already expresses "any one of them" with no new
+  primitive needed. Still missing: "ability to cast *gate*", blocked on the `KnowsSpell`
+  primitive in §2. Its BAB and save progressions are populated (poor BAB; poor/poor/good
+  saves) but permanently **unverifiable against source**: `cosmicDescryer.html` has no
+  attack or save columns at all. Treat as best-effort; a future mismatch here is not
+  necessarily a regression.
 
 ---
 

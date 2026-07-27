@@ -162,7 +162,7 @@
   "levelAdjustment": 0,
   "bonusFeats": 0,
   "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:elemental",
+  "racialHDDriverId": "racial_hd:elemental_air",
   "racialPermabuffs": [
     { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 3 },
     { "$type": "GrantAbility", "ability": { "id": "air_elem_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." } },
@@ -184,7 +184,7 @@
   "levelAdjustment": 0,
   "bonusFeats": 0,
   "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:elemental",
+  "racialHDDriverId": "racial_hd:elemental_water",
   "racialPermabuffs": [
     { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 6 },
     { "$type": "GrantAbility", "ability": { "id": "water_elem_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." } },

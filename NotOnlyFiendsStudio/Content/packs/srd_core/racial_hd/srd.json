@@ -20,7 +20,7 @@
   "$type": "HDDriver",
   "kind": "RacialHD",
   "id": "racial_hd:elemental",
-  "name": "Elemental",
+  "name": "Elemental (Generic)",
   "hitDie": 8,
   "skillPointsPerLevel": 2,
   "classSkills": ["listen", "spot"],
@@ -28,6 +28,40 @@
   "saveProgression": {
     "fort": "poor",
     "ref": "good",
+    "will": "poor"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+},
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:elemental_air",
+  "name": "Elemental (Air)",
+  "hitDie": 8,
+  "skillPointsPerLevel": 2,
+  "classSkills": ["listen", "spot"],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "good",
+    "will": "poor"
+  },
+  "prerequisites": [],
+  "levelPermabuffs": {}
+},
+{
+  "$type": "HDDriver",
+  "kind": "RacialHD",
+  "id": "racial_hd:elemental_water",
+  "name": "Elemental (Water)",
+  "hitDie": 8,
+  "skillPointsPerLevel": 2,
+  "classSkills": ["listen", "spot"],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "poor",
     "will": "poor"
   },
   "prerequisites": [],
