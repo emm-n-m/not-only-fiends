@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:bears_endurance",
+  "name": "Bear's Endurance",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 2,
+    "class:druid": 2,
+    "class:ranger": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes",
+  "description": "Subject gains +4 to Con for (CASTERLEVEL) minutes.",
+  "target": "Creature touched"
+}
+]

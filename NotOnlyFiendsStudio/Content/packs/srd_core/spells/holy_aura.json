@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:holy_aura",
+  "name": "Holy Aura",
+  "school": "abjuration",
+  "classLevels": {
+    "class:cleric": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "20 ft.",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "See text",
+  "spellResistance": "yes (harmless)",
+  "description": "+4 to AC, +4 resistance, and SR 25 against evil spells.",
+  "descriptors": [
+    "good"
+  ],
+  "area": "(CASTERLEVEL) creatures in a 20-ft.-radius burst centered on you"
+}
+]

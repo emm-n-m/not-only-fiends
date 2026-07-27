@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:discern_location",
+  "name": "Discern Location",
+  "school": "divination",
+  "classLevels": {
+    "class:cleric": 8,
+    "class:sorcerer": 8,
+    "class:wizard": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "10 minutes",
+  "range": "unlimited",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Reveals exact location of creature or object.",
+  "target": "One creature or object"
+}
+]

@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:grease",
+  "name": "Grease",
+  "school": "conjuration",
+  "classLevels": {
+    "class:bard": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "See text",
+  "spellResistance": "no",
+  "description": "Makes 10-ft. square or one object slippery.",
+  "subschool": "creation",
+  "target": "One object or a 10-ft. square"
+}
+]

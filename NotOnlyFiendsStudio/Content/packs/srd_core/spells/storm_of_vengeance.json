@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:storm_of_vengeance",
+  "name": "Storm of Vengeance",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 9,
+    "class:druid": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 round",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "Concentration (maximum 10 rounds) (D)",
+  "savingThrow": "See text",
+  "spellResistance": "yes",
+  "description": "Storm rains acid, lightning, and hail.",
+  "subschool": "summoning",
+  "area": "360-ft.-radius storm cloud"
+}
+]

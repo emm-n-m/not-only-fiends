@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:inflict_moderate_wounds_mass",
+  "name": "Inflict Moderate Wounds, Mass",
+  "school": "necromancy",
+  "classLevels": {
+    "class:cleric": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Will half",
+  "spellResistance": "yes",
+  "description": "Deals 2d8+(min(CASTERLEVEL,30)) damage to many creatures.",
+  "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
+}
+]

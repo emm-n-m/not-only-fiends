@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:hold_animal",
+  "name": "Hold Animal",
+  "school": "enchantment",
+  "classLevels": {
+    "class:druid": 2,
+    "class:ranger": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1/level rounds (D); see text",
+  "savingThrow": "Will negates; see text",
+  "spellResistance": "yes",
+  "description": "Paralyzes one animal for (CASTERLEVEL) rounds.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One animal"
+}
+]

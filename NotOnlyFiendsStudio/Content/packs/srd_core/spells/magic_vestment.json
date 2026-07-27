@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:magic_vestment",
+  "name": "Magic Vestment",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level hours",
+  "savingThrow": "Will negates (harmless, object)",
+  "spellResistance": "yes (harmless, object)",
+  "description": "Armor or shield gains (min(CASTERLEVEL/4,5)) enhancement",
+  "target": "Armor or shield touched"
+}
+]

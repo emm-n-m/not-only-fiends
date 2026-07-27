@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:tiny_hut",
+  "name": "Tiny Hut",
+  "school": "evocation",
+  "classLevels": {
+    "class:bard": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "20 ft.",
+  "duration": "2/level hours (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Creates shelter for ten creatures.",
+  "descriptors": [
+    "force"
+  ],
+  "area": "20-ft.-radius sphere centered on your location"
+}
+]

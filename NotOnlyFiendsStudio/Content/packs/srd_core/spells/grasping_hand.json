@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:grasping_hand",
+  "name": "Grasping Hand",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Hand provides cover, pushes, or grapples.",
+  "descriptors": [
+    "force"
+  ],
+  "target": "10-ft. hand"
+}
+]

@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:chill_touch",
+  "name": "Chill Touch",
+  "school": "necromancy",
+  "classLevels": {
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Fortitude partial or Will negates; see text",
+  "spellResistance": "yes",
+  "description": "(CASTERLEVEL) touchs deal 1d6 damage and possibly 1 Str damage.",
+  "target": "Up to (CASTERLEVEL) Creatures touched"
+}
+]

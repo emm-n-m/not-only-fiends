@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:summon_monster_iv",
+  "name": "Summon Monster IV",
+  "school": "conjuration",
+  "classLevels": {
+    "class:bard": 4,
+    "class:cleric": 4,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "focus": "see text"
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Calls extraplanar creature to fight for you.",
+  "subschool": "summoning",
+  "target": "One or more summoned creatures, no two of which can be more than 30 ft. apart"
+}
+]

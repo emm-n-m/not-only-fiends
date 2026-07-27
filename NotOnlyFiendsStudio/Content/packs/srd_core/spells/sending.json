@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:sending",
+  "name": "Sending",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 4,
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "See text",
+  "duration": "1/level round; see text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Delivers short message anywhere, instantly.",
+  "target": "One creature"
+}
+]

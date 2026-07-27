@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:insect_plague",
+  "name": "Insect Plague",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 5,
+    "class:druid": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 round",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "1/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Locust swarms attack creatures.",
+  "subschool": "summoning",
+  "target": "(CASTERLEVEL/3) swarms of locust, each of which must be adjacent to at least one other swarm"
+}
+]

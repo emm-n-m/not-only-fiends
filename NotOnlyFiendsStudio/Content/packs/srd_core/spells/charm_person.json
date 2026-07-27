@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:charm_person",
+  "name": "Charm Person",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level hours",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Makes one person your friend.",
+  "subschool": "charm",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One humanoid creature"
+}
+]

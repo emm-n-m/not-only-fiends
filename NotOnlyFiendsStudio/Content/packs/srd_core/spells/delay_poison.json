@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:delay_poison",
+  "name": "Delay Poison",
+  "school": "conjuration",
+  "classLevels": {
+    "class:ranger": 1,
+    "class:adept": 2,
+    "class:bard": 2,
+    "class:cleric": 2,
+    "class:druid": 2,
+    "class:paladin": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level hours",
+  "savingThrow": "Fortitude negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Stops poison from harming subject for (CASTERLEVEL) hours.",
+  "subschool": "healing",
+  "target": "Creature touched"
+}
+]

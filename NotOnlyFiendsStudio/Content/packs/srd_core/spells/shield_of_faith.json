@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:shield_of_faith",
+  "name": "Shield of Faith",
+  "school": "abjuration",
+  "classLevels": {
+    "class:cleric": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Aura grants +(min(CASTERLEVEL/6,3)+2) deflection bonus.",
+  "target": "Creature touched"
+}
+]

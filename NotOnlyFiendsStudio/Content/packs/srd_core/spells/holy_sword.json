@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:holy_sword",
+  "name": "Holy Sword",
+  "school": "evocation",
+  "classLevels": {
+    "class:paladin": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level rounds",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Weapon becomes +5, deals +2d6 damage against evil.",
+  "descriptors": [
+    "good"
+  ],
+  "target": "Melee weapon touched"
+}
+]

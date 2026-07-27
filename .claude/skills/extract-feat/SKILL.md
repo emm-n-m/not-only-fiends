@@ -57,13 +57,13 @@ Dispatch on the argument:
 ## PDF extraction workflow (fallback)
 
 1. Locate the feat chapter from the table of contents (pages 1–5).
-2. For each feat, capture: name → `id` (snake_case), category → `type`, prerequisite clauses → typed prereqs, benefit → `description`.
+2. For each feat, capture: name → `id` (`feat:snake_case`), category → `type`, prerequisite clauses → typed prereqs, benefit → `description`.
 3. Avoid duplicating IDs that already exist in the target pack.
 4. Write output and test as in steps 7–8 above.
 
 ## Key conventions
 
-- Feat IDs: `snake_case` (`power_attack`, `improved_initiative`).
+- Feat IDs: `feat:<snake_case>` (`feat:power_attack`, `feat:improved_initiative`).
 - Prerequisite `$type` values: `MinBAB`, `MinAbility`, `MinSkillRanks`, `MinClassLevel`, `HasFeat`, `AlignmentReq`, `MinHD`, `MinCasterLevel`, `CanCastSpellLevel`, `HasRace`, `MinSave`, `HasAbility`, `HasSpellcasting`, `HasFeatOfType`, `HasFeatWithTag`.
 - `MinSkillRanks.value` is **whole ranks** (the number printed in the source); the engine doubles internally.
 - `HasFeat` on a selectable base feat matches any `{featId}_*` variant.

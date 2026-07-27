@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:shield",
+  "name": "Shield",
+  "school": "abjuration",
+  "classLevels": {
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Invisible disc gives +4 to AC, blocks magic missiles.",
+  "descriptors": [
+    "force"
+  ],
+  "target": "you"
+}
+]

@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:mages_private_sanctum",
+  "name": "Mage's Private Sanctum",
+  "school": "abjuration",
+  "classLevels": {
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "24 hours (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Prevents anyone from viewing or scrying an area for 24 hours.",
+  "area": "(CASTERLEVEL*30) ft. cube [S]"
+}
+]

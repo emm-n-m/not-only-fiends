@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:curse_water",
+  "name": "Curse Water",
+  "school": "necromancy",
+  "classLevels": {
+    "class:cleric": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 minute",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (object)",
+  "spellResistance": "yes (object)",
+  "description": "Makes unholy water.",
+  "descriptors": [
+    "evil"
+  ],
+  "target": "Flask of water touched"
+}
+]

@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:protection_from_arrows",
+  "name": "Protection from Arrows",
+  "school": "abjuration",
+  "classLevels": {
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level hours or until discharged",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Subject immune to most ranged attacks.",
+  "target": "Creature touched"
+}
+]

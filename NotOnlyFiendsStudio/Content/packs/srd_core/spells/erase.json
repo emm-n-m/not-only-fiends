@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:erase",
+  "name": "Erase",
+  "school": "transmutation",
+  "classLevels": {
+    "class:bard": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "See text",
+  "spellResistance": "no",
+  "description": "Mundane or magical writing vanishes.",
+  "target": "One scroll or two pages"
+}
+]

@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:telekinetic_sphere",
+  "name": "Telekinetic Sphere",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 8,
+    "class:wizard": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "Reflex negates (object)",
+  "spellResistance": "yes  (object)",
+  "description": "As resilient sphere, but you move sphere telekinetically.",
+  "descriptors": [
+    "force"
+  ],
+  "target": "(CASTERLEVEL) ft. diameter sphere, centered around creatures or objects"
+}
+]

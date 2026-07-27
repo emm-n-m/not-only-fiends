@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:spider_climb",
+  "name": "Spider Climb",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "10/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Grants ability to walk on walls and ceilings.",
+  "target": "Creature touched"
+}
+]

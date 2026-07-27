@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:locate_creature",
+  "name": "Locate Creature",
+  "school": "divination",
+  "classLevels": {
+    "class:bard": 4,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "10/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Indicates direction to familiar creature.",
+  "area": "Circle, centered on you, with a radius of ((CASTERLEVEL*40)+400) ft."
+}
+]

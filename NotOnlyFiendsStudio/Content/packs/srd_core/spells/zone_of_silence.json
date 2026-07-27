@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:zone_of_silence",
+  "name": "Zone of Silence",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 round",
+  "range": "personal",
+  "duration": "1/level hours (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Keeps eavesdroppers from overhearing conversations.",
+  "subschool": "glamer",
+  "area": "5-ft.-radius emanation centered on you"
+}
+]

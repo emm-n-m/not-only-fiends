@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:bolts_of_bedevilment",
+  "name": "Bolts of Bedevilment",
+  "school": "enchantment",
+  "subschool": "compulsion",
+  "classLevels": {
+    "domain:madness": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1/level rounds",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "One ray attack per round; a struck living creature is dazed (takes no action) for 1d3 rounds. Will negates.",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "effect": "Ray"
+}
+]

@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:control_water",
+  "name": "Control Water",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 4,
+    "class:druid": 4,
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "None; see text",
+  "spellResistance": "no",
+  "description": "Raises or lowers bodies of water.",
+  "descriptors": [
+    "water"
+  ],
+  "target": "Water in a volume of (CASTERLEVEL*10) ft by (CASTERLEVEL*10) ft by (CASTERLEVEL*2) ft [S]"
+}
+]

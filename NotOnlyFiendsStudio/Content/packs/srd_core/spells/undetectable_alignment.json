@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:undetectable_alignment",
+  "name": "Undetectable Alignment",
+  "school": "abjuration",
+  "classLevels": {
+    "class:bard": 1,
+    "class:cleric": 2,
+    "class:paladin": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "24 hours",
+  "savingThrow": "Will negates (object)",
+  "spellResistance": "yes  (object)",
+  "description": "Conceals alignment for 24 hours.",
+  "target": "One creature or object"
+}
+]

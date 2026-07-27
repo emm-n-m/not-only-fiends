@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:scrying_greater",
+  "name": "Scrying, Greater",
+  "school": "divination",
+  "classLevels": {
+    "class:bard": 6,
+    "class:cleric": 7,
+    "class:druid": 7,
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "See text",
+  "duration": "1/level hours",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "As scrying, but faster and longer.",
+  "subschool": "scrying",
+  "target": "Magical sensor"
+}
+]

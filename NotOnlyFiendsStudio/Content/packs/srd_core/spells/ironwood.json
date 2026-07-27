@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:ironwood",
+  "name": "Ironwood",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 minute/lb. created",
+  "range": "0 ft.",
+  "duration": "1/level days (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Magic wood is strong as steel.",
+  "target": "An ironwood object weighing up to (CASTERLEVEL*5) lbs"
+}
+]

@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:bears_endurance_mass",
+  "name": "Bear's Endurance, Mass",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 6,
+    "class:druid": 6,
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes",
+  "description": "As bear's endurance, affects (CASTERLEVEL) subjects.",
+  "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
+}
+]

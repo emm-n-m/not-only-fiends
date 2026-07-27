@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:inflict_minor_wounds",
+  "name": "Inflict Minor Wounds",
+  "school": "necromancy",
+  "classLevels": {
+    "class:cleric": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Touch attack, 1 point of damage.",
+  "target": "Creature touched"
+}
+]

@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:planar_ally",
+  "name": "Planar Ally",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "xpCost": true
+  },
+  "castingTime": "10 minutes",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "As lesser planar ally, but up to 12 HD.",
+  "subschool": "calling",
+  "descriptors": [
+    "see text"
+  ],
+  "target": "1-2 called elementals or outsiders totaling no more than 12 HD, which cannot be more than 30 ft. apart when they appear"
+}
+]

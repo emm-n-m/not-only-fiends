@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:summon_natures_ally_v",
+  "name": "Summon Nature's Ally V",
+  "school": "conjuration",
+  "classLevels": {
+    "class:druid": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Calls creature to fight.",
+  "subschool": "summoning",
+  "target": "One or more creatures, no two of which can be more than 30 ft. apart"
+}
+]

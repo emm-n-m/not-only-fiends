@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:wind_walk",
+  "name": "Wind Walk",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 6,
+    "class:druid": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level hours (D); see text",
+  "savingThrow": "No and Will negates (harmless)",
+  "spellResistance": "no and yes (harmless)",
+  "description": "You and your allies turn vaporous and travel fast.",
+  "descriptors": [
+    "air"
+  ],
+  "target": "You and (CASTERLEVEL/3) touched creatures"
+}
+]

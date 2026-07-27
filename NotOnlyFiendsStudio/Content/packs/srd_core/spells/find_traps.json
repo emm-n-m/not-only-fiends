@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:find_traps",
+  "name": "Find Traps",
+  "school": "divination",
+  "classLevels": {
+    "class:cleric": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "1/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Notice traps as a rogue does.",
+  "target": "you"
+}
+]

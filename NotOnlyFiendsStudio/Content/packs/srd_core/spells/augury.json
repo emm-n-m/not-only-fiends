@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:augury",
+  "name": "Augury",
+  "school": "divination",
+  "classLevels": {
+    "class:cleric": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text",
+    "focus": "see text"
+  },
+  "castingTime": "1 minute",
+  "range": "personal",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Learns whether an action will be good or bad.",
+  "target": "you"
+}
+]

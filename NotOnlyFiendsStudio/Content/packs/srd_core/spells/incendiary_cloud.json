@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:incendiary_cloud",
+  "name": "Incendiary Cloud",
+  "school": "conjuration",
+  "classLevels": {
+    "class:sorcerer": 8,
+    "class:wizard": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1/level rounds",
+  "savingThrow": "Reflex half; see text",
+  "spellResistance": "no",
+  "description": "Cloud deals 4d6 fire damage/round.",
+  "subschool": "creation",
+  "descriptors": [
+    "fire"
+  ],
+  "area": "Cloud spreads in 20-ft. radius, 20 ft. high"
+}
+]

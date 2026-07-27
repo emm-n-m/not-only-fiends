@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:resist_energy",
+  "name": "Resist Energy",
+  "school": "abjuration",
+  "classLevels": {
+    "class:ranger": 1,
+    "class:adept": 2,
+    "class:cleric": 2,
+    "class:druid": 2,
+    "class:paladin": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "10/level minutes",
+  "savingThrow": "Fortitude negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Ignores first ((1+(min(floor((CASTERLEVEL-3)/4),2)))*10) points of damage/attack from specified energy type.",
+  "target": "Creature touched"
+}
+]

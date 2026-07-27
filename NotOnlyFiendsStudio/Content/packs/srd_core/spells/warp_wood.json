@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:warp_wood",
+  "name": "Warp Wood",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (object)",
+  "spellResistance": "yes  (object)",
+  "description": "Bends wood (shaft, handle, door, plank).",
+  "area": "(CASTERLEVEL) Small wooden objects, all within a 20-ft. radius"
+}
+]

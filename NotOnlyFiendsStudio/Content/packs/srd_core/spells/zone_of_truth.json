@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:zone_of_truth",
+  "name": "Zone of Truth",
+  "school": "enchantment",
+  "classLevels": {
+    "class:cleric": 2,
+    "class:paladin": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Subjects within range cannot lie.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "area": "20-ft.-radius emanation"
+}
+]

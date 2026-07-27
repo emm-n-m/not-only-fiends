@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:touch_of_fatigue",
+  "name": "Touch of Fatigue",
+  "school": "necromancy",
+  "classLevels": {
+    "class:adept": 0,
+    "class:sorcerer": 0,
+    "class:wizard": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level rounds",
+  "savingThrow": "Fortitude negates",
+  "spellResistance": "yes",
+  "description": "Touch attack fatigues target.",
+  "target": "Creature touched"
+}
+]

@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:endure_elements",
+  "name": "Endure Elements",
+  "school": "abjuration",
+  "classLevels": {
+    "class:adept": 1,
+    "class:cleric": 1,
+    "class:druid": 1,
+    "class:paladin": 1,
+    "class:ranger": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "24 hours",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Exist comfortably in hot or cold environments.",
+  "target": "Creature touched"
+}
+]

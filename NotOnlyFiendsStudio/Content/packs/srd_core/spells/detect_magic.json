@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:detect_magic",
+  "name": "Detect Magic",
+  "school": "divination",
+  "classLevels": {
+    "class:adept": 0,
+    "class:bard": 0,
+    "class:cleric": 0,
+    "class:druid": 0,
+    "class:sorcerer": 0,
+    "class:wizard": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "60 ft.",
+  "duration": "Concentration, up to 1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Detects spells and magic items within 60 ft.",
+  "area": "Cone-shaped emanation"
+}
+]

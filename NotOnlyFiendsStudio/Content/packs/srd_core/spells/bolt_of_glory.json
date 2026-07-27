@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:bolt_of_glory",
+  "name": "Bolt of Glory",
+  "school": "evocation",
+  "classLevels": {
+    "domain:glory": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Ranged touch ray of positive energy. Deals (min(CASTERLEVEL,14)/2)d6 damage (max 7d6) to creatures of the Material/Elemental Planes and neutral outsiders, or (min(CASTERLEVEL,15))d6 (max 15d6) to undead, evil outsiders, and creatures of the Negative Energy Plane. Good outsiders are unharmed.",
+  "descriptors": [
+    "good"
+  ],
+  "effect": "Ray"
+}
+]

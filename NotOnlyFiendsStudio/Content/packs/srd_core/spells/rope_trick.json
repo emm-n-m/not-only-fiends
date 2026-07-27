@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:rope_trick",
+  "name": "Rope Trick",
+  "school": "transmutation",
+  "classLevels": {
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level hours (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "As many as eight creatures hide in extradimensional space.",
+  "target": "One touched piece of rope from 5 ft. to 30 ft. long"
+}
+]

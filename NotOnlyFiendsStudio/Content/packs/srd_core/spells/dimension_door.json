@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:dimension_door",
+  "name": "Dimension Door",
+  "school": "conjuration",
+  "classLevels": {
+    "class:bard": 4,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "Instantaneous",
+  "savingThrow": "None and Will negates (object)",
+  "spellResistance": "no and yes (object)",
+  "description": "Teleports you short distance.",
+  "subschool": "teleportation",
+  "target": "You and touched objects or other touched willing creatures"
+}
+]

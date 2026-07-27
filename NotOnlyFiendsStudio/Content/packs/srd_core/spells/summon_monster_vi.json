@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:summon_monster_vi",
+  "name": "Summon Monster VI",
+  "school": "conjuration",
+  "classLevels": {
+    "class:bard": 6,
+    "class:cleric": 6,
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "focus": "see text"
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Calls extraplanar creature to fight for you.",
+  "subschool": "summoning",
+  "target": "One or more summoned creatures, no two of which can be more than 30 ft. apart"
+}
+]

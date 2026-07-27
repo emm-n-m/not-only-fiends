@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:dominate_animal",
+  "name": "Dominate Animal",
+  "school": "enchantment",
+  "classLevels": {
+    "class:druid": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level rounds",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Subject animal obeys silent mental commands.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One animal"
+}
+]

@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:arcane_mark",
+  "name": "Arcane Mark",
+  "school": "universal",
+  "classLevels": {
+    "class:sorcerer": 0,
+    "class:wizard": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "0 ft.",
+  "duration": "Permanent",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Inscribes a personal rune (visible or invisible).",
+  "target": "One personal rune or mark, all of which must fit within 1 sq. ft."
+}
+]

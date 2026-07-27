@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:symbol_of_weakness",
+  "name": "Symbol of Weakness",
+  "school": "necromancy",
+  "classLevels": {
+    "class:cleric": 7,
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "0 ft.; see text",
+  "duration": "See text",
+  "savingThrow": "Fortitude negates",
+  "spellResistance": "yes",
+  "description": "Triggered rune weakens nearby creatures.",
+  "descriptors": [
+    "death"
+  ],
+  "target": "One symbol"
+}
+]

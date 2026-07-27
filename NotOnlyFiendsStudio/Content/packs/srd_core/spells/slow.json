@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:slow",
+  "name": "Slow",
+  "school": "transmutation",
+  "classLevels": {
+    "class:bard": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level rounds",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "(CASTERLEVEL) subjects take only one action/round, -1 to AC, -1 on attack rolls, -1 on Reflex saves.",
+  "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
+}
+]

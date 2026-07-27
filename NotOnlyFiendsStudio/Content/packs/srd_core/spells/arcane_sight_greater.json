@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:arcane_sight_greater",
+  "name": "Arcane Sight, Greater",
+  "school": "divination",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "As arcane sight, but also reveals magic effects on creatures and objects.",
+  "target": "you"
+}
+]

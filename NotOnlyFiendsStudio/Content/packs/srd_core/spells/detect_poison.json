@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:detect_poison",
+  "name": "Detect Poison",
+  "school": "divination",
+  "classLevels": {
+    "class:cleric": 0,
+    "class:druid": 0,
+    "class:sorcerer": 0,
+    "class:wizard": 0,
+    "class:paladin": 1,
+    "class:ranger": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Detects poison in one creature or small object.",
+  "area": "One creature, one object, or a 5-ft. cube"
+}
+]

@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:freedom",
+  "name": "Freedom",
+  "school": "abjuration",
+  "classLevels": {
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes",
+  "description": "Releases creature from imprisonment.",
+  "target": "One creature"
+}
+]

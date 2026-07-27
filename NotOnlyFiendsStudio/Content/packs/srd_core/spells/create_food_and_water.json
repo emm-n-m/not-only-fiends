@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:create_food_and_water",
+  "name": "Create Food and Water",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "10 minutes",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "24 hours; see text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Studios (CASTERLEVEL*3) humans or (CASTERLEVEL) horses.",
+  "subschool": "creation",
+  "target": "Food and water to sustain (CASTERLEVEL*3) humans or (CASTERLEVEL) horses for 24 hours"
+}
+]

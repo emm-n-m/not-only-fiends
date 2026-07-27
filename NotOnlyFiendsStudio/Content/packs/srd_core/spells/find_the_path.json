@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:find_the_path",
+  "name": "Find the Path",
+  "school": "divination",
+  "classLevels": {
+    "class:bard": 6,
+    "class:cleric": 6,
+    "class:druid": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "3 rounds",
+  "range": "Personal or touch",
+  "duration": "10/level minutes",
+  "savingThrow": "None or Will negates (harmless)",
+  "spellResistance": "no or yes (harmless)",
+  "description": "Shows most direct way to a location.",
+  "target": "You or creature touched"
+}
+]

@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:mages_lucubration",
+  "name": "Mage's Lucubration",
+  "school": "transmutation",
+  "classLevels": {
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Wizard only. Recalls spell of 5th level or lower.",
+  "target": "you"
+}
+]

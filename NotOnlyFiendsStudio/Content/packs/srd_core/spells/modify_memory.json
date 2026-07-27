@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:modify_memory",
+  "name": "Modify Memory",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 round; see text",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Permanent",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Changes 5 minutes of subject's memories.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One living creature"
+}
+]

@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:teleportation_circle",
+  "name": "Teleportation Circle",
+  "school": "conjuration",
+  "classLevels": {
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "0 ft.",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Circle teleports any creature inside to designated spot.",
+  "subschool": "teleportation",
+  "area": "5-ft.-radius circle that teleports those who activate it"
+}
+]

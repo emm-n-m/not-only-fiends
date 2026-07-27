@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:project_image",
+  "name": "Project Image",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 6,
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "Will disbelief (if interacted with)",
+  "spellResistance": "no",
+  "description": "Illusory double can talk and cast spells.",
+  "subschool": "shadow",
+  "target": "One shadow duplicate"
+}
+]

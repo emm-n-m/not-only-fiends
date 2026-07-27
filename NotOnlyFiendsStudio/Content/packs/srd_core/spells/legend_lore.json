@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:legend_lore",
+  "name": "Legend Lore",
+  "school": "divination",
+  "classLevels": {
+    "class:bard": 4,
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text",
+    "focus": "see text"
+  },
+  "castingTime": "See text",
+  "range": "personal",
+  "duration": "See text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Lets you learn tales about a person, place, or thing.",
+  "target": "you"
+}
+]

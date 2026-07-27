@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:planar_binding_lesser",
+  "name": "Planar Binding, Lesser",
+  "school": "conjuration",
+  "classLevels": {
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "10 minutes",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates",
+  "spellResistance": "no and yes; see text",
+  "description": "Traps extraplanar creature of 6 HD or less until it performs a task.",
+  "subschool": "calling",
+  "target": "One elemental or outsider with 6 HD or less"
+}
+]

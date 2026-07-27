@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:wall_of_ice",
+  "name": "Wall of Ice",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1/level minutes",
+  "savingThrow": "Reflex negates; see text",
+  "spellResistance": "yes",
+  "description": "Ice plane creates wall with (CASTERLEVEL+15) hp or hemisphere can trap creatures inside.",
+  "descriptors": [
+    "cold"
+  ],
+  "area": "Anchored plane of ice, up to (CASTERLEVEL) 10-ft. squares, or hemisphere of ice with a radius of up to (CASTERLEVEL+3) ft"
+}
+]

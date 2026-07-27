@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:polymorph_any_object",
+  "name": "Polymorph Any Object",
+  "school": "transmutation",
+  "classLevels": {
+    "class:sorcerer": 8,
+    "class:wizard": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "See text",
+  "savingThrow": "Fortitude negates (object); see text",
+  "spellResistance": "yes (object)",
+  "description": "Changes any subject into anything else.",
+  "target": "One creature, or one nonmagical object of up to (CASTERLEVEL*100) cu. ft"
+}
+]

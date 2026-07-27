@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:acid_splash",
+  "name": "Acid Splash",
+  "school": "conjuration",
+  "classLevels": {
+    "class:sorcerer": 0,
+    "class:wizard": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Orb deals 1d3 acid damage.",
+  "subschool": "creation",
+  "descriptors": [
+    "acid"
+  ],
+  "effect": "One missile of acid"
+}
+]

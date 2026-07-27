@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:symbol_of_insanity",
+  "name": "Symbol of Insanity",
+  "school": "enchantment",
+  "classLevels": {
+    "class:cleric": 8,
+    "class:sorcerer": 8,
+    "class:wizard": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "0 ft.; see text",
+  "duration": "See text",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Triggered rune renders nearby creatures insane.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One symbol"
+}
+]

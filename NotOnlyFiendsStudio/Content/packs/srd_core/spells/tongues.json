@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:tongues",
+  "name": "Tongues",
+  "school": "divination",
+  "classLevels": {
+    "class:bard": 2,
+    "class:adept": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3,
+    "class:cleric": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "10/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "no",
+  "description": "Speak any language.",
+  "target": "Creature touched"
+}
+]

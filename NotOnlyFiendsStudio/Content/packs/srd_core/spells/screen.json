@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:screen",
+  "name": "Screen",
+  "school": "illusion",
+  "classLevels": {
+    "class:sorcerer": 8,
+    "class:wizard": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "10 minutes",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "24 hours",
+  "savingThrow": "None or Will disbelief (if interacted with); see text",
+  "spellResistance": "no",
+  "description": "Illusion hides area from vision, scrying.",
+  "subschool": "glamer",
+  "area": "(CASTERLEVEL) 30-ft. cubes [S]"
+}
+]

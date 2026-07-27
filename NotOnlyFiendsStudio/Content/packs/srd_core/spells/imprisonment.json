@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:imprisonment",
+  "name": "Imprisonment",
+  "school": "abjuration",
+  "classLevels": {
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates; see text",
+  "spellResistance": "yes",
+  "description": "Entombs subject beneath the earth.",
+  "target": "Creature touched"
+}
+]

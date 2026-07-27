@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:pyrotechnics",
+  "name": "Pyrotechnics",
+  "school": "transmutation",
+  "classLevels": {
+    "class:bard": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "1d4+1 rounds, or 1d4+1 rounds after creatures leave the smoke cloud; see text",
+  "savingThrow": "Will negates or Fortitude negates; see text",
+  "spellResistance": "yes or no; see text",
+  "description": "Turns fire into blinding light or choking smoke.",
+  "area": "One fire source, up to a 20-ft. cube"
+}
+]

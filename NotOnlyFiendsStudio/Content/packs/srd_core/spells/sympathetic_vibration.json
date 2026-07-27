@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:sympathetic_vibration",
+  "name": "Sympathetic Vibration",
+  "school": "evocation",
+  "classLevels": {
+    "class:bard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "touch",
+  "duration": "Up to 1/level rounds",
+  "savingThrow": "None; see text",
+  "spellResistance": "yes",
+  "description": "Deals 2d10 damage/round to freestanding structure.",
+  "descriptors": [
+    "sonic"
+  ],
+  "target": "One freestanding structure"
+}
+]

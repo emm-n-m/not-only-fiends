@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:minor_image",
+  "name": "Minor Image",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "Concentration +2 rounds",
+  "savingThrow": "Will disbelief (if interacted with)",
+  "spellResistance": "no",
+  "description": "As silent image, plus some sound.",
+  "subschool": "figment",
+  "area": "Visual figment that cannot extend beyond (CASTERLEVEL+4) 10-ft. cubes [S]"
+}
+]

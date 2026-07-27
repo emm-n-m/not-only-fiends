@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:phantom_trap",
+  "name": "Phantom Trap",
+  "school": "illusion",
+  "classLevels": {
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Permanent (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Makes item seem trapped.",
+  "subschool": "glamer",
+  "target": "Object touched"
+}
+]

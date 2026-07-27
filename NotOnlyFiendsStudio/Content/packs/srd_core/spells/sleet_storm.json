@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:sleet_storm",
+  "name": "Sleet Storm",
+  "school": "conjuration",
+  "classLevels": {
+    "class:druid": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "1/level rounds",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Hampers vision and movement.",
+  "subschool": "creation",
+  "descriptors": [
+    "cold"
+  ],
+  "area": "Cylinder (40-ft. radius, 20 ft. high)"
+}
+]

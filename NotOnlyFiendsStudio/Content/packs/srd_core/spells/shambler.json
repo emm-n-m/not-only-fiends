@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:shambler",
+  "name": "Shambler",
+  "school": "conjuration",
+  "classLevels": {
+    "class:druid": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "Seven days or seven months (D); see text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Summons 1d4+2 shambling mounds to fight for you.",
+  "subschool": "creation",
+  "target": "Three or more shambling mounds, no two of which can be more than 30 ft. apart; see text"
+}
+]

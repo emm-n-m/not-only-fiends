@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:major_image",
+  "name": "Major Image",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "Concentration + 3 rounds",
+  "savingThrow": "Will disbelief (if interacted with)",
+  "spellResistance": "no",
+  "description": "As silent image, plus sound, smell and thermal effects.",
+  "subschool": "figment",
+  "area": "Visual figment that cannot extend beyond (CASTERLEVEL+4) 10-ft. cubes[S]"
+}
+]

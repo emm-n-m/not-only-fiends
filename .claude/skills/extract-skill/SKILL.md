@@ -51,7 +51,7 @@ Dispatch on the argument:
 
 ## Key conventions
 
-- Skill IDs: `snake_case` (`balance`, `use_magic_device`).
+- Skill IDs: `skill:<snake_case>` (`skill:balance`, `skill:use_magic_device`).
 - Subspecialty IDs: `parent_subcategory` (`knowledge_arcana`, `craft_alchemy`, `perform_sing`).
 - IDs must match existing `classSkills` references in HDDriver content.
 

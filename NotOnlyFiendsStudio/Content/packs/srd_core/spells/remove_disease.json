@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:remove_disease",
+  "name": "Remove Disease",
+  "school": "conjuration",
+  "classLevels": {
+    "class:adept": 3,
+    "class:cleric": 3,
+    "class:druid": 3,
+    "class:ranger": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Fortitude negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Cures all diseases affecting subject.",
+  "subschool": "healing",
+  "target": "Creature touched"
+}
+]

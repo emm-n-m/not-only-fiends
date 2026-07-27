@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:sunbeam",
+  "name": "Sunbeam",
+  "school": "evocation",
+  "classLevels": {
+    "class:druid": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "60 ft.",
+  "duration": "1/level rounds or until all beams are exhausted",
+  "savingThrow": "Reflex negates and Reflex half; see text",
+  "spellResistance": "yes",
+  "description": "Up to (min(CASTERLEVEL/3,6)) beams blind and deal 4d6 damage; undead take (min(CASTERLEVEL,20))d6 damage.",
+  "descriptors": [
+    "light"
+  ],
+  "area": "Line from your hand"
+}
+]

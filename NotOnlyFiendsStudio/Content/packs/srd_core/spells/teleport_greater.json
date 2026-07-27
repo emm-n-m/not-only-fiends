@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:teleport_greater",
+  "name": "Teleport, Greater",
+  "school": "conjuration",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "Personal and touch",
+  "duration": "Instantaneous",
+  "savingThrow": "None and Will negates (object)",
+  "spellResistance": "no and yes (object)",
+  "description": "As teleport, but no range limit and no off-target arrival.",
+  "subschool": "teleportation",
+  "target": "You and touched objects or other touched willing creatures"
+}
+]

@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:changestaff",
+  "name": "Changestaff",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 round",
+  "range": "touch",
+  "duration": "1/level hours (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Your staff becomes a treant on command.",
+  "target": "Your touched staff"
+}
+]

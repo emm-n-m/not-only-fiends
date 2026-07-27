@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:clairaudience_clairvoyance",
+  "name": "Clairaudience/Clairvoyance",
+  "school": "divination",
+  "classLevels": {
+    "class:bard": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "focus": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Hear or see at a distance for (CASTERLEVEL) minutes.",
+  "subschool": "scrying",
+  "target": "Magical sensor"
+}
+]

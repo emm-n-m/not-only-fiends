@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:animal_growth",
+  "name": "Animal Growth",
+  "school": "transmutation",
+  "classLevels": {
+    "class:ranger": 4,
+    "class:druid": 5,
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1/level minutes",
+  "savingThrow": "Fortitude negates",
+  "spellResistance": "yes",
+  "description": "One animal/two levels doubles in size.",
+  "target": "Up to (CASTERLEVEL/2) animals [Gargantuan or smaller], no two of which can be more than 30 ft. apart"
+}
+]

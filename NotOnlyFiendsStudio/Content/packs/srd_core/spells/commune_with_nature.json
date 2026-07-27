@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:commune_with_nature",
+  "name": "Commune with Nature",
+  "school": "divination",
+  "classLevels": {
+    "class:ranger": 4,
+    "class:druid": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "10 minutes",
+  "range": "personal",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Learn about terrain for (CASTERLEVEL) miles.",
+  "target": "you"
+}
+]

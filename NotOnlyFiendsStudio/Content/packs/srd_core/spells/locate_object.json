@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:locate_object",
+  "name": "Locate Object",
+  "school": "divination",
+  "classLevels": {
+    "class:bard": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2,
+    "class:cleric": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "1/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Senses direction toward object (specific or type).",
+  "area": "Circle, centered on you, with a radius of ((CASTERLEVEL*40)+400) ft."
+}
+]

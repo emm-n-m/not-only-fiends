@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:ice_storm",
+  "name": "Ice Storm",
+  "school": "evocation",
+  "classLevels": {
+    "class:druid": 4,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "1 full round",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Hail deals 5d6 damage in cylinder 40 ft. across.",
+  "descriptors": [
+    "cold"
+  ],
+  "area": "Cylinder (20-ft. radius, 40 ft. high)"
+}
+]

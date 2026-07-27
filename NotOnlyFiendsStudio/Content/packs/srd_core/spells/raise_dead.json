@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:raise_dead",
+  "name": "Raise Dead",
+  "school": "conjuration",
+  "classLevels": {
+    "class:adept": 5,
+    "class:cleric": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 minute",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "None; see text",
+  "spellResistance": "yes (harmless)",
+  "description": "Restores life to subject who died as long as (CASTERLEVEL) days ago.",
+  "subschool": "healing",
+  "target": "Dead creature touched"
+}
+]

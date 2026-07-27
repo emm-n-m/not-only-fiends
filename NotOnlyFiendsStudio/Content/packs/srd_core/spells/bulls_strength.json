@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:bulls_strength",
+  "name": "Bull's Strength",
+  "school": "transmutation",
+  "classLevels": {
+    "class:adept": 2,
+    "class:cleric": 2,
+    "class:druid": 2,
+    "class:paladin": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Subject gains +4 to Str for (CASTERLEVEL) minutes.",
+  "target": "Creature touched"
+}
+]

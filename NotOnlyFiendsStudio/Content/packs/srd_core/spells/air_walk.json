@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:air_walk",
+  "name": "Air Walk",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 4,
+    "class:druid": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "10/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "yes (harmless)",
+  "description": "Subject treads on air as if solid (climb at 45-degree angle).",
+  "descriptors": [
+    "air"
+  ],
+  "target": "Creature (Gargantuan or smaller) touched"
+}
+]

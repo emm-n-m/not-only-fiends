@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:spiritual_weapon",
+  "name": "Spiritual Weapon",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Magical weapon attacks on its own.",
+  "descriptors": [
+    "force"
+  ],
+  "target": "Magic weapon of force"
+}
+]

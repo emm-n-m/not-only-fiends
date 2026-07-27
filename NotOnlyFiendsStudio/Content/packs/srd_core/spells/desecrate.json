@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:desecrate",
+  "name": "Desecrate",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "2/level hours",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Fills area with negative energy, making undead stronger.",
+  "descriptors": [
+    "evil"
+  ],
+  "area": "20-ft.-radius emanation"
+}
+]

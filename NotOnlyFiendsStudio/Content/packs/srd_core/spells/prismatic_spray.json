@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:prismatic_spray",
+  "name": "Prismatic Spray",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "60 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "See text",
+  "spellResistance": "yes",
+  "description": "Rays hit subjects with variety of effects.",
+  "area": "Cone-shaped burst"
+}
+]

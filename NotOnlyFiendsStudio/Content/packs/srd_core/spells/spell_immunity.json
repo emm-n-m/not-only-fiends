@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:spell_immunity",
+  "name": "Spell Immunity",
+  "school": "abjuration",
+  "classLevels": {
+    "class:cleric": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "10/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Subject is immune to (CASTERLEVEL/4) spells, up to 4th-level spells.",
+  "target": "Creature touched"
+}
+]

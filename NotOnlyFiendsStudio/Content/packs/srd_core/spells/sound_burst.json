@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:sound_burst",
+  "name": "Sound Burst",
+  "school": "evocation",
+  "classLevels": {
+    "class:bard": 2,
+    "class:cleric": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Fortitude partial",
+  "spellResistance": "yes",
+  "description": "Deals 1d8 sonic damage to subjects; may stun them.",
+  "descriptors": [
+    "sonic"
+  ],
+  "area": "10-ft.-radius spread"
+}
+]

@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:transmute_metal_to_wood",
+  "name": "Transmute Metal to Wood",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "yes  (object; see text)",
+  "description": "Metal within 40 ft. becomes wood.",
+  "area": "All metal objects within a 40-ft.-radius burst"
+}
+]

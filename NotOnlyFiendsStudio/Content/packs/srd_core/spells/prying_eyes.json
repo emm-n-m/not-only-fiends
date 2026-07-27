@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:prying_eyes",
+  "name": "Prying Eyes",
+  "school": "divination",
+  "classLevels": {
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 minute",
+  "range": "One mile",
+  "duration": "1/level hours; see text (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "1d4+(CASTERLEVEL) floating eyes scout for you.",
+  "target": "Ten or more levitating eyes"
+}
+]

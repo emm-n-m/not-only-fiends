@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:shout_greater",
+  "name": "Shout, Greater",
+  "school": "evocation",
+  "classLevels": {
+    "class:bard": 6,
+    "class:sorcerer": 8,
+    "class:wizard": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "60 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "Fortitude partial or Reflex negates (object); see text",
+  "spellResistance": "yes  (object)",
+  "description": "Devastating yell deals 10d6 sonic damage; stuns creatures, damages objects.",
+  "descriptors": [
+    "sonic"
+  ],
+  "area": "Cone-shaped burst"
+}
+]

@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:teleport_object",
+  "name": "Teleport Object",
+  "school": "conjuration",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (object)",
+  "spellResistance": "yes  (object)",
+  "description": "As teleport, but affects a touched object.",
+  "subschool": "teleportation",
+  "target": "One touched object of up to (CASTERLEVEL*50) lbs and (CASTERLEVEL*3)cu. ft."
+}
+]

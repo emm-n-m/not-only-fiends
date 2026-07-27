@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:symbol_of_pain",
+  "name": "Symbol of Pain",
+  "school": "necromancy",
+  "classLevels": {
+    "class:cleric": 5,
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "0 ft.; see text",
+  "duration": "See text",
+  "savingThrow": "Fortitude negates",
+  "spellResistance": "yes",
+  "description": "Triggered rune wracks nearby creatures with pain.",
+  "descriptors": [
+    "evil"
+  ],
+  "target": "One symbol"
+}
+]

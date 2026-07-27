@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:owls_wisdom",
+  "name": "Owl's Wisdom",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 2,
+    "class:druid": 2,
+    "class:paladin": 2,
+    "class:ranger": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes",
+  "description": "Subject gains +4 to Wis for (CASTERLEVEL) minutes.",
+  "target": "Creature touched"
+}
+]

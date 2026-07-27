@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:sympathy",
+  "name": "Sympathy",
+  "school": "enchantment",
+  "classLevels": {
+    "class:sorcerer": 8,
+    "class:wizard": 8,
+    "class:druid": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 hour",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "2/level hours (D)",
+  "savingThrow": "Will negates; see text",
+  "spellResistance": "yes",
+  "description": "Object or location attracts certain creatures.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "area": "One location ((CASTERLEVEL) 10-ft. cubes) or one object"
+}
+]

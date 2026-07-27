@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:water_walk",
+  "name": "Water Walk",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 3,
+    "class:ranger": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Subject treads on water as if solid.",
+  "descriptors": [
+    "water"
+  ],
+  "target": "(CASTERLEVEL) touched creatures"
+}
+]

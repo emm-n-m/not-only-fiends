@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:cure_critical_wounds",
+  "name": "Cure Critical Wounds",
+  "school": "conjuration",
+  "classLevels": {
+    "class:adept": 4,
+    "class:bard": 4,
+    "class:cleric": 4,
+    "class:druid": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will half (harmless); see text",
+  "spellResistance": "yes (harmless); see text",
+  "description": "Cures 4d8+(min(CASTERLEVEL,20)) damage.",
+  "subschool": "healing",
+  "target": "Creature touched"
+}
+]

@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:heroism",
+  "name": "Heroism",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 2,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "10/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Gives +2 bonus on attack rolls, saves, skill checks.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "Creature touched"
+}
+]

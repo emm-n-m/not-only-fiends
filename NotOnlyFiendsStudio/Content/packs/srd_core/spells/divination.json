@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:divination",
+  "name": "Divination",
+  "school": "divination",
+  "classLevels": {
+    "class:cleric": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "personal",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Provides useful advice for specific proposed actions.",
+  "target": "you"
+}
+]

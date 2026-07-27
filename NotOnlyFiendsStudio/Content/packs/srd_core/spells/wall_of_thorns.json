@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:wall_of_thorns",
+  "name": "Wall of Thorns",
+  "school": "conjuration",
+  "classLevels": {
+    "class:druid": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Thorns damage anyone who tries to pass.",
+  "subschool": "creation",
+  "area": "Wall of thorny brush, up to (CASTERLEVEL) 10-ft. cubes [S]"
+}
+]

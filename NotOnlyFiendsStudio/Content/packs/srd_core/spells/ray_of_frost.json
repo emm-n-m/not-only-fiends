@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:ray_of_frost",
+  "name": "Ray of Frost",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 0,
+    "class:wizard": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Ray deals 1d3 cold damage.",
+  "descriptors": [
+    "cold"
+  ],
+  "effect": "Ray"
+}
+]

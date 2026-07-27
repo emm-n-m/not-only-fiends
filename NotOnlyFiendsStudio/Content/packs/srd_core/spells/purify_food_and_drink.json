@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:purify_food_and_drink",
+  "name": "Purify Food and Drink",
+  "school": "transmutation",
+  "classLevels": {
+    "class:adept": 0,
+    "class:cleric": 0,
+    "class:druid": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "10 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (object)",
+  "spellResistance": "yes (object)",
+  "description": "Purifies (CASTERLEVEL) cu. ft of food or water.",
+  "target": "(CASTERLEVEL) cu. ft. of contaminated food and water"
+}
+]

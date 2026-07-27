@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:summon_swarm",
+  "name": "Summon Swarm",
+  "school": "conjuration",
+  "classLevels": {
+    "class:bard": 2,
+    "class:druid": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Concentration + 2 rounds",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Summons swarm of bats, rats, or spiders.",
+  "subschool": "summoning",
+  "target": "One swarm of bats, rats, or spiders"
+}
+]

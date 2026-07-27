@@ -47,8 +47,8 @@ Class-bound indexes (use only for finding spell lists, not stat blocks):
    - Flavor paragraphs follow, including Material/Focus/XP component details in labeled `<p><i>…</i></p>` blocks.
 5. **ID normalization** — anchor `acid-arrow` → spell ID `acid_arrow`. For variants: `cure_light_wounds_mass`, `dispel_magic_greater`, `restoration_lesser`. Possessives preserved: `bigbys_interposing_hand`, `mordenkainens_disjunction`, `tashas_hideous_laughter`.
 6. **Batching** — extract one shard file or one school at a time; the full SRD is ~600 spells.
-7. **Check existing spells** — read [NotOnlyFiendsStudio/Content/packs/srd_core/spells/srd.json](../../../NotOnlyFiendsStudio/Content/packs/srd_core/spells/srd.json) before extraction to avoid duplicate IDs.
-8. **Write output** — SRD spells go to [NotOnlyFiendsStudio/Content/packs/srd_core/spells/srd.json](../../../NotOnlyFiendsStudio/Content/packs/srd_core/spells/srd.json) (append). Supplements go to a new pack's `spells/` directory.
+7. **Check existing spells** — list [NotOnlyFiendsStudio/Content/packs/srd_core/spells/](../../../NotOnlyFiendsStudio/Content/packs/srd_core/spells/) before extraction to avoid duplicate IDs (one file per spell, filename = bare id).
+8. **Write output** — one file per spell, filename = the bare id after `spell:` (e.g. `spell:acid_arrow` → `acid_arrow.json`), matching the format of any existing file in the directory. SRD spells go to [NotOnlyFiendsStudio/Content/packs/srd_core/spells/](../../../NotOnlyFiendsStudio/Content/packs/srd_core/spells/). Supplements go to a new pack's `spells/` directory. There is no flat `srd.json` to append to anymore.
 9. **Run tests** — `dotnet test`.
 
 ## PDF extraction workflow (fallback)
@@ -59,7 +59,7 @@ Class-bound indexes (use only for finding spell lists, not stat blocks):
 
 ## Key conventions
 
-- Spell IDs: `snake_case` (`fireball`, `cure_light_wounds`, `tashas_hideous_laughter`).
+- Spell IDs: `spell:<snake_case>` (`spell:fireball`, `spell:cure_light_wounds`, `spell:tashas_hideous_laughter`).
 - `Sor/Wiz N` → both `class:sorcerer` and `class:wizard` at level N in `classLevels`.
 - Use SRD wording for Range: `"close (25 ft. + 5 ft./2 levels)"`, `"medium (100 ft. + 10 ft./level)"`, `"long (400 ft. + 40 ft./level)"`.
 - Duration preserves `(D)` for dismissable.
@@ -68,4 +68,4 @@ Class-bound indexes (use only for finding spell lists, not stat blocks):
 
 - Schema: [schemas/spell.schema.json](../../../schemas/spell.schema.json)
 - Prompt: [schemas/prompts/extract-spell.md](../../../schemas/prompts/extract-spell.md)
-- Existing spells: [NotOnlyFiendsStudio/Content/packs/srd_core/spells/srd.json](../../../NotOnlyFiendsStudio/Content/packs/srd_core/spells/srd.json)
+- Existing spells: [NotOnlyFiendsStudio/Content/packs/srd_core/spells/](../../../NotOnlyFiendsStudio/Content/packs/srd_core/spells/)

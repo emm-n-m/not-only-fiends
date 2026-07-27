@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:blur",
+  "name": "Blur",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Attacks miss subject 20%% of the time.",
+  "subschool": "glamer",
+  "target": "Creature touched"
+}
+]

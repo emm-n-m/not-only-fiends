@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:repel_vermin",
+  "name": "Repel Vermin",
+  "school": "abjuration",
+  "classLevels": {
+    "class:ranger": 3,
+    "class:bard": 4,
+    "class:cleric": 4,
+    "class:druid": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "10 ft.",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "None or Will negates; see text",
+  "spellResistance": "yes",
+  "description": "Insects, spiders, and other vermin stay 10 ft. away.",
+  "area": "10 ft. radius emanation centered on you"
+}
+]

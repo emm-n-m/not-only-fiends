@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:guards_and_wards",
+  "name": "Guards and Wards",
+  "school": "abjuration",
+  "classLevels": {
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text",
+    "focus": "see text"
+  },
+  "castingTime": "30 minutes",
+  "range": "Anywhere within the area to be warded",
+  "duration": "2/level hours (D)",
+  "savingThrow": "See text",
+  "spellResistance": "see text",
+  "description": "Array of magic effects protect area.",
+  "target": "Up to (CASTERLEVEL*200) sq. ft [S]"
+}
+]

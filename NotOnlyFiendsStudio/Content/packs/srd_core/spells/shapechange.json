@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:shapechange",
+  "name": "Shapechange",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 9,
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Transforms you into any creature, and change forms once per round.",
+  "target": "you"
+}
+]

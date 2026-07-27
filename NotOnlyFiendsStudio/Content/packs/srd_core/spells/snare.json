@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:snare",
+  "name": "Snare",
+  "school": "transmutation",
+  "classLevels": {
+    "class:ranger": 2,
+    "class:druid": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "3 rounds",
+  "range": "touch",
+  "duration": "Until triggered or broken",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Creates a magic booby trap.",
+  "target": "Touched nonmagical circle of vine, rope, or thong with a 2 ft. diameter + 2 ft./level"
+}
+]

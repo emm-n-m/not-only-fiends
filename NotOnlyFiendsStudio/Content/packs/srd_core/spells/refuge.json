@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:refuge",
+  "name": "Refuge",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 7,
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Permanent until discharged",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Alters item to transport its possessor to you.",
+  "subschool": "teleportation",
+  "target": "Object touched"
+}
+]

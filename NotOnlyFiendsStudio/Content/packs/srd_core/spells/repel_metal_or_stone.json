@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:repel_metal_or_stone",
+  "name": "Repel Metal or Stone",
+  "school": "abjuration",
+  "classLevels": {
+    "class:druid": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "60 ft.",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Pushes away metal and stone.",
+  "descriptors": [
+    "earth"
+  ],
+  "area": "60 ft. line from you"
+}
+]

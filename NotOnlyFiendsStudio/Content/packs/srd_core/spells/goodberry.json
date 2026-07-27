@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:goodberry",
+  "name": "Goodberry",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level days",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "2d4 berries each cure 1 hp [max 8 hp/24 hours].",
+  "target": "2d4 fresh berries touched"
+}
+]

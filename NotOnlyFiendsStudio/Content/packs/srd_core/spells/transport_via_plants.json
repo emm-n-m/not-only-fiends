@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:transport_via_plants",
+  "name": "Transport via Plants",
+  "school": "conjuration",
+  "classLevels": {
+    "class:druid": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "unlimited",
+  "duration": "1 round",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Move instantly from one plant to another of the same kind.",
+  "subschool": "teleportation",
+  "target": "You and touched objects or other touched willing creatures"
+}
+]

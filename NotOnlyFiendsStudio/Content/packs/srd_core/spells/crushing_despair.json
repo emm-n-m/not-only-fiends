@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:crushing_despair",
+  "name": "Crushing Despair",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 3,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "30 ft.",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Subjects take -2 on attack rolls, damage rolls, saves, and checks.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "area": "Cone-shaped burst"
+}
+]

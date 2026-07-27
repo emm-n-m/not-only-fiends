@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:freezing_sphere",
+  "name": "Freezing Sphere",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "Instantaneous or 1/level rounds; see text",
+  "savingThrow": "Reflex half; see text",
+  "spellResistance": "yes",
+  "description": "Freezes water or deals cold damage.",
+  "descriptors": [
+    "cold"
+  ],
+  "target": "See text"
+}
+]

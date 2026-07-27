@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:mark_of_justice",
+  "name": "Mark of Justice",
+  "school": "necromancy",
+  "classLevels": {
+    "class:paladin": 4,
+    "class:cleric": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "10 minutes",
+  "range": "touch",
+  "duration": "Permanent;see text",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Designates action that will trigger curse on subject.",
+  "target": "Creature touched"
+}
+]

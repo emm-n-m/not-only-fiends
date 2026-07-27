@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:identify",
+  "name": "Identify",
+  "school": "divination",
+  "classLevels": {
+    "class:bard": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 hour",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Determines properties of magic item.",
+  "target": "One touched object"
+}
+]

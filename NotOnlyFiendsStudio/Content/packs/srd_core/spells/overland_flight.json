@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:overland_flight",
+  "name": "Overland Flight",
+  "school": "transmutation",
+  "classLevels": {
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "1/level hours",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "You fly at a speed of 40 ft. and can hustle over long distances.",
+  "target": "you"
+}
+]

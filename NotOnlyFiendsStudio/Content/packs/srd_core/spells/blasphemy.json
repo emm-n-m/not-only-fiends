@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:blasphemy",
+  "name": "Blasphemy",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "30 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "None or Will negates; see text",
+  "spellResistance": "yes",
+  "description": "Kills, paralyzes, weakens, or dazes nonevil subjects.",
+  "descriptors": [
+    "evil",
+    "sonic"
+  ],
+  "area": "Nonevil creatures in a 40-ft.-radius spread centered on you"
+}
+]

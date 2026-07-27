@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:symbol_of_fear",
+  "name": "Symbol of Fear",
+  "school": "necromancy",
+  "classLevels": {
+    "class:cleric": 6,
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "0 ft.; see text",
+  "duration": "See text",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Triggered rune panics nearby creatures.",
+  "descriptors": [
+    "fear",
+    "mind-affecting"
+  ],
+  "target": "One symbol"
+}
+]

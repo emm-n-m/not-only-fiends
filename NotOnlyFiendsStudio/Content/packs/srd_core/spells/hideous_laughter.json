@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:hideous_laughter",
+  "name": "Hideous Laughter",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 1,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level rounds",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Subject loses actions for (CASTERLEVEL) rounds.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One creature; see text"
+}
+]

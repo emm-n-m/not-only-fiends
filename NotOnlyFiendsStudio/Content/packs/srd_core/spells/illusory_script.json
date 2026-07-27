@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:illusory_script",
+  "name": "Illusory Script",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 minute or longer; see text",
+  "range": "touch",
+  "duration": "1/level days (D)",
+  "savingThrow": "Will negates; see text",
+  "spellResistance": "yes",
+  "description": "Only intended reader can decipher.",
+  "subschool": "phantasm",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One touched object weighing no more than 10 lb."
+}
+]

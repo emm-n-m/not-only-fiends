@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:genesis",
+  "name": "Genesis",
+  "school": "conjuration",
+  "subschool": "creation",
+  "classLevels": {
+    "domain:creation": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text",
+    "xpCost": "5,000 XP"
+  },
+  "castingTime": "1 week",
+  "range": "180 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Creates a small, finite, growing demiplane on the Ethereal Plane. Cannot create life or construction. Further castings from inside enlarge it by 60 ft. radius.",
+  "descriptors": [],
+  "effect": "A demiplane on the Ethereal Plane centered on your location"
+}
+]

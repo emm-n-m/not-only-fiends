@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:summon_monster_viii",
+  "name": "Summon Monster VIII",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 8,
+    "class:sorcerer": 8,
+    "class:wizard": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "focus": "see text"
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Calls extraplanar creature to fight for you.",
+  "subschool": "summoning",
+  "target": "One or more summoned creatures, no two of which can be more than 30 ft. apart"
+}
+]

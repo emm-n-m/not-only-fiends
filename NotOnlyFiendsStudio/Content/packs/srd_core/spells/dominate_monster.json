@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:dominate_monster",
+  "name": "Dominate Monster",
+  "school": "enchantment",
+  "classLevels": {
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level days",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "As dominate person, but any creature.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One creature"
+}
+]

@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:stone_tell",
+  "name": "Stone Tell",
+  "school": "divination",
+  "classLevels": {
+    "class:druid": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "10 minutes",
+  "range": "personal",
+  "duration": "1/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Talk to natural or worked stone.",
+  "target": "you"
+}
+]

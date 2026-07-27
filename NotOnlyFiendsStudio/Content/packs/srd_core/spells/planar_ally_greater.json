@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:planar_ally_greater",
+  "name": "Planar Ally, Greater",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "xpCost": true
+  },
+  "castingTime": "10 minutes",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "As lesser planar ally, but up to 18 HD.",
+  "subschool": "calling",
+  "descriptors": [
+    "see text"
+  ],
+  "target": "Up to three called elementals or outsiders, totaling no more than 18 HD, no two of which can be more than 30 ft. apart when they appear."
+}
+]

@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:plane_shift",
+  "name": "Plane Shift",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 5,
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "As many as eight subjects travel to another plane.",
+  "subschool": "teleportation",
+  "target": "Creature touched, or up to eight willing creatures joining hands"
+}
+]

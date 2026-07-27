@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:glyph_of_warding",
+  "name": "Glyph of Warding",
+  "school": "abjuration",
+  "classLevels": {
+    "class:cleric": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "touch",
+  "duration": "Permanent until discharged (D)",
+  "savingThrow": "See text",
+  "spellResistance": "no  (object) and yes; see text",
+  "description": "Inscription harms those who pass it.",
+  "target": "Object touched or up to (CASTERLEVEL*5) sq. ft"
+}
+]

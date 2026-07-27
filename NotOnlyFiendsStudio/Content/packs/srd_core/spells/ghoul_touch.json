@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:ghoul_touch",
+  "name": "Ghoul Touch",
+  "school": "necromancy",
+  "classLevels": {
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1d6+2 rounds",
+  "savingThrow": "Fortitude negates",
+  "spellResistance": "yes",
+  "description": "Paralyzes one subject, which exudes stench that makes those nearby sickened.",
+  "target": "Living humanoid touched"
+}
+]

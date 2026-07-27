@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:magic_missile",
+  "name": "Magic Missile",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "(min((CASTERLEVEL+1)/2,5)) missiles that do 1d4+1 damage each.",
+  "descriptors": [
+    "force"
+  ],
+  "target": "Up to five creatures, no two of which can be more than 15 ft. apart"
+}
+]

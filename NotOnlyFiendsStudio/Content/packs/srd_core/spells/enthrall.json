@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:enthrall",
+  "name": "Enthrall",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 2,
+    "class:cleric": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 round",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1 hour or less",
+  "savingThrow": "Will negates; see text",
+  "spellResistance": "yes",
+  "description": "Captivates all within ((CASTERLEVEL*10)+100) ft.",
+  "subschool": "charm",
+  "target": "Any number of creatures"
+}
+]

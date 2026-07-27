@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:glyph_of_warding_greater",
+  "name": "Glyph of Warding, Greater",
+  "school": "abjuration",
+  "classLevels": {
+    "class:cleric": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "touch",
+  "duration": "Permanent until discharged (D)",
+  "savingThrow": "See text",
+  "spellResistance": "no  (object) and yes; see text",
+  "description": "As glyph of warding, but up to 10d8 damage or 6th-level spell.",
+  "target": "Object touched or up to (CASTERLEVEL*5) sq. ft"
+}
+]

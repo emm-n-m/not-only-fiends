@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:make_whole",
+  "name": "Make Whole",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (harmless, object)",
+  "spellResistance": "yes (harmless, object)",
+  "description": "Repairs an object.",
+  "target": "One object of up to (CASTERLEVEL*10) cu. ft"
+}
+]

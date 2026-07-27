@@ -1,0 +1,31 @@
+[
+{
+  "id": "spell:wall_of_stone",
+  "name": "Wall of Stone",
+  "school": "conjuration",
+  "classLevels": {
+    "class:adept": 5,
+    "class:cleric": 5,
+    "class:sorcerer": 5,
+    "class:wizard": 5,
+    "class:druid": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "Instantaneous",
+  "savingThrow": "See text",
+  "spellResistance": "no",
+  "description": "Creates a stone wall that can be shaped.",
+  "subschool": "creation",
+  "descriptors": [
+    "earth"
+  ],
+  "area": "Stone wall whose area is up to (CASTERLEVEL) 5-ft. squares [S]"
+}
+]

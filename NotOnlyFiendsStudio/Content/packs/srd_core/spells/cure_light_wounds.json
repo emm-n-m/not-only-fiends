@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:cure_light_wounds",
+  "name": "Cure Light Wounds",
+  "school": "conjuration",
+  "classLevels": {
+    "class:adept": 1,
+    "class:bard": 1,
+    "class:cleric": 1,
+    "class:druid": 1,
+    "class:paladin": 1,
+    "class:ranger": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will half (harmless); see text",
+  "spellResistance": "yes (harmless); see text",
+  "description": "Cures 1d8+(min(CASTERLEVEL,5)) damage.",
+  "subschool": "healing",
+  "target": "Creature touched"
+}
+]

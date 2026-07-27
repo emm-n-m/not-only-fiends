@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:hallow",
+  "name": "Hallow",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 5,
+    "class:druid": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "24 hours",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "See text",
+  "spellResistance": "see text",
+  "description": "Designates location as holy.",
+  "descriptors": [
+    "good"
+  ],
+  "area": "40-ft. radius emanating from the touched point"
+}
+]

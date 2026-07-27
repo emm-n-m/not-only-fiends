@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:wood_shape",
+  "name": "Wood Shape",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (object)",
+  "spellResistance": "yes  (object)",
+  "description": "Rearranges wooden objects to suit you.",
+  "target": "One touched piece of wood no larger than (CASTERLEVEL+10) cu. ft."
+}
+]

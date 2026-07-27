@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:armor_of_darkness",
+  "name": "Armor of Darkness",
+  "school": "abjuration",
+  "classLevels": {
+    "domain:darkness": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "10/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Grants a +3 deflection bonus to AC (+1 per four caster levels, max +8), darkvision 60 ft., and +2 on saves against holy, good, or light effects. Undead subjects also gain +4 turn resistance.",
+  "descriptors": [
+    "darkness"
+  ],
+  "target": "Creature touched"
+}
+]

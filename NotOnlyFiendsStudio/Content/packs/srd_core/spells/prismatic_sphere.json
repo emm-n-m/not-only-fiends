@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:prismatic_sphere",
+  "name": "Prismatic Sphere",
+  "school": "abjuration",
+  "classLevels": {
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "10 ft.",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "See text",
+  "spellResistance": "see text",
+  "description": "As prismatic wall, but surrounds on all sides.",
+  "area": "10-ft.-radius sphere centered on you"
+}
+]

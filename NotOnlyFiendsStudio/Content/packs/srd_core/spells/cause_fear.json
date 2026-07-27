@@ -1,0 +1,30 @@
+[
+{
+  "id": "spell:cause_fear",
+  "name": "Cause Fear",
+  "school": "necromancy",
+  "classLevels": {
+    "class:adept": 1,
+    "class:bard": 1,
+    "class:cleric": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1d4 rounds or 1 round; see text",
+  "savingThrow": "Will partial",
+  "spellResistance": "yes",
+  "description": "One creature of 5 HD or less flees for 1d4 rounds.",
+  "descriptors": [
+    "fear",
+    "mind-affecting"
+  ],
+  "target": "One living creature with 5 or fewer HD"
+}
+]

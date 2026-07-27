@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:helping_hand",
+  "name": "Helping Hand",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "5 miles",
+  "duration": "1/level hours",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Ghostly hand leads subject to you.",
+  "target": "Ghostly hand"
+}
+]

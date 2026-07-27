@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:heal_mount",
+  "name": "Heal Mount",
+  "school": "conjuration",
+  "classLevels": {
+    "class:paladin": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "As heal on warhorse or other special mount.",
+  "subschool": "healing",
+  "target": "Your mount touched"
+}
+]

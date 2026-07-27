@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:remove_fear",
+  "name": "Remove Fear",
+  "school": "abjuration",
+  "classLevels": {
+    "class:bard": 1,
+    "class:cleric": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "10 minutes; see text",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Suppresses fear or gives +4 on saves against fear for (CASTERLEVEL/4+1) subjects.",
+  "target": "((CASTERLEVEL/4)+1) creatures, no two of which can be more than 30 ft. apart"
+}
+]

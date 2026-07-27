@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:bless_water",
+  "name": "Bless Water",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 1,
+    "class:paladin": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 minute",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (object)",
+  "spellResistance": "yes (object)",
+  "description": "Makes holy water.",
+  "descriptors": [
+    "good"
+  ],
+  "target": "Flask of water touched"
+}
+]

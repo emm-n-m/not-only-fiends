@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:telepathic_bond",
+  "name": "Telepathic Bond",
+  "school": "divination",
+  "classLevels": {
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Link lets allies communicate.",
+  "target": "You plus (CASTERLEVEL/3) willing creatures, no two of which can be more than 30 ft. apart"
+}
+]

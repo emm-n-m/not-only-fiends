@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:flare",
+  "name": "Flare",
+  "school": "evocation",
+  "classLevels": {
+    "class:bard": 0,
+    "class:druid": 0,
+    "class:sorcerer": 0,
+    "class:wizard": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Fortitude negates",
+  "spellResistance": "yes",
+  "description": "Dazzles one creature (-1 on attack rolls).",
+  "descriptors": [
+    "light"
+  ],
+  "area": "Burst of light"
+}
+]

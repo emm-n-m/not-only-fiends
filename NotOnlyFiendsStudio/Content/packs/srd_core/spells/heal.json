@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:heal",
+  "name": "Heal",
+  "school": "conjuration",
+  "classLevels": {
+    "class:adept": 5,
+    "class:cleric": 6,
+    "class:druid": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Cures (min(CASTERLEVEL*10,150)) points of damage, all diseases and mental conditions.",
+  "subschool": "healing",
+  "target": "Creature touched"
+}
+]

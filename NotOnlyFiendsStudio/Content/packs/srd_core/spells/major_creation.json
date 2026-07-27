@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:major_creation",
+  "name": "Major Creation",
+  "school": "conjuration",
+  "classLevels": {
+    "class:adept": 5,
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "See text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "As minor creation, plus stone and metal.",
+  "subschool": "creation",
+  "target": "Unattended, nonmagical object of nonliving plant matter, up to 1 cu. ft./level"
+}
+]

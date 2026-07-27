@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:fireball",
+  "name": "Fireball",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "Instantaneous",
+  "savingThrow": "Reflex half",
+  "spellResistance": "yes",
+  "description": "(min(CASTERLEVEL,10))d6 fire damage, 20-ft. radius.",
+  "descriptors": [
+    "fire"
+  ],
+  "area": "20-ft.-radius spread"
+}
+]

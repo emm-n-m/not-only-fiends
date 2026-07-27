@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:solid_fog",
+  "name": "Solid Fog",
+  "school": "conjuration",
+  "classLevels": {
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Blocks vision and slows movement.",
+  "subschool": "creation",
+  "area": "Fog spreads in 20-ft. radius, 20 ft. high"
+}
+]

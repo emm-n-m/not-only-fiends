@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:chill_metal",
+  "name": "Chill Metal",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "7 rounds",
+  "savingThrow": "Will negates (object)",
+  "spellResistance": "yes  (object)",
+  "description": "Cold metal damages those who touch it.",
+  "descriptors": [
+    "cold"
+  ],
+  "target": "Metal equipment of (CASTERLEVEL/2) creatures, no two of which can be more than 30 ft. apart; or (CASTERLEVEL*25) lbs of metal"
+}
+]

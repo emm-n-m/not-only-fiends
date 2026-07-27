@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:status_greater",
+  "name": "Status, Greater",
+  "school": "divination",
+  "classLevels": {
+    "domain:community": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level hours",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "As status, but you can also cast harmless touch-range spells of 2nd level or lower on a linked subject through the link.",
+  "descriptors": [],
+  "target": "(CASTERLEVEL/3) living creatures touched"
+}
+]

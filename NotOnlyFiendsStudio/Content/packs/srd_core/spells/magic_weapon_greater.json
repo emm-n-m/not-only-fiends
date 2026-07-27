@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:magic_weapon_greater",
+  "name": "Magic Weapon, Greater",
+  "school": "transmutation",
+  "classLevels": {
+    "class:paladin": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3,
+    "class:cleric": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level hours",
+  "savingThrow": "Will negates (harmless, object)",
+  "spellResistance": "yes (harmless, object)",
+  "description": "Weapon gains +(min(CASTERLEVEL/4,5)) bonus.",
+  "target": "One weapon or fifty projectiles (all of which must be in contact with each other at the time of casting)"
+}
+]

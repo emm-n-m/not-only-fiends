@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:call_lightning",
+  "name": "Call Lightning",
+  "school": "evocation",
+  "classLevels": {
+    "class:druid": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 round",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1/level minutes",
+  "savingThrow": "Reflex half",
+  "spellResistance": "yes",
+  "description": "Calls down (min(CASTERLEVEL,10)) lightning bolts over duration [3d6 per bolt] from sky; 3d10 in outdoors stormy area.",
+  "descriptors": [
+    "electricity"
+  ],
+  "area": "One or more 30-ft.-long vertical lines of lightning"
+}
+]

@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:shout",
+  "name": "Shout",
+  "school": "evocation",
+  "classLevels": {
+    "class:bard": 4,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "30 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "Fortitude partial or Reflex negates (object); see text",
+  "spellResistance": "yes  (object)",
+  "description": "Deafens all within cone and deals 5d6 sonic damage.",
+  "descriptors": [
+    "sonic"
+  ],
+  "area": "Cone-shaped burst"
+}
+]

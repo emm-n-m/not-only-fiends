@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:glibness",
+  "name": "Glibness",
+  "school": "transmutation",
+  "classLevels": {
+    "class:bard": 3
+  },
+  "components": {
+    "verbal": false,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "You gain +30 bonus on Bluff checks, and your lies can escape magical discernment.",
+  "target": "you"
+}
+]

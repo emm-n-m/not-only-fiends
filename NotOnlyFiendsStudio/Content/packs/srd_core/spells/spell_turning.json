@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:spell_turning",
+  "name": "Spell Turning",
+  "school": "abjuration",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "Until expended or 10/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Reflect 1d4+6 spell levels back at caster.",
+  "target": "you"
+}
+]

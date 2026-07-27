@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:command",
+  "name": "Command",
+  "school": "enchantment",
+  "classLevels": {
+    "class:adept": 1,
+    "class:cleric": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1 round",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "One subject obeys selected command for 1 round.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "language-dependent",
+    "mind-affecting"
+  ],
+  "target": "One living creature"
+}
+]

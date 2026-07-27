@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:open_close",
+  "name": "Open/Close",
+  "school": "transmutation",
+  "classLevels": {
+    "class:bard": 0,
+    "class:sorcerer": 0,
+    "class:wizard": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (object)",
+  "spellResistance": "yes  (object)",
+  "description": "Opens or closes small or light things.",
+  "target": "Object weighing up to 30 lb. or portal that can be opened or closed"
+}
+]

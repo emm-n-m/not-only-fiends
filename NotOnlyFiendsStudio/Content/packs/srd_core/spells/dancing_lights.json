@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:dancing_lights",
+  "name": "Dancing Lights",
+  "school": "evocation",
+  "classLevels": {
+    "class:bard": 0,
+    "class:sorcerer": 0,
+    "class:wizard": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1 minute (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Creates torches or other lights.",
+  "descriptors": [
+    "light"
+  ],
+  "area": "Up to four lights, all within a 10-ft.-radius area"
+}
+]

@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:chaos_hammer",
+  "name": "Chaos Hammer",
+  "school": "evocation",
+  "classLevels": {
+    "domain:chaos": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "Instantaneous (1d6 rounds); see text",
+  "savingThrow": "Will partial; see text",
+  "spellResistance": "yes",
+  "description": "Deals (min(CASTERLEVEL,10)/2)d8 damage to lawful creatures ((min(CASTERLEVEL,10))d6 to lawful outsiders) and slows them 1d6 rounds; Will save halves damage and negates slow. Neutral creatures take half damage (Will quarters); chaotic creatures unaffected.",
+  "descriptors": [
+    "chaotic"
+  ],
+  "area": "20-ft.-radius burst"
+}
+]

@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:contagion",
+  "name": "Contagion",
+  "school": "necromancy",
+  "classLevels": {
+    "class:adept": 3,
+    "class:cleric": 3,
+    "class:druid": 3,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Fortitude negates",
+  "spellResistance": "yes",
+  "description": "Infects subject with chosen disease.",
+  "descriptors": [
+    "evil"
+  ],
+  "target": "Living creature touched"
+}
+]

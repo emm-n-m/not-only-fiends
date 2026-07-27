@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:cure_minor_wounds",
+  "name": "Cure Minor Wounds",
+  "school": "conjuration",
+  "classLevels": {
+    "class:adept": 0,
+    "class:cleric": 0,
+    "class:druid": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will half (harmless); see text",
+  "spellResistance": "yes (harmless); see text",
+  "description": "Cures 1 point of damage.",
+  "subschool": "healing",
+  "target": "Creature touched"
+}
+]

@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:regenerate",
+  "name": "Regenerate",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 7,
+    "class:druid": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "3 full rounds",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Fortitude negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Subject's severed limbs grow back, cures 4d8+(CASTERLEVEL) [max +35].",
+  "subschool": "healing",
+  "target": "Living creature touched"
+}
+]

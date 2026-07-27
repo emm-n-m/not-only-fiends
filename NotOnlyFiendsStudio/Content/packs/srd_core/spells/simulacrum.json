@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:simulacrum",
+  "name": "Simulacrum",
+  "school": "illusion",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text",
+    "xpCost": true
+  },
+  "castingTime": "12 hours",
+  "range": "0 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Creates partially real double of a creature.",
+  "subschool": "shadow",
+  "target": "One duplicate creature"
+}
+]

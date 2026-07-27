@@ -1,0 +1,31 @@
+[
+{
+  "id": "spell:daylight",
+  "name": "Daylight",
+  "school": "evocation",
+  "classLevels": {
+    "class:adept": 3,
+    "class:bard": 3,
+    "class:cleric": 3,
+    "class:druid": 3,
+    "class:paladin": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "60-ft. radius of bright light.",
+  "descriptors": [
+    "light"
+  ],
+  "target": "Object touched"
+}
+]

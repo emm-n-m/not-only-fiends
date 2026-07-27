@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:acid_arrow",
+  "name": "Acid Arrow",
+  "school": "conjuration",
+  "classLevels": {
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text",
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "((CASTERLEVEL/3)+1) rounds",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Ranged touch attack; 2d4 damage for ((min(CASTERLEVEL,18)/3)+1) rounds.",
+  "subschool": "creation",
+  "descriptors": [
+    "acid"
+  ],
+  "effect": "One arrow of acid"
+}
+]

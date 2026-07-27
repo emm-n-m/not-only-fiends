@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:illusory_wall",
+  "name": "Illusory Wall",
+  "school": "illusion",
+  "classLevels": {
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Permanent",
+  "savingThrow": "Will disbelief (if interacted with)",
+  "spellResistance": "no",
+  "description": "Wall, floor, or ceiling looks real, but anything can pass through.",
+  "subschool": "figment",
+  "target": "Image 1 ft. by 10 ft. by 10 ft."
+}
+]

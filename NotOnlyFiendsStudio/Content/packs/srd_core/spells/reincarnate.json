@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:reincarnate",
+  "name": "Reincarnate",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "None; see text",
+  "spellResistance": "yes (harmless)",
+  "description": "Brings dead subject back in a random body.",
+  "target": "Dead creature touched"
+}
+]

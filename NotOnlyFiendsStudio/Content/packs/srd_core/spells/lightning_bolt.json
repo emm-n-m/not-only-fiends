@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:lightning_bolt",
+  "name": "Lightning Bolt",
+  "school": "evocation",
+  "classLevels": {
+    "class:adept": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "120 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "Reflex half",
+  "spellResistance": "yes",
+  "description": "Electricity deals (min(CASTERLEVEL,10))d6 damage.",
+  "descriptors": [
+    "electricity"
+  ],
+  "area": "120-ft. line"
+}
+]

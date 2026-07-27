@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:ghost_sound",
+  "name": "Ghost Sound",
+  "school": "illusion",
+  "classLevels": {
+    "class:adept": 0,
+    "class:bard": 0,
+    "class:sorcerer": 0,
+    "class:wizard": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "Will disbelief (if interacted with)",
+  "spellResistance": "no",
+  "description": "Figment sounds.",
+  "subschool": "figment",
+  "target": "Illusory sounds"
+}
+]

@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:heroes_feast",
+  "name": "Heroes' Feast",
+  "school": "conjuration",
+  "classLevels": {
+    "class:bard": 6,
+    "class:cleric": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "10 minutes",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1 hour plus 12 hours; see text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Food for (CASTERLEVEL) creatures cures and grants combat bonuses.",
+  "subschool": "creation",
+  "descriptors": [
+    "creation"
+  ],
+  "target": "Feast for (CASTERLEVEL) creatures"
+}
+]

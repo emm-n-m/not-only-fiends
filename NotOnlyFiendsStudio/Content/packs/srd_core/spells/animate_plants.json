@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:animate_plants",
+  "name": "Animate Plants",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level rounds or hours; see text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "One or more plants animate and fight for you.",
+  "target": "(CASTERLEVEL/3) Large plants or all plants within range; see text"
+}
+]

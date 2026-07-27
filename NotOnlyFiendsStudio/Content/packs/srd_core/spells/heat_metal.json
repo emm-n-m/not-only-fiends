@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:heat_metal",
+  "name": "Heat Metal",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "7 rounds",
+  "savingThrow": "Will negates (object)",
+  "spellResistance": "yes  (object)",
+  "description": "Make metal so hot it damages those who touch it.",
+  "descriptors": [
+    "fire"
+  ],
+  "target": "Metal equipment of (CASTERLEVEL/2) creatures, no two of which can be more than 30 ft. apart; or (CASTERLEVEL*25) lb. of metal, all of which must be within a 30-ft. circle"
+}
+]

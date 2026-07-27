@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:permanent_image",
+  "name": "Permanent Image",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 6,
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "Permanent (D)",
+  "savingThrow": "Will disbelief (if interacted with)",
+  "spellResistance": "no",
+  "description": "Includes sight, sound, and smell.",
+  "subschool": "figment",
+  "area": "Figment that cannot extend beyond a 20-ft. cube + (CASTERLEVEL) 10-ft. cubes [S]"
+}
+]

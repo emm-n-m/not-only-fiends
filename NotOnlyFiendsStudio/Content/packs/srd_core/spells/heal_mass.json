@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:heal_mass",
+  "name": "Heal, Mass",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Cures (min(CASTERLEVEL*10,250)) points of damage, all diseases and mental conditions of several subjects.",
+  "subschool": "healing",
+  "target": "One or more creatures, no two of which can be more than 30 ft. apart"
+}
+]

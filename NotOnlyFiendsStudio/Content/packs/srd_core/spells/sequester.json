@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:sequester",
+  "name": "Sequester",
+  "school": "abjuration",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level days (D)",
+  "savingThrow": "None or Will negates (object)",
+  "spellResistance": "no or yes (object)",
+  "description": "Subject is invisible to sight and scrying; renders creature comatose.",
+  "area": "One willing creature or object of up to (CASTERLEVEL*2) ft. cubed"
+}
+]

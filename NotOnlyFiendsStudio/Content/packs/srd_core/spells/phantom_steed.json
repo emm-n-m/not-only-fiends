@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:phantom_steed",
+  "name": "Phantom Steed",
+  "school": "conjuration",
+  "classLevels": {
+    "class:bard": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "10 minutes",
+  "range": "0 ft.",
+  "duration": "1/level hours (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Magic horse appears for (CASTERLEVEL) hours.",
+  "subschool": "creation",
+  "target": "One quasi-real, horselike creature"
+}
+]

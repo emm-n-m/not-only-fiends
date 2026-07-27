@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:awaken",
+  "name": "Awaken",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "xpCost": true
+  },
+  "castingTime": "24 hours",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Animal or tree gains human intellect.",
+  "target": "Animal or tree touched"
+}
+]

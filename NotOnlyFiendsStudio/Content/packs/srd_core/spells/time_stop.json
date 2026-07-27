@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:time_stop",
+  "name": "Time Stop",
+  "school": "transmutation",
+  "classLevels": {
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "1d4+1 rounds (apparent time); see text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "You act freely for 1d4+1 rounds.",
+  "target": "you"
+}
+]

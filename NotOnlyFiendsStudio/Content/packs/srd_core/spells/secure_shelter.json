@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:secure_shelter",
+  "name": "Secure Shelter",
+  "school": "conjuration",
+  "classLevels": {
+    "class:bard": 4,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "2/level hours (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Creates sturdy cottage.",
+  "subschool": "creation",
+  "target": "20 ft. square structure"
+}
+]

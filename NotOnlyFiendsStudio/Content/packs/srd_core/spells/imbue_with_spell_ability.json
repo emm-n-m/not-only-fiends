@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:imbue_with_spell_ability",
+  "name": "Imbue with Spell Ability",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "10 minutes",
+  "range": "touch",
+  "duration": "Permanent until discharged (D)",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Transfer spells to subject.",
+  "target": "Creature touched; see text"
+}
+]

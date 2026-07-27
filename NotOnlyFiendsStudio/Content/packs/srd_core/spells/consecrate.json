@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:consecrate",
+  "name": "Consecrate",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "2/level hours",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Fills area with positive energy, making undead weaker.",
+  "descriptors": [
+    "good"
+  ],
+  "area": "20-ft.-radius emanation"
+}
+]

@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:fire_seeds",
+  "name": "Fire Seeds",
+  "school": "conjuration",
+  "classLevels": {
+    "class:druid": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "10/level minutes or until used",
+  "savingThrow": "None or Reflex half; see text",
+  "spellResistance": "no",
+  "description": "Acorns and berries become grenades and bombs.",
+  "subschool": "creation",
+  "descriptors": [
+    "fire"
+  ],
+  "target": "Up to four touched acorns or up to eight touched holly berries"
+}
+]

@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:creeping_doom",
+  "name": "Creeping Doom",
+  "school": "conjuration",
+  "classLevels": {
+    "class:druid": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Swarms of centipedes attack at your command.",
+  "subschool": "summoning",
+  "target": "(CASTERLEVEL/2) swarms of centipedes"
+}
+]

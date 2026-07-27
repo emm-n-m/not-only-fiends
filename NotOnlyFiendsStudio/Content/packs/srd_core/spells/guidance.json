@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:guidance",
+  "name": "Guidance",
+  "school": "divination",
+  "classLevels": {
+    "class:adept": 0,
+    "class:cleric": 0,
+    "class:druid": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1 minute or until discharged",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes",
+  "description": "+1 on one attack roll, saving throw, or skill check.",
+  "target": "Creature touched"
+}
+]

@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:crown_of_glory",
+  "name": "Crown of Glory",
+  "school": "evocation",
+  "classLevels": {
+    "domain:glory": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "Gems worth at least 200 gp"
+  },
+  "castingTime": "1 full-round action",
+  "range": "personal",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "You gain a +4 enhancement bonus to Charisma. Creatures of fewer than 8 HD must attend to you and are enthralled unless they make a Will save before acting hostilely; you may issue up to three mass suggestions to such creatures. Creatures of 8+ HD are unaffected.",
+  "descriptors": [],
+  "area": "120-ft.-radius emanation centered on you"
+}
+]

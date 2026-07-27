@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:detect_animals_or_plants",
+  "name": "Detect Animals or Plants",
+  "school": "divination",
+  "classLevels": {
+    "class:druid": 1,
+    "class:ranger": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "Concentration, up to 10/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Detects kinds of animals or plants.",
+  "area": "Cone-shaped emanation"
+}
+]

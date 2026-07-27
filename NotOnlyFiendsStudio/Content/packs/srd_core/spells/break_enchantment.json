@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:break_enchantment",
+  "name": "Break Enchantment",
+  "school": "abjuration",
+  "classLevels": {
+    "class:bard": 4,
+    "class:paladin": 4,
+    "class:adept": 5,
+    "class:cleric": 5,
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 minute",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "See text",
+  "spellResistance": "no",
+  "description": "Frees subjects from enchantments, alterations, curses, and petrification.",
+  "target": "Up to (CASTERLEVEL) creatures, all within 30 ft. of each other"
+}
+]

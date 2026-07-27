@@ -1,0 +1,30 @@
+[
+{
+  "id": "spell:geas_quest",
+  "name": "Geas/Quest",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 6,
+    "class:cleric": 6,
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "10 minutes",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level days or until discharged (D)",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "As lesser geas, plus it affects any creature.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "language-dependent",
+    "mind-affecting"
+  ],
+  "target": "One living creature"
+}
+]

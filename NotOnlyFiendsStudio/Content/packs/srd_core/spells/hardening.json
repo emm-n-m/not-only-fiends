@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:hardening",
+  "name": "Hardening",
+  "school": "transmutation",
+  "classLevels": {
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Permanent",
+  "savingThrow": "None",
+  "spellResistance": "yes (object)",
+  "description": "",
+  "target": "One item of a volume of no greater than (CASTERLEVEL*10) cu. ft."
+}
+]

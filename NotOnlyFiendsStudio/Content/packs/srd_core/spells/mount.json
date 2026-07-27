@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:mount",
+  "name": "Mount",
+  "school": "conjuration",
+  "classLevels": {
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "2/level hours (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Summons riding horse for (CASTERLEVEL*2) hours.",
+  "subschool": "summoning",
+  "target": "One mount"
+}
+]

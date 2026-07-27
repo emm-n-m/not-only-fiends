@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:scorching_ray",
+  "name": "Scorching Ray",
+  "school": "evocation",
+  "classLevels": {
+    "class:adept": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "(1+min((CASTERLEVEL-3)/4,2)) rays, ranged touch attack deals 4d6 fire damage.",
+  "descriptors": [
+    "fire"
+  ],
+  "effect": "(1+min((CASTERLEVEL-3)/4,2)) rays"
+}
+]

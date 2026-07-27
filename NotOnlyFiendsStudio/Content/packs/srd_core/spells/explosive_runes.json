@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:explosive_runes",
+  "name": "Explosive Runes",
+  "school": "abjuration",
+  "classLevels": {
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Permanent until discharged (D)",
+  "savingThrow": "See text",
+  "spellResistance": "yes",
+  "description": "Deals 6d6 damage when read.",
+  "descriptors": [
+    "force"
+  ],
+  "target": "One touched object weighing no more than 10 lb."
+}
+]

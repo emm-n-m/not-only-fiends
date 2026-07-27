@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:contingency",
+  "name": "Contingency",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text",
+    "focus": "see text"
+  },
+  "castingTime": "At least 10 minutes; see text",
+  "range": "personal",
+  "duration": "1/level days (D) or until discharged",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Sets trigger condition for another spell.",
+  "target": "you"
+}
+]

@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:speak_with_dead",
+  "name": "Speak with Dead",
+  "school": "necromancy",
+  "classLevels": {
+    "class:cleric": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "10 minutes",
+  "range": "10 ft.",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates; see text",
+  "spellResistance": "no",
+  "description": "Corpse answers (CASTERLEVEL/2) questions.",
+  "descriptors": [
+    "language-dependent"
+  ],
+  "target": "One dead creature"
+}
+]

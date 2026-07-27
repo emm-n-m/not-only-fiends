@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:mages_magnificent_mansion",
+  "name": "Mage's Magnificent Mansion",
+  "school": "conjuration",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "2/level hours (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Door leads to extradimensional mansion.",
+  "subschool": "creation",
+  "area": "Extradimensional mansion, up to (CASTERLEVEL*3) 10-ft. cubes [S]"
+}
+]

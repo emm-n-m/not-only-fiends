@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:surelife",
+  "name": "Surelife",
+  "school": "abjuration",
+  "classLevels": {
+    "domain:repose": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 round",
+  "range": "personal",
+  "duration": "(CASTERLEVEL/2) minutes",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Protects you from one specified natural condition that would otherwise cause certain death. Ineffective against spells or the actions of creatures, and does not protect carried items.",
+  "descriptors": [],
+  "target": "You"
+}
+]

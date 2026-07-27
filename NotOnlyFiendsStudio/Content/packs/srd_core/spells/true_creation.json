@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:true_creation",
+  "name": "True Creation",
+  "school": "conjuration",
+  "subschool": "creation",
+  "classLevels": {
+    "domain:creation": 8,
+    "domain:artifice": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text",
+    "xpCost": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "0 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Creates a permanent, nonmagical, unattended object of nonliving matter up to 1 cu. ft./level. Unlike minor/major creation, these objects can serve as material components. XP cost equals the item's gp value (minimum 1 XP).",
+  "descriptors": [],
+  "effect": "Unattended, nonmagical object of nonliving matter, up to 1 cu. ft./level"
+}
+]

@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:darkvision",
+  "name": "Darkvision",
+  "school": "transmutation",
+  "classLevels": {
+    "class:sorcerer": 2,
+    "class:wizard": 2,
+    "class:ranger": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level hours",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "See 60 ft. in total darkness.",
+  "target": "Creature touched"
+}
+]

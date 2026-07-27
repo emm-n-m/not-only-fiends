@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:arcane_eye",
+  "name": "Arcane Eye",
+  "school": "divination",
+  "classLevels": {
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "unlimited",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Invisible floating eye moves 30 ft./round.",
+  "subschool": "scrying",
+  "target": "Magical sensor"
+}
+]

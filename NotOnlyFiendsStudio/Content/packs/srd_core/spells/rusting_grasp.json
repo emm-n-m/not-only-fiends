@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:rusting_grasp",
+  "name": "Rusting Grasp",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "See text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Your touch corrodes iron and alloys.",
+  "target": "One nonmagical ferrous object (or the volume of the object within 3 ft. of the touched point) or one ferrous creature"
+}
+]

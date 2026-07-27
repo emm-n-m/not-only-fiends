@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:vision",
+  "name": "Vision",
+  "school": "divination",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text",
+    "xpCost": true
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "See text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "As legend lore, but quicker and strenuous.",
+  "target": "you"
+}
+]

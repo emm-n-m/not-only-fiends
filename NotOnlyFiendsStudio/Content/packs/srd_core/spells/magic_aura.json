@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:magic_aura",
+  "name": "Magic Aura",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level days (D)",
+  "savingThrow": "None; see text",
+  "spellResistance": "no",
+  "description": "Alters object's magic aura.",
+  "subschool": "glamer",
+  "target": "One touched object weighing up to (CASTERLEVEL*5) lbs"
+}
+]

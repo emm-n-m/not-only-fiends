@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:detect_thoughts",
+  "name": "Detect Thoughts",
+  "school": "divination",
+  "classLevels": {
+    "class:bard": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "60 ft.",
+  "duration": "Concentration, up to 1/level minutes (D)",
+  "savingThrow": "Will negates; see text",
+  "spellResistance": "no",
+  "description": "Allows 'listening' to surface thoughts.",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "area": "Cone-shaped emanation"
+}
+]

@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:word_of_chaos",
+  "name": "Word of Chaos",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "40 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "None or Will negates; see text",
+  "spellResistance": "yes",
+  "description": "Kills, confuses, stuns, or deafens nonchaotic subjects.",
+  "descriptors": [
+    "chaotic",
+    "sonic"
+  ],
+  "area": "Nonchaotic creatures in a 40-ft.- radius spread centered on you"
+}
+]

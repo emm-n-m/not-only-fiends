@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:blacklight",
+  "name": "Blacklight",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "Will negates or none (object)",
+  "spellResistance": "yes or no (object)",
+  "description": "",
+  "descriptors": [
+    "darkness"
+  ],
+  "area": "A 20-ft-radious emanation centered on a creature, object, or a point in space"
+}
+]

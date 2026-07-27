@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:color_spray",
+  "name": "Color Spray",
+  "school": "illusion",
+  "classLevels": {
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "15 ft.",
+  "duration": "Instantaneous; see text",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Knocks unconscious, blinds, and/or stuns weak creatures.",
+  "subschool": "pattern",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "area": "Cone-shaped burst"
+}
+]

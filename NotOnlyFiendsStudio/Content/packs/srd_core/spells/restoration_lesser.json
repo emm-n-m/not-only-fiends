@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:restoration_lesser",
+  "name": "Restoration, Lesser",
+  "school": "conjuration",
+  "classLevels": {
+    "class:paladin": 1,
+    "class:cleric": 2,
+    "class:druid": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "3 rounds",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Dispels magical ability penalty or repairs 1d4 ability damage.",
+  "subschool": "healing",
+  "target": "Creature touched"
+}
+]

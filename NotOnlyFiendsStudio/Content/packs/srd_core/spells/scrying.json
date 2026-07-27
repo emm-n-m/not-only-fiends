@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:scrying",
+  "name": "Scrying",
+  "school": "divination",
+  "classLevels": {
+    "class:bard": 3,
+    "class:druid": 4,
+    "class:sorcerer": 4,
+    "class:wizard": 4,
+    "class:cleric": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text",
+    "focus": "see text"
+  },
+  "castingTime": "1 hour",
+  "range": "See text",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Spies on subject from a distance.",
+  "subschool": "scrying",
+  "target": "Magical sensor"
+}
+]

@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:daze_monster",
+  "name": "Daze Monster",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1 round",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Living creature of 6 HD or less loses next action.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One living creature of 6 HD or less"
+}
+]

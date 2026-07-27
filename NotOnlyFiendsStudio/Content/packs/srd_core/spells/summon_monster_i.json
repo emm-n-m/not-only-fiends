@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:summon_monster_i",
+  "name": "Summon Monster I",
+  "school": "conjuration",
+  "classLevels": {
+    "class:bard": 1,
+    "class:cleric": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "focus": "see text"
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Calls extraplanar creature to fight for you.",
+  "subschool": "summoning",
+  "target": "One summoned creature"
+}
+]

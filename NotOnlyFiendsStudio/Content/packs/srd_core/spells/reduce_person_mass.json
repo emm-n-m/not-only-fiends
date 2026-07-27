@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:reduce_person_mass",
+  "name": "Reduce Person, Mass",
+  "school": "transmutation",
+  "classLevels": {
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "Fortitude negates",
+  "spellResistance": "yes",
+  "description": "Reduces several creatures.",
+  "target": "(CASTERLEVEL) humanoid creatures, no two of which can be more than 30 ft. apart"
+}
+]

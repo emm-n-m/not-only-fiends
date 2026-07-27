@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:gate",
+  "name": "Gate",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 9,
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "Instantaneous or concentration (up to 1/level rounds); see text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Connects two planes for travel or summoning.",
+  "subschool": "creation|calling",
+  "target": "See text"
+}
+]

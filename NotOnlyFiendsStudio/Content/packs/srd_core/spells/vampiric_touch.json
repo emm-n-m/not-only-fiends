@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:vampiric_touch",
+  "name": "Vampiric Touch",
+  "school": "necromancy",
+  "classLevels": {
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous/1 hour; see text",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Touch deals (min(CASTERLEVEL/2,10))d6 damage; caster gains damage as hp.",
+  "target": "Living creature touched"
+}
+]

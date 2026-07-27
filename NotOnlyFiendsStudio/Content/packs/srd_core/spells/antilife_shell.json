@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:antilife_shell",
+  "name": "Antilife Shell",
+  "school": "abjuration",
+  "classLevels": {
+    "class:cleric": 6,
+    "class:druid": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 round",
+  "range": "10 ft.",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "10-ft. field hedges out living creatures.",
+  "area": "10-ft.-radius emanation, centered on you"
+}
+]

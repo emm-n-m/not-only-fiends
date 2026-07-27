@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:baleful_polymorph",
+  "name": "Baleful Polymorph",
+  "school": "transmutation",
+  "classLevels": {
+    "class:adept": 5,
+    "class:druid": 5,
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Permanent",
+  "savingThrow": "Fortitude negates, Will partial; see text",
+  "spellResistance": "yes",
+  "description": "Transforms subject into harmless animal.",
+  "target": "One creature"
+}
+]

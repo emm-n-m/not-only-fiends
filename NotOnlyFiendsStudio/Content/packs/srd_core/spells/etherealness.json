@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:etherealness",
+  "name": "Etherealness",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 9,
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "Touch; see text",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Travel to Ethereal Plane with companions.",
+  "target": "You and (CASTERLEVEL/3) other touched creatures"
+}
+]

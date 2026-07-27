@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:hypnotism",
+  "name": "Hypnotism",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "2d4 rounds (D)",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Fascinates 2d4 HD of creatures.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "Several living creatures, no two of which may be more than 30 ft. apart"
+}
+]

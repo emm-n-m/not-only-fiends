@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:iron_body",
+  "name": "Iron Body",
+  "school": "transmutation",
+  "classLevels": {
+    "class:sorcerer": 8,
+    "class:wizard": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Your body becomes living iron.",
+  "target": "you"
+}
+]

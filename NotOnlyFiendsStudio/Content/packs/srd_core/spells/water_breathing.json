@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:water_breathing",
+  "name": "Water Breathing",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 3,
+    "class:druid": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "2/level hours; see text",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Subjects can breathe underwater.",
+  "target": "Living creatures touched"
+}
+]

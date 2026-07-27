@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:repel_wood",
+  "name": "Repel Wood",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "60 ft.",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Pushes away wooden objects.",
+  "area": "60 ft. line-shaped emanation from you"
+}
+]

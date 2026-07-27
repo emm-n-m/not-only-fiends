@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:animate_dead",
+  "name": "Animate Dead",
+  "school": "necromancy",
+  "classLevels": {
+    "class:adept": 3,
+    "class:cleric": 3,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Creates undead skeletons and zombies.",
+  "descriptors": [
+    "evil"
+  ],
+  "target": "One or more corpses touched"
+}
+]

@@ -1,0 +1,30 @@
+[
+{
+  "id": "spell:darkness",
+  "name": "Darkness",
+  "school": "evocation",
+  "classLevels": {
+    "class:adept": 2,
+    "class:bard": 2,
+    "class:cleric": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "20-ft. radius of supernatural shadow.",
+  "descriptors": [
+    "darkness"
+  ],
+  "target": "Object touched"
+}
+]

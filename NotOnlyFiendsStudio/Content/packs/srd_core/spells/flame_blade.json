@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:flame_blade",
+  "name": "Flame Blade",
+  "school": "evocation",
+  "classLevels": {
+    "class:druid": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "0 ft.",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Touch attack deals 1d8 +(min(CASTERLEVEL/2,10)) fire damage.",
+  "descriptors": [
+    "fire"
+  ],
+  "effect": "Sword-like beam"
+}
+]

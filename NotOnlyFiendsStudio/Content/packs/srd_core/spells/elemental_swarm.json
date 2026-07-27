@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:elemental_swarm",
+  "name": "Elemental Swarm",
+  "school": "conjuration",
+  "classLevels": {
+    "class:druid": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "10 minutes",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Summons multiple elementals.",
+  "subschool": "summoning",
+  "target": "Two or more summoned creatures, no two of which can be more than 30 ft. apart"
+}
+]

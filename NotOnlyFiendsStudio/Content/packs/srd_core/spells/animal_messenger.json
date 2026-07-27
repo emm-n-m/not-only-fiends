@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:animal_messenger",
+  "name": "Animal Messenger",
+  "school": "enchantment",
+  "classLevels": {
+    "class:ranger": 1,
+    "class:bard": 2,
+    "class:druid": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level days",
+  "savingThrow": "None; see text",
+  "spellResistance": "yes",
+  "description": "Sends a Tiny animal to a specific place.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One Tiny animal"
+}
+]

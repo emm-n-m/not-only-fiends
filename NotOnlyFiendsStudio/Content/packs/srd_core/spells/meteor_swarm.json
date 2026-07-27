@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:meteor_swarm",
+  "name": "Meteor Swarm",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "Instantaneous",
+  "savingThrow": "None or Reflex half; see text",
+  "spellResistance": "yes",
+  "description": "Four exploding spheres each deal 6d6 fire damage.",
+  "descriptors": [
+    "fire"
+  ],
+  "area": "Four 40-ft.-radius spreads; see text"
+}
+]

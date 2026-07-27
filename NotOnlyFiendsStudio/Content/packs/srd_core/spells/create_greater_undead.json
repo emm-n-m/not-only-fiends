@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:create_greater_undead",
+  "name": "Create Greater Undead",
+  "school": "necromancy",
+  "classLevels": {
+    "class:cleric": 8,
+    "class:sorcerer": 8,
+    "class:wizard": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 hour",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Create shadows, wraiths, spectres, or devourers.",
+  "descriptors": [
+    "evil"
+  ],
+  "target": "One corpse"
+}
+]

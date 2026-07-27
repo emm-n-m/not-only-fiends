@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:resilient_sphere",
+  "name": "Resilient Sphere",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "Reflex negates",
+  "spellResistance": "yes",
+  "description": "Force globe protects but traps one subject.",
+  "descriptors": [
+    "force"
+  ],
+  "target": "(CASTERLEVEL) ft. diameter sphere, centered around a creature"
+}
+]

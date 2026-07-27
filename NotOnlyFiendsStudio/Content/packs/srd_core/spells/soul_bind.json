@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:soul_bind",
+  "name": "Soul Bind",
+  "school": "necromancy",
+  "classLevels": {
+    "class:cleric": 9,
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Permanent",
+  "savingThrow": "Will negates",
+  "spellResistance": "no",
+  "description": "Traps newly dead soul to prevent resurrection.",
+  "target": "Corpse"
+}
+]

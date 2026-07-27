@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:giant_vermin",
+  "name": "Giant Vermin",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 4,
+    "class:druid": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Turns centipedes, scorpions, or spiders into giant vermin.",
+  "target": "Up to three vermin, no two of which can be more than 30 ft. apart"
+}
+]

@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:commune",
+  "name": "Commune",
+  "school": "divination",
+  "classLevels": {
+    "class:adept": 5,
+    "class:cleric": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text",
+    "xpCost": true
+  },
+  "castingTime": "10 minutes",
+  "range": "personal",
+  "duration": "1/level rounds",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Deity answers (CASTERLEVEL) yes-or-no questions.",
+  "target": "you"
+}
+]

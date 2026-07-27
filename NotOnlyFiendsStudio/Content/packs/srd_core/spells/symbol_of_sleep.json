@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:symbol_of_sleep",
+  "name": "Symbol of Sleep",
+  "school": "enchantment",
+  "classLevels": {
+    "class:cleric": 5,
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "0 ft.; see text",
+  "duration": "See text",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Triggered rune puts nearby creatures into catatonic slumber.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One symbol"
+}
+]

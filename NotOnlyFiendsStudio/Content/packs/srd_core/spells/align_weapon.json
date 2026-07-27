@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:align_weapon",
+  "name": "Align Weapon",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates (harmless, object)",
+  "spellResistance": "yes (harmless, object)",
+  "description": "Weapon becomes good, evil, lawful, or chaotic.",
+  "target": "Weapon touched or fifty projectiles (all of which must be in contact with each other at the time of casting)"
+}
+]

@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:gaseous_form",
+  "name": "Gaseous Form",
+  "school": "transmutation",
+  "classLevels": {
+    "class:bard": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": false,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "2/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Subject becomes insubstantial and can fly slowly.",
+  "target": "Willing corporeal creature touched"
+}
+]

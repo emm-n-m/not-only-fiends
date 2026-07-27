@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:continual_flame",
+  "name": "Continual Flame",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 2,
+    "class:wizard": 2,
+    "class:adept": 3,
+    "class:cleric": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Permanent",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Makes a permanent, heatless torch.",
+  "descriptors": [
+    "light"
+  ],
+  "target": "Object touched Magical, heatless flame"
+}
+]

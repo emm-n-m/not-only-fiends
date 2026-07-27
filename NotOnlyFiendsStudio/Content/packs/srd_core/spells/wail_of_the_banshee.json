@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:wail_of_the_banshee",
+  "name": "Wail of the Banshee",
+  "school": "necromancy",
+  "classLevels": {
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Fortitude negates",
+  "spellResistance": "yes",
+  "description": "Kills (CASTERLEVEL) creatures.",
+  "descriptors": [
+    "death",
+    "sonic"
+  ],
+  "area": "(CASTERLEVEL) living creatures within a 40-ft.-radius spread"
+}
+]

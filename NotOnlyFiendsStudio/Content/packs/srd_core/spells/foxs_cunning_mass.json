@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:foxs_cunning_mass",
+  "name": "Fox's Cunning, Mass",
+  "school": "transmutation",
+  "classLevels": {
+    "class:bard": 6,
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes",
+  "description": "Subjects gains +4 Int for (CASTERLEVEL) minutes, affects (CASTERLEVEL) subjects.",
+  "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
+}
+]

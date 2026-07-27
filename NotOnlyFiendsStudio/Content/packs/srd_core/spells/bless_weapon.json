@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:bless_weapon",
+  "name": "Bless Weapon",
+  "school": "transmutation",
+  "classLevels": {
+    "class:paladin": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Weapon strikes true against evil foes.",
+  "target": "Weapon touched"
+}
+]

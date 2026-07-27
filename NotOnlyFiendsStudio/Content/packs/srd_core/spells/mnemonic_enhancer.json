@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:mnemonic_enhancer",
+  "name": "Mnemonic Enhancer",
+  "school": "transmutation",
+  "classLevels": {
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text",
+    "focus": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "personal",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Wizard only. Prepares extra spells or retains one just cast.",
+  "target": "you"
+}
+]

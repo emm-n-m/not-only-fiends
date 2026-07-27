@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:enlarge_person",
+  "name": "Enlarge Person",
+  "school": "transmutation",
+  "classLevels": {
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "Fortitude negates",
+  "spellResistance": "yes",
+  "description": "Creatures size increases to next category",
+  "target": "One humanoid creature"
+}
+]

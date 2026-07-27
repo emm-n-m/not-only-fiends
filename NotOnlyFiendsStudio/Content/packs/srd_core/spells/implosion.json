@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:implosion",
+  "name": "Implosion",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Concentration (up to 4 rounds)",
+  "savingThrow": "Fortitude negates",
+  "spellResistance": "yes",
+  "description": "Kills one creature/round.",
+  "target": "One corporeal creature/round"
+}
+]

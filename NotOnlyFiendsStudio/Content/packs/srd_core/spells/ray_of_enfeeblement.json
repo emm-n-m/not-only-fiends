@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:ray_of_enfeeblement",
+  "name": "Ray of Enfeeblement",
+  "school": "necromancy",
+  "classLevels": {
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Ray deals 1d6 +(min(CASTERLEVEL/2,5)) Str damage.",
+  "effect": "Ray"
+}
+]

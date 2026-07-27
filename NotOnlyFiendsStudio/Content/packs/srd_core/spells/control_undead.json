@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:control_undead",
+  "name": "Control Undead",
+  "school": "necromancy",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Undead don't attack you while under your command.",
+  "target": "(CASTERLEVEL*2) HD of undead creatures, no two of which can be more than 30 ft. apart"
+}
+]

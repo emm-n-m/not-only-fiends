@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:obscure_object",
+  "name": "Obscure Object",
+  "school": "abjuration",
+  "classLevels": {
+    "class:bard": 1,
+    "class:sorcerer": 2,
+    "class:wizard": 2,
+    "class:cleric": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "8 hours (D)",
+  "savingThrow": "Will negates (object)",
+  "spellResistance": "yes  (object)",
+  "description": "Masks object against scrying.",
+  "target": "One object touched of up to (CASTERLEVEL*100) lbs"
+}
+]

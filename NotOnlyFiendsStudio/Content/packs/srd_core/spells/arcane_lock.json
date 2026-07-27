@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:arcane_lock",
+  "name": "Arcane Lock",
+  "school": "abjuration",
+  "classLevels": {
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Permanent",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Magically locks a portal or chest.",
+  "target": "The door, chest, or portal touched, up to (CASTERLEVEL*30) sq. ft in size"
+}
+]

@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:deep_slumber",
+  "name": "Deep Slumber",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 round",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Puts 10 HD of creatures to sleep.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "area": "One or more living creatures within a 10-ft.-radius burst"
+}
+]

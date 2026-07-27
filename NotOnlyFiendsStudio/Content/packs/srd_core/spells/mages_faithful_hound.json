@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:mages_faithful_hound",
+  "name": "Mage's Faithful Hound",
+  "school": "conjuration",
+  "classLevels": {
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level hours or until discharged, then 1/level rounds; see text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Phantom dog can guard, attack.",
+  "subschool": "creation",
+  "target": "Phantom watchdog"
+}
+]

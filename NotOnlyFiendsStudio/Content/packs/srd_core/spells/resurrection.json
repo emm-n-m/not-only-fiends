@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:resurrection",
+  "name": "Resurrection",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "None; see text",
+  "spellResistance": "yes (harmless)",
+  "description": "Fully restore dead subject.",
+  "subschool": "healing",
+  "target": "Dead creature touched"
+}
+]

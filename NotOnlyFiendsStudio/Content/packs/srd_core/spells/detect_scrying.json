@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:detect_scrying",
+  "name": "Detect Scrying",
+  "school": "divination",
+  "classLevels": {
+    "class:bard": 4,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "40 ft.",
+  "duration": "24 hours",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Alerts you of magical eavesdropping.",
+  "area": "40-ft.-radius emanation centered on you"
+}
+]

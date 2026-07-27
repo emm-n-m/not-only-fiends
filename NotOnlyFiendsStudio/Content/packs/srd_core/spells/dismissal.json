@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:dismissal",
+  "name": "Dismissal",
+  "school": "abjuration",
+  "classLevels": {
+    "class:cleric": 4,
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates; see text",
+  "spellResistance": "yes",
+  "description": "Forces a creature to return to native plane.",
+  "target": "One extraplanar creature"
+}
+]

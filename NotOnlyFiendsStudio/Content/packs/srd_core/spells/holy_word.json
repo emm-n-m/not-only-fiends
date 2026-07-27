@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:holy_word",
+  "name": "Holy Word",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "40 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "None or Will negates; see text",
+  "spellResistance": "yes",
+  "description": "Kills, paralyzes, blinds, or deafens nongood subjects.",
+  "descriptors": [
+    "good",
+    "sonic"
+  ],
+  "area": "Nongood creatures in a 40-ft.-radius spread centered on you"
+}
+]

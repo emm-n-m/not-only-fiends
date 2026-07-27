@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:enervation",
+  "name": "Enervation",
+  "school": "necromancy",
+  "classLevels": {
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Subject gains 1d4 negative levels.",
+  "effect": "Ray of negative energy"
+}
+]

@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:waves_of_exhaustion",
+  "name": "Waves of Exhaustion",
+  "school": "necromancy",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "60 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "No",
+  "spellResistance": "yes",
+  "description": "Several targets become exhausted.",
+  "area": "Cone-shaped burst"
+}
+]

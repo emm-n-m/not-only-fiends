@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:mind_blank",
+  "name": "Mind Blank",
+  "school": "abjuration",
+  "classLevels": {
+    "class:sorcerer": 8,
+    "class:wizard": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "24 hours",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Subject is immune to mental/emotional magic and scrying.",
+  "target": "One creature"
+}
+]

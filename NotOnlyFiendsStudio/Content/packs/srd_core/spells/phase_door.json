@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:phase_door",
+  "name": "Phase Door",
+  "school": "conjuration",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "0 ft.",
+  "duration": "(CASTERLEVEL/2) uses",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Creates an invisible passage through wood or stone.",
+  "subschool": "creation",
+  "target": "Ethereal 5 ft. by 8 ft. opening, (((CASTERLEVEL/3)*5)+10) ft. deep"
+}
+]

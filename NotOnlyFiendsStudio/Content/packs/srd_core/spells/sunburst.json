@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:sunburst",
+  "name": "Sunburst",
+  "school": "evocation",
+  "classLevels": {
+    "class:druid": 8,
+    "class:sorcerer": 8,
+    "class:wizard": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "Instantaneous",
+  "savingThrow": "Reflex partial; see text",
+  "spellResistance": "yes",
+  "description": "Blinds all within 10 ft., deals 6d6 damage.",
+  "descriptors": [
+    "light"
+  ],
+  "area": "80-ft.-radius burst"
+}
+]

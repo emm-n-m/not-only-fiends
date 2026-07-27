@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:arcane_sight",
+  "name": "Arcane Sight",
+  "school": "divination",
+  "classLevels": {
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Magical auras become visible to you.",
+  "target": "you"
+}
+]

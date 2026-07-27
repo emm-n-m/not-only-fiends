@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:bane",
+  "name": "Bane",
+  "school": "enchantment",
+  "classLevels": {
+    "class:cleric": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "50 ft.",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Enemies take -1 on attack rolls and saves against fear.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "fear",
+    "mind-affecting"
+  ],
+  "target": "All enemies within 50 ft."
+}
+]

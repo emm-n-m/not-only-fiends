@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:delayed_blast_fireball",
+  "name": "Delayed Blast Fireball",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "5 rounds or less; see text",
+  "savingThrow": "Reflex half",
+  "spellResistance": "yes",
+  "description": "Deals (min(CASTERLEVEL,20))d6 fire damage; you can postpone blast for 5 rounds.",
+  "descriptors": [
+    "fire"
+  ],
+  "area": "20-ft.-radius spread"
+}
+]

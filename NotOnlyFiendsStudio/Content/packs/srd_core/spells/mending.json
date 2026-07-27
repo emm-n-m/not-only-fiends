@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:mending",
+  "name": "Mending",
+  "school": "transmutation",
+  "classLevels": {
+    "class:adept": 0,
+    "class:bard": 0,
+    "class:cleric": 0,
+    "class:druid": 0,
+    "class:sorcerer": 0,
+    "class:wizard": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "10 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (harmless, object)",
+  "spellResistance": "yes (harmless, object)",
+  "description": "Makes minor repairs on an object.",
+  "target": "One object of up to 1 lb."
+}
+]

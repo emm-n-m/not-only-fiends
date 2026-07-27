@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:cone_of_cold",
+  "name": "Cone of Cold",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "60 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "Reflex half",
+  "spellResistance": "yes",
+  "description": "(min(CASTERLEVEL,15))d6 cold damage.",
+  "descriptors": [
+    "cold"
+  ],
+  "area": "Cone-shaped burst"
+}
+]

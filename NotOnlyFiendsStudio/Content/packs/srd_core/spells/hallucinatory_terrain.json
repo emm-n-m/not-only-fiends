@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:hallucinatory_terrain",
+  "name": "Hallucinatory Terrain",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 4,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "2/level hours (D)",
+  "savingThrow": "Will disbelief (if interacted with)",
+  "spellResistance": "no",
+  "description": "Makes one type of terrain appear like another [field into forest, or the like].",
+  "subschool": "glamer",
+  "area": "(CASTERLEVEL) 30-ft. cubes [S]"
+}
+]

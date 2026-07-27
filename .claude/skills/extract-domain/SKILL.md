@@ -44,7 +44,7 @@ Dispatch on the argument:
 
 - Domain IDs: `domain:<snake_case>` (`domain:knowledge`, `domain:corruption`).
 - Granted-power ability IDs: `domain_<name>_power` (`domain_knowledge_power`).
-- Spell IDs in `bonusSpells`: standard snake_case (must match existing SRD spell IDs).
+- Spell IDs in `bonusSpells`: `spell:<snake_case>` (must match existing SRD spell IDs).
 
 ## Reference files
 

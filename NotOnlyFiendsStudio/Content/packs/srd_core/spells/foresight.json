@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:foresight",
+  "name": "Foresight",
+  "school": "divination",
+  "classLevels": {
+    "class:druid": 9,
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "Personal or touch",
+  "duration": "10/level minutes",
+  "savingThrow": "None or Will negates (harmless)",
+  "spellResistance": "no or yes (harmless)",
+  "description": "'Sixth sense' warns of impending danger.",
+  "target": "See text"
+}
+]

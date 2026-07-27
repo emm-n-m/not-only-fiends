@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:moment_of_prescience",
+  "name": "Moment of Prescience",
+  "school": "divination",
+  "classLevels": {
+    "class:sorcerer": 8,
+    "class:wizard": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "1/level hours or until discharged",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "You gain insight bonus on single attack roll, check, or save.",
+  "target": "you"
+}
+]

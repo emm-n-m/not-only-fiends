@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:invisibility",
+  "name": "Invisibility",
+  "school": "illusion",
+  "classLevels": {
+    "class:adept": 2,
+    "class:bard": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "Personal or touch",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "Will negates (harmless) or Will negates (harmless, object)",
+  "spellResistance": "yes (harmless) or yes (harmless, object)",
+  "description": "Subject is invisible for (CASTERLEVEL) minutes or until it attacks.",
+  "subschool": "glamer",
+  "target": "You or a creature or object weighing no more than (CASTERLEVEL*100) lbs"
+}
+]

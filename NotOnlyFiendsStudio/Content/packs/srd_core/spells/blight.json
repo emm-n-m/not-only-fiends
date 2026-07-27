@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:blight",
+  "name": "Blight",
+  "school": "necromancy",
+  "classLevels": {
+    "class:druid": 4,
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Fortitude half; see text",
+  "spellResistance": "yes",
+  "description": "Withers one plant or deals (CASTERLEVEL)d6 damage to plant creature.",
+  "target": "one plant/plant-creature"
+}
+]

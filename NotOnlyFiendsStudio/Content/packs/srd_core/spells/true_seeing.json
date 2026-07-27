@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:true_seeing",
+  "name": "True Seeing",
+  "school": "divination",
+  "classLevels": {
+    "class:adept": 5,
+    "class:cleric": 5,
+    "class:sorcerer": 6,
+    "class:wizard": 6,
+    "class:druid": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Lets you see all things as they really are.",
+  "target": "Creature touched"
+}
+]

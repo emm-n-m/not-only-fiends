@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:fly",
+  "name": "Fly",
+  "school": "transmutation",
+  "classLevels": {
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Subject flies at speed of 60 ft.",
+  "target": "Creature touched"
+}
+]

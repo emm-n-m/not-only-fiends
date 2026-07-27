@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:false_life",
+  "name": "False Life",
+  "school": "necromancy",
+  "classLevels": {
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "1/level hours or until discharged; see text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Gain 1d10+(min(CASTERLEVEL,10)) temporary hp",
+  "target": "you"
+}
+]

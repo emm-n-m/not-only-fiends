@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:see_invisibility",
+  "name": "See Invisibility",
+  "school": "divination",
+  "classLevels": {
+    "class:adept": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2,
+    "class:bard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "10/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Reveals invisible creatures or objects.",
+  "target": "you"
+}
+]

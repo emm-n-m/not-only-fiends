@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:shatter",
+  "name": "Shatter",
+  "school": "evocation",
+  "classLevels": {
+    "class:bard": 2,
+    "class:cleric": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (object); Will negates (object) or Fortitude half; see text",
+  "spellResistance": "yes (object)",
+  "description": "Sonic vibration damages objects or crystalline creatures.",
+  "descriptors": [
+    "sonic"
+  ],
+  "area": "5-ft.-radius spread; or one solid object or one crystalline creature"
+}
+]

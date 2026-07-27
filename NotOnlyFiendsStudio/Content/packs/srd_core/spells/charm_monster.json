@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:charm_monster",
+  "name": "Charm Monster",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 3,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level days",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Makes monster believe it is your ally.",
+  "subschool": "charm",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One living creature"
+}
+]

@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:misdirection",
+  "name": "Misdirection",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "1/level hours",
+  "savingThrow": "None or Will negates; see text",
+  "spellResistance": "no",
+  "description": "Misleads divinations for one creature or object.",
+  "subschool": "glamer",
+  "area": "One creature or object, up to a 10-ft. cube in size"
+}
+]

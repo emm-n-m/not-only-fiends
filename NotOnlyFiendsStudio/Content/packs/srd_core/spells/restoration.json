@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:restoration",
+  "name": "Restoration",
+  "school": "conjuration",
+  "classLevels": {
+    "class:adept": 4,
+    "class:cleric": 4,
+    "class:paladin": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "3 rounds",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Restores level and ability score drains.",
+  "subschool": "healing",
+  "target": "Creature touched"
+}
+]

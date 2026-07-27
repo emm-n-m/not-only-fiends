@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:magic_circle_against_law",
+  "name": "Magic Circle against Law",
+  "school": "abjuration",
+  "classLevels": {
+    "class:cleric": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "10/level minutes",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "no; see text",
+  "description": "+2 to AC and saves, counter mind control, hedge out elementals and outsiders in 10-ft. radius and (CASTERLEVEL*10) minutes.",
+  "descriptors": [
+    "chaotic"
+  ],
+  "area": "10-ft.-radius emanation from touched creature"
+}
+]

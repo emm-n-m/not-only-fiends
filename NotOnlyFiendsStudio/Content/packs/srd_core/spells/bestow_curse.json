@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:bestow_curse",
+  "name": "Bestow Curse",
+  "school": "necromancy",
+  "classLevels": {
+    "class:adept": 3,
+    "class:cleric": 3,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Permanent",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "-6 to an ability score; -4 on attack rolls, saves, and checks; or 50%% chance of losing each action.",
+  "target": "Creature touched"
+}
+]

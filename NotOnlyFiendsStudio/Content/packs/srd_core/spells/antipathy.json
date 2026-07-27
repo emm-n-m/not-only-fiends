@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:antipathy",
+  "name": "Antipathy",
+  "school": "enchantment",
+  "classLevels": {
+    "class:sorcerer": 8,
+    "class:wizard": 8,
+    "class:druid": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 hour",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "2/level hours (D)",
+  "savingThrow": "Will partial",
+  "spellResistance": "yes",
+  "description": "Object or location affected by spell repels certain creatures.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "area": "One location of up to a (CASTERLEVEL) 10 ft. cube or one object"
+}
+]

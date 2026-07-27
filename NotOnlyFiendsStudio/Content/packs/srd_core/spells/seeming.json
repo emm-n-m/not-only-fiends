@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:seeming",
+  "name": "Seeming",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 5,
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "12 hours (D)",
+  "savingThrow": "Will negates or Will disbelief (if interacted with)",
+  "spellResistance": "yes or no; see text",
+  "description": "Changes appearance of (CASTERLEVEL/2) creatures.",
+  "subschool": "glamer",
+  "target": "(CASTERLEVEL/2) creatures, no two of which can be more than 30 ft. apart"
+}
+]

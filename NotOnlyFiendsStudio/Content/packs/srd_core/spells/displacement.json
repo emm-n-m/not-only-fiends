@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:displacement",
+  "name": "Displacement",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level rounds (D)",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Attacks miss subject 50%%.",
+  "subschool": "glamer",
+  "target": "Creature touched"
+}
+]

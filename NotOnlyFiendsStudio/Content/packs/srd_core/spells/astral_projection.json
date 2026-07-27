@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:astral_projection",
+  "name": "Astral Projection",
+  "school": "necromancy",
+  "classLevels": {
+    "class:cleric": 9,
+    "class:sorcerer": 9,
+    "class:wizard": 9
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "30 minutes",
+  "range": "touch",
+  "duration": "See text",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Projects you and companions onto Astral Plane.",
+  "target": "You plus (CASTERLEVEL/2) additional willing creatures touched"
+}
+]

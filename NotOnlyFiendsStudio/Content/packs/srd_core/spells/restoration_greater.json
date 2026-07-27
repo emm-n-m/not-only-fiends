@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:restoration_greater",
+  "name": "Restoration, Greater",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "xpCost": true
+  },
+  "castingTime": "10 minutes",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "As restoration, plus restores all levels and ability scores.",
+  "subschool": "healing",
+  "target": "Creature touched"
+}
+]

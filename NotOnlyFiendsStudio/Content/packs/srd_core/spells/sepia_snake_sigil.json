@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:sepia_snake_sigil",
+  "name": "Sepia Snake Sigil",
+  "school": "conjuration",
+  "classLevels": {
+    "class:bard": 3,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "touch",
+  "duration": "Permanent or until discharged; until released or 1d4 days + one day/level; see text",
+  "savingThrow": "Reflex negates",
+  "spellResistance": "no",
+  "description": "Creates text symbol that immobilizes reader.",
+  "subschool": "creation",
+  "descriptors": [
+    "force"
+  ],
+  "target": "One touched book or written work"
+}
+]

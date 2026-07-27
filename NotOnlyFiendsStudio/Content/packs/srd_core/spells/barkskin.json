@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:barkskin",
+  "name": "Barkskin",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 2,
+    "class:ranger": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "10/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "yes (harmless)",
+  "description": "Grants +(min(max(CASTERLEVEL/3+1,2),5)) enhancement to natural armor.",
+  "target": "Living creature touched"
+}
+]

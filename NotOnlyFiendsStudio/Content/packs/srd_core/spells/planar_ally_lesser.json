@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:planar_ally_lesser",
+  "name": "Planar Ally, Lesser",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "xpCost": true
+  },
+  "castingTime": "10 minutes",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Your deity sends you an elemental or outsider of the deity's choice of 6 HD or less.",
+  "subschool": "calling",
+  "descriptors": [
+    "see text"
+  ],
+  "target": "One called elemental or outsider of 6 HD or less"
+}
+]

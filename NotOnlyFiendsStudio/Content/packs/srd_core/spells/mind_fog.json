@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:mind_fog",
+  "name": "Mind Fog",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 5,
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "30 minutes and 2d6 rounds; see text",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Subjects in fog get -10 to Wis and Will checks.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "area": "Fog spreads in 20-ft. radius, 20 ft. high"
+}
+]

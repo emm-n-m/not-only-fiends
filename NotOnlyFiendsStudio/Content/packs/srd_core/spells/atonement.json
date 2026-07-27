@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:atonement",
+  "name": "Atonement",
+  "school": "abjuration",
+  "classLevels": {
+    "class:cleric": 5,
+    "class:druid": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text",
+    "focus": "see text",
+    "xpCost": true
+  },
+  "castingTime": "1 hour",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Removes burden of misdeeds from subject.",
+  "target": "Living creature touched"
+}
+]

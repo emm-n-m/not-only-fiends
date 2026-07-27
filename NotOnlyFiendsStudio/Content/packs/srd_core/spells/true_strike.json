@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:true_strike",
+  "name": "True Strike",
+  "school": "divination",
+  "classLevels": {
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "See text",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "+20 on your next attack roll.",
+  "target": "you"
+}
+]

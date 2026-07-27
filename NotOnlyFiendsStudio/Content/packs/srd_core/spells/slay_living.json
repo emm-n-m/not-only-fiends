@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:slay_living",
+  "name": "Slay Living",
+  "school": "necromancy",
+  "classLevels": {
+    "class:cleric": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "Fortitude partial",
+  "spellResistance": "yes",
+  "description": "Touch attack kills subject.",
+  "descriptors": [
+    "death"
+  ],
+  "target": "Living creature touched"
+}
+]

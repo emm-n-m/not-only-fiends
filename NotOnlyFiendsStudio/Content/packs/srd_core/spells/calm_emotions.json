@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:calm_emotions",
+  "name": "Calm Emotions",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 2,
+    "class:cleric": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "Concentration, up to 1/level rounds (D)",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Calms creatures, negating emotion effects.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "area": "Creatures in a 20-ft.-radius spread"
+}
+]

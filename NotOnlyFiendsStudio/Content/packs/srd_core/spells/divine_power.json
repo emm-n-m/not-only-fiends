@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:divine_power",
+  "name": "Divine Power",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "1/level rounds",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "You gain attack bonus, +6 to Str, and (CASTERLEVEL) hps.",
+  "target": "you"
+}
+]

@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:power_word_blind",
+  "name": "Power Word Blind",
+  "school": "enchantment",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "See text",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Blinds creature with 200 hp or less.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One creature with 200 hp or less"
+}
+]

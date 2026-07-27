@@ -1,0 +1,30 @@
+[
+{
+  "id": "spell:sleep",
+  "name": "Sleep",
+  "school": "enchantment",
+  "classLevels": {
+    "class:adept": 1,
+    "class:bard": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 round",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "1/level minutes",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Puts 4 HD of creatures into magical slumber.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "area": "One or more living creatures within a 10-ft.-radius burst"
+}
+]

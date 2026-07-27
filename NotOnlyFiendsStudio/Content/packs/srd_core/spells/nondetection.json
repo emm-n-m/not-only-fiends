@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:nondetection",
+  "name": "Nondetection",
+  "school": "abjuration",
+  "classLevels": {
+    "class:sorcerer": 3,
+    "class:wizard": 3,
+    "class:ranger": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level hours",
+  "savingThrow": "Will negates (harmless, object)",
+  "spellResistance": "yes (harmless, object)",
+  "description": "Hides subject from divination, scrying.",
+  "target": "Creature or object touched"
+}
+]

@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:fear",
+  "name": "Fear",
+  "school": "necromancy",
+  "classLevels": {
+    "class:bard": 3,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "30 ft.",
+  "duration": "1/level rounds or 1 round; see text",
+  "savingThrow": "Will partial",
+  "spellResistance": "yes",
+  "description": "Subjects within cone flee for (CASTERLEVEL) rounds.",
+  "descriptors": [
+    "fear",
+    "mind-affecting"
+  ],
+  "area": "Cone-shaped burst"
+}
+]

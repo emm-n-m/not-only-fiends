@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:flame_arrow",
+  "name": "Flame Arrow",
+  "school": "transmutation",
+  "classLevels": {
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "10/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Arrows deal +1d6 fire damage.",
+  "descriptors": [
+    "fire"
+  ],
+  "target": "Fifty projectiles, all of which must be in contact with each other at the time of casting"
+}
+]

@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:programmed_image",
+  "name": "Programmed Image",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 6,
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "Permanent until triggered, then 1/level rounds",
+  "savingThrow": "Will disbelief (if interacted with)",
+  "spellResistance": "no",
+  "description": "As major image, plus triggered by event.",
+  "subschool": "figment",
+  "area": "Visual figment that cannot extend beyond a 20-ft. cube + one 10-ft. cube/level [S]"
+}
+]

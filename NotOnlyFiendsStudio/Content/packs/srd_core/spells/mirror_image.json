@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:mirror_image",
+  "name": "Mirror Image",
+  "school": "illusion",
+  "classLevels": {
+    "class:adept": 2,
+    "class:bard": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "Personal; see text",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Creates decoy duplicates of you [1d4 +(CASTERLEVEL/3), max 8].",
+  "subschool": "figment",
+  "target": "you"
+}
+]

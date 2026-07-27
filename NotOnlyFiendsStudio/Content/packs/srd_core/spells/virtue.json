@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:virtue",
+  "name": "Virtue",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 0,
+    "class:druid": 0,
+    "class:paladin": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1 min.",
+  "savingThrow": "Fortitude negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Subject gains 1 temporary hp.",
+  "target": "Creature touched"
+}
+]

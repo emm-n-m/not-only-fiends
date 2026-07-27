@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:finger_of_death",
+  "name": "Finger of Death",
+  "school": "necromancy",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7,
+    "class:druid": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Fortitude partial",
+  "spellResistance": "yes",
+  "description": "Kills one subject.",
+  "descriptors": [
+    "death"
+  ],
+  "target": "One living creature"
+}
+]

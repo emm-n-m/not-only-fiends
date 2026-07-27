@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:limited_wish",
+  "name": "Limited Wish",
+  "school": "universal",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "xpCost": true
+  },
+  "castingTime": "1 standard action",
+  "range": "See text",
+  "duration": "See text",
+  "savingThrow": "None; see text",
+  "spellResistance": "yes",
+  "description": "Alters reality-within spell limits.",
+  "target": "See text"
+}
+]

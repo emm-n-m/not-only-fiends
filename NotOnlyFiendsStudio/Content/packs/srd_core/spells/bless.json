@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:bless",
+  "name": "Bless",
+  "school": "enchantment",
+  "classLevels": {
+    "class:adept": 1,
+    "class:cleric": 1,
+    "class:paladin": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "50 ft.",
+  "duration": "1/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "yes (harmless)",
+  "description": "Allies gain +1 on attack rolls and +1 on saves against fear.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "area": "The caster and all allies within a 50-ft. burst, centered on the caster"
+}
+]

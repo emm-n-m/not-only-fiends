@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:control_winds",
+  "name": "Control Winds",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "(CASTERLEVEL*40) ft.",
+  "duration": "10/level minutes",
+  "savingThrow": "Fortitude negates",
+  "spellResistance": "no",
+  "description": "Change wind direction and speed.",
+  "descriptors": [
+    "air"
+  ],
+  "area": "(CASTERLEVEL*40) ft. radius cylinder 40 ft. high"
+}
+]

@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:produce_flame",
+  "name": "Produce Flame",
+  "school": "evocation",
+  "classLevels": {
+    "class:druid": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "0 ft.",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "1d6+(min(CASTERLEVEL,5)) damage, touch or thrown.",
+  "descriptors": [
+    "fire"
+  ],
+  "target": "Flame in your palm"
+}
+]

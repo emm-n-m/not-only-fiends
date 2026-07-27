@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:mage_hand",
+  "name": "Mage Hand",
+  "school": "transmutation",
+  "classLevels": {
+    "class:bard": 0,
+    "class:sorcerer": 0,
+    "class:wizard": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Concentration",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "5-pound telekinesis.",
+  "target": "One nonmagical, unattended object weighing up to 5 lb."
+}
+]

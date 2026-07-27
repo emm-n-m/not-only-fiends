@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:stone_shape",
+  "name": "Stone Shape",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 3,
+    "class:druid": 3,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Sculpts stone into any shape.",
+  "descriptors": [
+    "earth"
+  ],
+  "target": "Stone or stone object touched, up to (CASTERLEVEL+10) cu. ft."
+}
+]

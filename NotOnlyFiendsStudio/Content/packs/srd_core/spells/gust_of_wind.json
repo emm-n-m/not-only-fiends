@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:gust_of_wind",
+  "name": "Gust of Wind",
+  "school": "evocation",
+  "classLevels": {
+    "class:druid": 2,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "60 ft.",
+  "duration": "1 round",
+  "savingThrow": "Fortitude negates",
+  "spellResistance": "yes",
+  "description": "Blows away or knocks down smaller creatures.",
+  "descriptors": [
+    "air"
+  ],
+  "area": "Line-shaped gust of severe wind emanating out from you to the extreme of the range"
+}
+]

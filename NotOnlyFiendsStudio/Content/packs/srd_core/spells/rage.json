@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:rage",
+  "name": "Rage",
+  "school": "enchantment",
+  "classLevels": {
+    "class:bard": 2,
+    "class:sorcerer": 3,
+    "class:wizard": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "Concentration + 1/level rounds (D)",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Subjects gains +2 to Str and Con, +1 on Will saves, -2 to AC.",
+  "subschool": "compulsion",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "(CASTERLEVEL/3) willing living creatures, no two of which may be more than 30 ft. apart"
+}
+]

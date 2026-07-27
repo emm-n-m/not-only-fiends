@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:soften_earth_and_stone",
+  "name": "Soften Earth and Stone",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Turns stone to clay or dirt to sand or mud.",
+  "descriptors": [
+    "earth"
+  ],
+  "target": "(CASTERLEVEL*10) ft. square; see text"
+}
+]

@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:searing_light",
+  "name": "Searing Light",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "medium (100 ft. + 10 ft./level)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Ranged touch attack deals (min(CASTERLEVEL/2,5))d8 damage; (min(CASTERLEVEL,10))d6 against undead; (min(CASTERLEVEL,10))d8 to undead vulnerable to bright light; construct or inanimate object only takes (min(CASTERLEVEL/2,5))d6 damage.",
+  "effect": "Ray"
+}
+]

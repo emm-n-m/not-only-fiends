@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:magic_stone",
+  "name": "Magic Stone",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 1,
+    "class:druid": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "30 minutes or until discharged",
+  "savingThrow": "Will negates (harmless, object)",
+  "spellResistance": "yes (harmless, object)",
+  "description": "Three stones gain +1 on attack rolls, deal 1d6+1 damage.",
+  "target": "Up to three pebbles touched"
+}
+]

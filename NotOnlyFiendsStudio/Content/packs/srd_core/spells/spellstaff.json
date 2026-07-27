@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:spellstaff",
+  "name": "Spellstaff",
+  "school": "transmutation",
+  "classLevels": {
+    "class:druid": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "focus": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "touch",
+  "duration": "Permanent until discharged (D)",
+  "savingThrow": "Will negates (object)",
+  "spellResistance": "yes  (object)",
+  "description": "Stores one spell in wooden quarterstaff.",
+  "target": "Wooden quarterstaff touched"
+}
+]

@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:nightmare",
+  "name": "Nightmare",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 5,
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "10 minutes",
+  "range": "unlimited",
+  "duration": "Instantaneous",
+  "savingThrow": "Will negates; see text",
+  "spellResistance": "yes",
+  "description": "Sends vision dealing 1d10 damage, fatigue.",
+  "subschool": "phantasm",
+  "descriptors": [
+    "mind-affecting",
+    "evil"
+  ],
+  "target": "One living creature"
+}
+]

@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:dream",
+  "name": "Dream",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 5,
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 minute",
+  "range": "unlimited",
+  "duration": "See text",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Sends message to anyone sleeping.",
+  "subschool": "phantasm",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One living creature touched"
+}
+]

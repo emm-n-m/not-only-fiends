@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:contact_other_plane",
+  "name": "Contact Other Plane",
+  "school": "divination",
+  "classLevels": {
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "10 minutes",
+  "range": "personal",
+  "duration": "Concentration",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Lets you ask question of extraplanar entity.",
+  "target": "you"
+}
+]

@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:polymorph",
+  "name": "Polymorph",
+  "school": "transmutation",
+  "classLevels": {
+    "class:adept": 4,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Gives one willing subject a new form.",
+  "target": "Willing living creature touched"
+}
+]

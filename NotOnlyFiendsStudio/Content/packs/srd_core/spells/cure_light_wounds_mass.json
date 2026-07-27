@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:cure_light_wounds_mass",
+  "name": "Cure Light Wounds, Mass",
+  "school": "conjuration",
+  "classLevels": {
+    "class:bard": 5,
+    "class:cleric": 5,
+    "class:druid": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "Will half (harmless) or Will half; see text",
+  "spellResistance": "yes (harmless) or yes; see text",
+  "description": "Cures 1d8+(min(CASTERLEVEL,25)) damage for many creatures.",
+  "subschool": "healing",
+  "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
+}
+]

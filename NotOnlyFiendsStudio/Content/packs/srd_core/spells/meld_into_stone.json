@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:meld_into_stone",
+  "name": "Meld into Stone",
+  "school": "transmutation",
+  "classLevels": {
+    "class:cleric": 3,
+    "class:druid": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "10/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "You and your gear merge with stone.",
+  "descriptors": [
+    "earth"
+  ],
+  "target": "you"
+}
+]

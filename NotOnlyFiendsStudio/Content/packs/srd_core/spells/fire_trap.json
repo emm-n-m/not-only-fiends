@@ -1,0 +1,28 @@
+[
+{
+  "id": "spell:fire_trap",
+  "name": "Fire Trap",
+  "school": "abjuration",
+  "classLevels": {
+    "class:druid": 2,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "touch",
+  "duration": "Permanent until discharged (D)",
+  "savingThrow": "Reflex half; see text",
+  "spellResistance": "yes",
+  "description": "Opened object deals 1d4+(min(CASTERLEVEL,20)) fire damage.",
+  "descriptors": [
+    "fire"
+  ],
+  "target": "Object touched"
+}
+]

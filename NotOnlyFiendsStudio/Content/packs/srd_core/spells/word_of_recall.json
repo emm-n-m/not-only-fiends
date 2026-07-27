@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:word_of_recall",
+  "name": "Word of Recall",
+  "school": "conjuration",
+  "classLevels": {
+    "class:cleric": 6,
+    "class:druid": 8
+  },
+  "components": {
+    "verbal": true,
+    "somatic": false,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "unlimited",
+  "duration": "Instantaneous",
+  "savingThrow": "None or Will negates (harmless, object)",
+  "spellResistance": "no or yes (harmless, object)",
+  "description": "Teleports you back to designated place.",
+  "subschool": "teleportation",
+  "target": "You and touched objects or other willing creatures"
+}
+]

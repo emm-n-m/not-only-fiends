@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:faerie_fire",
+  "name": "Faerie Fire",
+  "school": "evocation",
+  "classLevels": {
+    "class:druid": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "yes",
+  "description": "Outlines subjects with light, canceling blur, concealment, and the like.",
+  "descriptors": [
+    "light"
+  ],
+  "area": "Creatures and objects within a 5-ft.-radius burst"
+}
+]

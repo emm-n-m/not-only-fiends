@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:summon_instrument",
+  "name": "Summon Instrument",
+  "school": "conjuration",
+  "classLevels": {
+    "class:bard": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 round",
+  "range": "0 ft.",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Summons one instrument of the caster's choice.",
+  "subschool": "summoning",
+  "target": "One summoned handheld musical instrument"
+}
+]

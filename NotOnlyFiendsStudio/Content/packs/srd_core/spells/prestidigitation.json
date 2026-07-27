@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:prestidigitation",
+  "name": "Prestidigitation",
+  "school": "universal",
+  "classLevels": {
+    "class:bard": 0,
+    "class:sorcerer": 0,
+    "class:wizard": 0
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "10 ft.",
+  "duration": "1 hour",
+  "savingThrow": "See text",
+  "spellResistance": "no",
+  "description": "Performs minor tricks.",
+  "target": "See text"
+}
+]

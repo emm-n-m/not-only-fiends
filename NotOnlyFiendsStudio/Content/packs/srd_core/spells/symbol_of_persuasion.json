@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:symbol_of_persuasion",
+  "name": "Symbol of Persuasion",
+  "school": "enchantment",
+  "classLevels": {
+    "class:cleric": 6,
+    "class:sorcerer": 6,
+    "class:wizard": 6
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "10 minutes",
+  "range": "0 ft.; see text",
+  "duration": "See text",
+  "savingThrow": "Will negates",
+  "spellResistance": "yes",
+  "description": "Triggered rune charms nearby creatures.",
+  "subschool": "charm",
+  "descriptors": [
+    "mind-affecting"
+  ],
+  "target": "One symbol"
+}
+]

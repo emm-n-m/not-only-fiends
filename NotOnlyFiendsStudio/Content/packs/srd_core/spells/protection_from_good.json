@@ -1,0 +1,29 @@
+[
+{
+  "id": "spell:protection_from_good",
+  "name": "Protection from Good",
+  "school": "abjuration",
+  "classLevels": {
+    "class:adept": 1,
+    "class:cleric": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "no; see text",
+  "description": "+2 to AC and saves, counter mind control, hedge out elementals and outsiders.",
+  "descriptors": [
+    "evil"
+  ],
+  "target": "Creature touched"
+}
+]

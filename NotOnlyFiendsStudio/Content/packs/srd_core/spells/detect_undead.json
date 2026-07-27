@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:detect_undead",
+  "name": "Detect Undead",
+  "school": "divination",
+  "classLevels": {
+    "class:cleric": 1,
+    "class:paladin": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": true,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "60 ft.",
+  "duration": "Concentration, up to 1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Reveals undead within 60 ft.",
+  "area": "Cone-shaped emanation"
+}
+]

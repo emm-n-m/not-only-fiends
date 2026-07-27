@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:telekinesis",
+  "name": "Telekinesis",
+  "school": "transmutation",
+  "classLevels": {
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "long (400 ft. + 40 ft./level)",
+  "duration": "Concentration of up to 1/level rounds or instantaneous; see text",
+  "savingThrow": "Will negates (object) or None; see text",
+  "spellResistance": "yes  (object); see text",
+  "description": "Moves object, attacks creature, or hurls object or creature.",
+  "target": "See text"
+}
+]

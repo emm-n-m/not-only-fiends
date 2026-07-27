@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:status",
+  "name": "Status",
+  "school": "divination",
+  "classLevels": {
+    "class:cleric": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level hours",
+  "savingThrow": "Will negates (harmless)",
+  "spellResistance": "yes (harmless)",
+  "description": "Monitors condition, position of allies.",
+  "target": "(CASTERLEVEL/3) living creatures touched"
+}
+]

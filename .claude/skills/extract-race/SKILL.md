@@ -36,7 +36,7 @@ Dispatch on the argument:
    - Size word (Small/Medium/Large) appears either in a `<p class="initial">` sizing paragraph or in a leading trait.
    - Named racial traits use nested anchors like `<a id="dwarf-stonecunning"></a><p>Stonecunning: …</p>` → one `GrantAbility` permabuff per trait.
    - `+N racial bonus on X` patterns inside `<p>` without a named anchor → `ModifyAttribute` permabuffs.
-   - Hyperlinked skills (`<a href="skillsAll.html#search">Search</a>`) give canonical skill IDs — the anchor fragment matches our snake_case skill IDs.
+   - Hyperlinked skills (`<a href="skillsAll.html#search">Search</a>`) give canonical skill IDs — the anchor fragment matches our snake_case skill IDs (prefix with `skill:` for the content field).
    - "Automatic Languages / Bonus Languages" → flavor only (no engine field yet).
    - "Favored Class" → flavor only (favored-class mechanic isn't modeled).
 5. **Estimate level adjustment** — not in the SRD HTML for core races (LA 0). For monster-as-races, use the explicit `Level Adjustment` line; absence means LA 0.
@@ -63,7 +63,7 @@ Dispatch on the argument:
 
 ## Key conventions
 
-- Race IDs: `snake_case` (`dwarf`, `half_elf`, `aasimar`, `juvenile_nabassu`).
+- Race IDs: `race:<snake_case>` (`race:dwarf`, `race:half_elf`, `race:aasimar`, `race:juvenile_nabassu`).
 - Racial HD driver IDs: `racial_hd:<race_id>`.
 - Subtypes: include alignment + extraplanar + creature subtypes (`["chaotic", "evil", "extraplanar", "tanar'ri"]`).
 - Ability modifiers must be even integers.

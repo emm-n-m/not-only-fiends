@@ -1,0 +1,24 @@
+[
+{
+  "id": "spell:fabricate",
+  "name": "Fabricate",
+  "school": "transmutation",
+  "classLevels": {
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "See text",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Instantaneous",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Transforms raw materials into finished items.",
+  "target": "Up to (CASTERLEVEL*10) cu. ft; see text"
+}
+]

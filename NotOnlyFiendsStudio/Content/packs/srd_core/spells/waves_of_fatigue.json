@@ -1,0 +1,23 @@
+[
+{
+  "id": "spell:waves_of_fatigue",
+  "name": "Waves of Fatigue",
+  "school": "necromancy",
+  "classLevels": {
+    "class:sorcerer": 5,
+    "class:wizard": 5
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "30 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "No",
+  "spellResistance": "yes",
+  "description": "Several targets become fatigued.",
+  "area": "Cone-shaped burst"
+}
+]

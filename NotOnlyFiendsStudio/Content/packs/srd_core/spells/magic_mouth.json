@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:magic_mouth",
+  "name": "Magic Mouth",
+  "school": "illusion",
+  "classLevels": {
+    "class:bard": 1,
+    "class:sorcerer": 2,
+    "class:wizard": 2
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "Permanent until discharged",
+  "savingThrow": "Will negates (object)",
+  "spellResistance": "yes (object)",
+  "description": "Speaks once when triggered.",
+  "subschool": "glamer",
+  "target": "One creature or object"
+}
+]

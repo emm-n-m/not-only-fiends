@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:obscuring_mist",
+  "name": "Obscuring Mist",
+  "school": "conjuration",
+  "classLevels": {
+    "class:adept": 1,
+    "class:cleric": 1,
+    "class:druid": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "20 ft.",
+  "duration": "1/level minutes",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Fog surrounds you.",
+  "subschool": "creation",
+  "area": "Cloud spreads in 20-ft. radius from you, 20 ft. high"
+}
+]

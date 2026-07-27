@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:burning_hands",
+  "name": "Burning Hands",
+  "school": "evocation",
+  "classLevels": {
+    "class:adept": 1,
+    "class:sorcerer": 1,
+    "class:wizard": 1
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "15 ft.",
+  "duration": "Instantaneous",
+  "savingThrow": "Reflex half",
+  "spellResistance": "yes",
+  "description": "(min(CASTERLEVEL,5))d4 fire damage",
+  "descriptors": [
+    "fire"
+  ],
+  "area": "Cone-shaped burst"
+}
+]

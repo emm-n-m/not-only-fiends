@@ -1,0 +1,27 @@
+[
+{
+  "id": "spell:forcecage",
+  "name": "Forcecage",
+  "school": "evocation",
+  "classLevels": {
+    "class:sorcerer": 7,
+    "class:wizard": 7
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 standard action",
+  "range": "close (25 ft. + 5 ft./2 levels)",
+  "duration": "2/level hours (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Cube or cage of force imprisons all inside.",
+  "descriptors": [
+    "force"
+  ],
+  "area": "Barred cage (20-ft. cube) or windowless cell (10-ft. cube)"
+}
+]

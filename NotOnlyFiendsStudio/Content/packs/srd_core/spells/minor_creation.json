@@ -1,0 +1,26 @@
+[
+{
+  "id": "spell:minor_creation",
+  "name": "Minor Creation",
+  "school": "conjuration",
+  "classLevels": {
+    "class:adept": 4,
+    "class:sorcerer": 4,
+    "class:wizard": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false,
+    "material": "see text"
+  },
+  "castingTime": "1 minute",
+  "range": "0 ft.",
+  "duration": "1/level hours (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Creates one cloth or wood object.",
+  "subschool": "creation",
+  "target": "Unattended, nonmagical object of nonliving plant matter, up to 1 cu. ft./level"
+}
+]

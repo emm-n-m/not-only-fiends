@@ -1,0 +1,22 @@
+[
+{
+  "id": "spell:invisibility_purge",
+  "name": "Invisibility Purge",
+  "school": "evocation",
+  "classLevels": {
+    "class:cleric": 3
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "personal",
+  "duration": "1/level minutes (D)",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Dispels invisibility within (CASTERLEVEL*5) ft",
+  "target": "you"
+}
+]
