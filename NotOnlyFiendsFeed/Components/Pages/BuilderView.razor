@@ -23,6 +23,50 @@ else if (_error != null)
 }
 else
 {
+    <!-- Actions -->
+    <div class="row mb-3">
+        <div class="col d-flex flex-wrap gap-2 align-items-start">
+            <button class="btn btn-primary" @onclick="EvaluateCharacter">Evaluate</button>
+            <button class="btn btn-success" @onclick="SaveCharacter">Save</button>
+            <button class="btn btn-outline-success" @onclick="DownloadCharacter">Download</button>
+            @if (CharacterStore.IsConfigured)
+            {
+                <div>
+                    <button class="btn btn-outline-secondary" @onclick="ToggleOpenPicker">Open...</button>
+                    @if (_showOpenPicker)
+                    {
+                        <div class="mt-1" style="min-width: 280px;">
+                            <SearchSelect TItem="CharacterFileInfo"
+                                          Items="_availableCharacters"
+                                          Value="@_characterStoreId"
+                                          ValueChanged="OpenFromStore"
+                                          DisplaySelector="@(c => c.Name)"
+                                          ValueSelector="@(c => c.Id)"
+                                          Placeholder="Search saved characters..." />
+                            <button class="btn btn-sm btn-link p-0 mt-1" @onclick="OpenFile">Open from file instead...</button>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <button class="btn btn-outline-secondary" @onclick="OpenFile">Open...</button>
+            }
+            <button class="btn btn-outline-info" @onclick="ViewSheet">View Sheet</button>
+        </div>
+    </div>
+
+    @if (_statusMessage != null)
+    {
+        <div class="alert @(_statusIsError ? "alert-danger" : "alert-success") alert-dismissible fade show py-2" role="alert">
+            @_statusMessage
+            <button type="button" class="btn-close" @onclick="() => _statusMessage = null"></button>
+        </div>
+    }
+
+    <!-- Hidden file input for Open -->
+    <input type="file" id="file-open-input" accept=".json" style="display:none" />
+
     <!-- Step 1: Character Name & Race -->
     <div class="card mb-3">
         <div class="card-header">Character Setup</div>
@@ -796,28 +840,6 @@ else
         </div>
     </div>
 
-    <!-- Actions -->
-    <div class="row mb-3">
-        <div class="col d-flex flex-wrap gap-2">
-            <button class="btn btn-primary" @onclick="EvaluateCharacter">Evaluate</button>
-            <button class="btn btn-success" @onclick="SaveCharacter">Save</button>
-            <button class="btn btn-outline-success" @onclick="DownloadCharacter">Download</button>
-            <button class="btn btn-outline-secondary" @onclick="OpenFile">Open...</button>
-            <button class="btn btn-outline-info" @onclick="ViewSheet">View Sheet</button>
-        </div>
-    </div>
-
-    @if (_statusMessage != null)
-    {
-        <div class="alert @(_statusIsError ? "alert-danger" : "alert-success") alert-dismissible fade show py-2" role="alert">
-            @_statusMessage
-            <button type="button" class="btn-close" @onclick="() => _statusMessage = null"></button>
-        </div>
-    }
-
-    <!-- Hidden file input for Open -->
-    <input type="file" id="file-open-input" accept=".json" style="display:none" />
-
     <!-- Evaluation Result -->
     @if (_state != null)
     {
@@ -1149,6 +1171,7 @@ else
     private int? _pendingWishEvent;
     private string? _statusMessage;
     private bool _statusIsError;
+    private bool _showOpenPicker;
 
     protected override async Task OnInitializedAsync()
     {
@@ -1501,11 +1524,43 @@ else
             if (loaded != null)
             {
                 _character = loaded;
+                _characterStoreId = null;
                 _error = null;
+                _showOpenPicker = false;
                 ExpandAllHdTicks();
                 OnCharacterChanged();
                 SetStatus($"Opened \"{loaded.Name}\".", false);
             }
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Open failed: {ex.Message}", true);
+        }
+    }
+
+    private void ToggleOpenPicker()
+    {
+        _showOpenPicker = !_showOpenPicker;
+        if (_showOpenPicker)
+            RefreshAvailableCharacters();
+    }
+
+    private void OpenFromStore(string? id)
+    {
+        if (string.IsNullOrEmpty(id))
+            return;
+        try
+        {
+            _character = CharacterStore.Get(id);
+            _characterStoreId = id;
+            _error = null;
+            _showOpenPicker = false;
+            ExpandAllHdTicks();
+            OnCharacterChanged();
+            // Keep the URL in sync so a refresh reloads the same character. Same-component
+            // navigation only updates the route parameter; state is already set above.
+            Navigation.NavigateTo($"/builder/{Uri.EscapeDataString(id)}");
+            SetStatus($"Opened \"{_character.Name}\" from server.", false);
         }
         catch (Exception ex)
         {
