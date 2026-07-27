@@ -1,0 +1,42 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:commoner",
+  "name": "Commoner",
+  "hitDie": 4,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "climb",
+    "craft",
+    "handle_animal",
+    "jump",
+    "listen",
+    "profession",
+    "ride",
+    "spot",
+    "swim",
+    "use_rope"
+  ],
+  "babProgression": "poor",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "poor",
+    "will": "poor"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Proficient with one simple weapon. Not proficient with any armor or shields."
+        }
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": []
+}
+]

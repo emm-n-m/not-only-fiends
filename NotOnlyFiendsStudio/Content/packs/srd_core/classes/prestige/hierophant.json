@@ -1,0 +1,79 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:hierophant",
+  "name": "Hierophant",
+  "hitDie": 8,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "concentration",
+    "craft",
+    "diplomacy",
+    "heal",
+    "knowledge_arcana",
+    "knowledge_religion",
+    "profession",
+    "spellcraft"
+  ],
+  "babProgression": "poor",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "poor",
+    "will": "good"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Gains no new weapon or armor proficiencies."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "spells_and_caster_level",
+          "name": "Spells and Caster Level",
+          "description": "Advances existing divine spellcasting class by one level per hierophant level."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "special_ability",
+          "name": "Special Ability",
+          "description": "Select a special hierophant ability each level, such as blast infidel, divine reach, faith healing, or mastery of energy."
+        }
+      }
+    ]
+  },
+  "perLevelPermabuffs": [
+    {
+      "$type": "AdvanceSpellcasting",
+      "castingType": "divine",
+      "casterLevelOnly": true
+    }
+  ],
+  "prerequisites": [
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "knowledge_religion",
+      "value": 15
+    },
+    {
+      "$type": "HasFeatOfType",
+      "featType": "Metamagic",
+      "minCount": 1
+    },
+    {
+      "$type": "CanCastSpellLevel",
+      "spellLevel": 7,
+      "castingType": "Divine"
+    }
+  ],
+  "maxLevel": 5
+}
+]

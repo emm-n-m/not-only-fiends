@@ -43,7 +43,7 @@ public class CharacterState
     public int HP { get; set; }
 
     // Skills — ranks stored as half-ranks (int). 5 ranks = 10, 2.5 ranks = 5.
-    public Dictionary<string, int> SkillRanks { get; set; } = new();
+    public Dictionary<string, int> SkillHalfRanks { get; set; } = new();
     public HashSet<string> ClassSkills { get; set; } = new();
     /// <summary>Class skills for the current tick's driver (used for cost calculation).</summary>
     public HashSet<string> CurrentTickClassSkills { get; set; } = new();

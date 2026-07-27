@@ -404,7 +404,7 @@ public class ReplayStudioTests
 
         // Fighter HD 1: (2+0)*4 = 8 skill points. Spent 1 (class skill: 2 half-ranks costs 1 pt)
         Assert.Equal(7, state.UnspentSkillPoints);
-        Assert.Equal(2, state.SkillRanks["climb"]);
+        Assert.Equal(2, state.SkillHalfRanks["climb"]);
         Assert.Empty(state.Warnings);
     }
 
@@ -439,7 +439,7 @@ public class ReplayStudioTests
 
         // Cross-class costs 1 point per half-rank
         Assert.Equal(7, state.UnspentSkillPoints);
-        Assert.Equal(1, state.SkillRanks["bluff"]);
+        Assert.Equal(1, state.SkillHalfRanks["bluff"]);
         Assert.Empty(state.Warnings);
     }
 
@@ -473,7 +473,7 @@ public class ReplayStudioTests
 
         var state = engine.Evaluate(character);
 
-        Assert.Equal(10, state.SkillRanks["climb"]);
+        Assert.Equal(10, state.SkillHalfRanks["climb"]);
         Assert.Contains(state.Warnings, w => w.Contains("climb") && w.Contains("exceeding max"));
     }
 

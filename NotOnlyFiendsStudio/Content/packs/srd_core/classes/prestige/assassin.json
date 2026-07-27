@@ -1,0 +1,302 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:assassin",
+  "name": "Assassin",
+  "hitDie": 6,
+  "skillPointsPerLevel": 4,
+  "classSkills": [
+    "balance",
+    "bluff",
+    "climb",
+    "craft",
+    "decipher_script",
+    "diplomacy",
+    "disable_device",
+    "disguise",
+    "escape_artist",
+    "forgery",
+    "gather_information",
+    "hide",
+    "intimidate",
+    "jump",
+    "listen",
+    "move_silently",
+    "open_lock",
+    "search",
+    "sense_motive",
+    "sleight_of_hand",
+    "spot",
+    "swim",
+    "tumble",
+    "use_magic_device",
+    "use_rope"
+  ],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "good",
+    "will": "poor"
+  },
+  "spellcasting": {
+    "castingType": "arcane",
+    "castingStat": "int",
+    "spellsPerDay": {
+      "1": {
+        "0": 0,
+        "1": 0
+      },
+      "2": {
+        "0": 0,
+        "1": 1
+      },
+      "3": {
+        "0": 0,
+        "1": 2,
+        "2": 0
+      },
+      "4": {
+        "0": 0,
+        "1": 3,
+        "2": 1
+      },
+      "5": {
+        "0": 0,
+        "1": 3,
+        "2": 2,
+        "3": 0
+      },
+      "6": {
+        "0": 0,
+        "1": 3,
+        "2": 3,
+        "3": 1
+      },
+      "7": {
+        "0": 0,
+        "1": 3,
+        "2": 3,
+        "3": 2,
+        "4": 0
+      },
+      "8": {
+        "0": 0,
+        "1": 3,
+        "2": 3,
+        "3": 3,
+        "4": 1
+      },
+      "9": {
+        "0": 0,
+        "1": 3,
+        "2": 3,
+        "3": 3,
+        "4": 2
+      },
+      "10": {
+        "0": 0,
+        "1": 3,
+        "2": 3,
+        "3": 3,
+        "4": 3
+      }
+    },
+    "spellsKnown": {
+      "1": {
+        "0": 0,
+        "1": 2
+      },
+      "2": {
+        "0": 0,
+        "1": 3
+      },
+      "3": {
+        "0": 0,
+        "1": 3,
+        "2": 2
+      },
+      "4": {
+        "0": 0,
+        "1": 4,
+        "2": 3
+      },
+      "5": {
+        "0": 0,
+        "1": 4,
+        "2": 3,
+        "3": 2
+      },
+      "6": {
+        "0": 0,
+        "1": 4,
+        "2": 4,
+        "3": 3
+      },
+      "7": {
+        "0": 0,
+        "1": 4,
+        "2": 4,
+        "3": 3,
+        "4": 2
+      },
+      "8": {
+        "0": 0,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 3
+      },
+      "9": {
+        "0": 0,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 3
+      },
+      "10": {
+        "0": 0,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4
+      }
+    }
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Proficient with crossbow (hand, light, or heavy), dagger, dart, rapier, sap, shortbow, and short sword. Proficient with light armor."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "death_attack",
+          "name": "Death Attack",
+          "description": "Study a target for 3 rounds, then make a sneak attack that can paralyze or kill (Fort save DC 10 + class level + Int modifier)."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "poison_use",
+          "name": "Poison Use",
+          "description": "Never risks accidentally poisoning self when applying poison to a weapon."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "sneak_attack",
+          "name": "Sneak Attack",
+          "description": "Extra damage when flanking or when target is denied Dex bonus to AC."
+        }
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "spells",
+          "name": "Spells",
+          "description": "Casts arcane spells drawn from the assassin spell list, using Intelligence as the casting stat."
+        }
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "uncanny_dodge",
+          "name": "Uncanny Dodge",
+          "description": "Retains Dex bonus to AC even when flat-footed or struck by an invisible attacker."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "save_bonus_against_poison",
+          "name": "Save Bonus against Poison",
+          "description": "+1 bonus on saves against poison at 2nd level, increasing by +1 every two levels."
+        }
+      }
+    ],
+    "3": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "5": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "improved_uncanny_dodge",
+          "name": "Improved Uncanny Dodge",
+          "description": "Cannot be flanked except by a rogue 4+ levels higher."
+        }
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "7": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "8": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hide_in_plain_sight",
+          "name": "Hide in Plain Sight",
+          "description": "Can use the Hide skill even while being observed, as long as within 10 ft. of a shadow."
+        }
+      }
+    ],
+    "9": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": [
+    {
+      "$type": "AlignmentReq",
+      "allowed": [
+        "cE",
+        "lE",
+        "nE"
+      ]
+    },
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "disguise",
+      "value": 4
+    },
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "hide",
+      "value": 8
+    },
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "move_silently",
+      "value": 8
+    }
+  ],
+  "maxLevel": 10
+}
+]

@@ -1,0 +1,74 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:horizon_walker",
+  "name": "Horizon Walker",
+  "hitDie": 8,
+  "skillPointsPerLevel": 4,
+  "classSkills": [
+    "balance",
+    "climb",
+    "diplomacy",
+    "handle_animal",
+    "hide",
+    "knowledge_geography",
+    "listen",
+    "move_silently",
+    "profession",
+    "ride",
+    "speak_language",
+    "spot",
+    "survival"
+  ],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "poor",
+    "will": "poor"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Gains no new weapon or armor proficiencies."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "terrain_mastery",
+          "name": "Terrain Mastery",
+          "description": "Select a terrain type each level to gain a cumulative benefit when in that terrain (e.g. bonus on initiative, hide, or resist energy)."
+        }
+      }
+    ],
+    "6": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "planar_terrain_mastery",
+          "name": "Planar Terrain Mastery",
+          "description": "At 6th level and above, can select planar terrains for terrain mastery, gaining planar-specific benefits."
+        }
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": [
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "knowledge_geography",
+      "value": 8
+    },
+    {
+      "$type": "HasFeat",
+      "featId": "endurance"
+    }
+  ],
+  "maxLevel": 10
+}
+]

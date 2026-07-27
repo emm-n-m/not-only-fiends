@@ -1,0 +1,158 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:duelist",
+  "name": "Duelist",
+  "hitDie": 10,
+  "skillPointsPerLevel": 4,
+  "classSkills": [
+    "balance",
+    "bluff",
+    "escape_artist",
+    "jump",
+    "listen",
+    "perform",
+    "sense_motive",
+    "spot",
+    "tumble"
+  ],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "good",
+    "will": "poor"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Gains no new weapon or armor proficiencies."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "canny_defense",
+          "name": "Canny Defense",
+          "description": "Add Int bonus (up to class level) to AC when not wearing armor or using a shield, wielding a melee weapon, and not flat-footed."
+        }
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "improved_reaction",
+          "name": "Improved Reaction",
+          "description": "+2 bonus on initiative checks."
+        }
+      }
+    ],
+    "3": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "enhanced_mobility",
+          "name": "Enhanced Mobility",
+          "description": "+4 dodge bonus to AC against attacks of opportunity provoked by moving through threatened squares."
+        }
+      }
+    ],
+    "4": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "grace",
+          "name": "Grace",
+          "description": "+2 competence bonus on Reflex saves."
+        }
+      }
+    ],
+    "5": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "precise_strike",
+          "name": "Precise Strike",
+          "description": "Add class level to damage with a light or one-handed piercing weapon while the other hand is free."
+        }
+      }
+    ],
+    "6": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "acrobatic_charge",
+          "name": "Acrobatic Charge",
+          "description": "Can charge in situations where others cannot, such as through difficult terrain."
+        }
+      }
+    ],
+    "7": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "elaborate_parry",
+          "name": "Elaborate Parry",
+          "description": "Gain a bonus to AC equal to Int bonus (up to class level) when fighting defensively or using total defense."
+        }
+      }
+    ],
+    "9": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "deflect_arrows",
+          "name": "Deflect Arrows",
+          "description": "Gain the Deflect Arrows feat, even without prerequisites. Can deflect one ranged attack per round."
+        }
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": [
+    {
+      "$type": "MinBAB",
+      "value": 6
+    },
+    {
+      "$type": "MinSkillRanksAcross",
+      "skillIds": [
+        "perform_act",
+        "perform_comedy",
+        "perform_dance",
+        "perform_keyboard_instruments",
+        "perform_oratory",
+        "perform_percussion_instruments",
+        "perform_sing",
+        "perform_string_instruments",
+        "perform_wind_instruments"
+      ],
+      "value": 3,
+      "minCount": 1
+    },
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "tumble",
+      "value": 5
+    },
+    {
+      "$type": "HasFeat",
+      "featId": "dodge"
+    },
+    {
+      "$type": "HasFeat",
+      "featId": "mobility"
+    },
+    {
+      "$type": "HasFeat",
+      "featId": "weapon_finesse"
+    }
+  ],
+  "maxLevel": 10
+}
+]

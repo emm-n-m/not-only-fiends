@@ -1,0 +1,221 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:rogue",
+  "name": "Rogue",
+  "hitDie": 6,
+  "skillPointsPerLevel": 8,
+  "classSkills": [
+    "appraise",
+    "balance",
+    "bluff",
+    "climb",
+    "craft",
+    "decipher_script",
+    "diplomacy",
+    "disable_device",
+    "disguise",
+    "escape_artist",
+    "forgery",
+    "gather_information",
+    "hide",
+    "intimidate",
+    "jump",
+    "knowledge_local",
+    "listen",
+    "move_silently",
+    "open_lock",
+    "perform",
+    "profession",
+    "search",
+    "sense_motive",
+    "sleight_of_hand",
+    "spot",
+    "swim",
+    "tumble",
+    "use_magic_device",
+    "use_rope"
+  ],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "good",
+    "will": "poor"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "simple_weapon_proficiency"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "armor_proficiency_light"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Proficient with all simple weapons, hand crossbow, rapier, sap, shortbow, and short sword. Proficient with light armor."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "sneak_attack",
+          "name": "Sneak Attack",
+          "description": "Extra damage when flanking or when target is denied Dex bonus to AC."
+        }
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "trapfinding",
+          "name": "Trapfinding",
+          "description": "Can use Search to find traps with DC above 20, and Disable Device to disarm magic traps."
+        }
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "evasion",
+          "name": "Evasion",
+          "description": "On a successful Reflex save against an area attack, takes no damage instead of half."
+        }
+      }
+    ],
+    "3": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "trap_sense",
+          "name": "Trap Sense",
+          "description": "Bonus on Reflex saves and AC against traps."
+        }
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "trap_sense_bonus"
+      }
+    ],
+    "4": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "uncanny_dodge",
+          "name": "Uncanny Dodge",
+          "description": "Retains Dex bonus to AC even when flat-footed or struck by an invisible attacker."
+        }
+      }
+    ],
+    "5": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "6": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "trap_sense_bonus"
+      }
+    ],
+    "7": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "8": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "improved_uncanny_dodge",
+          "name": "Improved Uncanny Dodge",
+          "description": "Cannot be flanked except by a rogue 4+ levels higher."
+        }
+      }
+    ],
+    "9": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "trap_sense_bonus"
+      }
+    ],
+    "10": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "special_abilities",
+          "name": "Special Abilities",
+          "description": "Select a special ability from the rogue special abilities list at 10th level and every 3 levels after."
+        }
+      }
+    ],
+    "11": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "12": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "trap_sense_bonus"
+      }
+    ],
+    "13": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "15": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "trap_sense_bonus"
+      }
+    ],
+    "17": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "18": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "trap_sense_bonus"
+      }
+    ],
+    "19": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": []
+}
+]

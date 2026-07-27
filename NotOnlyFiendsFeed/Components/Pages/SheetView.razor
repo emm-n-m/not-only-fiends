@@ -149,12 +149,12 @@ else if (_state != null && _character != null)
                 <div class="card mb-3">
                     <div class="card-header">Skills (@_state.UnspentSkillPoints unspent pts)</div>
                     <div class="card-body">
-                        @if (_state.SkillRanks.Any())
+                        @if (_state.SkillHalfRanks.Any())
                         {
                             <table class="table table-sm">
                                 <thead><tr><th>Skill</th><th>Ranks</th></tr></thead>
                                 <tbody>
-                                    @foreach (var (skill, halfRanks) in _state.SkillRanks.OrderBy(kv => kv.Key))
+                                    @foreach (var (skill, halfRanks) in _state.SkillHalfRanks.OrderBy(kv => kv.Key))
                                     {
                                         var skillDef = _registry.GetAllSkills().FirstOrDefault(s => s.Id == skill);
                                         <tr>

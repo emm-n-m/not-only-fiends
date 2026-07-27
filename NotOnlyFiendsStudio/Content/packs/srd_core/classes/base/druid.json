@@ -1,0 +1,489 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:druid",
+  "name": "Druid",
+  "hitDie": 8,
+  "skillPointsPerLevel": 4,
+  "classSkills": [
+    "concentration",
+    "craft",
+    "diplomacy",
+    "handle_animal",
+    "heal",
+    "knowledge_nature",
+    "listen",
+    "profession",
+    "ride",
+    "spellcraft",
+    "spot",
+    "survival",
+    "swim"
+  ],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "poor",
+    "will": "good"
+  },
+  "spellcasting": {
+    "castingType": "divine",
+    "castingStat": "wis",
+    "spellsPerDay": {
+      "1": {
+        "0": 3,
+        "1": 1
+      },
+      "2": {
+        "0": 4,
+        "1": 2
+      },
+      "3": {
+        "0": 4,
+        "1": 2,
+        "2": 1
+      },
+      "4": {
+        "0": 5,
+        "1": 3,
+        "2": 2
+      },
+      "5": {
+        "0": 5,
+        "1": 3,
+        "2": 2,
+        "3": 1
+      },
+      "6": {
+        "0": 5,
+        "1": 3,
+        "2": 3,
+        "3": 2
+      },
+      "7": {
+        "0": 6,
+        "1": 4,
+        "2": 3,
+        "3": 2,
+        "4": 1
+      },
+      "8": {
+        "0": 6,
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 2
+      },
+      "9": {
+        "0": 6,
+        "1": 4,
+        "2": 4,
+        "3": 3,
+        "4": 2,
+        "5": 1
+      },
+      "10": {
+        "0": 6,
+        "1": 4,
+        "2": 4,
+        "3": 3,
+        "4": 3,
+        "5": 2
+      },
+      "11": {
+        "0": 6,
+        "1": 5,
+        "2": 4,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 1
+      },
+      "12": {
+        "0": 6,
+        "1": 5,
+        "2": 4,
+        "3": 4,
+        "4": 3,
+        "5": 3,
+        "6": 2
+      },
+      "13": {
+        "0": 6,
+        "1": 5,
+        "2": 5,
+        "3": 4,
+        "4": 4,
+        "5": 3,
+        "6": 2,
+        "7": 1
+      },
+      "14": {
+        "0": 6,
+        "1": 5,
+        "2": 5,
+        "3": 4,
+        "4": 4,
+        "5": 3,
+        "6": 3,
+        "7": 2
+      },
+      "15": {
+        "0": 6,
+        "1": 5,
+        "2": 5,
+        "3": 5,
+        "4": 4,
+        "5": 4,
+        "6": 3,
+        "7": 2,
+        "8": 1
+      },
+      "16": {
+        "0": 6,
+        "1": 5,
+        "2": 5,
+        "3": 5,
+        "4": 4,
+        "5": 4,
+        "6": 3,
+        "7": 3,
+        "8": 2
+      },
+      "17": {
+        "0": 6,
+        "1": 5,
+        "2": 5,
+        "3": 5,
+        "4": 5,
+        "5": 4,
+        "6": 4,
+        "7": 3,
+        "8": 2,
+        "9": 1
+      },
+      "18": {
+        "0": 6,
+        "1": 5,
+        "2": 5,
+        "3": 5,
+        "4": 5,
+        "5": 4,
+        "6": 4,
+        "7": 3,
+        "8": 3,
+        "9": 2
+      },
+      "19": {
+        "0": 6,
+        "1": 5,
+        "2": 5,
+        "3": 5,
+        "4": 5,
+        "5": 5,
+        "6": 4,
+        "7": 4,
+        "8": 3,
+        "9": 3
+      },
+      "20": {
+        "0": 6,
+        "1": 5,
+        "2": 5,
+        "3": 5,
+        "4": 5,
+        "5": 5,
+        "6": 4,
+        "7": 4,
+        "8": 4,
+        "9": 4
+      }
+    }
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "armor_proficiency_light"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "armor_proficiency_medium"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "shield_proficiency"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Proficient with club, dagger, dart, quarterstaff, scimitar, sickle, shortspear, sling, and spear. Proficient with light and medium armor (non-metal only) and shields (non-metal, non-tower)."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "spells",
+          "name": "Spells",
+          "description": "Casts divine spells drawn from the druid spell list, using Wisdom as the casting stat."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "bonus_languages",
+          "name": "Bonus Languages",
+          "description": "Automatically knows Druidic, a secret language known only to druids."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "spontaneous_casting",
+          "name": "Spontaneous Casting",
+          "description": "Can channel stored spell energy into summon nature's ally spells not prepared ahead of time."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "animal_companion",
+          "name": "Animal Companion",
+          "description": "Gain an animal companion that accompanies the druid on adventures."
+        }
+      },
+      {
+        "$type": "GrantCompanionSlot",
+        "linkType": "animal_companion",
+        "classFeatureType": "animal_companion_options",
+        "effectiveLevelFormula": {
+          "expression": "max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)"
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "nature_sense",
+          "name": "Nature Sense",
+          "description": "+2 bonus on Knowledge (nature) and Survival checks."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "wild_empathy",
+          "name": "Wild Empathy",
+          "description": "Can improve attitude of an animal, similar to a Diplomacy check."
+        }
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "woodland_stride",
+          "name": "Woodland Stride",
+          "description": "Move through natural thorns, briars, and overgrown areas at normal speed without damage."
+        }
+      }
+    ],
+    "3": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "trackless_step",
+          "name": "Trackless Step",
+          "description": "Leave no trail in natural surroundings and cannot be tracked."
+        }
+      }
+    ],
+    "4": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "resist_natures_lure",
+          "name": "Resist Nature's Lure",
+          "description": "+4 bonus on saves against spell-like abilities of fey."
+        }
+      }
+    ],
+    "5": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "wild_shape",
+          "name": "Wild Shape",
+          "description": "Can transform into a Small or Medium animal and back, 1/day for 1 hour per druid level."
+        }
+      },
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:animal:small"
+      },
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:animal:medium"
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "wild_shape_uses_per_day",
+        "value": 1
+      }
+    ],
+    "6": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "wild_shape_uses_per_day",
+        "value": 1
+      }
+    ],
+    "7": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "wild_shape_uses_per_day",
+        "value": 1
+      }
+    ],
+    "8": [
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:animal:large"
+      }
+    ],
+    "9": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "venom_immunity",
+          "name": "Venom Immunity",
+          "description": "Immune to all poisons."
+        }
+      }
+    ],
+    "10": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "wild_shape_uses_per_day",
+        "value": 1
+      }
+    ],
+    "11": [
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:animal:tiny"
+      }
+    ],
+    "12": [
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:plant:tiny"
+      },
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:plant:small"
+      },
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:plant:medium"
+      },
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:plant:large"
+      }
+    ],
+    "13": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "a_thousand_faces",
+          "name": "A Thousand Faces",
+          "description": "Can change appearance at will, as alter self."
+        }
+      }
+    ],
+    "14": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "wild_shape_uses_per_day",
+        "value": 1
+      }
+    ],
+    "15": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "timeless_body",
+          "name": "Timeless Body",
+          "description": "No longer takes ability score penalties for aging."
+        }
+      },
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:animal:huge"
+      },
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:plant:huge"
+      }
+    ],
+    "16": [
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:elemental:small"
+      },
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:elemental:medium"
+      },
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:elemental:large"
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "wild_shape_elemental_uses_per_day",
+        "value": 1
+      }
+    ],
+    "18": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "wild_shape_uses_per_day",
+        "value": 1
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "wild_shape_elemental_uses_per_day",
+        "value": 1
+      }
+    ],
+    "20": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "wild_shape_elemental_uses_per_day",
+        "value": 1
+      },
+      {
+        "$type": "GrantCapability",
+        "capability": "wild_shape:elemental:huge"
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": [
+    {
+      "$type": "AlignmentReq",
+      "allowed": [
+        "cN",
+        "lN",
+        "n",
+        "nE",
+        "nG"
+      ]
+    }
+  ]
+}
+]

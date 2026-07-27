@@ -1,0 +1,245 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:monk",
+  "name": "Monk",
+  "hitDie": 8,
+  "skillPointsPerLevel": 4,
+  "classSkills": [
+    "balance",
+    "climb",
+    "concentration",
+    "craft",
+    "diplomacy",
+    "escape_artist",
+    "hide",
+    "jump",
+    "knowledge_arcana",
+    "knowledge_religion",
+    "listen",
+    "move_silently",
+    "perform",
+    "profession",
+    "sense_motive",
+    "spot",
+    "swim",
+    "tumble"
+  ],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "good",
+    "will": "good"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Proficient with club, crossbow (light or heavy), dagger, handaxe, javelin, kama, nunchaku, quarterstaff, sai, shuriken, siangham, and sling. Not proficient with armor or shields."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "ac_bonus",
+          "name": "AC Bonus",
+          "description": "Add Wis bonus to AC when unarmored and unencumbered. Bonus increases by +1 at 5th level and every 5 levels after."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "flurry_of_blows",
+          "name": "Flurry of Blows",
+          "description": "Make one extra attack per round at highest BAB with a -2 penalty to all attacks. Penalty decreases at higher levels."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "unarmed_strike",
+          "name": "Unarmed Strike",
+          "description": "Deal lethal or nonlethal unarmed damage as a Medium creature (1d6 at 1st, increasing with level). Treated as armed when unarmed."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "bonus_feat",
+          "name": "Bonus Feat",
+          "description": "Select a bonus feat from the monk bonus feat list at 1st, 2nd, and 6th level."
+        }
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "evasion",
+          "name": "Evasion",
+          "description": "On a successful Reflex save against an area attack, takes no damage instead of half."
+        }
+      }
+    ],
+    "3": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "fast_movement",
+          "name": "Fast Movement",
+          "description": "+10 ft. land speed when not wearing armor. Increases with level."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "still_mind",
+          "name": "Still Mind",
+          "description": "+2 bonus on saving throws against enchantment spells and effects."
+        }
+      }
+    ],
+    "4": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "ki_strike",
+          "name": "Ki Strike",
+          "description": "Unarmed attacks are treated as magic weapons for overcoming damage reduction. At 10th lawful, at 16th adamantine."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "slow_fall",
+          "name": "Slow Fall",
+          "description": "Take damage as if a fall were shorter than it actually is, with distance reduced increasing with level."
+        }
+      }
+    ],
+    "5": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "purity_of_body",
+          "name": "Purity of Body",
+          "description": "Immune to all diseases, including supernatural and magical diseases."
+        }
+      }
+    ],
+    "7": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "wholeness_of_body",
+          "name": "Wholeness of Body",
+          "description": "Can heal own wounds, restoring up to twice monk level in HP per day."
+        }
+      }
+    ],
+    "9": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "improved_evasion",
+          "name": "Improved Evasion",
+          "description": "On a failed Reflex save against an area attack, takes half damage instead of full; no damage on success."
+        }
+      }
+    ],
+    "11": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "diamond_body",
+          "name": "Diamond Body",
+          "description": "Immune to all poisons."
+        }
+      }
+    ],
+    "12": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "abundant_step",
+          "name": "Abundant Step",
+          "description": "Can use dimension door as a spell-like ability once per day, using monk level as caster level."
+        }
+      }
+    ],
+    "13": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "diamond_soul",
+          "name": "Diamond Soul",
+          "description": "Gain spell resistance equal to monk level + 10."
+        }
+      }
+    ],
+    "15": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "quivering_palm",
+          "name": "Quivering Palm",
+          "description": "Once per week, set up vibrations that can kill a living creature within 1 day (Fort save DC 10 + level/2 + Wis modifier)."
+        }
+      }
+    ],
+    "17": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "timeless_body",
+          "name": "Timeless Body",
+          "description": "No longer takes ability score penalties for aging."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "tongue_of_the_sun_and_moon",
+          "name": "Tongue of the Sun and Moon",
+          "description": "Can speak with any living creature, as though using a tongues spell."
+        }
+      }
+    ],
+    "19": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "empty_body",
+          "name": "Empty Body",
+          "description": "Can become ethereal for 1 round per monk level per day, as the etherealness spell."
+        }
+      }
+    ],
+    "20": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "perfect_self",
+          "name": "Perfect Self",
+          "description": "Type changes to outsider. Gain damage reduction 10/magic."
+        }
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": [
+    {
+      "$type": "AlignmentReq",
+      "allowed": [
+        "lE",
+        "lG",
+        "lN"
+      ]
+    }
+  ]
+}
+]

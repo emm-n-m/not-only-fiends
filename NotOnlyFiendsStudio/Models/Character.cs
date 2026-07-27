@@ -146,7 +146,7 @@ public class CharacterSheet
         BAB = state.EffectiveBAB,
         Saves = state.EffectiveSaves,
         Feats = state.Feats,
-        Skills = state.SkillRanks.ToDictionary(kv => kv.Key, kv => kv.Value / 2),
+        Skills = state.SkillHalfRanks.ToDictionary(kv => kv.Key, kv => kv.Value / 2),
         SkillBonuses = state.SkillBonuses,
         Abilities = state.Abilities,
         Counters = state.Counters,

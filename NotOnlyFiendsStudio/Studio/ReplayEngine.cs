@@ -592,13 +592,13 @@ public class ReplayStudio
                 if (!_content.TryGetSkill(alloc.SkillId, out _))
                     state.Warnings.Add($"HD {state.TotalHD}: unknown skill '{alloc.SkillId}'");
 
-                state.SkillRanks.TryAdd(alloc.SkillId, 0);
-                var newTotal = state.SkillRanks[alloc.SkillId] + alloc.HalfRanks;
+                state.SkillHalfRanks.TryAdd(alloc.SkillId, 0);
+                var newTotal = state.SkillHalfRanks[alloc.SkillId] + alloc.HalfRanks;
 
                 if (newTotal > state.MaxHalfRanks)
                     state.Warnings.Add($"HD {state.TotalHD}: skill '{alloc.SkillId}' would have {newTotal / 2.0} ranks, exceeding max {state.MaxHalfRanks / 2.0}");
 
-                state.SkillRanks[alloc.SkillId] = newTotal;
+                state.SkillHalfRanks[alloc.SkillId] = newTotal;
                 var cost = state.CurrentTickClassSkills.Contains(alloc.SkillId)
                     ? (alloc.HalfRanks + 1) / 2
                     : alloc.HalfRanks;

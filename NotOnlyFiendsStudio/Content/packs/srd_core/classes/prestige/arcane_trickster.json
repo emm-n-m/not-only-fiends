@@ -1,0 +1,182 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:arcane_trickster",
+  "name": "Arcane Trickster",
+  "hitDie": 4,
+  "skillPointsPerLevel": 4,
+  "classSkills": [
+    "appraise",
+    "balance",
+    "bluff",
+    "climb",
+    "concentration",
+    "craft",
+    "decipher_script",
+    "diplomacy",
+    "disable_device",
+    "disguise",
+    "escape_artist",
+    "gather_information",
+    "hide",
+    "jump",
+    "knowledge",
+    "listen",
+    "move_silently",
+    "open_lock",
+    "profession",
+    "search",
+    "sense_motive",
+    "sleight_of_hand",
+    "speak_language",
+    "spellcraft",
+    "spot",
+    "swim",
+    "tumble",
+    "use_rope"
+  ],
+  "babProgression": "poor",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "good",
+    "will": "good"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Gains no new weapon or armor proficiencies."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "spells_per_day",
+          "name": "Spells per Day",
+          "description": "Advances existing arcane spellcasting class by one level per arcane trickster level."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "ranged_legerdemain",
+          "name": "Ranged Legerdemain",
+          "description": "Can perform Disable Device, Open Lock, or Sleight of Hand at range of 30 ft. with a +5 DC increase."
+        }
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "sneak_attack",
+          "name": "Sneak Attack",
+          "description": "Extra damage when flanking or when target is denied Dex bonus to AC."
+        }
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "3": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "impromptu_sneak_attack",
+          "name": "Impromptu Sneak Attack",
+          "description": "Can declare one melee or ranged attack as a sneak attack per use, even if target is not normally denied Dex bonus."
+        }
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "impromptu_sneak_attack_uses"
+      }
+    ],
+    "4": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "6": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "7": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "impromptu_sneak_attack_uses"
+      }
+    ],
+    "8": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "10": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ]
+  },
+  "perLevelPermabuffs": [
+    {
+      "$type": "AdvanceSpellcasting",
+      "castingType": "arcane"
+    }
+  ],
+  "prerequisites": [
+    {
+      "$type": "AlignmentReq",
+      "allowed": [
+        "cE",
+        "cG",
+        "cN",
+        "n",
+        "nE",
+        "nG"
+      ]
+    },
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "decipher_script",
+      "value": 7
+    },
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "disable_device",
+      "value": 7
+    },
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "escape_artist",
+      "value": 7
+    },
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "knowledge_arcana",
+      "value": 4
+    },
+    {
+      "$type": "CanCastSpellLevel",
+      "spellLevel": 0,
+      "castingType": "Arcane"
+    },
+    {
+      "$type": "MinCounter",
+      "counterId": "sneak_attack_dice",
+      "value": 2
+    }
+  ],
+  "maxLevel": 10
+}
+]

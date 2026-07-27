@@ -380,7 +380,7 @@ public class PcgReconstructionTests
         {
             var skillId = mapper.MapSkill(skill.Name);
             var expectedHalfRanks = (int)(skill.Ranks * 2);
-            if (state.SkillRanks.TryGetValue(skillId, out var halfRanks))
+            if (state.SkillHalfRanks.TryGetValue(skillId, out var halfRanks))
                 Assert.Equal(expectedHalfRanks, halfRanks);
         }
 

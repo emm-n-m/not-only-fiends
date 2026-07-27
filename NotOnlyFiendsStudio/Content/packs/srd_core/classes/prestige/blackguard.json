@@ -1,0 +1,270 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:blackguard",
+  "name": "Blackguard",
+  "hitDie": 10,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "concentration",
+    "craft",
+    "diplomacy",
+    "handle_animal",
+    "heal",
+    "hide",
+    "intimidate",
+    "knowledge_religion",
+    "profession",
+    "ride"
+  ],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "poor",
+    "will": "poor"
+  },
+  "spellcasting": {
+    "castingType": "divine",
+    "castingStat": "wis",
+    "spellsPerDay": {
+      "1": {
+        "0": 0,
+        "1": 0
+      },
+      "2": {
+        "0": 0,
+        "1": 1
+      },
+      "3": {
+        "0": 0,
+        "1": 1,
+        "2": 0
+      },
+      "4": {
+        "0": 0,
+        "1": 1,
+        "2": 1
+      },
+      "5": {
+        "0": 0,
+        "1": 1,
+        "2": 1,
+        "3": 0
+      },
+      "6": {
+        "0": 0,
+        "1": 1,
+        "2": 1,
+        "3": 1
+      },
+      "7": {
+        "0": 0,
+        "1": 2,
+        "2": 1,
+        "3": 1,
+        "4": 0
+      },
+      "8": {
+        "0": 0,
+        "1": 2,
+        "2": 1,
+        "3": 1,
+        "4": 1
+      },
+      "9": {
+        "0": 0,
+        "1": 2,
+        "2": 2,
+        "3": 1,
+        "4": 1
+      },
+      "10": {
+        "0": 0,
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 1
+      }
+    }
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Proficient with all simple and martial weapons, all armor, and shields."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "aura_of_evil",
+          "name": "Aura of Evil",
+          "description": "Radiates an aura of evil with power equal to class level."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "detect_good",
+          "name": "Detect Good",
+          "description": "Can use detect good at will as a spell-like ability."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "poison_use",
+          "name": "Poison Use",
+          "description": "Never risks accidentally poisoning self when applying poison to a weapon."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "spells",
+          "name": "Spells",
+          "description": "Casts divine spells drawn from the blackguard spell list, using Wisdom as the casting stat."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "lay_on_hands",
+          "name": "Lay on Hands",
+          "description": "Inflict damage equal to blackguard level x Cha modifier per day by touch (heals undead)."
+        }
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "dark_blessing",
+          "name": "Dark Blessing",
+          "description": "Add Cha bonus to all saving throws."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "smite_good",
+          "name": "Smite Good",
+          "description": "Add Cha bonus to attack roll and blackguard level to damage against a good foe."
+        }
+      }
+    ],
+    "3": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "aura_of_despair",
+          "name": "Aura of Despair",
+          "description": "Enemies within 10 ft. take a -2 penalty on all saving throws."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "command_undead",
+          "name": "Command Undead",
+          "description": "Can command or rebuke undead as a cleric of equal level."
+        }
+      }
+    ],
+    "4": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "sneak_attack",
+          "name": "Sneak Attack",
+          "description": "Extra damage when flanking or when target is denied Dex bonus to AC."
+        }
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "5": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "fiendish_servant",
+          "name": "Fiendish Servant",
+          "description": "Gain a fiendish animal servant."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "fiendish_summoning",
+          "name": "Fiendish Summoning",
+          "description": "Once per day, can summon a fiendish creature as a standard action."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "undead_companion",
+          "name": "Undead Companion",
+          "description": "Can command undead followers with total HD up to blackguard level."
+        }
+      }
+    ],
+    "7": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ],
+    "10": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "sneak_attack_dice"
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": [
+    {
+      "$type": "AlignmentReq",
+      "allowed": [
+        "cE",
+        "lE",
+        "nE"
+      ]
+    },
+    {
+      "$type": "MinBAB",
+      "value": 6
+    },
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "hide",
+      "value": 5
+    },
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "knowledge_religion",
+      "value": 2
+    },
+    {
+      "$type": "HasFeat",
+      "featId": "cleave"
+    },
+    {
+      "$type": "HasFeat",
+      "featId": "improved_sunder"
+    },
+    {
+      "$type": "HasFeat",
+      "featId": "power_attack"
+    }
+  ],
+  "maxLevel": 10
+}
+]

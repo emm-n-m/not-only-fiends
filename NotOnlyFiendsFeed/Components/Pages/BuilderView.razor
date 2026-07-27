@@ -514,7 +514,7 @@ else
                                             {
                                                 var sid = skill.Id;
                                                 var isClass = skillInfo.CurrentTickClassSkills.Contains(sid);
-                                                var totalHalfRanks = skillInfo.SkillRanks.GetValueOrDefault(sid);
+                                                var totalHalfRanks = skillInfo.SkillHalfRanks.GetValueOrDefault(sid);
                                                 var thisTickHalfRanks = GetTickSkillAllocation(index, sid);
                                                 var atMax = totalHalfRanks >= skillInfo.MaxHalfRanks;
                                                 <tr class="@(isClass ? "" : "text-muted")">
@@ -1271,7 +1271,7 @@ else
                 state.MaxHalfRanks,
                 new HashSet<string>(state.CurrentTickClassSkills),
                 new HashSet<string>(state.ClassSkills),
-                new Dictionary<string, int>(state.SkillRanks));
+                new Dictionary<string, int>(state.SkillHalfRanks));
 
             _tickAvailableFeats[i] = _engine.GetAvailableFeats(state)
                 .OrderBy(f => f.Name).ToList();
@@ -2041,7 +2041,7 @@ else
         int MaxHalfRanks,
         HashSet<string> CurrentTickClassSkills,
         HashSet<string> ClassSkills,
-        Dictionary<string, int> SkillRanks);
+        Dictionary<string, int> SkillHalfRanks);
 
     private sealed record TickCasterInfo(
         int PendingDomainSelections,

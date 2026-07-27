@@ -1,0 +1,137 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:dragon_disciple",
+  "name": "Dragon Disciple",
+  "hitDie": 12,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "concentration",
+    "craft",
+    "diplomacy",
+    "escape_artist",
+    "gather_information",
+    "knowledge",
+    "listen",
+    "profession",
+    "search",
+    "speak_language",
+    "spellcraft",
+    "spot"
+  ],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "poor",
+    "will": "good"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Gains no new weapon or armor proficiencies."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "bonus_spells",
+          "name": "Bonus Spells",
+          "description": "Gain additional spells known as if from a higher sorcerer level."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "natural_armor_increase",
+          "name": "Natural Armor Increase",
+          "description": "Natural armor bonus increases by +1 at 1st, 4th, and 7th level."
+        }
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "claws_and_bite",
+          "name": "Claws and Bite",
+          "description": "Gain two claw attacks (1d4) and a bite attack (1d6) as natural weapons."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "ability_boost",
+          "name": "Ability Boost",
+          "description": "Gain permanent ability score increases at various levels (+2 STR, CON, or INT)."
+        }
+      }
+    ],
+    "3": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "breath_weapon",
+          "name": "Breath Weapon",
+          "description": "Gain a breath weapon usable once per day, dealing 2d8 damage of the dragon type (Reflex half)."
+        }
+      }
+    ],
+    "5": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "blindsense",
+          "name": "Blindsense",
+          "description": "Gain blindsense out to 30 ft."
+        }
+      }
+    ],
+    "9": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "wings",
+          "name": "Wings",
+          "description": "Grow wings, gaining a fly speed of 30 ft. (average maneuverability)."
+        }
+      }
+    ],
+    "10": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "dragon_apotheosis",
+          "name": "Dragon Apotheosis",
+          "description": "Type changes to half-dragon. Gain immunity to sleep, paralysis, and the dragon's energy type, plus darkvision 120 ft. and low-light vision."
+        }
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": [
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "knowledge_arcana",
+      "value": 8
+    },
+    {
+      "$type": "HasSpontaneousCasting",
+      "castingType": "Arcane"
+    },
+    {
+      "$type": "HasLanguage",
+      "languageId": "draconic"
+    },
+    {
+      "$type": "LacksTemplate",
+      "templateId": "half_dragon"
+    }
+  ],
+  "maxLevel": 10
+}
+]

@@ -1,0 +1,351 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:paladin",
+  "name": "Paladin",
+  "hitDie": 10,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "concentration",
+    "craft",
+    "diplomacy",
+    "handle_animal",
+    "heal",
+    "knowledge_nobility",
+    "knowledge_religion",
+    "profession",
+    "ride",
+    "sense_motive"
+  ],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "poor",
+    "will": "poor"
+  },
+  "spellcasting": {
+    "castingType": "divine",
+    "castingStat": "wis",
+    "spellsPerDay": {
+      "4": {
+        "0": 0,
+        "1": 0
+      },
+      "5": {
+        "0": 0,
+        "1": 0
+      },
+      "6": {
+        "0": 0,
+        "1": 1
+      },
+      "7": {
+        "0": 0,
+        "1": 1
+      },
+      "8": {
+        "0": 0,
+        "1": 1,
+        "2": 0
+      },
+      "9": {
+        "0": 0,
+        "1": 1,
+        "2": 0
+      },
+      "10": {
+        "0": 0,
+        "1": 1,
+        "2": 1
+      },
+      "11": {
+        "0": 0,
+        "1": 1,
+        "2": 1,
+        "3": 0
+      },
+      "12": {
+        "0": 0,
+        "1": 1,
+        "2": 1,
+        "3": 1
+      },
+      "13": {
+        "0": 0,
+        "1": 1,
+        "2": 1,
+        "3": 1
+      },
+      "14": {
+        "0": 0,
+        "1": 2,
+        "2": 1,
+        "3": 1,
+        "4": 0
+      },
+      "15": {
+        "0": 0,
+        "1": 2,
+        "2": 1,
+        "3": 1,
+        "4": 1
+      },
+      "16": {
+        "0": 0,
+        "1": 2,
+        "2": 2,
+        "3": 1,
+        "4": 1
+      },
+      "17": {
+        "0": 0,
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 1
+      },
+      "18": {
+        "0": 0,
+        "1": 3,
+        "2": 2,
+        "3": 2,
+        "4": 1
+      },
+      "19": {
+        "0": 0,
+        "1": 3,
+        "2": 3,
+        "3": 3,
+        "4": 2
+      },
+      "20": {
+        "0": 0,
+        "1": 3,
+        "2": 3,
+        "3": 3,
+        "4": 3
+      }
+    }
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "simple_weapon_proficiency"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "weapon_proficiency_martial"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "armor_proficiency_light"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "armor_proficiency_medium"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "armor_proficiency_heavy"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "shield_proficiency"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Proficient with all simple and martial weapons, all armor, and shields."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "aura_of_good",
+          "name": "Aura of Good",
+          "description": "Radiates an aura of good with power equal to paladin level."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "detect_evil",
+          "name": "Detect Evil",
+          "description": "Can use detect evil at will as a spell-like ability."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "smite_evil",
+          "name": "Smite Evil",
+          "description": "Add Cha bonus to attack roll and paladin level to damage against an evil foe."
+        }
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "smite_evil_uses"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "code_of_conduct",
+          "name": "Code of Conduct",
+          "description": "Must be lawful good and loses paladin abilities if violating code."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "associates",
+          "name": "Associates",
+          "description": "May only associate with good-aligned characters or those who uphold the paladin code."
+        }
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "divine_grace",
+          "name": "Divine Grace",
+          "description": "Add Cha bonus to all saving throws."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "lay_on_hands",
+          "name": "Lay on Hands",
+          "description": "Heal damage equal to paladin level x Cha modifier per day by touch."
+        }
+      }
+    ],
+    "3": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "aura_of_courage",
+          "name": "Aura of Courage",
+          "description": "Immune to fear; allies within 10 ft. get +4 morale bonus on saving throws against fear."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "divine_health",
+          "name": "Divine Health",
+          "description": "Immune to all diseases, including supernatural and magical diseases."
+        }
+      }
+    ],
+    "4": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "turn_undead",
+          "name": "Turn Undead",
+          "description": "Channel positive energy to turn or destroy undead."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "spells",
+          "name": "Spells",
+          "description": "Casts divine spells drawn from the paladin spell list, beginning at 4th level, using Wisdom as the casting stat."
+        }
+      }
+    ],
+    "5": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "special_mount",
+          "name": "Special Mount",
+          "description": "Gain a special paladin mount with enhanced abilities."
+        }
+      },
+      {
+        "$type": "GrantCompanionSlot",
+        "linkType": "special_mount",
+        "classFeatureType": "paladin_mount_options",
+        "effectiveLevelFormula": {
+          "expression": "ClassLevel(paladin)"
+        }
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "smite_evil_uses"
+      }
+    ],
+    "6": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "remove_disease",
+          "name": "Remove Disease",
+          "description": "Can use remove disease as a spell-like ability."
+        }
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "remove_disease_uses"
+      }
+    ],
+    "9": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "remove_disease_uses"
+      }
+    ],
+    "10": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "smite_evil_uses"
+      }
+    ],
+    "12": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "remove_disease_uses"
+      }
+    ],
+    "15": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "smite_evil_uses"
+      },
+      {
+        "$type": "ModifyCounter",
+        "counterId": "remove_disease_uses"
+      }
+    ],
+    "18": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "remove_disease_uses"
+      }
+    ],
+    "20": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "smite_evil_uses"
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": [
+    {
+      "$type": "AlignmentReq",
+      "allowed": [
+        "lG"
+      ]
+    }
+  ]
+}
+]

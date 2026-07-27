@@ -1,0 +1,79 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:mystic_theurge",
+  "name": "Mystic Theurge",
+  "hitDie": 4,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "concentration",
+    "craft",
+    "decipher_script",
+    "knowledge_arcana",
+    "knowledge_religion",
+    "profession",
+    "sense_motive",
+    "spellcraft"
+  ],
+  "babProgression": "poor",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "poor",
+    "will": "good"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Gains no new weapon or armor proficiencies."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "spells_per_day",
+          "name": "Spells per Day",
+          "description": "Advances both arcane and divine spellcasting classes by one level per mystic theurge level."
+        }
+      }
+    ]
+  },
+  "perLevelPermabuffs": [
+    {
+      "$type": "AdvanceSpellcasting",
+      "castingType": "arcane"
+    },
+    {
+      "$type": "AdvanceSpellcasting",
+      "castingType": "divine"
+    }
+  ],
+  "prerequisites": [
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "knowledge_arcana",
+      "value": 6
+    },
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "knowledge_religion",
+      "value": 6
+    },
+    {
+      "$type": "CanCastSpellLevel",
+      "spellLevel": 2,
+      "castingType": "Arcane"
+    },
+    {
+      "$type": "CanCastSpellLevel",
+      "spellLevel": 2,
+      "castingType": "Divine"
+    }
+  ],
+  "maxLevel": 10
+}
+]

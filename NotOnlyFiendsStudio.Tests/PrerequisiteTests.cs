@@ -20,7 +20,7 @@ public class PrerequisiteTests
             },
             ClassLevels = new Dictionary<string, int> { { "class:fighter", 5 } },
             Feats = new List<string> { "power_attack", "cleave" },
-            SkillRanks = new Dictionary<string, int> { { "intimidate", 10 } }, // 5 ranks in half-rank system
+            SkillHalfRanks = new Dictionary<string, int> { { "intimidate", 10 } }, // 5 ranks in half-rank system
         };
     }
 
@@ -75,7 +75,7 @@ public class PrerequisiteTests
     {
         // 9 half-ranks = 4.5 ranks, should not meet "5 ranks required"
         var state = CreateState();
-        state.SkillRanks["intimidate"] = 9;
+        state.SkillHalfRanks["intimidate"] = 9;
         Assert.False(new MinSkillRanks { SkillId = "intimidate", Value = 5 }.IsMet(state));
     }
 

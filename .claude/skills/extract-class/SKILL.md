@@ -43,9 +43,10 @@ Racial HD drivers: for creature-type bases, read the type in [monsterTypes.html]
    - Prestige prerequisites → typed list (see mapping in extract-feat skill).
 5. **Spellcasting** — if the class casts spells, include `UpdateSpellcasting` at level 1 (for base classes) or `AdvanceSpellcasting` at each level (for prestige classes that advance an existing class).
 6. **Level permabuffs** — for each class feature at level N, emit an entry in `levelPermabuffs[N]` that matches the feature's mechanics (use `GrantAbility` with a descriptive body for narrative features; reserve structured permabuffs like `GrantCompanionSlot` for concrete game-engine effects).
-7. **Write output**:
-   - Base SRD classes → [NotOnlyFiendsStudio/Content/packs/srd_core/classes/base/](../../../NotOnlyFiendsStudio/Content/packs/srd_core/classes/base/) (one file per class, or append to `srd.json`).
+7. **Write output** — one file per class, filename = the bare id after `class:` (e.g. `class:loremaster` → `loremaster.json`), matching the format of any existing file in the target directory (JSON array of one entry, array bracket and object's opening brace both at column 0, 2-space field indent). There is no flat `srd.json` to append to anymore — every class gets its own file.
+   - Base SRD classes → [NotOnlyFiendsStudio/Content/packs/srd_core/classes/base/](../../../NotOnlyFiendsStudio/Content/packs/srd_core/classes/base/).
    - Prestige SRD classes → [NotOnlyFiendsStudio/Content/packs/srd_core/classes/prestige/](../../../NotOnlyFiendsStudio/Content/packs/srd_core/classes/prestige/).
+   - NPC classes → [NotOnlyFiendsStudio/Content/packs/srd_core/classes/npc/](../../../NotOnlyFiendsStudio/Content/packs/srd_core/classes/npc/).
    - Racial HD drivers → [NotOnlyFiendsStudio/Content/packs/srd_core/racial_hd/](../../../NotOnlyFiendsStudio/Content/packs/srd_core/racial_hd/).
    - Supplement classes → new pack dir.
 8. **Run tests** — `dotnet test`.
@@ -71,3 +72,4 @@ Racial HD drivers: for creature-type bases, read the type in [monsterTypes.html]
 - Prompt: [schemas/prompts/extract-class.md](../../../schemas/prompts/extract-class.md)
 - Base classes: [NotOnlyFiendsStudio/Content/packs/srd_core/classes/base/](../../../NotOnlyFiendsStudio/Content/packs/srd_core/classes/base/)
 - Prestige classes: [NotOnlyFiendsStudio/Content/packs/srd_core/classes/prestige/](../../../NotOnlyFiendsStudio/Content/packs/srd_core/classes/prestige/)
+- NPC classes: [NotOnlyFiendsStudio/Content/packs/srd_core/classes/npc/](../../../NotOnlyFiendsStudio/Content/packs/srd_core/classes/npc/)

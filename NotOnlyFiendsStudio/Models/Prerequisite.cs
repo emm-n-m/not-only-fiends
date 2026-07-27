@@ -53,7 +53,7 @@ public class MinSkillRanks : Prerequisite
     // Value is in whole ranks (e.g., 5 = 5 ranks). State stores half-ranks.
     public int Value { get; set; }
     public override bool IsMet(CharacterState state) =>
-        state.SkillRanks.GetValueOrDefault(SkillId) >= Value * 2;
+        state.SkillHalfRanks.GetValueOrDefault(SkillId) >= Value * 2;
     public override string Description => $"{SkillId} {Value} ranks";
 }
 
@@ -206,7 +206,7 @@ public class MinSkillRanksAcross : Prerequisite
     public int MinCount { get; set; } = 1;
 
     public override bool IsMet(CharacterState state) =>
-        SkillIds.Count(id => state.SkillRanks.GetValueOrDefault(id) >= Value * 2) >= MinCount;
+        SkillIds.Count(id => state.SkillHalfRanks.GetValueOrDefault(id) >= Value * 2) >= MinCount;
 
     public override string Description =>
         $"{MinCount} of ({string.Join(", ", SkillIds)}) at {Value} ranks";

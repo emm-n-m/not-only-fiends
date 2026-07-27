@@ -1,0 +1,128 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:arcane_archer",
+  "name": "Arcane Archer",
+  "hitDie": 8,
+  "skillPointsPerLevel": 4,
+  "classSkills": [
+    "craft",
+    "hide",
+    "listen",
+    "move_silently",
+    "ride",
+    "spot",
+    "survival",
+    "use_rope"
+  ],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "good",
+    "will": "poor"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Gains no new weapon or armor proficiencies."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "enhance_arrow",
+          "name": "Enhance Arrow",
+          "description": "Non-magical arrows gain an enhancement bonus equal to class level (max +5) when fired."
+        }
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "imbue_arrow",
+          "name": "Imbue Arrow",
+          "description": "Can place an area spell on an arrow, with the spell detonating on impact at the target point."
+        }
+      }
+    ],
+    "4": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "seeker_arrow",
+          "name": "Seeker Arrow",
+          "description": "Once per day, fire an arrow that veers toward the target, ignoring miss chances and cover (except total)."
+        }
+      }
+    ],
+    "6": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "phase_arrow",
+          "name": "Phase Arrow",
+          "description": "Once per day, fire an arrow that passes through objects and cover (except total) to strike a visible target."
+        }
+      }
+    ],
+    "8": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hail_of_arrows",
+          "name": "Hail of Arrows",
+          "description": "Once per day, fire one arrow at each enemy within range (one per arrow possessed), each using full attack bonus."
+        }
+      }
+    ],
+    "10": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "arrow_of_death",
+          "name": "Arrow of Death",
+          "description": "Once per day, create a special arrow that forces a Fort save (DC 20) or die upon hit."
+        }
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": [
+    {
+      "$type": "MinBAB",
+      "value": 6
+    },
+    {
+      "$type": "HasFeat",
+      "featId": "point_blank_shot"
+    },
+    {
+      "$type": "HasFeat",
+      "featId": "precise_shot"
+    },
+    {
+      "$type": "HasFeat",
+      "featId": "weapon_focus"
+    },
+    {
+      "$type": "CanCastSpellLevel",
+      "spellLevel": 1,
+      "castingType": "Arcane"
+    },
+    {
+      "$type": "HasAnyRace",
+      "raceIds": [
+        "elf",
+        "half_elf"
+      ]
+    }
+  ],
+  "maxLevel": 10
+}
+]

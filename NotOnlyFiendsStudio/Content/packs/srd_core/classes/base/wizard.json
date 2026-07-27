@@ -1,0 +1,266 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:wizard",
+  "name": "Wizard",
+  "hitDie": 4,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "concentration",
+    "craft",
+    "decipher_script",
+    "knowledge",
+    "profession",
+    "spellcraft"
+  ],
+  "babProgression": "poor",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "poor",
+    "will": "good"
+  },
+  "spellcasting": {
+    "castingType": "arcane",
+    "castingStat": "int",
+    "spellsPerDay": {
+      "1": {
+        "0": 3,
+        "1": 1
+      },
+      "2": {
+        "0": 4,
+        "1": 2
+      },
+      "3": {
+        "0": 4,
+        "1": 2,
+        "2": 1
+      },
+      "4": {
+        "0": 4,
+        "1": 3,
+        "2": 2
+      },
+      "5": {
+        "0": 4,
+        "1": 3,
+        "2": 2,
+        "3": 1
+      },
+      "6": {
+        "0": 4,
+        "1": 3,
+        "2": 3,
+        "3": 2
+      },
+      "7": {
+        "0": 4,
+        "1": 4,
+        "2": 3,
+        "3": 2,
+        "4": 1
+      },
+      "8": {
+        "0": 4,
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 2
+      },
+      "9": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 3,
+        "4": 2,
+        "5": 1
+      },
+      "10": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 3,
+        "4": 3,
+        "5": 2
+      },
+      "11": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 3,
+        "5": 2,
+        "6": 1
+      },
+      "12": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 3,
+        "5": 3,
+        "6": 2
+      },
+      "13": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 3,
+        "6": 2,
+        "7": 1
+      },
+      "14": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 3,
+        "6": 3,
+        "7": 2
+      },
+      "15": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4,
+        "6": 3,
+        "7": 2,
+        "8": 1
+      },
+      "16": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4,
+        "6": 3,
+        "7": 3,
+        "8": 2
+      },
+      "17": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4,
+        "6": 4,
+        "7": 3,
+        "8": 2,
+        "9": 1
+      },
+      "18": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4,
+        "6": 4,
+        "7": 3,
+        "8": 3,
+        "9": 2
+      },
+      "19": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4,
+        "6": 4,
+        "7": 4,
+        "8": 3,
+        "9": 3
+      },
+      "20": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4,
+        "6": 4,
+        "7": 4,
+        "8": 4,
+        "9": 4
+      }
+    }
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Proficient with club, dagger, heavy crossbow, light crossbow, and quarterstaff. Not proficient with any armor or shields."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "spells",
+          "name": "Spells",
+          "description": "Casts arcane spells from the sorcerer/wizard spell list, using Intelligence as the casting stat. Must prepare spells from a spellbook."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "bonus_languages",
+          "name": "Bonus Languages",
+          "description": "Can substitute Draconic for one of the bonus languages available to the character."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "familiar",
+          "name": "Familiar",
+          "description": "Gain a familiar, a small magical beast that grants special abilities to its master."
+        }
+      },
+      {
+        "$type": "GrantCompanionSlot",
+        "linkType": "familiar",
+        "classFeatureType": "familiar_options",
+        "effectiveLevelFormula": {
+          "expression": "CasterLevel(wizard) + CasterLevel(sorcerer)"
+        }
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "scribe_scroll"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "spellbooks",
+          "name": "Spellbooks",
+          "description": "Must study spellbook each day to prepare spells. Starts with all 0-level spells and three 1st-level spells."
+        }
+      }
+    ],
+    "5": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "bonus_feats",
+          "name": "Bonus Feats",
+          "description": "At 5th level and every 5 levels after, gain a bonus feat from the list of item creation or metamagic feats."
+        }
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": []
+}
+]

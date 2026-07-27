@@ -1,0 +1,101 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:archmage",
+  "name": "Archmage",
+  "hitDie": 4,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "concentration",
+    "craft_alchemy",
+    "knowledge",
+    "profession",
+    "search",
+    "spellcraft"
+  ],
+  "babProgression": "poor",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "poor",
+    "will": "good"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Gains no new weapon or armor proficiencies."
+        }
+      },
+      {
+        "$type": "GrantClassFeatureSelection",
+        "featureType": "high_arcana"
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantClassFeatureSelection",
+        "featureType": "high_arcana"
+      }
+    ],
+    "3": [
+      {
+        "$type": "GrantClassFeatureSelection",
+        "featureType": "high_arcana"
+      }
+    ],
+    "4": [
+      {
+        "$type": "GrantClassFeatureSelection",
+        "featureType": "high_arcana"
+      }
+    ],
+    "5": [
+      {
+        "$type": "GrantClassFeatureSelection",
+        "featureType": "high_arcana"
+      }
+    ]
+  },
+  "perLevelPermabuffs": [
+    {
+      "$type": "AdvanceSpellcasting",
+      "castingType": "arcane"
+    }
+  ],
+  "prerequisites": [
+    {
+      "$type": "HasFeat",
+      "featId": "skill_focus_spellcraft"
+    },
+    {
+      "$type": "HasFeatSelections",
+      "featId": "spell_focus",
+      "minCount": 2
+    },
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "knowledge_arcana",
+      "value": 15
+    },
+    {
+      "$type": "MinSkillRanks",
+      "skillId": "spellcraft",
+      "value": 15
+    },
+    {
+      "$type": "HasSpellcasting",
+      "castingType": "Arcane"
+    },
+    {
+      "$type": "CanCastSpellLevel",
+      "spellLevel": 7,
+      "castingType": "Arcane"
+    }
+  ],
+  "maxLevel": 5
+}
+]

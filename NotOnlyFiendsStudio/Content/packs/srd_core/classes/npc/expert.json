@@ -1,0 +1,39 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:expert",
+  "name": "Expert",
+  "hitDie": 6,
+  "skillPointsPerLevel": 6,
+  "classSkills": [],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "poor",
+    "will": "good"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "simple_weapon_proficiency"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "armor_proficiency_light"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Proficient with all simple weapons and with light armor."
+        }
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": []
+}
+]

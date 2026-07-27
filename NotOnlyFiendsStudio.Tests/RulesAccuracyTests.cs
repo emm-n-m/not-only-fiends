@@ -518,10 +518,10 @@ public class RulesAccuracyTests
         var perform = driver.Prerequisites.OfType<MinSkillRanksAcross>().Single();
 
         var state = new CharacterState();
-        state.SkillRanks["perform_dance"] = 4;   // 2 ranks — short
+        state.SkillHalfRanks["perform_dance"] = 4;   // 2 ranks — short
         Assert.False(perform.IsMet(state));
 
-        state.SkillRanks["perform_dance"] = 6;   // 3 ranks
+        state.SkillHalfRanks["perform_dance"] = 6;   // 3 ranks
         Assert.True(perform.IsMet(state));
     }
 
@@ -740,13 +740,13 @@ public class RulesAccuracyTests
         };
 
         var state = new CharacterState();
-        state.SkillRanks["knowledge_arcana"] = 20;   // 10 ranks
+        state.SkillHalfRanks["knowledge_arcana"] = 20;   // 10 ranks
         Assert.False(prereq.IsMet(state));
 
-        state.SkillRanks["knowledge_religion"] = 18; // 9 ranks — short
+        state.SkillHalfRanks["knowledge_religion"] = 18; // 9 ranks — short
         Assert.False(prereq.IsMet(state));
 
-        state.SkillRanks["knowledge_religion"] = 20; // 10 ranks
+        state.SkillHalfRanks["knowledge_religion"] = 20; // 10 ranks
         Assert.True(prereq.IsMet(state));
     }
 

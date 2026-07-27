@@ -1,0 +1,77 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:aristocrat",
+  "name": "Aristocrat",
+  "hitDie": 8,
+  "skillPointsPerLevel": 4,
+  "classSkills": [
+    "appraise",
+    "bluff",
+    "diplomacy",
+    "disguise",
+    "forgery",
+    "gather_information",
+    "handle_animal",
+    "intimidate",
+    "knowledge",
+    "listen",
+    "perform",
+    "ride",
+    "sense_motive",
+    "speak_language",
+    "spot",
+    "survival",
+    "swim"
+  ],
+  "babProgression": "average",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "poor",
+    "will": "good"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "simple_weapon_proficiency"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "weapon_proficiency_martial"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "armor_proficiency_light"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "armor_proficiency_medium"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "armor_proficiency_heavy"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "shield_proficiency"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "tower_shield_proficiency"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Proficient with all simple and martial weapons, all armor, and shields."
+        }
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": []
+}
+]

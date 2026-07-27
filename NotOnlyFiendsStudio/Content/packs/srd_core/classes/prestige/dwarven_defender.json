@@ -1,0 +1,130 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:dwarven_defender",
+  "name": "Dwarven Defender",
+  "hitDie": 12,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "craft",
+    "listen",
+    "sense_motive",
+    "spot"
+  ],
+  "babProgression": "good",
+  "saveProgression": {
+    "fort": "good",
+    "ref": "poor",
+    "will": "good"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Gains no new weapon or armor proficiencies."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "ac_bonus",
+          "name": "AC Bonus",
+          "description": "Dodge bonus to AC that increases with class level (+1 at 1st, +2 at 3rd, +3 at 5th, +4 at 7th, +5 at 10th)."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "defensive_stance",
+          "name": "Defensive Stance",
+          "description": "Enter a defensive stance gaining +2 STR, +4 CON, +2 resistance to saves, and +4 dodge to AC, but cannot move."
+        }
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "uncanny_dodge",
+          "name": "Uncanny Dodge",
+          "description": "Retains Dex bonus to AC even when flat-footed or struck by an invisible attacker."
+        }
+      }
+    ],
+    "4": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "trap_sense",
+          "name": "Trap Sense",
+          "description": "Bonus on Reflex saves and AC against traps."
+        }
+      }
+    ],
+    "5": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "damage_reduction",
+          "name": "Damage Reduction",
+          "description": "Gain damage reduction 3/- at 5th level, increasing to 6/- at 10th level."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "improved_uncanny_dodge",
+          "name": "Improved Uncanny Dodge",
+          "description": "Cannot be flanked except by a rogue 4+ levels higher."
+        }
+      }
+    ],
+    "8": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "mobile_defense",
+          "name": "Mobile Defense",
+          "description": "Can take one 5-ft. step per round while in a defensive stance without losing the stance."
+        }
+      }
+    ]
+  },
+  "perLevelPermabuffs": [],
+  "prerequisites": [
+    {
+      "$type": "AlignmentReq",
+      "allowed": [
+        "lE",
+        "lG",
+        "lN"
+      ]
+    },
+    {
+      "$type": "HasRace",
+      "raceId": "dwarf"
+    },
+    {
+      "$type": "MinBAB",
+      "value": 7
+    },
+    {
+      "$type": "HasFeat",
+      "featId": "dodge"
+    },
+    {
+      "$type": "HasFeat",
+      "featId": "endurance"
+    },
+    {
+      "$type": "HasFeat",
+      "featId": "toughness"
+    }
+  ],
+  "maxLevel": 10
+}
+]

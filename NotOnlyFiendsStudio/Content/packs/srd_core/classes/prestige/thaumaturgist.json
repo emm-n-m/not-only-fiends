@@ -1,0 +1,112 @@
+[
+{
+  "$type": "HDDriver",
+  "kind": "Class",
+  "id": "class:thaumaturgist",
+  "name": "Thaumaturgist",
+  "hitDie": 4,
+  "skillPointsPerLevel": 2,
+  "classSkills": [
+    "concentration",
+    "craft",
+    "diplomacy",
+    "knowledge_planes",
+    "knowledge_religion",
+    "profession",
+    "sense_motive",
+    "speak_language",
+    "spellcraft"
+  ],
+  "babProgression": "poor",
+  "saveProgression": {
+    "fort": "poor",
+    "ref": "poor",
+    "will": "good"
+  },
+  "levelPermabuffs": {
+    "1": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weapon_and_armor_proficiency",
+          "name": "Weapon and Armor Proficiency",
+          "description": "Gains no new weapon or armor proficiencies."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "spells_per_day",
+          "name": "Spells per Day",
+          "description": "Advances existing divine spellcasting class by one level per thaumaturgist level."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "improved_ally",
+          "name": "Improved Ally",
+          "description": "When casting a planar ally spell, pay half the usual offering or payment for the creature's service."
+        }
+      }
+    ],
+    "2": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "augment_summoning",
+          "name": "Augment Summoning",
+          "description": "Gain Augment Summoning as a bonus feat. Summoned creatures get +4 STR and +4 CON."
+        }
+      }
+    ],
+    "3": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "extended_summoning",
+          "name": "Extended Summoning",
+          "description": "All summon monster and summon nature's ally spells have their duration doubled."
+        }
+      }
+    ],
+    "4": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "contingent_conjuration",
+          "name": "Contingent Conjuration",
+          "description": "Can set a summon monster spell to trigger automatically under specific conditions, as contingency."
+        }
+      }
+    ],
+    "5": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "planar_cohort",
+          "name": "Planar Cohort",
+          "description": "Can use planar ally to call an outsider to serve permanently as a cohort."
+        }
+      }
+    ]
+  },
+  "perLevelPermabuffs": [
+    {
+      "$type": "AdvanceSpellcasting"
+    }
+  ],
+  "prerequisites": [
+    {
+      "$type": "HasFeat",
+      "featId": "spell_focus_conjuration"
+    },
+    {
+      "$type": "CanCastSpellLevel",
+      "spellLevel": 4,
+      "castingType": "Divine"
+    }
+  ],
+  "maxLevel": 5
+}
+]
