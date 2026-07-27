@@ -11,15 +11,8 @@ You validate D&D 3.5e content files for the NotOnlyFiendsStudio content pipeline
 
 ## Validation Workflow
 
-1. **Identify changed/new content files** — Check the content directories for recently added or modified files:
-   - `NotOnlyFiendsStudio/Content/classes/` (base/ and prestige/)
-   - `NotOnlyFiendsStudio/Content/races/`
-   - `NotOnlyFiendsStudio/Content/racial_hd/`
-   - `NotOnlyFiendsStudio/Content/templates/`
-   - `NotOnlyFiendsStudio/Content/feats/`
-   - `NotOnlyFiendsStudio/Content/domains/`
-   - `NotOnlyFiendsStudio/Content/skills/`
-   - `NotOnlyFiendsStudio/Content/spells/`
+1. **Identify changed/new content files** — Check the content directories for recently added or modified files. Content lives under `NotOnlyFiendsStudio/Content/packs/<pack>/`, one subdirectory per category:
+   - `classes/` (base/, prestige/, npc/), `races/`, `racial_hd/`, `templates/`, `feats/`, `domains/`, `skills/`, `spells/`, `class_features/`, `equipment/`
 
 2. **Schema validation** — For each content file, load the matching schema from `schemas/` and verify:
    - Required fields are present
@@ -41,6 +34,16 @@ You validate D&D 3.5e content files for the NotOnlyFiendsStudio content pipeline
    - BAB progression is "good", "average", or "poor"
    - Save progressions are "good" or "poor"
    - No duplicate IDs within or across content files (use `tools/audit_content.py` if available)
+   - **No bare (unprefixed) IDs.** Every definition id and every reference carries its category
+     prefix: `race:`, `feat:`, `skill:`, `spell:`, `class_feature:`, `class:`, `racial_hd:`,
+     `domain:`, `template:`. Grep the changed files for regressions — definition ids without a
+     colon, and reference fields (`featId`, `skillId`, `raceId`, `classSkills`, `bonusSpells`
+     values, `featureType`) holding colon-less values. Exceptions that are bare *by design*:
+     inline `GrantAbility` ability ids, counter ids, companion link-type keys, and
+     `PcgIdMapper` override dictionary values (prefixes attach at the `Map*` boundary).
+     This check exists because a bare `"human"` literal in the builder UI once escaped the
+     test suite entirely — sweep any touched C#/Razor source for quoted content-id literals
+     too, not just JSON.
 
 5. **Build and test** — Run the full test suite to verify content loads and validates:
    ```bash

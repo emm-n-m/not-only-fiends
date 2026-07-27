@@ -1,0 +1,57 @@
+---
+name: run-app
+description: Launch the NotOnlyFiendsFeed Blazor app and smoke-check it (builder, sheet, character loading). Use to verify a UI or engine change in the real app, or to spin up a test instance alongside the user's running one.
+allowed-tools: Bash(dotnet build*), Bash(dotnet run*), Bash(curl*), Bash(ss*), Read, Grep
+---
+
+# Run the Feed App
+
+Launch `NotOnlyFiendsFeed` (Blazor Server) and verify it renders, without disturbing the
+user's own instance.
+
+## Prerequisites
+
+- `.env` at the solution root supplies `CHARACTERS_PATH` (character store), `EXTRA_PACKS_PATH`
+  (private packs). Without it the app still runs but with public packs only and no
+  saved-character store — several UI paths (Open picker, `/builder/{id}`) silently degrade.
+- Build first; `dotnet run` below uses `--no-build`.
+
+## Launch
+
+**Port 5000 is usually taken by the user's own running instance — do not kill it.**
+Run your test instance on a spare port:
+
+```bash
+dotnet build NotOnlyFiendsFeed -v q
+ASPNETCORE_URLS=http://localhost:5099 dotnet run --project NotOnlyFiendsFeed --no-build --no-launch-profile
+# background it; then:
+curl -s -o /dev/null -w "%{http_code}" http://localhost:5099/   # expect 200
+```
+
+## Smoke checks (prerendered HTML — no browser needed)
+
+Blazor Server prerenders components server-side, so initialization-time errors and layout
+are visible to `curl`:
+
+```bash
+curl -s http://localhost:5099/builder | grep -o "Race not found[^<]*"          # expect no output
+curl -s "http://localhost:5099/builder/Wizard" | grep -c "Wizard"              # store load works
+# element ordering, e.g. action bar above setup card:
+html=$(curl -s http://localhost:5099/builder)
+for m in ">Evaluate<" "Character Setup"; do echo "$html" | grep -bom1 -F "$m"; done
+```
+
+Routes: `/` (landing), `/builder`, `/builder/{id}`, `/sheet`, `/import`, `/settings`.
+`{id}` is the character filename without `.json` in `CHARACTERS_PATH` (URL-encode spaces).
+
+**Limits:** anything behind the interactive circuit (button clicks, pickers, lists populated
+after render) cannot be driven by curl — verify the prerender, then ask the user to click
+through, or state plainly that the interactive path is untested.
+
+## Teardown
+
+Kill by port, never `pkill -f dotnet` (it takes out the calling shell / other instances):
+
+```bash
+ss -ltnp | grep 5099 | grep -oP 'pid=\K[0-9]+' | xargs -r kill
+```
