@@ -19,7 +19,7 @@ public class SpellcastingTests
         var character = new Character
         {
             Name = "Sorcerer 10",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 8, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 18
@@ -64,7 +64,7 @@ public class SpellcastingTests
         // Need to add the martial weapon proficiency feat since EK requires it
         registry.RegisterFeat(new FeatDefinition
         {
-            Id = "weapon_proficiency_martial",
+            Id = "feat:weapon_proficiency_martial",
             Name = "Martial Weapon Proficiency",
             Type = FeatType.General
         });
@@ -80,7 +80,7 @@ public class SpellcastingTests
         var character = new Character
         {
             Name = "Sorc5/EK5",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 14, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 16
@@ -112,7 +112,7 @@ public class SpellcastingTests
         var character = new Character
         {
             Name = "Cleric 5",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 14, DEX = 10, CON = 14, INT = 10, WIS = 16, CHA = 8
@@ -150,7 +150,7 @@ public class SpellcastingTests
         var character = new Character
         {
             Name = "Sorc 1",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 8, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 18
@@ -175,7 +175,7 @@ public class SpellcastingTests
         var character = new Character
         {
             Name = "Sorc 1",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 8, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 18
@@ -189,8 +189,8 @@ public class SpellcastingTests
                     {
                         SpellSelections = new List<SpellSelection>
                         {
-                            new() { ClassId = "class:sorcerer", SpellLevel = 0, SpellId = "detect_magic" },
-                            new() { ClassId = "class:sorcerer", SpellLevel = 1, SpellId = "magic_missile" }
+                            new() { ClassId = "class:sorcerer", SpellLevel = 0, SpellId = "spell:detect_magic" },
+                            new() { ClassId = "class:sorcerer", SpellLevel = 1, SpellId = "spell:magic_missile" }
                         }
                     }
                 }
@@ -205,13 +205,13 @@ public class SpellcastingTests
             {
                 Assert.Equal("class:sorcerer", spell.ClassId);
                 Assert.Equal(0, spell.SpellLevel);
-                Assert.Equal("detect_magic", spell.SpellId);
+                Assert.Equal("spell:detect_magic", spell.SpellId);
             },
             spell =>
             {
                 Assert.Equal("class:sorcerer", spell.ClassId);
                 Assert.Equal(1, spell.SpellLevel);
-                Assert.Equal("magic_missile", spell.SpellId);
+                Assert.Equal("spell:magic_missile", spell.SpellId);
             });
     }
 
@@ -223,7 +223,7 @@ public class SpellcastingTests
         var character = new Character
         {
             Name = "Sorc 1",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 8, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 18
@@ -237,7 +237,7 @@ public class SpellcastingTests
                     {
                         SpellSelections = new List<SpellSelection>
                         {
-                            new() { ClassId = "class:wizard", SpellLevel = 1, SpellId = "magic_missile" }
+                            new() { ClassId = "class:wizard", SpellLevel = 1, SpellId = "spell:magic_missile" }
                         }
                     }
                 }
@@ -259,7 +259,7 @@ public class SpellcastingTests
         var character = new Character
         {
             Name = "Fighter 1",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
@@ -278,7 +278,7 @@ public class SpellcastingTests
         var registry = new ContentRegistry();
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "human", Name = "Human", Type = CreatureType.Humanoid,
+            Id = "race:human", Name = "Human", Type = CreatureType.Humanoid,
             Size = Size.Medium, Speeds = new() { { MovementMode.Land, 30 } }
         });
 
@@ -330,7 +330,7 @@ public class SpellcastingTests
         var character = new Character
         {
             Name = "MultiArcane",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 8, DEX = 14, CON = 14, INT = 16, WIS = 12, CHA = 16 },
             Ticks = new List<Tick>
             {
@@ -366,7 +366,7 @@ public class SpellcastingTests
         var registry = new ContentRegistry();
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "human", Name = "Human", Type = CreatureType.Humanoid,
+            Id = "race:human", Name = "Human", Type = CreatureType.Humanoid,
             Size = Size.Medium, Speeds = new() { { MovementMode.Land, 30 } }
         });
 
@@ -413,7 +413,7 @@ public class SpellcastingTests
         var character = new Character
         {
             Name = "MultiArcane NoChoice",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 8, DEX = 14, CON = 14, INT = 16, WIS = 12, CHA = 16 },
             Ticks = new List<Tick>
             {
@@ -440,7 +440,7 @@ public class SpellcastingTests
         var character = new Character
         {
             Name = "Cleric Bad Domain",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 10, CON = 14, INT = 10, WIS = 16, CHA = 8 },
             Ticks = new List<Tick>
             {
@@ -471,7 +471,7 @@ public class SpellcastingTests
         var character = new Character
         {
             Name = "Sorc 1 OverLevel",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 8, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 18 },
             Ticks = new List<Tick>
             {
@@ -482,7 +482,7 @@ public class SpellcastingTests
                     {
                         SpellSelections = new List<SpellSelection>
                         {
-                            new() { ClassId = "class:sorcerer", SpellLevel = 9, SpellId = "wish" }
+                            new() { ClassId = "class:sorcerer", SpellLevel = 9, SpellId = "spell:wish" }
                         }
                     }
                 }

@@ -1,166 +1,350 @@
 [
-{
-  "id": "dragon_red_great_wyrm",
-  "name": "Dragon (Red Great Wyrm)",
-  "description": "Colossal fire dragon with 24d10 breath weapon, DR 20/magic, SR 32, and frightful presence.",
-  "type": "dragon",
-  "subtypes": ["fire"],
-  "size": "colossal",
-  "speeds": { "land": 40, "fly": 200 },
-  "abilityModifiers": { "str": 34, "dex": 0, "con": 20, "int": 16, "wis": 16, "cha": 16 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:red_dragon",
-  "racialHDCount": 40,
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 39 },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "dragon_keen_senses", "name": "Keen Senses", "description": "Darkvision 120 ft. and blindsense 60 ft." }
+  {
+    "id": "race:dragon_red_great_wyrm",
+    "name": "Dragon (Red Great Wyrm)",
+    "description": "Colossal fire dragon with 24d10 breath weapon, DR 20/magic, SR 32, and frightful presence.",
+    "type": "dragon",
+    "subtypes": [
+      "fire"
+    ],
+    "size": "colossal",
+    "speeds": {
+      "land": 40,
+      "fly": 200
     },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_breath_weapon", "name": "Breath Weapon — Cone of Fire", "description": "Cone of fire dealing 24d10 damage (Reflex half)." }
+    "abilityModifiers": {
+      "str": 34,
+      "dex": 0,
+      "con": 20,
+      "int": 16,
+      "wis": 16,
+      "cha": 16
     },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_fire_immunity", "name": "Immunity to Fire", "description": "Immune to fire damage." }
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:red_dragon",
+    "racialHDCount": 40,
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 39
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "dragon_keen_senses",
+          "name": "Keen Senses",
+          "description": "Darkvision 120 ft. and blindsense 60 ft."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_breath_weapon",
+          "name": "Breath Weapon \u2014 Cone of Fire",
+          "description": "Cone of fire dealing 24d10 damage (Reflex half)."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_fire_immunity",
+          "name": "Immunity to Fire",
+          "description": "Immune to fire damage."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_cold_vuln",
+          "name": "Vulnerability to Cold",
+          "description": "Takes 50% extra damage from cold."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_sleep_immunity",
+          "name": "Immunity to Sleep and Paralysis",
+          "description": "Immune to sleep and paralysis effects."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_frightful_presence",
+          "name": "Frightful Presence",
+          "description": "360 ft. radius. Creatures with fewer HD are frightened (4 or fewer HD) or shaken (5+ HD). Will save negates."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_crush",
+          "name": "Crush",
+          "description": "4d8 + 1.5x STR bludgeoning, Reflex half. Affects Small or smaller."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_tail_sweep",
+          "name": "Tail Sweep",
+          "description": "2d8 + 1.5x STR bludgeoning in a half-circle. Reflex half."
+        }
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "spellResistance",
+        "value": 32
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_dr",
+          "name": "DR 20/magic",
+          "description": "Damage reduction 20/magic."
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "red_dragon_locate_object",
+          "name": "Locate Object",
+          "usesPerDay": "12/day",
+          "casterLevel": 21
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "red_dragon_suggestion",
+          "name": "Suggestion",
+          "usesPerDay": "1/day",
+          "casterLevel": 21
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "red_dragon_find_the_path",
+          "name": "Find the Path",
+          "usesPerDay": "1/day",
+          "casterLevel": 21
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "red_dragon_discern_location",
+          "name": "Discern Location",
+          "usesPerDay": "1/day",
+          "casterLevel": 21
+        }
+      }
+    ],
+    "naturalAttacks": [
+      {
+        "name": "Bite",
+        "damage": "4d8",
+        "count": 1,
+        "isPrimary": true
+      },
+      {
+        "name": "Claw",
+        "damage": "4d6",
+        "count": 2,
+        "isPrimary": true
+      },
+      {
+        "name": "Wing",
+        "damage": "2d8",
+        "count": 2,
+        "isPrimary": false
+      },
+      {
+        "name": "Tail Slap",
+        "damage": "4d6",
+        "count": 1,
+        "isPrimary": false
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:dragon_red_great_wyrm_colossal_plus",
+    "name": "Dragon (Red Great Wyrm/Colossal Plus)",
+    "description": "Colossal-plus fire dragon variant with 40 racial HD, devastating breath weapon, and powerful spell-like abilities.",
+    "type": "dragon",
+    "subtypes": [
+      "fire"
+    ],
+    "size": "colossalPlus",
+    "speeds": {
+      "land": 40,
+      "fly": 200
     },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_cold_vuln", "name": "Vulnerability to Cold", "description": "Takes 50% extra damage from cold." }
+    "abilityModifiers": {
+      "str": 34,
+      "dex": 0,
+      "con": 20,
+      "int": 16,
+      "wis": 16,
+      "cha": 16
     },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_sleep_immunity", "name": "Immunity to Sleep and Paralysis", "description": "Immune to sleep and paralysis effects." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_frightful_presence", "name": "Frightful Presence", "description": "360 ft. radius. Creatures with fewer HD are frightened (4 or fewer HD) or shaken (5+ HD). Will save negates." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_crush", "name": "Crush", "description": "4d8 + 1.5x STR bludgeoning, Reflex half. Affects Small or smaller." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_tail_sweep", "name": "Tail Sweep", "description": "2d8 + 1.5x STR bludgeoning in a half-circle. Reflex half." }
-    },
-    {
-      "$type": "ModifyAttribute",
-      "target": "spellResistance",
-      "value": 32
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_dr", "name": "DR 20/magic", "description": "Damage reduction 20/magic." }
-    },
-    {
-      "$type": "GrantSLA",
-      "sla": { "id": "red_dragon_locate_object", "name": "Locate Object", "usesPerDay": "12/day", "casterLevel": 21 }
-    },
-    {
-      "$type": "GrantSLA",
-      "sla": { "id": "red_dragon_suggestion", "name": "Suggestion", "usesPerDay": "1/day", "casterLevel": 21 }
-    },
-    {
-      "$type": "GrantSLA",
-      "sla": { "id": "red_dragon_find_the_path", "name": "Find the Path", "usesPerDay": "1/day", "casterLevel": 21 }
-    },
-    {
-      "$type": "GrantSLA",
-      "sla": { "id": "red_dragon_discern_location", "name": "Discern Location", "usesPerDay": "1/day", "casterLevel": 21 }
-    }
-  ],
-  "naturalAttacks": [
-    { "name": "Bite", "damage": "4d8", "count": 1, "isPrimary": true },
-    { "name": "Claw", "damage": "4d6", "count": 2, "isPrimary": true },
-    { "name": "Wing", "damage": "2d8", "count": 2, "isPrimary": false },
-    { "name": "Tail Slap", "damage": "4d6", "count": 1, "isPrimary": false }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "dragon_red_great_wyrm_colossal_plus",
-  "name": "Dragon (Red Great Wyrm/Colossal Plus)",
-  "description": "Colossal-plus fire dragon variant with 40 racial HD, devastating breath weapon, and powerful spell-like abilities.",
-  "type": "dragon",
-  "subtypes": ["fire"],
-  "size": "colossalPlus",
-  "speeds": { "land": 40, "fly": 200 },
-  "abilityModifiers": { "str": 34, "dex": 0, "con": 20, "int": 16, "wis": 16, "cha": 16 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:red_dragon",
-  "racialHDCount": 40,
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 39 },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "dragon_keen_senses", "name": "Keen Senses", "description": "Darkvision 120 ft. and blindsense 60 ft." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_breath_weapon", "name": "Breath Weapon — Cone of Fire", "description": "Cone of fire dealing 24d10 damage (Reflex half)." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_fire_immunity", "name": "Immunity to Fire", "description": "Immune to fire damage." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_cold_vuln", "name": "Vulnerability to Cold", "description": "Takes 50% extra damage from cold." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_sleep_immunity", "name": "Immunity to Sleep and Paralysis", "description": "Immune to sleep and paralysis effects." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_frightful_presence", "name": "Frightful Presence", "description": "360 ft. radius. Creatures with fewer HD are frightened (4 or fewer HD) or shaken (5+ HD). Will save negates." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_crush", "name": "Crush", "description": "4d8 + 1.5x STR bludgeoning, Reflex half. Affects Small or smaller." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_tail_sweep", "name": "Tail Sweep", "description": "2d8 + 1.5x STR bludgeoning in a half-circle. Reflex half." }
-    },
-    {
-      "$type": "ModifyAttribute",
-      "target": "spellResistance",
-      "value": 32
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "red_dragon_dr", "name": "DR 20/magic", "description": "Damage reduction 20/magic." }
-    },
-    {
-      "$type": "GrantSLA",
-      "sla": { "id": "red_dragon_locate_object", "name": "Locate Object", "usesPerDay": "12/day", "casterLevel": 21 }
-    },
-    {
-      "$type": "GrantSLA",
-      "sla": { "id": "red_dragon_suggestion", "name": "Suggestion", "usesPerDay": "1/day", "casterLevel": 21 }
-    },
-    {
-      "$type": "GrantSLA",
-      "sla": { "id": "red_dragon_find_the_path", "name": "Find the Path", "usesPerDay": "1/day", "casterLevel": 21 }
-    },
-    {
-      "$type": "GrantSLA",
-      "sla": { "id": "red_dragon_discern_location", "name": "Discern Location", "usesPerDay": "1/day", "casterLevel": 21 }
-    }
-  ],
-  "naturalAttacks": [
-    { "name": "Bite", "damage": "4d8", "count": 1, "isPrimary": true },
-    { "name": "Claw", "damage": "4d6", "count": 2, "isPrimary": true },
-    { "name": "Wing", "damage": "2d8", "count": 2, "isPrimary": false },
-    { "name": "Tail Slap", "damage": "4d6", "count": 1, "isPrimary": false }
-  ],
-  "scalingFormulas": []
-}
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:red_dragon",
+    "racialHDCount": 40,
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 39
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "dragon_keen_senses",
+          "name": "Keen Senses",
+          "description": "Darkvision 120 ft. and blindsense 60 ft."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_breath_weapon",
+          "name": "Breath Weapon \u2014 Cone of Fire",
+          "description": "Cone of fire dealing 24d10 damage (Reflex half)."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_fire_immunity",
+          "name": "Immunity to Fire",
+          "description": "Immune to fire damage."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_cold_vuln",
+          "name": "Vulnerability to Cold",
+          "description": "Takes 50% extra damage from cold."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_sleep_immunity",
+          "name": "Immunity to Sleep and Paralysis",
+          "description": "Immune to sleep and paralysis effects."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_frightful_presence",
+          "name": "Frightful Presence",
+          "description": "360 ft. radius. Creatures with fewer HD are frightened (4 or fewer HD) or shaken (5+ HD). Will save negates."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_crush",
+          "name": "Crush",
+          "description": "4d8 + 1.5x STR bludgeoning, Reflex half. Affects Small or smaller."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_tail_sweep",
+          "name": "Tail Sweep",
+          "description": "2d8 + 1.5x STR bludgeoning in a half-circle. Reflex half."
+        }
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "spellResistance",
+        "value": 32
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "red_dragon_dr",
+          "name": "DR 20/magic",
+          "description": "Damage reduction 20/magic."
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "red_dragon_locate_object",
+          "name": "Locate Object",
+          "usesPerDay": "12/day",
+          "casterLevel": 21
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "red_dragon_suggestion",
+          "name": "Suggestion",
+          "usesPerDay": "1/day",
+          "casterLevel": 21
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "red_dragon_find_the_path",
+          "name": "Find the Path",
+          "usesPerDay": "1/day",
+          "casterLevel": 21
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "red_dragon_discern_location",
+          "name": "Discern Location",
+          "usesPerDay": "1/day",
+          "casterLevel": 21
+        }
+      }
+    ],
+    "naturalAttacks": [
+      {
+        "name": "Bite",
+        "damage": "4d8",
+        "count": 1,
+        "isPrimary": true
+      },
+      {
+        "name": "Claw",
+        "damage": "4d6",
+        "count": 2,
+        "isPrimary": true
+      },
+      {
+        "name": "Wing",
+        "damage": "2d8",
+        "count": 2,
+        "isPrimary": false
+      },
+      {
+        "name": "Tail Slap",
+        "damage": "4d6",
+        "count": 1,
+        "isPrimary": false
+      }
+    ],
+    "scalingFormulas": []
+  }
 ]

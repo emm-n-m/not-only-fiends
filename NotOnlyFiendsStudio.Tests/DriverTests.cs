@@ -13,7 +13,7 @@ public class DriverTests
             Name = "Fighter",
             HitDie = 10,
             SkillPointsPerLevel = 2,
-            ClassSkills = new List<string> { "climb", "craft", "handle_animal", "intimidate", "jump", "ride", "swim" },
+            ClassSkills = new List<string> { "skill:climb", "craft", "skill:handle_animal", "skill:intimidate", "jump", "skill:ride", "skill:swim" },
             BABProgression = BABProgression.Good,
             SaveProgression = new SaveProgression
             {
@@ -44,8 +44,8 @@ public class DriverTests
             SkillPointsPerLevel = 8,
             ClassSkills = new List<string>
             {
-                "bluff", "craft", "knowledge_planes", "listen", "search",
-                "sense_motive", "spot", "survival"
+                "skill:bluff", "craft", "skill:knowledge_planes", "skill:listen", "skill:search",
+                "skill:sense_motive", "skill:spot", "skill:survival"
             },
             BABProgression = BABProgression.Good,
             SaveProgression = new SaveProgression
@@ -56,7 +56,7 @@ public class DriverTests
             },
             Prerequisites = new List<Prerequisite>
             {
-                new HasRace { RaceId = "outsider" }
+                new HasRace { RaceId = "race:outsider" }
             }
         };
     }
@@ -135,7 +135,7 @@ public class DriverTests
         Assert.Equal(0, state.BaseSaves.Ref);  // Poor Ref level 1
         Assert.Equal(0, state.BaseSaves.Will); // Poor Will level 1
         Assert.Equal(8, state.UnspentSkillPoints); // (2 + 0) * 4 = 8
-        Assert.Contains("climb", state.ClassSkills);
+        Assert.Contains("skill:climb", state.ClassSkills);
         Assert.Equal(1, state.PendingBonusFeatSlots); // fighter bonus feat
     }
 
@@ -173,7 +173,7 @@ public class DriverTests
         var state = new CharacterState
         {
             TotalHD = 1,
-            RaceId = "outsider",
+            RaceId = "race:outsider",
             AbilityScores = new AbilityScoreSet { STR = 16, DEX = 14, CON = 14, INT = 14, WIS = 12, CHA = 10 }
         };
 
@@ -187,7 +187,7 @@ public class DriverTests
         Assert.Equal(2, state.BaseSaves.Ref);
         Assert.Equal(2, state.BaseSaves.Will);
         Assert.Equal(40, state.UnspentSkillPoints); // (8 + 2) * 4 = 40
-        Assert.Contains("bluff", state.ClassSkills);
+        Assert.Contains("skill:bluff", state.ClassSkills);
     }
 
     [Fact]
@@ -196,7 +196,7 @@ public class DriverTests
         var outsider = CreateOutsiderDriver();
         var state = new CharacterState
         {
-            RaceId = "outsider",
+            RaceId = "race:outsider",
             AbilityScores = new AbilityScoreSet { STR = 16, DEX = 14, CON = 14, INT = 14, WIS = 12, CHA = 10 }
         };
 
@@ -224,7 +224,7 @@ public class DriverTests
         var outsider = CreateOutsiderDriver();
         var state = new CharacterState
         {
-            RaceId = "human",
+            RaceId = "race:human",
             TotalHD = 1
         };
 

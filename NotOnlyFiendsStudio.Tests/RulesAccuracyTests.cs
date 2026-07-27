@@ -15,7 +15,7 @@ public class RulesAccuracyTests
     private static Character Human(params Tick[] ticks) => new()
     {
         Name = "Rules Test",
-        RaceId = "human",
+        RaceId = "race:human",
         BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 14, CON = 14, INT = 16, WIS = 12, CHA = 14 },
         Ticks = ticks.ToList()
     };
@@ -35,12 +35,12 @@ public class RulesAccuracyTests
             {
                 SkillAllocations = new List<SkillAllocation>
                 {
-                    new() { SkillId = "underwater_basketweaving", HalfRanks = 8 }
+                    new() { SkillId = "skill:underwater_basketweaving", HalfRanks = 8 }
                 }
             }
         }));
 
-        Assert.Contains(state.Warnings, w => w.Contains("unknown skill 'underwater_basketweaving'"));
+        Assert.Contains(state.Warnings, w => w.Contains("unknown skill 'skill:underwater_basketweaving'"));
     }
 
     [Fact]
@@ -49,11 +49,11 @@ public class RulesAccuracyTests
         var state = Evaluate(Human(new Tick
         {
             DriverId = "class:fighter",
-            Choices = new TickChoices { FeatIds = new List<string> { "dodge", "dodge" } }
+            Choices = new TickChoices { FeatIds = new List<string> { "feat:dodge", "feat:dodge" } }
         }));
 
-        Assert.Contains(state.Warnings, w => w.Contains("duplicate feat 'dodge'"));
-        Assert.Single(state.Feats, f => f == "dodge");
+        Assert.Contains(state.Warnings, w => w.Contains("duplicate feat 'feat:dodge'"));
+        Assert.Single(state.Feats, f => f == "feat:dodge");
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class RulesAccuracyTests
             Choices = new TickChoices
             {
                 // Weapon Focus is repeatable (once per weapon).
-                FeatIds = new List<string> { "weapon_focus", "weapon_focus" }
+                FeatIds = new List<string> { "feat:weapon_focus", "feat:weapon_focus" }
             }
         }));
 
@@ -82,12 +82,12 @@ public class RulesAccuracyTests
             {
                 SpellSelections = new List<SpellSelection>
                 {
-                    new() { ClassId = "class:wizard", SpellLevel = 1, SpellId = "fake_spell_xyz" }
+                    new() { ClassId = "class:wizard", SpellLevel = 1, SpellId = "spell:fake_spell_xyz" }
                 }
             }
         }));
 
-        Assert.Contains(state.Warnings, w => w.Contains("unknown spell 'fake_spell_xyz'"));
+        Assert.Contains(state.Warnings, w => w.Contains("unknown spell 'spell:fake_spell_xyz'"));
     }
 
     [Fact]
@@ -101,7 +101,7 @@ public class RulesAccuracyTests
             {
                 SpellSelections = new List<SpellSelection>
                 {
-                    new() { ClassId = "class:wizard", SpellLevel = 1, SpellId = "cure_light_wounds" }
+                    new() { ClassId = "class:wizard", SpellLevel = 1, SpellId = "spell:cure_light_wounds" }
                 }
             }
         }));
@@ -120,7 +120,7 @@ public class RulesAccuracyTests
                 // magic_missile is a 1st-level wizard spell.
                 SpellSelections = new List<SpellSelection>
                 {
-                    new() { ClassId = "class:wizard", SpellLevel = 0, SpellId = "magic_missile" }
+                    new() { ClassId = "class:wizard", SpellLevel = 0, SpellId = "spell:magic_missile" }
                 }
             }
         }));
@@ -139,9 +139,9 @@ public class RulesAccuracyTests
             {
                 SpellSelections = new List<SpellSelection>
                 {
-                    new() { ClassId = "class:sorcerer", SpellLevel = 1, SpellId = "magic_missile" },
-                    new() { ClassId = "class:sorcerer", SpellLevel = 1, SpellId = "shield" },
-                    new() { ClassId = "class:sorcerer", SpellLevel = 1, SpellId = "mage_armor" },
+                    new() { ClassId = "class:sorcerer", SpellLevel = 1, SpellId = "spell:magic_missile" },
+                    new() { ClassId = "class:sorcerer", SpellLevel = 1, SpellId = "spell:shield" },
+                    new() { ClassId = "class:sorcerer", SpellLevel = 1, SpellId = "spell:mage_armor" },
                 }
             }
         }));
@@ -153,7 +153,7 @@ public class RulesAccuracyTests
     public void PreparedCaster_HasNoSpellsKnownCap()
     {
         // A wizard's spellbook is unbounded — scribing many spells is legal.
-        var many = new[] { "magic_missile", "shield", "mage_armor", "burning_hands", "true_strike" }
+        var many = new[] { "spell:magic_missile", "spell:shield", "spell:mage_armor", "spell:burning_hands", "spell:true_strike" }
             .Select(id => new SpellSelection { ClassId = "class:wizard", SpellLevel = 1, SpellId = id })
             .ToList();
 
@@ -177,14 +177,14 @@ public class RulesAccuracyTests
         var options = studio.GetAvailableFeats(state, "fighter_bonus").Select(f => f.Id).ToHashSet();
 
         // On the SRD fighter bonus list...
-        Assert.Contains("power_attack", options);
-        Assert.Contains("combat_reflexes", options);
-        Assert.Contains("weapon_finesse", options);
+        Assert.Contains("feat:power_attack", options);
+        Assert.Contains("feat:combat_reflexes", options);
+        Assert.Contains("feat:weapon_finesse", options);
         // ...and emphatically not.
-        Assert.DoesNotContain("skill_focus", options);
-        Assert.DoesNotContain("acrobatic", options);
-        Assert.DoesNotContain("negotiator", options);
-        Assert.DoesNotContain("self_sufficient", options);
+        Assert.DoesNotContain("feat:skill_focus", options);
+        Assert.DoesNotContain("feat:acrobatic", options);
+        Assert.DoesNotContain("feat:negotiator", options);
+        Assert.DoesNotContain("feat:self_sufficient", options);
     }
 
     [Fact]
@@ -208,11 +208,11 @@ public class RulesAccuracyTests
         var state = Evaluate(Human(new Tick
         {
             DriverId = "class:wizard",
-            Choices = new TickChoices { FeatIds = new List<string> { "weapon_proficiency_martial" } }
+            Choices = new TickChoices { FeatIds = new List<string> { "feat:weapon_proficiency_martial" } }
         }));
 
         Assert.Contains(state.Warnings, w => w.Contains("cannot be selected"));
-        Assert.DoesNotContain("weapon_proficiency_martial", state.Feats);
+        Assert.DoesNotContain("feat:weapon_proficiency_martial", state.Feats);
     }
 
     [Fact]
@@ -222,20 +222,20 @@ public class RulesAccuracyTests
         var state = Evaluate(Human(new Tick { DriverId = "class:fighter" }));
 
         // The blanket "all martial weapons" proficiency is granted by classes, never chosen.
-        Assert.DoesNotContain("weapon_proficiency_martial",
+        Assert.DoesNotContain("feat:weapon_proficiency_martial",
             studio.GetAvailableFeats(state).Select(f => f.Id));
         // The real SRD feat (one weapon at a time) stays selectable.
-        Assert.Contains("martial_weapon_proficiency",
+        Assert.Contains("feat:martial_weapon_proficiency",
             studio.GetAvailableFeats(state).Select(f => f.Id));
     }
 
     // ---- class proficiencies ---------------------------------------------
 
     [Theory]
-    [InlineData("class:fighter", "simple_weapon_proficiency", "weapon_proficiency_martial", "armor_proficiency_heavy", "tower_shield_proficiency")]
-    [InlineData("class:barbarian", "simple_weapon_proficiency", "weapon_proficiency_martial", "armor_proficiency_medium", "shield_proficiency")]
-    [InlineData("class:cleric", "simple_weapon_proficiency", "armor_proficiency_heavy", "shield_proficiency", "armor_proficiency_light")]
-    [InlineData("class:rogue", "simple_weapon_proficiency", "armor_proficiency_light", "armor_proficiency_light", "armor_proficiency_light")]
+    [InlineData("class:fighter", "feat:simple_weapon_proficiency", "feat:weapon_proficiency_martial", "feat:armor_proficiency_heavy", "feat:tower_shield_proficiency")]
+    [InlineData("class:barbarian", "feat:simple_weapon_proficiency", "feat:weapon_proficiency_martial", "feat:armor_proficiency_medium", "feat:shield_proficiency")]
+    [InlineData("class:cleric", "feat:simple_weapon_proficiency", "feat:armor_proficiency_heavy", "feat:shield_proficiency", "feat:armor_proficiency_light")]
+    [InlineData("class:rogue", "feat:simple_weapon_proficiency", "feat:armor_proficiency_light", "feat:armor_proficiency_light", "feat:armor_proficiency_light")]
     public void MartialClasses_GrantTheirProficiencies(string driverId, params string[] expected)
     {
         var state = Evaluate(Human(new Tick { DriverId = driverId }));
@@ -260,9 +260,9 @@ public class RulesAccuracyTests
     {
         var state = Evaluate(Human(new Tick { DriverId = "class:wizard" }));
 
-        Assert.DoesNotContain("simple_weapon_proficiency", state.Feats);
-        Assert.DoesNotContain("weapon_proficiency_martial", state.Feats);
-        Assert.DoesNotContain("armor_proficiency_light", state.Feats);
+        Assert.DoesNotContain("feat:simple_weapon_proficiency", state.Feats);
+        Assert.DoesNotContain("feat:weapon_proficiency_martial", state.Feats);
+        Assert.DoesNotContain("feat:armor_proficiency_light", state.Feats);
     }
 
     // ---- SRD audit findings ----------------------------------------------
@@ -276,9 +276,9 @@ public class RulesAccuracyTests
         //  but not shields." (npcClasses.html)
         var state = Evaluate(Human(new Tick { DriverId = "class:expert" }));
 
-        Assert.Contains("simple_weapon_proficiency", state.Feats);
-        Assert.Contains("armor_proficiency_light", state.Feats);
-        Assert.DoesNotContain("shield_proficiency", state.Feats);
+        Assert.Contains("feat:simple_weapon_proficiency", state.Feats);
+        Assert.Contains("feat:armor_proficiency_light", state.Feats);
+        Assert.DoesNotContain("feat:shield_proficiency", state.Feats);
     }
 
     [Fact]
@@ -287,8 +287,8 @@ public class RulesAccuracyTests
         // "Cloistered clerics are proficient with simple weapons and with light armor."
         var state = Evaluate(Human(new Tick { DriverId = "class:cloistered_cleric" }));
 
-        Assert.Contains("simple_weapon_proficiency", state.Feats);
-        Assert.Contains("armor_proficiency_light", state.Feats);
+        Assert.Contains("feat:simple_weapon_proficiency", state.Feats);
+        Assert.Contains("feat:armor_proficiency_light", state.Feats);
     }
 
     [Fact]
@@ -299,10 +299,10 @@ public class RulesAccuracyTests
 
         foreach (var knowledge in new[]
                  {
-                     "knowledge_arcana", "knowledge_architecture", "knowledge_dungeoneering",
-                     "knowledge_geography", "knowledge_history", "knowledge_local",
-                     "knowledge_nature", "knowledge_nobility", "knowledge_planes",
-                     "knowledge_religion"
+                     "skill:knowledge_arcana", "skill:knowledge_architecture", "skill:knowledge_dungeoneering",
+                     "skill:knowledge_geography", "skill:knowledge_history", "skill:knowledge_local",
+                     "skill:knowledge_nature", "skill:knowledge_nobility", "skill:knowledge_planes",
+                     "skill:knowledge_religion"
                  })
         {
             Assert.Contains(knowledge, state.ClassSkills);
@@ -312,14 +312,14 @@ public class RulesAccuracyTests
     [Theory]
     // UA: both variants have "all the standard <base> class features, except as noted below",
     // and weapon/armour proficiency is not among the exceptions.
-    [InlineData("class:paladin_of_tyranny", "weapon_proficiency_martial", "armor_proficiency_heavy")]
-    [InlineData("class:planar_ranger", "weapon_proficiency_martial", "armor_proficiency_light")]
+    [InlineData("class:paladin_of_tyranny", "feat:weapon_proficiency_martial", "feat:armor_proficiency_heavy")]
+    [InlineData("class:planar_ranger", "feat:weapon_proficiency_martial", "feat:armor_proficiency_light")]
     public void UnearthedArcanaVariants_InheritBaseClassProficiencies(
         string driverId, string a, string b)
     {
         var state = Evaluate(Human(new Tick { DriverId = driverId }));
 
-        Assert.Contains("simple_weapon_proficiency", state.Feats);
+        Assert.Contains("feat:simple_weapon_proficiency", state.Feats);
         Assert.Contains(a, state.Feats);
         Assert.Contains(b, state.Feats);
     }
@@ -518,10 +518,10 @@ public class RulesAccuracyTests
         var perform = driver.Prerequisites.OfType<MinSkillRanksAcross>().Single();
 
         var state = new CharacterState();
-        state.SkillHalfRanks["perform_dance"] = 4;   // 2 ranks — short
+        state.SkillHalfRanks["skill:perform_dance"] = 4;   // 2 ranks — short
         Assert.False(perform.IsMet(state));
 
-        state.SkillHalfRanks["perform_dance"] = 6;   // 3 ranks
+        state.SkillHalfRanks["skill:perform_dance"] = 6;   // 3 ranks
         Assert.True(perform.IsMet(state));
     }
 
@@ -534,18 +534,18 @@ public class RulesAccuracyTests
         // "knowledge_", so HasFeat's prefix match discriminates exactly.
         var driver = (HDDriver)Content.Value.GetDriver("class:loremaster");
         var skillFocus = driver.Prerequisites.OfType<HasFeat>()
-            .Single(f => f.FeatId.StartsWith("skill_focus", StringComparison.Ordinal));
+            .Single(f => f.FeatId.StartsWith("feat:skill_focus", StringComparison.Ordinal));
 
         var wrongSkill = new CharacterState();
-        wrongSkill.Feats.Add("skill_focus_spellcraft");
+        wrongSkill.Feats.Add("feat:skill_focus_spellcraft");
         Assert.False(skillFocus.IsMet(wrongSkill));
 
         var knowledge = new CharacterState();
-        knowledge.Feats.Add("skill_focus_knowledge_arcana");
+        knowledge.Feats.Add("feat:skill_focus_knowledge_arcana");
         Assert.True(skillFocus.IsMet(knowledge));
 
         var otherKnowledge = new CharacterState();
-        otherKnowledge.Feats.Add("skill_focus_knowledge_religion");
+        otherKnowledge.Feats.Add("feat:skill_focus_knowledge_religion");
         Assert.True(skillFocus.IsMet(otherKnowledge));
     }
 
@@ -567,11 +567,11 @@ public class RulesAccuracyTests
         var spellFocus = driver.Prerequisites.OfType<HasFeat>().Single();
 
         var wrongSchool = new CharacterState();
-        wrongSchool.Feats.Add("spell_focus_evocation");
+        wrongSchool.Feats.Add("feat:spell_focus_evocation");
         Assert.False(spellFocus.IsMet(wrongSchool));
 
         var right = new CharacterState();
-        right.Feats.Add("spell_focus_conjuration");
+        right.Feats.Add("feat:spell_focus_conjuration");
         Assert.True(spellFocus.IsMet(right));
     }
 
@@ -587,13 +587,13 @@ public class RulesAccuracyTests
         // KnowsSpell primitive — see that test for why.
         var driver = (HDDriver)Content.Value.GetDriver("class:cosmic_descryer");
         var energyResistance = driver.Prerequisites.OfType<HasFeatSelections>()
-            .Single(f => f.FeatId == "energy_resistance");
+            .Single(f => f.FeatId == "feat:energy_resistance");
 
         var noFeat = new CharacterState();
         Assert.False(energyResistance.IsMet(noFeat));
 
         var withFeat = new CharacterState();
-        withFeat.Feats.Add("energy_resistance_fire");
+        withFeat.Feats.Add("feat:energy_resistance_fire");
         Assert.True(energyResistance.IsMet(withFeat));
     }
 
@@ -621,12 +621,12 @@ public class RulesAccuracyTests
         var driver = (HDDriver)Content.Value.GetDriver("class:arcane_archer");
         var race = driver.Prerequisites.OfType<HasAnyRace>().Single();
 
-        Assert.Equal(new[] { "elf", "half_elf" }, race.RaceIds);
+        Assert.Equal(new[] { "race:elf", "race:half_elf" }, race.RaceIds);
 
-        var elf = new CharacterState { RaceId = "elf" };
+        var elf = new CharacterState { RaceId = "race:elf" };
         Assert.True(race.IsMet(elf));
 
-        var dwarf = new CharacterState { RaceId = "dwarf" };
+        var dwarf = new CharacterState { RaceId = "race:dwarf" };
         Assert.False(race.IsMet(dwarf));
     }
 
@@ -679,7 +679,7 @@ public class RulesAccuracyTests
         // "Race: Dwarf."
         var driver = (HDDriver)Content.Value.GetDriver("class:dwarven_defender");
 
-        Assert.Contains(driver.Prerequisites.OfType<HasRace>(), r => r.RaceId == "dwarf");
+        Assert.Contains(driver.Prerequisites.OfType<HasRace>(), r => r.RaceId == "race:dwarf");
     }
 
     [Fact]
@@ -734,19 +734,19 @@ public class RulesAccuracyTests
     {
         var prereq = new MinSkillRanksAcross
         {
-            SkillIds = new List<string> { "knowledge_arcana", "knowledge_religion", "knowledge_nature" },
+            SkillIds = new List<string> { "skill:knowledge_arcana", "skill:knowledge_religion", "skill:knowledge_nature" },
             Value = 10,
             MinCount = 2
         };
 
         var state = new CharacterState();
-        state.SkillHalfRanks["knowledge_arcana"] = 20;   // 10 ranks
+        state.SkillHalfRanks["skill:knowledge_arcana"] = 20;   // 10 ranks
         Assert.False(prereq.IsMet(state));
 
-        state.SkillHalfRanks["knowledge_religion"] = 18; // 9 ranks — short
+        state.SkillHalfRanks["skill:knowledge_religion"] = 18; // 9 ranks — short
         Assert.False(prereq.IsMet(state));
 
-        state.SkillHalfRanks["knowledge_religion"] = 20; // 10 ranks
+        state.SkillHalfRanks["skill:knowledge_religion"] = 20; // 10 ranks
         Assert.True(prereq.IsMet(state));
     }
 

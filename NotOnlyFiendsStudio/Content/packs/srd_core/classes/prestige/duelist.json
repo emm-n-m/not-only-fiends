@@ -7,15 +7,15 @@
   "hitDie": 10,
   "skillPointsPerLevel": 4,
   "classSkills": [
-    "balance",
-    "bluff",
-    "escape_artist",
-    "jump",
-    "listen",
-    "perform",
-    "sense_motive",
-    "spot",
-    "tumble"
+    "skill:balance",
+    "skill:bluff",
+    "skill:escape_artist",
+    "skill:jump",
+    "skill:listen",
+    "skill:perform",
+    "skill:sense_motive",
+    "skill:spot",
+    "skill:tumble"
   ],
   "babProgression": "good",
   "saveProgression": {
@@ -122,35 +122,35 @@
     {
       "$type": "MinSkillRanksAcross",
       "skillIds": [
-        "perform_act",
-        "perform_comedy",
-        "perform_dance",
-        "perform_keyboard_instruments",
-        "perform_oratory",
-        "perform_percussion_instruments",
-        "perform_sing",
-        "perform_string_instruments",
-        "perform_wind_instruments"
+        "skill:perform_act",
+        "skill:perform_comedy",
+        "skill:perform_dance",
+        "skill:perform_keyboard_instruments",
+        "skill:perform_oratory",
+        "skill:perform_percussion_instruments",
+        "skill:perform_sing",
+        "skill:perform_string_instruments",
+        "skill:perform_wind_instruments"
       ],
       "value": 3,
       "minCount": 1
     },
     {
       "$type": "MinSkillRanks",
-      "skillId": "tumble",
+      "skillId": "skill:tumble",
       "value": 5
     },
     {
       "$type": "HasFeat",
-      "featId": "dodge"
+      "featId": "feat:dodge"
     },
     {
       "$type": "HasFeat",
-      "featId": "mobility"
+      "featId": "feat:mobility"
     },
     {
       "$type": "HasFeat",
-      "featId": "weapon_finesse"
+      "featId": "feat:weapon_finesse"
     }
   ],
   "maxLevel": 10

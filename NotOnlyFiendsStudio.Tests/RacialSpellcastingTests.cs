@@ -17,7 +17,7 @@ public class RacialSpellcastingTests
         {
             Name = "Test Aranea",
             Alignment = Alignment.N,
-            RaceId = "aranea",
+            RaceId = "race:aranea",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 }
         };
         for (int i = 0; i < racialHD; i++)
@@ -103,7 +103,7 @@ public class RacialSpellcastingTests
     {
         // SRD: "A couatl casts spells as a 9th-level sorcerer."
         var (_, engine) = CreateStudio();
-        var state = engine.Evaluate(BuildRacial("couatl", "racial_hd:outsider", 9, null, 0));
+        var state = engine.Evaluate(BuildRacial("race:couatl", "racial_hd:outsider", 9, null, 0));
 
         Assert.True(state.Spellcasting.TryGetValue("class:sorcerer", out var sc),
             "Expected couatl to cast as a sorcerer (seeded by finalize step)");
@@ -115,7 +115,7 @@ public class RacialSpellcastingTests
     {
         // SRD: "A nymph casts divine spells as a 7th-level druid."
         var (_, engine) = CreateStudio();
-        var state = engine.Evaluate(BuildRacial("nymph", "racial_hd:fey", 6, null, 0));
+        var state = engine.Evaluate(BuildRacial("race:nymph", "racial_hd:fey", 6, null, 0));
 
         Assert.True(state.Spellcasting.TryGetValue("class:druid", out var sc));
         Assert.Equal(7, sc!.CasterLevel);
@@ -126,7 +126,7 @@ public class RacialSpellcastingTests
     {
         // Nymph (druid 7) + 6 Druid class levels → effective Druid 13 ("Nymph Archdruid")
         var (_, engine) = CreateStudio();
-        var state = engine.Evaluate(BuildRacial("nymph", "racial_hd:fey", 6, "class:druid", 6));
+        var state = engine.Evaluate(BuildRacial("race:nymph", "racial_hd:fey", 6, "class:druid", 6));
 
         Assert.True(state.Spellcasting.TryGetValue("class:druid", out var sc));
         Assert.Equal(13, sc!.CasterLevel);
@@ -139,7 +139,7 @@ public class RacialSpellcastingTests
         // Regression guard for the seed-before-first-class-tick ordering: a spellcasting-advancement
         // PrC taken by a racial-only caster must find the racial casting to advance it.
         var (_, engine) = CreateStudio();
-        var state = engine.Evaluate(BuildRacial("couatl", "racial_hd:outsider", 9, "class:loremaster", 3));
+        var state = engine.Evaluate(BuildRacial("race:couatl", "racial_hd:outsider", 9, "class:loremaster", 3));
 
         Assert.True(state.Spellcasting.TryGetValue("class:sorcerer", out var sc),
             "Loremaster should have found the couatl's racial sorcerer casting");

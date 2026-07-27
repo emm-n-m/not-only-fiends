@@ -7,19 +7,19 @@
   "hitDie": 4,
   "skillPointsPerLevel": 4,
   "classSkills": [
-    "appraise",
-    "concentration",
-    "craft_alchemy",
-    "decipher_script",
-    "gather_information",
-    "handle_animal",
-    "heal",
-    "knowledge",
-    "perform",
-    "profession",
-    "speak_language",
-    "spellcraft",
-    "use_magic_device"
+    "skill:appraise",
+    "skill:concentration",
+    "skill:craft_alchemy",
+    "skill:decipher_script",
+    "skill:gather_information",
+    "skill:handle_animal",
+    "skill:heal",
+    "skill:knowledge",
+    "skill:perform",
+    "skill:profession",
+    "skill:speak_language",
+    "skill:spellcraft",
+    "skill:use_magic_device"
   ],
   "babProgression": "poor",
   "saveProgression": {
@@ -39,7 +39,7 @@
       },
       {
         "$type": "GrantClassFeatureSelection",
-        "featureType": "loremaster_secret"
+        "featureType": "class_feature:loremaster_secret"
       }
     ],
     "2": [
@@ -55,7 +55,7 @@
     "3": [
       {
         "$type": "GrantClassFeatureSelection",
-        "featureType": "loremaster_secret"
+        "featureType": "class_feature:loremaster_secret"
       }
     ],
     "4": [
@@ -71,7 +71,7 @@
     "5": [
       {
         "$type": "GrantClassFeatureSelection",
-        "featureType": "loremaster_secret"
+        "featureType": "class_feature:loremaster_secret"
       }
     ],
     "6": [
@@ -87,7 +87,7 @@
     "7": [
       {
         "$type": "GrantClassFeatureSelection",
-        "featureType": "loremaster_secret"
+        "featureType": "class_feature:loremaster_secret"
       }
     ],
     "8": [
@@ -103,7 +103,7 @@
     "9": [
       {
         "$type": "GrantClassFeatureSelection",
-        "featureType": "loremaster_secret"
+        "featureType": "class_feature:loremaster_secret"
       }
     ],
     "10": [
@@ -126,16 +126,16 @@
     {
       "$type": "MinSkillRanksAcross",
       "skillIds": [
-        "knowledge_arcana",
-        "knowledge_architecture",
-        "knowledge_dungeoneering",
-        "knowledge_geography",
-        "knowledge_history",
-        "knowledge_local",
-        "knowledge_nature",
-        "knowledge_nobility",
-        "knowledge_planes",
-        "knowledge_religion"
+        "skill:knowledge_arcana",
+        "skill:knowledge_architecture",
+        "skill:knowledge_dungeoneering",
+        "skill:knowledge_geography",
+        "skill:knowledge_history",
+        "skill:knowledge_local",
+        "skill:knowledge_nature",
+        "skill:knowledge_nobility",
+        "skill:knowledge_planes",
+        "skill:knowledge_religion"
       ],
       "value": 10,
       "minCount": 2
@@ -150,7 +150,7 @@
     },
     {
       "$type": "HasFeat",
-      "featId": "skill_focus_knowledge"
+      "featId": "feat:skill_focus_knowledge"
     },
     {
       "$type": "CanCastSpellLevel",

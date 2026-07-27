@@ -7,14 +7,14 @@
   "hitDie": 4,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "concentration",
-    "craft",
-    "decipher_script",
-    "knowledge_arcana",
-    "knowledge_religion",
-    "profession",
-    "sense_motive",
-    "spellcraft"
+    "skill:concentration",
+    "skill:craft",
+    "skill:decipher_script",
+    "skill:knowledge_arcana",
+    "skill:knowledge_religion",
+    "skill:profession",
+    "skill:sense_motive",
+    "skill:spellcraft"
   ],
   "babProgression": "poor",
   "saveProgression": {
@@ -55,12 +55,12 @@
   "prerequisites": [
     {
       "$type": "MinSkillRanks",
-      "skillId": "knowledge_arcana",
+      "skillId": "skill:knowledge_arcana",
       "value": 6
     },
     {
       "$type": "MinSkillRanks",
-      "skillId": "knowledge_religion",
+      "skillId": "skill:knowledge_religion",
       "value": 6
     },
     {

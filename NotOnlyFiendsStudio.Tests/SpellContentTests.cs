@@ -13,15 +13,15 @@ public class SpellContentTests
         var allSpells = registry.GetAllSpells().ToList();
 
         Assert.Equal(617, allSpells.Count);
-        Assert.True(registry.TryGetSpell("acid_arrow", out var acidArrow));
+        Assert.True(registry.TryGetSpell("spell:acid_arrow", out var acidArrow));
         Assert.Equal("Acid Arrow", acidArrow!.Name);
         Assert.Equal("conjuration", acidArrow.School);
 
         // Alignment "smite" spells are domain-only; the Good/Chaos/Law/Evil
         // domains already reference them by ID.
-        Assert.True(registry.TryGetSpell("holy_smite", out var holySmite));
+        Assert.True(registry.TryGetSpell("spell:holy_smite", out var holySmite));
         Assert.Equal(4, holySmite!.ClassLevels["domain:good"]);
-        Assert.Contains(registry.GetSpellsForList("domain:chaos"), s => s.Id == "chaos_hammer");
+        Assert.Contains(registry.GetSpellsForList("domain:chaos"), s => s.Id == "spell:chaos_hammer");
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class SpellContentTests
         Assert.NotEmpty(sorcererSpells);
         Assert.All(sorcererSpells, spell => Assert.True(spell.ClassLevels["class:sorcerer"] <= 1));
         Assert.Equal(0, sorcererSpells.First().ClassLevels["class:sorcerer"]);
-        Assert.Contains(sorcererSpells, s => s.Id == "acid_splash");
+        Assert.Contains(sorcererSpells, s => s.Id == "spell:acid_splash");
     }
 
     [RequiresPrivatePacksFact]
@@ -56,8 +56,8 @@ public class SpellContentTests
 
         var charmDomain = registry.GetDomain("domain:charm");
 
-        Assert.Equal("charm_person", charmDomain.BonusSpells[1]);
-        Assert.Equal("dominate_monster", charmDomain.BonusSpells[9]);
+        Assert.Equal("spell:charm_person", charmDomain.BonusSpells[1]);
+        Assert.Equal("spell:dominate_monster", charmDomain.BonusSpells[9]);
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class SpellContentTests
         var registry = new ContentRegistry();
         registry.RegisterSpell(new SpellDefinition
         {
-            Id = "bad_spell",
+            Id = "spell:bad_spell",
             Name = "Bad Spell",
             School = "evocation",
             ClassLevels = new Dictionary<string, int> { ["list:nonexistent"] = 1 },
@@ -106,7 +106,7 @@ public class SpellContentTests
         });
         registry.RegisterSpell(new SpellDefinition
         {
-            Id = "bad_spell",
+            Id = "spell:bad_spell",
             Name = "Bad Spell",
             School = "evocation",
             ClassLevels = new Dictionary<string, int> { ["class:wizard"] = -1 },

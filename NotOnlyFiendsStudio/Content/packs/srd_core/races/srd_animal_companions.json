@@ -1,264 +1,632 @@
 [
-{
-  "id": "companion_badger",
-  "name": "Badger",
-  "description": "Small animal companion with burrow speed, low-light vision, scent, and a rage ability when wounded.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "small",
-  "speeds": { "land": 30, "burrow": 10 },
-  "abilityModifiers": { "str": -2, "dex": 7, "con": 5, "int": -8, "wis": 2, "cha": -4 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 3 },
-    { "$type": "GrantAbility", "ability": { "id": "badger_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "badger_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
-    { "$type": "GrantAbility", "ability": { "id": "badger_rage", "name": "Rage", "description": "When wounded: +4 Str, +4 Con, +2 Will, -2 AC for the duration of the encounter." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "companion_camel",
-  "name": "Camel",
-  "description": "Large animal companion with high speed, hardy desert constitution, and a spit attack.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "large",
-  "speeds": { "land": 50 },
-  "abilityModifiers": { "str": 8, "dex": 6, "con": 4, "int": -8, "wis": 1, "cha": -6 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
-    { "$type": "GrantAbility", "ability": { "id": "camel_spit", "name": "Spit", "description": "Ranged touch attack at 10 ft.; target dazed for 1 round (Fort negates)." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "companion_dog",
-  "name": "Dog",
-  "description": "Small animal companion with low-light vision and scent.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "small",
-  "speeds": { "land": 40 },
-  "abilityModifiers": { "str": 3, "dex": 7, "con": 5, "int": -8, "wis": 2, "cha": -4 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
-    { "$type": "GrantAbility", "ability": { "id": "dog_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "dog_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "companion_riding_dog",
-  "name": "Riding Dog",
-  "description": "Medium animal companion suitable as a mount for Small riders. Low-light vision and scent.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "medium",
-  "speeds": { "land": 40 },
-  "abilityModifiers": { "str": 5, "dex": 5, "con": 5, "int": -8, "wis": 2, "cha": -4 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 3 },
-    { "$type": "GrantAbility", "ability": { "id": "rdog_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "rdog_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "companion_eagle",
-  "name": "Eagle",
-  "description": "Small flying animal companion with sharp eyesight and a +8 racial bonus to Spot.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "small",
-  "speeds": { "land": 10, "fly": 80 },
-  "abilityModifiers": { "str": 0, "dex": 5, "con": 2, "int": -8, "wis": 4, "cha": -4 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
-    { "$type": "GrantAbility", "ability": { "id": "eagle_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantSkillBonus", "skillId": "spot", "value": 8 }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "companion_horse_light",
-  "name": "Horse, Light",
-  "description": "Large animal companion suited as a mount. Fast land speed, low-light vision, and scent.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "large",
-  "speeds": { "land": 60 },
-  "abilityModifiers": { "str": 4, "dex": 3, "con": 5, "int": -8, "wis": 2, "cha": -4 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 3 },
-    { "$type": "GrantAbility", "ability": { "id": "lhorse_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "lhorse_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "companion_horse_heavy",
-  "name": "Horse, Heavy",
-  "description": "Large powerful animal companion suited as a war mount. Low-light vision and scent.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "large",
-  "speeds": { "land": 50 },
-  "abilityModifiers": { "str": 6, "dex": 3, "con": 7, "int": -8, "wis": 2, "cha": -4 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 3 },
-    { "$type": "GrantAbility", "ability": { "id": "hhorse_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "hhorse_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "companion_pony",
-  "name": "Pony",
-  "description": "Medium animal companion suited as a mount for Small riders. Low-light vision and scent.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "medium",
-  "speeds": { "land": 40 },
-  "abilityModifiers": { "str": 3, "dex": 3, "con": 2, "int": -8, "wis": 1, "cha": -6 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
-    { "$type": "GrantAbility", "ability": { "id": "pony_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "pony_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "companion_wolf",
-  "name": "Wolf",
-  "description": "Medium animal companion with low-light vision, scent, and a trip attack on bite.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "medium",
-  "speeds": { "land": 50 },
-  "abilityModifiers": { "str": 3, "dex": 5, "con": 5, "int": -8, "wis": 2, "cha": -4 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
-    { "$type": "GrantAbility", "ability": { "id": "wolf_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "wolf_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
-    { "$type": "GrantAbility", "ability": { "id": "wolf_trip", "name": "Trip", "description": "On a successful bite, can attempt to trip as a free action without provoking attacks of opportunity." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "companion_boar",
-  "name": "Boar",
-  "description": "Medium animal companion with thick natural armor and ferocity (continues fighting at negative HP).",
-  "type": "animal",
-  "subtypes": [],
-  "size": "medium",
-  "speeds": { "land": 40 },
-  "abilityModifiers": { "str": 5, "dex": 0, "con": 7, "int": -8, "wis": 3, "cha": -6 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 6 },
-    { "$type": "GrantAbility", "ability": { "id": "boar_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "boar_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
-    { "$type": "GrantAbility", "ability": { "id": "boar_ferocity", "name": "Ferocity", "description": "Continues to fight without penalty even while disabled or dying." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "companion_monkey",
-  "name": "Monkey",
-  "description": "Tiny animal companion with climb speed and low-light vision.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "tiny",
-  "speeds": { "land": 30, "climb": 30 },
-  "abilityModifiers": { "str": -7, "dex": 5, "con": 0, "int": -8, "wis": 2, "cha": -5 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "GrantAbility", "ability": { "id": "monkey_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "companion_heavy_warhorse",
-  "name": "Heavy Warhorse",
-  "description": "Large combat-trained warhorse. Standard paladin special mount.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "large",
-  "speeds": { "land": 50 },
-  "abilityModifiers": { "str": 8, "dex": 3, "con": 7, "int": -8, "wis": 3, "cha": -4 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 4 },
-    { "$type": "GrantAbility", "ability": { "id": "hwarhorse_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "hwarhorse_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
-    { "$type": "GrantAbility", "ability": { "id": "hwarhorse_combat_trained", "name": "Combat Trained", "description": "Trained for war: will not panic at blood or loud noises and attacks on command." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "companion_warpony",
-  "name": "Warpony",
-  "description": "Medium combat-trained pony. Paladin mount option for Small paladins.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "medium",
-  "speeds": { "land": 40 },
-  "abilityModifiers": { "str": 5, "dex": 3, "con": 4, "int": -8, "wis": 1, "cha": -4 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
-    { "$type": "GrantAbility", "ability": { "id": "warpony_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "warpony_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
-    { "$type": "GrantAbility", "ability": { "id": "warpony_combat_trained", "name": "Combat Trained", "description": "Trained for war: will not panic at blood or loud noises and attacks on command." } }
-  ],
-  "scalingFormulas": []
-}
+  {
+    "id": "race:companion_badger",
+    "name": "Badger",
+    "description": "Small animal companion with burrow speed, low-light vision, scent, and a rage ability when wounded.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "small",
+    "speeds": {
+      "land": 30,
+      "burrow": 10
+    },
+    "abilityModifiers": {
+      "str": -2,
+      "dex": 7,
+      "con": 5,
+      "int": -8,
+      "wis": 2,
+      "cha": -4
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 3
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "badger_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "badger_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "badger_rage",
+          "name": "Rage",
+          "description": "When wounded: +4 Str, +4 Con, +2 Will, -2 AC for the duration of the encounter."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:companion_camel",
+    "name": "Camel",
+    "description": "Large animal companion with high speed, hardy desert constitution, and a spit attack.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "large",
+    "speeds": {
+      "land": 50
+    },
+    "abilityModifiers": {
+      "str": 8,
+      "dex": 6,
+      "con": 4,
+      "int": -8,
+      "wis": 1,
+      "cha": -6
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 1
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "camel_spit",
+          "name": "Spit",
+          "description": "Ranged touch attack at 10 ft.; target dazed for 1 round (Fort negates)."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:companion_dog",
+    "name": "Dog",
+    "description": "Small animal companion with low-light vision and scent.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "small",
+    "speeds": {
+      "land": 40
+    },
+    "abilityModifiers": {
+      "str": 3,
+      "dex": 7,
+      "con": 5,
+      "int": -8,
+      "wis": 2,
+      "cha": -4
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 2
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "dog_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "dog_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:companion_riding_dog",
+    "name": "Riding Dog",
+    "description": "Medium animal companion suitable as a mount for Small riders. Low-light vision and scent.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "medium",
+    "speeds": {
+      "land": 40
+    },
+    "abilityModifiers": {
+      "str": 5,
+      "dex": 5,
+      "con": 5,
+      "int": -8,
+      "wis": 2,
+      "cha": -4
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 3
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "rdog_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "rdog_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:companion_eagle",
+    "name": "Eagle",
+    "description": "Small flying animal companion with sharp eyesight and a +8 racial bonus to Spot.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "small",
+    "speeds": {
+      "land": 10,
+      "fly": 80
+    },
+    "abilityModifiers": {
+      "str": 0,
+      "dex": 5,
+      "con": 2,
+      "int": -8,
+      "wis": 4,
+      "cha": -4
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 1
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "eagle_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:spot",
+        "value": 8
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:companion_horse_light",
+    "name": "Horse, Light",
+    "description": "Large animal companion suited as a mount. Fast land speed, low-light vision, and scent.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "large",
+    "speeds": {
+      "land": 60
+    },
+    "abilityModifiers": {
+      "str": 4,
+      "dex": 3,
+      "con": 5,
+      "int": -8,
+      "wis": 2,
+      "cha": -4
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 3
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "lhorse_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "lhorse_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:companion_horse_heavy",
+    "name": "Horse, Heavy",
+    "description": "Large powerful animal companion suited as a war mount. Low-light vision and scent.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "large",
+    "speeds": {
+      "land": 50
+    },
+    "abilityModifiers": {
+      "str": 6,
+      "dex": 3,
+      "con": 7,
+      "int": -8,
+      "wis": 2,
+      "cha": -4
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 3
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hhorse_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hhorse_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:companion_pony",
+    "name": "Pony",
+    "description": "Medium animal companion suited as a mount for Small riders. Low-light vision and scent.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "medium",
+    "speeds": {
+      "land": 40
+    },
+    "abilityModifiers": {
+      "str": 3,
+      "dex": 3,
+      "con": 2,
+      "int": -8,
+      "wis": 1,
+      "cha": -6
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 2
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "pony_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "pony_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:companion_wolf",
+    "name": "Wolf",
+    "description": "Medium animal companion with low-light vision, scent, and a trip attack on bite.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "medium",
+    "speeds": {
+      "land": 50
+    },
+    "abilityModifiers": {
+      "str": 3,
+      "dex": 5,
+      "con": 5,
+      "int": -8,
+      "wis": 2,
+      "cha": -4
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 2
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "wolf_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "wolf_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "wolf_trip",
+          "name": "Trip",
+          "description": "On a successful bite, can attempt to trip as a free action without provoking attacks of opportunity."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:companion_boar",
+    "name": "Boar",
+    "description": "Medium animal companion with thick natural armor and ferocity (continues fighting at negative HP).",
+    "type": "animal",
+    "subtypes": [],
+    "size": "medium",
+    "speeds": {
+      "land": 40
+    },
+    "abilityModifiers": {
+      "str": 5,
+      "dex": 0,
+      "con": 7,
+      "int": -8,
+      "wis": 3,
+      "cha": -6
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 6
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "boar_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "boar_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "boar_ferocity",
+          "name": "Ferocity",
+          "description": "Continues to fight without penalty even while disabled or dying."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:companion_monkey",
+    "name": "Monkey",
+    "description": "Tiny animal companion with climb speed and low-light vision.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "tiny",
+    "speeds": {
+      "land": 30,
+      "climb": 30
+    },
+    "abilityModifiers": {
+      "str": -7,
+      "dex": 5,
+      "con": 0,
+      "int": -8,
+      "wis": 2,
+      "cha": -5
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "monkey_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:companion_heavy_warhorse",
+    "name": "Heavy Warhorse",
+    "description": "Large combat-trained warhorse. Standard paladin special mount.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "large",
+    "speeds": {
+      "land": 50
+    },
+    "abilityModifiers": {
+      "str": 8,
+      "dex": 3,
+      "con": 7,
+      "int": -8,
+      "wis": 3,
+      "cha": -4
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 4
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hwarhorse_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hwarhorse_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hwarhorse_combat_trained",
+          "name": "Combat Trained",
+          "description": "Trained for war: will not panic at blood or loud noises and attacks on command."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:companion_warpony",
+    "name": "Warpony",
+    "description": "Medium combat-trained pony. Paladin mount option for Small paladins.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "medium",
+    "speeds": {
+      "land": 40
+    },
+    "abilityModifiers": {
+      "str": 5,
+      "dex": 3,
+      "con": 4,
+      "int": -8,
+      "wis": 1,
+      "cha": -4
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 2
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "warpony_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "warpony_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "warpony_combat_trained",
+          "name": "Combat Trained",
+          "description": "Trained for war: will not panic at blood or loud noises and attacks on command."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  }
 ]

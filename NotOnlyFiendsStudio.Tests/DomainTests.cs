@@ -19,7 +19,7 @@ public class DomainTests
         var character = new Character
         {
             Name = "Cleric 1",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 14, DEX = 10, CON = 14, INT = 10, WIS = 16, CHA = 8
@@ -54,7 +54,7 @@ public class DomainTests
         var character = new Character
         {
             Name = "Cleric 1",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 14, DEX = 10, CON = 14, INT = 10, WIS = 16, CHA = 8
@@ -94,7 +94,7 @@ public class DomainTests
         var character = new Character
         {
             Name = "Cleric 5",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 14, DEX = 10, CON = 14, INT = 10, WIS = 16, CHA = 8
@@ -137,12 +137,12 @@ public class DomainTests
         // spellcasting state (the class that owns the domain), not dropped as unknown.
         var (registry, engine) = CreateStudio();
         // Confirm the spell exists in the corpus before the test depends on it.
-        Assert.Contains(registry.GetAllSpells(), s => s.Id == "magic_weapon");
+        Assert.Contains(registry.GetAllSpells(), s => s.Id == "spell:magic_weapon");
 
         var character = new Character
         {
             Name = "Cleric 1",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 14, DEX = 10, CON = 14, INT = 10, WIS = 16, CHA = 8
@@ -160,7 +160,7 @@ public class DomainTests
                         },
                         SpellSelections = new List<SpellSelection>
                         {
-                            new() { ClassId = "domain:war", SpellLevel = 1, SpellId = "magic_weapon" }
+                            new() { ClassId = "domain:war", SpellLevel = 1, SpellId = "spell:magic_weapon" }
                         }
                     }
                 }
@@ -171,7 +171,7 @@ public class DomainTests
 
         Assert.DoesNotContain(state.Warnings, w => w.Contains("unknown spellcasting class"));
         var sc = state.Spellcasting["class:cleric"];
-        Assert.Contains(sc.SelectedSpells, s => s.SpellId == "magic_weapon" && s.ClassId == "domain:war");
+        Assert.Contains(sc.SelectedSpells, s => s.SpellId == "spell:magic_weapon" && s.ClassId == "domain:war");
     }
 
     [Fact]
@@ -182,7 +182,7 @@ public class DomainTests
         var character = new Character
         {
             Name = "Cleric 1",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 14, DEX = 10, CON = 14, INT = 10, WIS = 16, CHA = 8
@@ -213,8 +213,8 @@ public class DomainTests
 
         // Deity domains (srd_deity.json) and their new spells
         Assert.True(registry.TryGetDomain("domain:madness", out var madness));
-        Assert.Equal("touch_of_madness", madness!.BonusSpells[2]);
-        Assert.Contains(registry.GetSpellsForList("domain:creation"), s => s.Id == "genesis");
+        Assert.Equal("spell:touch_of_madness", madness!.BonusSpells[2]);
+        Assert.Contains(registry.GetSpellsForList("domain:creation"), s => s.Id == "spell:genesis");
     }
 
     [RequiresPrivatePacksFact]

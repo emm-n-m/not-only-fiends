@@ -20,7 +20,7 @@ public class LeadershipTests
         var fighter = BuildFighterWithLeadership(levels: 6, cha: 14);
         var state = engine.Evaluate(fighter);
 
-        Assert.Contains("leadership", state.Feats);
+        Assert.Contains("feat:leadership", state.Feats);
         // 6 HD + Mod(CHA 14)=+2 = 8 → no followers (<10).
         Assert.Equal(8, state.LeadershipScore);
         Assert.Equal(4, state.MaxCohortLevel); // min(8-2, 6-2) = 4
@@ -76,14 +76,14 @@ public class LeadershipTests
         // HD 3 — below MinHD(6). Feat takes the L3 slot but prereq check fires a warning.
         var fighter = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 14 },
             Ticks = Enumerable.Range(0, 3).Select(i =>
                 i == 2
                     ? new Tick
                         {
                             DriverId = "class:fighter",
-                            Choices = new TickChoices { FeatIds = new List<string> { "leadership" } }
+                            Choices = new TickChoices { FeatIds = new List<string> { "feat:leadership" } }
                         }
                     : new Tick { DriverId = "class:fighter" }).ToList()
         };
@@ -102,14 +102,14 @@ public class LeadershipTests
 
         var fighter = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 14 },
             Ticks = Enumerable.Range(0, 7).Select(_ => new Tick { DriverId = "class:fighter" }).ToList()
         };
 
         var state = engine.Evaluate(fighter);
 
-        Assert.DoesNotContain("leadership", state.Feats);
+        Assert.DoesNotContain("feat:leadership", state.Feats);
         Assert.Equal(0, state.LeadershipScore);
         Assert.Equal(0, state.MaxCohortLevel);
         Assert.Empty(state.CompanionSlots);
@@ -139,7 +139,7 @@ public class LeadershipTests
         var cohort = new Character
         {
             Name = "Squire",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 12, CON = 12, INT = 10, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 5).Select(_ => new Tick { DriverId = "class:fighter" }).ToList()
         };
@@ -174,7 +174,7 @@ public class LeadershipTests
         var cohort = new Character
         {
             Name = "OverleveledCohort",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 12, CON = 12, INT = 10, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 6).Select(_ => new Tick { DriverId = "class:fighter" }).ToList()
         };
@@ -209,7 +209,7 @@ public class LeadershipTests
         var cohort = new Character
         {
             Name = "Erinyes",
-            RaceId = "devil_erinyes",
+            RaceId = "race:devil_erinyes",
             BaseAbilityScores = new AbilityScoreSet { STR = 0, DEX = 0, CON = 0, INT = 0, WIS = 0, CHA = 0 },
             Ticks = new List<Tick> { new() { DriverId = "racial_hd:outsider" } }
         };
@@ -235,14 +235,14 @@ public class LeadershipTests
 
         return new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = cha },
             Ticks = Enumerable.Range(0, levels).Select(i =>
                 i == 5 // HD 6 — standard feat slot
                     ? new Tick
                         {
                             DriverId = "class:fighter",
-                            Choices = new TickChoices { FeatIds = new List<string> { "leadership" } }
+                            Choices = new TickChoices { FeatIds = new List<string> { "feat:leadership" } }
                         }
                     : new Tick { DriverId = "class:fighter" }).ToList()
         };

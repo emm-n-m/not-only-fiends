@@ -22,7 +22,7 @@ public class AgentApiServiceTests
         var catalog = SharedService.Value.GetCatalog();
 
         Assert.Contains(catalog.LoadedPacks, pack => pack.Id == "srd_core");
-        Assert.Contains(catalog.Races, race => race.Id == "human");
+        Assert.Contains(catalog.Races, race => race.Id == "race:human");
         Assert.Contains(catalog.Drivers, driver => driver.Id == "class:fighter");
         Assert.True(catalog.SpellCount > 0);
     }
@@ -37,7 +37,7 @@ public class AgentApiServiceTests
 
         Assert.Equal(1, response.State.TotalHD);
         Assert.Equal(1, response.Sheet.TotalHD);
-        Assert.Contains(response.QualifiedFeats, feat => feat.Id == "weapon_focus");
+        Assert.Contains(response.QualifiedFeats, feat => feat.Id == "feat:weapon_focus");
         Assert.Empty(response.PendingChoices.FeatChoices);
     }
 
@@ -49,7 +49,7 @@ public class AgentApiServiceTests
             Character = new Character
             {
                 Name = "Agent Test",
-                RaceId = "human",
+                RaceId = "race:human",
                 BaseAbilityScores = new AbilityScoreSet
                 {
                     STR = 16,
@@ -192,7 +192,7 @@ public class AgentApiServiceTests
     private static Character CreateLevelZeroHuman() => new()
     {
         Name = "Agent Test",
-        RaceId = "human",
+        RaceId = "race:human",
         BaseAbilityScores = new AbilityScoreSet
         {
             STR = 16,
@@ -215,7 +215,7 @@ public class AgentApiServiceTests
     private static Character CreateFirstLevelHumanFighter() => new()
     {
         Name = "Brynn Ironfist",
-        RaceId = "human",
+        RaceId = "race:human",
         BaseAbilityScores = new AbilityScoreSet
         {
             STR = 16,
@@ -232,7 +232,7 @@ public class AgentApiServiceTests
                 DriverId = "class:fighter",
                 Choices = new TickChoices
                 {
-                    FeatIds = new List<string> { "power_attack", "cleave", "improved_initiative" }
+                    FeatIds = new List<string> { "feat:power_attack", "feat:cleave", "feat:improved_initiative" }
                 }
             }
         }

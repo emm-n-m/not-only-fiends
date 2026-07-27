@@ -46,7 +46,7 @@ public class PcgConverterTests
 
         Assert.Empty(result.Warnings);
         Assert.Equal("Test Cleric", result.Character.Name);
-        Assert.Equal("human", result.Character.RaceId);
+        Assert.Equal("race:human", result.Character.RaceId);
         Assert.Equal(3, result.Character.Ticks.Count);
         Assert.Equal("class:cleric", result.Character.Ticks[0].DriverId);
         Assert.Equal("Clean import", result.Summary);
@@ -74,7 +74,7 @@ public class PcgConverterTests
 
         var lastTickFeats = result.Character.Ticks[^1].Choices.FeatIds;
         Assert.NotNull(lastTickFeats);
-        Assert.Contains("power_attack", lastTickFeats);
+        Assert.Contains("feat:power_attack", lastTickFeats);
 
         // Earlier ticks should have no feats
         Assert.Null(result.Character.Ticks[0].Choices.FeatIds);
@@ -92,7 +92,7 @@ public class PcgConverterTests
         var result = PcgConverter.Convert(data, mapper);
 
         var lastTickFeats = result.Character.Ticks[^1].Choices.FeatIds!;
-        Assert.Equal(3, lastTickFeats.Count(f => f == "toughness"));
+        Assert.Equal(3, lastTickFeats.Count(f => f == "feat:toughness"));
     }
 
     [Fact]
@@ -111,13 +111,13 @@ public class PcgConverterTests
         var result = PcgConverter.Convert(data, mapper, registry);
 
         var feats = result.Character.Ticks[^1].Choices.FeatIds!;
-        Assert.Contains("spell_focus_conjuration", feats);
-        Assert.Contains("spell_focus_evocation", feats);
-        Assert.Contains("skill_focus_knowledge_arcana", feats);
+        Assert.Contains("feat:spell_focus_conjuration", feats);
+        Assert.Contains("feat:spell_focus_evocation", feats);
+        Assert.Contains("feat:skill_focus_knowledge_arcana", feats);
         // The bare id must not be stored: prestige classes such as Cosmic Descryer
         // and Archmage gate on the variant ids.
-        Assert.DoesNotContain("spell_focus", feats);
-        Assert.DoesNotContain("skill_focus", feats);
+        Assert.DoesNotContain("feat:spell_focus", feats);
+        Assert.DoesNotContain("feat:skill_focus", feats);
     }
 
     [Fact]
@@ -132,7 +132,7 @@ public class PcgConverterTests
         var result = PcgConverter.Convert(data, mapper, registry);
 
         var feats = result.Character.Ticks[^1].Choices.FeatIds!;
-        Assert.Single(feats, f => f == "spell_focus");
+        Assert.Single(feats, f => f == "feat:spell_focus");
     }
 
     [Fact]
@@ -146,7 +146,7 @@ public class PcgConverterTests
         var result = PcgConverter.Convert(data, mapper);
 
         var lastTickFeats = result.Character.Ticks[^1].Choices.FeatIds!;
-        Assert.Single(lastTickFeats, f => f == "dodge");
+        Assert.Single(lastTickFeats, f => f == "feat:dodge");
     }
 
     [Fact]
@@ -159,7 +159,7 @@ public class PcgConverterTests
         var lastTickSkills = result.Character.Ticks[^1].Choices.SkillAllocations;
         Assert.NotNull(lastTickSkills);
         Assert.Single(lastTickSkills);
-        Assert.Equal("concentration", lastTickSkills[0].SkillId);
+        Assert.Equal("skill:concentration", lastTickSkills[0].SkillId);
         Assert.Equal(12, lastTickSkills[0].HalfRanks); // 6.0 ranks * 2
 
         // Earlier ticks should have no skill allocations
@@ -207,7 +207,7 @@ public class PcgConverterTests
         var mapper = new PcgIdMapper();
         var result = PcgConverter.Convert(data, mapper);
 
-        Assert.Equal("human", result.Character.RaceId);
+        Assert.Equal("race:human", result.Character.RaceId);
         Assert.True(result.RaceDropped);
         Assert.Contains(result.Warnings, w => w.Contains("UnknownAlienRace") && w.Contains("no engine mapping"));
     }
@@ -273,7 +273,7 @@ public class PcgConverterTests
         var mapper = new PcgIdMapper();
         var result = PcgConverter.Convert(data, mapper);
 
-        Assert.Equal("human", result.Character.RaceId); // fallback
+        Assert.Equal("race:human", result.Character.RaceId); // fallback
         Assert.True(result.RaceDropped);
         Assert.Empty(result.Character.Ticks);
     }

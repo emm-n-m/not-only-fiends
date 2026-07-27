@@ -17,13 +17,13 @@ public class FeatTests
         var (registry, _) = CreateStudio();
 
         // General feats
-        Assert.NotNull(registry.GetFeat("power_attack"));
-        Assert.NotNull(registry.GetFeat("cleave"));
-        Assert.NotNull(registry.GetFeat("great_cleave"));
-        Assert.NotNull(registry.GetFeat("improved_initiative"));
+        Assert.NotNull(registry.GetFeat("feat:power_attack"));
+        Assert.NotNull(registry.GetFeat("feat:cleave"));
+        Assert.NotNull(registry.GetFeat("feat:great_cleave"));
+        Assert.NotNull(registry.GetFeat("feat:improved_initiative"));
 
         // Fighter bonus feats
-        Assert.NotNull(registry.GetFeat("weapon_specialization"));
+        Assert.NotNull(registry.GetFeat("feat:weapon_specialization"));
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class FeatTests
         var character = new Character
         {
             Name = "Feat Chain Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
@@ -43,20 +43,20 @@ public class FeatTests
             Ticks = new List<Tick>
             {
                 new() { DriverId = "class:fighter", Choices = new TickChoices
-                    { FeatIds = new List<string> { "power_attack", "cleave", "improved_initiative" } } },
+                    { FeatIds = new List<string> { "feat:power_attack", "feat:cleave", "feat:improved_initiative" } } },
                 new() { DriverId = "class:fighter" },
                 new() { DriverId = "class:fighter" },
                 new() { DriverId = "class:fighter", Choices = new TickChoices
-                    { FeatIds = new List<string> { "great_cleave" } } },
+                    { FeatIds = new List<string> { "feat:great_cleave" } } },
             }
         };
 
         var state = engine.Evaluate(character);
 
-        Assert.Contains("power_attack", state.Feats);
-        Assert.Contains("cleave", state.Feats);
-        Assert.Contains("improved_initiative", state.Feats);
-        Assert.Contains("great_cleave", state.Feats);
+        Assert.Contains("feat:power_attack", state.Feats);
+        Assert.Contains("feat:cleave", state.Feats);
+        Assert.Contains("feat:improved_initiative", state.Feats);
+        Assert.Contains("feat:great_cleave", state.Feats);
         Assert.Empty(state.Warnings);
     }
 
@@ -68,7 +68,7 @@ public class FeatTests
         var character = new Character
         {
             Name = "Bad Feat Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
@@ -76,7 +76,7 @@ public class FeatTests
             Ticks = new List<Tick>
             {
                 new() { DriverId = "class:fighter", Choices = new TickChoices
-                    { FeatIds = new List<string> { "cleave" } } },
+                    { FeatIds = new List<string> { "feat:cleave" } } },
             }
         };
 
@@ -84,7 +84,7 @@ public class FeatTests
 
         // Should have a warning about missing power_attack prereq
         Assert.NotEmpty(state.Warnings);
-        Assert.Contains(state.Warnings, w => w.Contains("power_attack") || w.Contains("Power Attack"));
+        Assert.Contains(state.Warnings, w => w.Contains("feat:power_attack") || w.Contains("Power Attack"));
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public class FeatTests
         var character = new Character
         {
             Name = "BAB Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
@@ -104,7 +104,7 @@ public class FeatTests
             Ticks = new List<Tick>
             {
                 new() { DriverId = "class:fighter", Choices = new TickChoices
-                    { FeatIds = new List<string> { "power_attack", "cleave", "great_cleave" } } },
+                    { FeatIds = new List<string> { "feat:power_attack", "feat:cleave", "feat:great_cleave" } } },
             }
         };
 
@@ -123,7 +123,7 @@ public class FeatTests
         var character = new Character
         {
             Name = "Slot Enforcement Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 10, DEX = 14, CON = 14, INT = 16, WIS = 12, CHA = 8
@@ -131,17 +131,17 @@ public class FeatTests
             Ticks = new List<Tick>
             {
                 new() { DriverId = "class:wizard", Choices = new TickChoices
-                    { FeatIds = new List<string> { "improved_initiative", "lightning_reflexes", "iron_will" } } },
+                    { FeatIds = new List<string> { "feat:improved_initiative", "feat:lightning_reflexes", "feat:iron_will" } } },
             }
         };
 
         var state = engine.Evaluate(character);
 
         // state.Feats also includes scribe_scroll granted by class. The two picks land; the third is dropped.
-        Assert.Contains("improved_initiative", state.Feats);
-        Assert.Contains("lightning_reflexes", state.Feats);
-        Assert.DoesNotContain("iron_will", state.Feats);
-        Assert.Contains(state.Warnings, w => w.Contains("iron_will") && w.Contains("no available feat slot"));
+        Assert.Contains("feat:improved_initiative", state.Feats);
+        Assert.Contains("feat:lightning_reflexes", state.Feats);
+        Assert.DoesNotContain("feat:iron_will", state.Feats);
+        Assert.Contains(state.Warnings, w => w.Contains("feat:iron_will") && w.Contains("no available feat slot"));
     }
 
     [Fact]
@@ -154,7 +154,7 @@ public class FeatTests
         var character = new Character
         {
             Name = "Fighter Slot Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
@@ -162,14 +162,14 @@ public class FeatTests
             Ticks = new List<Tick>
             {
                 new() { DriverId = "class:fighter", Choices = new TickChoices
-                    { FeatIds = new List<string> { "power_attack", "weapon_focus" } } },
+                    { FeatIds = new List<string> { "feat:power_attack", "feat:weapon_focus" } } },
             }
         };
 
         var state = engine.Evaluate(character);
         Assert.Empty(state.Warnings);
-        Assert.Contains("power_attack", state.Feats);
-        Assert.Contains("weapon_focus", state.Feats);
+        Assert.Contains("feat:power_attack", state.Feats);
+        Assert.Contains("feat:weapon_focus", state.Feats);
         // 3 slots granted at HD 1, 2 picked → 1 remaining.
         Assert.Single(state.FeatSlots);
     }
@@ -182,7 +182,7 @@ public class FeatTests
         var character = new Character
         {
             Name = "Slot Count Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
@@ -219,15 +219,15 @@ public class FeatTests
         var available = engine.GetAvailableFeats(state);
 
         // Should include Power Attack (STR 13+) and Improved Initiative (no prereqs)
-        Assert.Contains(available, f => f.Id == "power_attack");
-        Assert.Contains(available, f => f.Id == "improved_initiative");
-        Assert.Contains(available, f => f.Id == "weapon_focus"); // BAB 1+
+        Assert.Contains(available, f => f.Id == "feat:power_attack");
+        Assert.Contains(available, f => f.Id == "feat:improved_initiative");
+        Assert.Contains(available, f => f.Id == "feat:weapon_focus"); // BAB 1+
 
         // Should NOT include Cleave (requires Power Attack feat)
-        Assert.DoesNotContain(available, f => f.Id == "cleave");
+        Assert.DoesNotContain(available, f => f.Id == "feat:cleave");
 
         // Should NOT include Combat Expertise (requires INT 13+, we have INT 10)
-        Assert.DoesNotContain(available, f => f.Id == "combat_expertise");
+        Assert.DoesNotContain(available, f => f.Id == "feat:combat_expertise");
     }
 
     [Fact]
@@ -243,17 +243,17 @@ public class FeatTests
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
             },
-            Feats = new List<string> { "power_attack" }
+            Feats = new List<string> { "feat:power_attack" }
         };
 
         var available = engine.GetAvailableFeats(state);
 
-        Assert.Contains(available, f => f.Id == "cleave");
-        Assert.Contains(available, f => f.Id == "improved_bull_rush");
-        Assert.Contains(available, f => f.Id == "improved_sunder");
+        Assert.Contains(available, f => f.Id == "feat:cleave");
+        Assert.Contains(available, f => f.Id == "feat:improved_bull_rush");
+        Assert.Contains(available, f => f.Id == "feat:improved_sunder");
 
         // Great Cleave still needs BAB +4 and Cleave
-        Assert.DoesNotContain(available, f => f.Id == "great_cleave");
+        Assert.DoesNotContain(available, f => f.Id == "feat:great_cleave");
     }
 
     [Fact]
@@ -270,18 +270,18 @@ public class FeatTests
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
             },
             ClassLevels = new Dictionary<string, int> { { "class:fighter", 4 } },
-            Feats = new List<string> { "weapon_focus" }
+            Feats = new List<string> { "feat:weapon_focus" }
         };
 
         var available = engine.GetAvailableFeats(state, restriction: "fighter_bonus");
 
         // Fighter bonus restriction should include general + fighter bonus feats
-        Assert.Contains(available, f => f.Id == "power_attack");        // general
-        Assert.Contains(available, f => f.Id == "weapon_specialization"); // fighter bonus, needs weapon_focus + fighter 4
+        Assert.Contains(available, f => f.Id == "feat:power_attack");        // general
+        Assert.Contains(available, f => f.Id == "feat:weapon_specialization"); // fighter bonus, needs weapon_focus + fighter 4
 
         // Should not include already taken feats (unless repeatable)
         // weapon_focus is repeatable, so it should still appear
-        Assert.Contains(available, f => f.Id == "weapon_focus");
+        Assert.Contains(available, f => f.Id == "feat:weapon_focus");
     }
 
     [Fact]
@@ -290,7 +290,7 @@ public class FeatTests
         var registry = new ContentRegistry();
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "human",
+            Id = "race:human",
             Name = "Human",
             Type = CreatureType.Humanoid,
             Size = Size.Medium,
@@ -307,14 +307,14 @@ public class FeatTests
             SaveProgression = new SaveProgression { Fort = ProgressionRate.Good, Ref = ProgressionRate.Poor, Will = ProgressionRate.Poor },
             LevelPermabuffs = new Dictionary<int, List<Permabuff>>
             {
-                { 1, new List<Permabuff> { new GrantBonusFeat { FeatId = "toughness_bonus" } } }
+                { 1, new List<Permabuff> { new GrantBonusFeat { FeatId = "feat:toughness_bonus" } } }
             }
         });
 
         // Register a feat with a GrantedPermabuff and a tag
         registry.RegisterFeat(new FeatDefinition
         {
-            Id = "toughness_bonus",
+            Id = "feat:toughness_bonus",
             Name = "Toughness (Bonus)",
             Type = FeatType.General,
             Tags = new List<string> { "defensive" },
@@ -328,7 +328,7 @@ public class FeatTests
         var character = new Character
         {
             Name = "Cascade Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick> { new() { DriverId = "class:fighter" } }
         };
@@ -336,7 +336,7 @@ public class FeatTests
         var state = engine.Evaluate(character);
 
         // GrantBonusFeat adds the feat and cascades its permabuffs
-        Assert.Contains("toughness_bonus", state.Feats);
+        Assert.Contains("feat:toughness_bonus", state.Feats);
         Assert.Equal(1, state.NaturalArmor);
 
         // Granted bonus feats also count toward type/tag totals so downstream

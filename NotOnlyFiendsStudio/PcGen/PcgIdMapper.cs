@@ -173,7 +173,8 @@ public class PcgIdMapper
 
     public string? MapRace(string pcgenRace)
     {
-        return RaceMap.GetValueOrDefault(pcgenRace);
+        var bare = RaceMap.GetValueOrDefault(pcgenRace);
+        return bare == null ? null : "race:" + bare;
     }
 
     public string? MapClass(string pcgenClass)
@@ -181,19 +182,23 @@ public class PcgIdMapper
         return ClassMap.GetValueOrDefault(pcgenClass);
     }
 
-    public string MapFeat(string pcgenFeatKey)
+    public static string MapFeatBare(string pcgenFeatKey)
     {
         if (FeatOverrides.TryGetValue(pcgenFeatKey, out var overrideId))
             return overrideId;
         return DefaultIdTransform(pcgenFeatKey);
     }
 
-    public string MapSkill(string pcgenSkillName)
+    public string MapFeat(string pcgenFeatKey) => "feat:" + MapFeatBare(pcgenFeatKey);
+
+    public static string MapSkillBare(string pcgenSkillName)
     {
         if (SkillOverrides.TryGetValue(pcgenSkillName, out var overrideId))
             return overrideId;
         return DefaultIdTransform(pcgenSkillName);
     }
+
+    public string MapSkill(string pcgenSkillName) => "skill:" + MapSkillBare(pcgenSkillName);
 
     public string MapDomain(string pcgenDomainName)
     {

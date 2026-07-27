@@ -18,7 +18,7 @@ public class JsonContentTests
             Name = "Fighter",
             HitDie = 10,
             SkillPointsPerLevel = 2,
-            ClassSkills = new List<string> { "climb", "swim" },
+            ClassSkills = new List<string> { "skill:climb", "skill:swim" },
             BABProgression = BABProgression.Good,
             SaveProgression = new SaveProgression
             {
@@ -42,7 +42,7 @@ public class JsonContentTests
         Assert.Equal(10, result.HitDie);
         Assert.Equal(BABProgression.Good, result.BABProgression);
         Assert.Equal(ProgressionRate.Good, result.SaveProgression.Fort);
-        Assert.Contains("climb", result.ClassSkills);
+        Assert.Contains("skill:climb", result.ClassSkills);
         Assert.True(result.LevelPermabuffs.ContainsKey(1));
         Assert.Single(result.LevelPermabuffs[1]);
         Assert.IsType<GrantFeatSlot>(result.LevelPermabuffs[1][0]);
@@ -65,7 +65,7 @@ public class JsonContentTests
                 Ref = ProgressionRate.Good,
                 Will = ProgressionRate.Good
             },
-            Prerequisites = new List<Prerequisite> { new HasRace { RaceId = "outsider" } }
+            Prerequisites = new List<Prerequisite> { new HasRace { RaceId = "race:outsider" } }
         };
 
         var json = JsonSerializer.Serialize<Driver>(outsider, JsonOptions.Default);
@@ -86,7 +86,7 @@ public class JsonContentTests
         var registry = new ContentRegistry();
         registry.LoadRaceFromFile(Path.Combine(SrdCorePath(), "races", "human.json"));
 
-        var human = registry.GetRace("human");
+        var human = registry.GetRace("race:human");
         Assert.Equal("Human", human.Name);
         Assert.Equal(CreatureType.Humanoid, human.Type);
         Assert.Equal(Size.Medium, human.Size);
@@ -101,7 +101,7 @@ public class JsonContentTests
         var registry = new ContentRegistry();
         registry.LoadRaceFromFile(Path.Combine(SrdCorePath(), "races", "outsider.json"));
 
-        var outsider = registry.GetRace("outsider");
+        var outsider = registry.GetRace("race:outsider");
         Assert.Equal("Outsider", outsider.Name);
         Assert.Equal(CreatureType.Outsider, outsider.Type);
         Assert.Equal("racial_hd:outsider", outsider.RacialHDDriverId);
@@ -121,7 +121,7 @@ public class JsonContentTests
         Assert.Equal(8, rhd.SkillPointsPerLevel);
         Assert.Equal(BABProgression.Good, rhd.BABProgression);
         // No prerequisites: racial HD is attached via the race's racialHDDriverId, so a
-        // literal HasRace("outsider") gate only mis-fired on specific outsiders (imp, couatl, …).
+        // literal HasRace("race:outsider") gate only mis-fired on specific outsiders (imp, couatl, …).
         Assert.Empty(rhd.Prerequisites);
     }
 
@@ -137,7 +137,7 @@ public class JsonContentTests
         Assert.Equal(10, fighter.HitDie);
         Assert.Equal(2, fighter.SkillPointsPerLevel);
         Assert.Equal(BABProgression.Good, fighter.BABProgression);
-        Assert.Contains("climb", fighter.ClassSkills);
+        Assert.Contains("skill:climb", fighter.ClassSkills);
         // Fighter gets bonus feats at 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20
         Assert.True(fighter.LevelPermabuffs.ContainsKey(1));
         Assert.True(fighter.LevelPermabuffs.ContainsKey(2));
@@ -170,8 +170,8 @@ public class JsonContentTests
         var registry = TestContentHelper.LoadAllPacks();
 
         // Should have loaded all content
-        Assert.NotNull(registry.GetRace("human"));
-        Assert.NotNull(registry.GetRace("outsider"));
+        Assert.NotNull(registry.GetRace("race:human"));
+        Assert.NotNull(registry.GetRace("race:outsider"));
         Assert.NotNull(registry.GetDriver("class:fighter"));
         Assert.NotNull(registry.GetDriver("class:barbarian"));
         Assert.NotNull(registry.GetDriver("racial_hd:outsider"));
@@ -188,7 +188,7 @@ public class JsonContentTests
         var character = new Character
         {
             Name = "JSON Fighter",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
@@ -223,7 +223,7 @@ public class JsonContentTests
         var character = new Character
         {
             Name = "AT Test",
-            RaceId = "human",
+            RaceId = "race:human",
             Alignment = Alignment.CN,
             BaseAbilityScores = new AbilityScoreSet { STR = 8, DEX = 16, CON = 10, INT = 10, WIS = 10, CHA = 16 },
             Ticks = new List<Tick>
@@ -252,7 +252,7 @@ public class JsonContentTests
         var character = new Character
         {
             Name = "JSON Drow",
-            RaceId = "drow",
+            RaceId = "race:drow",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10

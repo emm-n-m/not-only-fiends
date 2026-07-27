@@ -42,32 +42,32 @@
     },
     {
       "$type": "GrantSkillBonus",
-      "skillId": "hide",
+      "skillId": "skill:hide",
       "value": 8
     },
     {
       "$type": "GrantSkillBonus",
-      "skillId": "listen",
+      "skillId": "skill:listen",
       "value": 8
     },
     {
       "$type": "GrantSkillBonus",
-      "skillId": "move_silently",
+      "skillId": "skill:move_silently",
       "value": 8
     },
     {
       "$type": "GrantSkillBonus",
-      "skillId": "search",
+      "skillId": "skill:search",
       "value": 8
     },
     {
       "$type": "GrantSkillBonus",
-      "skillId": "sense_motive",
+      "skillId": "skill:sense_motive",
       "value": 8
     },
     {
       "$type": "GrantSkillBonus",
-      "skillId": "spot",
+      "skillId": "skill:spot",
       "value": 8
     }
   ],

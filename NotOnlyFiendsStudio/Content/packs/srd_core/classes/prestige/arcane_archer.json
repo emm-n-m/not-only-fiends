@@ -7,14 +7,14 @@
   "hitDie": 8,
   "skillPointsPerLevel": 4,
   "classSkills": [
-    "craft",
-    "hide",
-    "listen",
-    "move_silently",
-    "ride",
-    "spot",
-    "survival",
-    "use_rope"
+    "skill:craft",
+    "skill:hide",
+    "skill:listen",
+    "skill:move_silently",
+    "skill:ride",
+    "skill:spot",
+    "skill:survival",
+    "skill:use_rope"
   ],
   "babProgression": "good",
   "saveProgression": {
@@ -100,15 +100,15 @@
     },
     {
       "$type": "HasFeat",
-      "featId": "point_blank_shot"
+      "featId": "feat:point_blank_shot"
     },
     {
       "$type": "HasFeat",
-      "featId": "precise_shot"
+      "featId": "feat:precise_shot"
     },
     {
       "$type": "HasFeat",
-      "featId": "weapon_focus"
+      "featId": "feat:weapon_focus"
     },
     {
       "$type": "CanCastSpellLevel",
@@ -118,8 +118,8 @@
     {
       "$type": "HasAnyRace",
       "raceIds": [
-        "elf",
-        "half_elf"
+        "race:elf",
+        "race:half_elf"
       ]
     }
   ],

@@ -7,19 +7,19 @@
   "hitDie": 8,
   "skillPointsPerLevel": 4,
   "classSkills": [
-    "concentration",
-    "craft",
-    "diplomacy",
-    "handle_animal",
-    "heal",
-    "knowledge_nature",
-    "listen",
-    "profession",
-    "ride",
-    "spellcraft",
-    "spot",
-    "survival",
-    "swim"
+    "skill:concentration",
+    "skill:craft",
+    "skill:diplomacy",
+    "skill:handle_animal",
+    "skill:heal",
+    "skill:knowledge_nature",
+    "skill:listen",
+    "skill:profession",
+    "skill:ride",
+    "skill:spellcraft",
+    "skill:spot",
+    "skill:survival",
+    "skill:swim"
   ],
   "babProgression": "average",
   "saveProgression": {
@@ -205,15 +205,15 @@
     "1": [
       {
         "$type": "GrantBonusFeat",
-        "featId": "armor_proficiency_light"
+        "featId": "feat:armor_proficiency_light"
       },
       {
         "$type": "GrantBonusFeat",
-        "featId": "armor_proficiency_medium"
+        "featId": "feat:armor_proficiency_medium"
       },
       {
         "$type": "GrantBonusFeat",
-        "featId": "shield_proficiency"
+        "featId": "feat:shield_proficiency"
       },
       {
         "$type": "GrantAbility",
@@ -258,7 +258,7 @@
       {
         "$type": "GrantCompanionSlot",
         "linkType": "animal_companion",
-        "classFeatureType": "animal_companion_options",
+        "classFeatureType": "class_feature:animal_companion_options",
         "effectiveLevelFormula": {
           "expression": "max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)"
         }

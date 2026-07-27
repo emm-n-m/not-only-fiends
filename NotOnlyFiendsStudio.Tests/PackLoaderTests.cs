@@ -222,16 +222,16 @@ public class PackLoaderTests : IDisposable
     public void LoadPacks_LoadsContentInOrder()
     {
         var coreDir = CreatePack("core", priority: 0);
-        AddFeatContent(coreDir, "power_attack", "Power Attack");
+        AddFeatContent(coreDir, "feat:power_attack", "Power Attack");
 
         var supDir = CreatePack("supplement", priority: 10, depends: new() { "core" });
-        AddFeatContent(supDir, "improved_sunder", "Improved Sunder");
+        AddFeatContent(supDir, "feat:improved_sunder", "Improved Sunder");
 
         var registry = new ContentRegistry();
         _loader.LoadPacks(registry, _tempDir);
 
-        Assert.NotNull(registry.GetFeat("power_attack"));
-        Assert.NotNull(registry.GetFeat("improved_sunder"));
+        Assert.NotNull(registry.GetFeat("feat:power_attack"));
+        Assert.NotNull(registry.GetFeat("feat:improved_sunder"));
     }
 
     [Fact]

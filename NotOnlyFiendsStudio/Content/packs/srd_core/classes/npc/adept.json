@@ -7,14 +7,14 @@
   "hitDie": 6,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "concentration",
-    "craft",
-    "handle_animal",
-    "heal",
-    "knowledge",
-    "profession",
-    "spellcraft",
-    "survival"
+    "skill:concentration",
+    "skill:craft",
+    "skill:handle_animal",
+    "skill:heal",
+    "skill:knowledge",
+    "skill:profession",
+    "skill:spellcraft",
+    "skill:survival"
   ],
   "babProgression": "poor",
   "saveProgression": {
@@ -156,7 +156,7 @@
     "1": [
       {
         "$type": "GrantBonusFeat",
-        "featId": "simple_weapon_proficiency"
+        "featId": "feat:simple_weapon_proficiency"
       },
       {
         "$type": "GrantAbility",

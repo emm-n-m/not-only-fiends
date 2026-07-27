@@ -7,16 +7,16 @@
   "hitDie": 10,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "concentration",
-    "craft",
-    "diplomacy",
-    "handle_animal",
-    "heal",
-    "hide",
-    "intimidate",
-    "knowledge_religion",
-    "profession",
-    "ride"
+    "skill:concentration",
+    "skill:craft",
+    "skill:diplomacy",
+    "skill:handle_animal",
+    "skill:heal",
+    "skill:hide",
+    "skill:intimidate",
+    "skill:knowledge_religion",
+    "skill:profession",
+    "skill:ride"
   ],
   "babProgression": "good",
   "saveProgression": {
@@ -244,25 +244,25 @@
     },
     {
       "$type": "MinSkillRanks",
-      "skillId": "hide",
+      "skillId": "skill:hide",
       "value": 5
     },
     {
       "$type": "MinSkillRanks",
-      "skillId": "knowledge_religion",
+      "skillId": "skill:knowledge_religion",
       "value": 2
     },
     {
       "$type": "HasFeat",
-      "featId": "cleave"
+      "featId": "feat:cleave"
     },
     {
       "$type": "HasFeat",
-      "featId": "improved_sunder"
+      "featId": "feat:improved_sunder"
     },
     {
       "$type": "HasFeat",
-      "featId": "power_attack"
+      "featId": "feat:power_attack"
     }
   ],
   "maxLevel": 10

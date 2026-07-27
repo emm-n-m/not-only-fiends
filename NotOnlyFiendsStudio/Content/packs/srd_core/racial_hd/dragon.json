@@ -7,10 +7,10 @@
   "hitDie": 12,
   "skillPointsPerLevel": 6,
   "classSkills": [
-    "appraise", "bluff", "concentration", "diplomacy",
-    "escape_artist", "intimidate", "jump", "listen",
-    "knowledge_arcana", "knowledge_nature",
-    "search", "sense_motive", "spot"
+    "skill:appraise", "skill:bluff", "skill:concentration", "skill:diplomacy",
+    "skill:escape_artist", "skill:intimidate", "skill:jump", "skill:listen",
+    "skill:knowledge_arcana", "skill:knowledge_nature",
+    "skill:search", "skill:sense_motive", "skill:spot"
   ],
   "babProgression": "good",
   "saveProgression": {
@@ -29,12 +29,12 @@
   "hitDie": 12,
   "skillPointsPerLevel": 6,
   "classSkills": [
-    "appraise", "bluff", "concentration", "diplomacy",
-    "escape_artist", "intimidate", "jump", "listen",
-    "knowledge_arcana", "knowledge_geography", "knowledge_history",
-    "knowledge_local", "knowledge_nature", "knowledge_nobility",
-    "knowledge_planes", "knowledge_religion",
-    "search", "sense_motive", "spot", "use_magic_device"
+    "skill:appraise", "skill:bluff", "skill:concentration", "skill:diplomacy",
+    "skill:escape_artist", "skill:intimidate", "skill:jump", "skill:listen",
+    "skill:knowledge_arcana", "skill:knowledge_geography", "skill:knowledge_history",
+    "skill:knowledge_local", "skill:knowledge_nature", "skill:knowledge_nobility",
+    "skill:knowledge_planes", "skill:knowledge_religion",
+    "skill:search", "skill:sense_motive", "skill:spot", "skill:use_magic_device"
   ],
   "babProgression": "good",
   "saveProgression": {

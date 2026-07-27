@@ -144,23 +144,23 @@
     },
     {
       "$type": "GrantBonusFeat",
-      "featId": "alertness"
+      "featId": "feat:alertness"
     },
     {
       "$type": "GrantBonusFeat",
-      "featId": "combat_reflexes"
+      "featId": "feat:combat_reflexes"
     },
     {
       "$type": "GrantBonusFeat",
-      "featId": "dodge"
+      "featId": "feat:dodge"
     },
     {
       "$type": "GrantBonusFeat",
-      "featId": "improved_initiative"
+      "featId": "feat:improved_initiative"
     },
     {
       "$type": "GrantBonusFeat",
-      "featId": "lightning_reflexes"
+      "featId": "feat:lightning_reflexes"
     }
   ],
   "scalingPermabuffs": {},

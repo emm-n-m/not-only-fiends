@@ -604,10 +604,9 @@ public class GrantCompanionSlot : Permabuff
             return; // nothing to upgrade
 
         // Attribute source: feat beats class. Prefer CurrentFeatId (set by the
-        // feat-application cascade) over CurrentDriverId (the driver currently ticking).
-        var granter = ctx.CurrentFeatId != null
-            ? $"feat:{ctx.CurrentFeatId}"
-            : (ctx.CurrentDriverId ?? string.Empty);
+        // feat-application cascade, already carrying the "feat:" prefix) over
+        // CurrentDriverId (the driver currently ticking).
+        var granter = ctx.CurrentFeatId ?? (ctx.CurrentDriverId ?? string.Empty);
 
         state.CompanionSlots.Add(new CompanionSlotState
         {

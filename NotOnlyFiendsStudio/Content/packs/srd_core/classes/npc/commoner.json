@@ -7,16 +7,16 @@
   "hitDie": 4,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "climb",
-    "craft",
-    "handle_animal",
-    "jump",
-    "listen",
-    "profession",
-    "ride",
-    "spot",
-    "swim",
-    "use_rope"
+    "skill:climb",
+    "skill:craft",
+    "skill:handle_animal",
+    "skill:jump",
+    "skill:listen",
+    "skill:profession",
+    "skill:ride",
+    "skill:spot",
+    "skill:swim",
+    "skill:use_rope"
   ],
   "babProgression": "poor",
   "saveProgression": {

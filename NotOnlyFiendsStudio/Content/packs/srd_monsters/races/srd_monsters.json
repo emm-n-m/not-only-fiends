@@ -1,165 +1,393 @@
 [
-{
-  "id": "aranea",
-  "name": "Aranea",
-  "description": "Medium shapeshifting magical beast that casts spells as a 3rd-level sorcerer and has web and poison attacks.",
-  "type": "magicalBeast",
-  "subtypes": ["shapechanger"],
-  "size": "medium",
-  "speeds": {
-    "land": 50,
-    "climb": 25
+  {
+    "id": "race:aranea",
+    "name": "Aranea",
+    "description": "Medium shapeshifting magical beast that casts spells as a 3rd-level sorcerer and has web and poison attacks.",
+    "type": "magicalBeast",
+    "subtypes": [
+      "shapechanger"
+    ],
+    "size": "medium",
+    "speeds": {
+      "land": 50,
+      "climb": 25
+    },
+    "abilityModifiers": {
+      "str": 0,
+      "dex": 4,
+      "con": 4,
+      "int": 4,
+      "wis": 2,
+      "cha": 4
+    },
+    "levelAdjustment": 4,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:magical_beast",
+    "racialClassSkillAdditions": [
+      "skill:climb",
+      "skill:concentration",
+      "skill:craft",
+      "skill:escape_artist",
+      "skill:hide",
+      "skill:jump",
+      "skill:knowledge",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:spellcraft",
+      "skill:spot"
+    ],
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "aranea_darkvision_60",
+          "name": "Darkvision 60 ft.",
+          "description": "See in the dark up to 60 feet."
+        }
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 1
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "aranea_web",
+          "name": "Web",
+          "description": "Can throw a web 6 times per day as a net. Range 50 ft., effective against targets up to Large size."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "aranea_poison",
+          "name": "Poison",
+          "description": "Bite\u2014Injury, Fort DC 13. Initial damage 1d6 Str, secondary damage 2d6 Str."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "aranea_change_shape",
+          "name": "Change Shape",
+          "description": "Can assume two forms: a Small or Medium humanoid, or a hybrid form that retains bite and web attacks. Equipment does not change with the form."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "aranea_spells",
+          "name": "Spells",
+          "description": "Casts spells as a 3rd-level sorcerer. Gains additional sorcerer spellcasting from racial HD."
+        }
+      },
+      {
+        "$type": "GrantRacialSpellcasting",
+        "classId": "class:sorcerer",
+        "levelFormula": {
+          "expression": "RacialHD()"
+        }
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:iron_will"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "aranea_racial_jump",
+          "name": "+2 Jump",
+          "description": "+2 racial bonus on Jump checks."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "aranea_racial_listen",
+          "name": "+2 Listen",
+          "description": "+2 racial bonus on Listen checks."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "aranea_racial_spot",
+          "name": "+2 Spot",
+          "description": "+2 racial bonus on Spot checks."
+        }
+      }
+    ],
+    "scalingFormulas": []
   },
-  "abilityModifiers": { "str": 0, "dex": 4, "con": 4, "int": 4, "wis": 2, "cha": 4 },
-  "levelAdjustment": 4,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:magical_beast",
-  "racialClassSkillAdditions": ["climb", "concentration", "craft", "escape_artist", "hide", "jump", "knowledge", "listen", "move_silently", "spellcraft", "spot"],
-  "racialPermabuffs": [
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "aranea_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+  {
+    "id": "race:hell_hound",
+    "name": "Hell Hound",
+    "description": "Medium fire outsider with a fire breath weapon, fiery bite, scent, and fire immunity but cold vulnerability.",
+    "type": "outsider",
+    "subtypes": [
+      "evil",
+      "extraplanar",
+      "fire",
+      "lawful"
+    ],
+    "size": "medium",
+    "speeds": {
+      "land": 40
     },
-    {
-      "$type": "ModifyAttribute",
-      "target": "naturalArmor",
-      "value": 1
+    "abilityModifiers": {
+      "str": 2,
+      "dex": 2,
+      "con": 2,
+      "int": -4,
+      "wis": 0,
+      "cha": -4
     },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "aranea_web", "name": "Web", "description": "Can throw a web 6 times per day as a net. Range 50 ft., effective against targets up to Large size." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "aranea_poison", "name": "Poison", "description": "Bite—Injury, Fort DC 13. Initial damage 1d6 Str, secondary damage 2d6 Str." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "aranea_change_shape", "name": "Change Shape", "description": "Can assume two forms: a Small or Medium humanoid, or a hybrid form that retains bite and web attacks. Equipment does not change with the form." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "aranea_spells", "name": "Spells", "description": "Casts spells as a 3rd-level sorcerer. Gains additional sorcerer spellcasting from racial HD." }
-    },
-    {
-      "$type": "GrantRacialSpellcasting",
-      "classId": "class:sorcerer",
-      "levelFormula": { "expression": "RacialHD()" }
-    },
-    {
-      "$type": "GrantBonusFeat",
-      "featId": "iron_will"
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "aranea_racial_jump", "name": "+2 Jump", "description": "+2 racial bonus on Jump checks." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "aranea_racial_listen", "name": "+2 Listen", "description": "+2 racial bonus on Listen checks." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "aranea_racial_spot", "name": "+2 Spot", "description": "+2 racial bonus on Spot checks." }
-    }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "hell_hound",
-  "name": "Hell Hound",
-  "description": "Medium fire outsider with a fire breath weapon, fiery bite, scent, and fire immunity but cold vulnerability.",
-  "type": "outsider",
-  "subtypes": ["evil", "extraplanar", "fire", "lawful"],
-  "size": "medium",
-  "speeds": {
-    "land": 40
+    "levelAdjustment": 3,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:outsider",
+    "racialClassSkillAdditions": [
+      "skill:hide",
+      "skill:move_silently"
+    ],
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hell_hound_darkvision_60",
+          "name": "Darkvision 60 ft.",
+          "description": "See in the dark up to 60 feet."
+        }
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 5
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hell_hound_breath_weapon",
+          "name": "Breath Weapon",
+          "description": "10-foot cone, once every 2d4 rounds, 2d6 fire damage, Reflex DC 13 half."
+        }
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "fire"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hell_hound_cold_vulnerability",
+          "name": "Vulnerability to Cold",
+          "description": "Takes half again as much (+50%) damage from cold, regardless of saving throws."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hell_hound_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hell_hound_fiery_bite",
+          "name": "Fiery Bite",
+          "description": "Bite deals an extra 1d6 fire damage."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hell_hound_racial_hide",
+          "name": "+5 Hide",
+          "description": "+5 racial bonus on Hide checks."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hell_hound_racial_move_silently",
+          "name": "+5 Move Silently",
+          "description": "+5 racial bonus on Move Silently checks."
+        }
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:track"
+      }
+    ],
+    "scalingFormulas": []
   },
-  "abilityModifiers": { "str": 2, "dex": 2, "con": 2, "int": -4, "wis": 0, "cha": -4 },
-  "levelAdjustment": 3,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:outsider",
-  "racialClassSkillAdditions": ["hide", "move_silently"],
-  "racialPermabuffs": [
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "hell_hound_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
+  {
+    "id": "race:erinyes",
+    "name": "Erinyes",
+    "description": "Medium outsider (devil). 9 HD, LA +7. Fallen angels that serve as Hell's elite hunters and seducers. True seeing, flight, entangle with rope, and powerful spell-like abilities.",
+    "type": "outsider",
+    "subtypes": [
+      "evil",
+      "extraplanar",
+      "lawful"
+    ],
+    "size": "medium",
+    "speeds": {
+      "land": 30,
+      "fly": 50
     },
-    {
-      "$type": "ModifyAttribute",
-      "target": "naturalArmor",
-      "value": 5
+    "abilityModifiers": {
+      "str": 8,
+      "dex": 2,
+      "con": 8,
+      "int": 4,
+      "wis": 8,
+      "cha": 10
     },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "hell_hound_breath_weapon", "name": "Breath Weapon", "description": "10-foot cone, once every 2d4 rounds, 2d6 fire damage, Reflex DC 13 half." }
-    },
-    { "$type": "GrantImmunity", "immunity": "fire" },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "hell_hound_cold_vulnerability", "name": "Vulnerability to Cold", "description": "Takes half again as much (+50%) damage from cold, regardless of saving throws." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "hell_hound_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "hell_hound_fiery_bite", "name": "Fiery Bite", "description": "Bite deals an extra 1d6 fire damage." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "hell_hound_racial_hide", "name": "+5 Hide", "description": "+5 racial bonus on Hide checks." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "hell_hound_racial_move_silently", "name": "+5 Move Silently", "description": "+5 racial bonus on Move Silently checks." }
-    },
-    {
-      "$type": "GrantBonusFeat",
-      "featId": "track"
-    }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "erinyes",
-  "name": "Erinyes",
-  "description": "Medium outsider (devil). 9 HD, LA +7. Fallen angels that serve as Hell's elite hunters and seducers. True seeing, flight, entangle with rope, and powerful spell-like abilities.",
-  "type": "outsider",
-  "subtypes": ["evil", "extraplanar", "lawful"],
-  "size": "medium",
-  "speeds": { "land": 30, "fly": 50 },
-  "abilityModifiers": { "str": 8, "dex": 2, "con": 8, "int": 4, "wis": 8, "cha": 10 },
-  "levelAdjustment": 7,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:outsider",
-  "racialClassSkillAdditions": ["concentration", "diplomacy", "disguise", "escape_artist", "hide", "knowledge", "move_silently", "use_rope"],
-  "racialClassSkillRemovals": ["craft"],
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 7 },
-    { "$type": "GrantAbility", "ability": { "id": "erinyes_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." } },
-    { "$type": "GrantDR", "value": 5, "bypassedBy": "good or silver" },
-    { "$type": "GrantImmunity", "immunity": "fire" },
-    { "$type": "GrantImmunity", "immunity": "poison" },
-    { "$type": "ModifyAttribute", "target": "resistance", "resistanceElement": "acid", "value": 10 },
-    { "$type": "ModifyAttribute", "target": "resistance", "resistanceElement": "cold", "value": 10 },
-    { "$type": "GrantAbility", "ability": { "id": "erinyes_true_seeing", "name": "True Seeing", "description": "Continuously active, as the spell (CL 14)." } },
-    { "$type": "GrantAbility", "ability": { "id": "erinyes_entangle", "name": "Entangle", "description": "Each erinyes carries a stout rope that entangles opponents as an animate rope spell (CL 16). Can hurl the rope 30 ft." } },
-    { "$type": "GrantAbility", "ability": { "id": "erinyes_sr", "name": "Spell Resistance 20", "description": "Spell resistance 20." } },
-    { "$type": "ModifyAttribute", "target": "spellResistance", "value": 20 },
-    { "$type": "GrantAbility", "ability": { "id": "erinyes_telepathy", "name": "Telepathy 100 ft.", "description": "Can communicate telepathically with any creature within 100 ft. that has a language." } },
-    { "$type": "GrantAbility", "ability": { "id": "erinyes_tongues", "name": "Tongues", "description": "Can speak with any creature that has a language, as the tongues spell." } },
-    { "$type": "GrantSLA", "sla": { "id": "erinyes_charm_monster", "name": "Charm Monster", "usesPerDay": "at will", "casterLevel": 12 } },
-    { "$type": "GrantSLA", "sla": { "id": "erinyes_minor_image", "name": "Minor Image", "usesPerDay": "at will", "casterLevel": 12 } },
-    { "$type": "GrantSLA", "sla": { "id": "erinyes_unholy_blight", "name": "Unholy Blight", "usesPerDay": "at will", "casterLevel": 12 } },
-    { "$type": "GrantBonusFeat", "featId": "dodge" }
-  ],
-  "scalingFormulas": [
-    { "target": "spellResistance", "formula": { "expression": "TotalHD + 11" } }
-  ]
-}
+    "levelAdjustment": 7,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:outsider",
+    "racialClassSkillAdditions": [
+      "skill:concentration",
+      "skill:diplomacy",
+      "skill:disguise",
+      "skill:escape_artist",
+      "skill:hide",
+      "skill:knowledge",
+      "skill:move_silently",
+      "skill:use_rope"
+    ],
+    "racialClassSkillRemovals": [
+      "skill:craft"
+    ],
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 7
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "erinyes_darkvision_60",
+          "name": "Darkvision 60 ft.",
+          "description": "See in the dark up to 60 feet."
+        }
+      },
+      {
+        "$type": "GrantDR",
+        "value": 5,
+        "bypassedBy": "good or silver"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "fire"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "poison"
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "resistance",
+        "resistanceElement": "acid",
+        "value": 10
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "resistance",
+        "resistanceElement": "cold",
+        "value": 10
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "erinyes_true_seeing",
+          "name": "True Seeing",
+          "description": "Continuously active, as the spell (CL 14)."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "erinyes_entangle",
+          "name": "Entangle",
+          "description": "Each erinyes carries a stout rope that entangles opponents as an animate rope spell (CL 16). Can hurl the rope 30 ft."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "erinyes_sr",
+          "name": "Spell Resistance 20",
+          "description": "Spell resistance 20."
+        }
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "spellResistance",
+        "value": 20
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "erinyes_telepathy",
+          "name": "Telepathy 100 ft.",
+          "description": "Can communicate telepathically with any creature within 100 ft. that has a language."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "erinyes_tongues",
+          "name": "Tongues",
+          "description": "Can speak with any creature that has a language, as the tongues spell."
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "erinyes_charm_monster",
+          "name": "Charm Monster",
+          "usesPerDay": "at will",
+          "casterLevel": 12
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "erinyes_minor_image",
+          "name": "Minor Image",
+          "usesPerDay": "at will",
+          "casterLevel": 12
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "erinyes_unholy_blight",
+          "name": "Unholy Blight",
+          "usesPerDay": "at will",
+          "casterLevel": 12
+        }
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:dodge"
+      }
+    ],
+    "scalingFormulas": [
+      {
+        "target": "spellResistance",
+        "formula": {
+          "expression": "TotalHD + 11"
+        }
+      }
+    ]
+  }
 ]

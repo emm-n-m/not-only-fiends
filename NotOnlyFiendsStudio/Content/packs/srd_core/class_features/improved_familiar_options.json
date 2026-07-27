@@ -1,11 +1,11 @@
 [
   {
-    "id": "improved_familiar_options",
+    "id": "class_feature:improved_familiar_options",
     "name": "Improved Familiar Options",
     "description": "Expanded familiar list unlocked by the Improved Familiar feat. Each option has an alignment and caster level requirement. Validation of those requirements is informational \u2014 the engine does not block selection, but `requiredAlignment` and `requiredCasterLevel` are listed for UI gating.",
     "options": [
       {
-        "id": "familiar_stirge",
+        "id": "race:familiar_stirge",
         "name": "Stirge",
         "description": "Tiny magical beast with flight, attach, and blood drain.",
         "minEffectiveLevel": 3,
@@ -13,7 +13,7 @@
         "requiredCasterLevel": 3
       },
       {
-        "id": "familiar_shocker_lizard",
+        "id": "race:familiar_shocker_lizard",
         "name": "Shocker Lizard",
         "description": "Small magical beast with electricity immunity and stunning shock.",
         "minEffectiveLevel": 5,
@@ -21,7 +21,7 @@
         "requiredCasterLevel": 5
       },
       {
-        "id": "companion_elemental_air_small",
+        "id": "race:companion_elemental_air_small",
         "name": "Small Air Elemental",
         "description": "Small outsider (air, extraplanar) with whirlwind attack. Master must be neutral on the good/evil axis.",
         "minEffectiveLevel": 5,
@@ -29,7 +29,7 @@
         "requiredCasterLevel": 5
       },
       {
-        "id": "companion_elemental_water_small",
+        "id": "race:companion_elemental_water_small",
         "name": "Small Water Elemental",
         "description": "Small outsider (water, extraplanar) with water mastery. Master must be neutral on the good/evil axis.",
         "minEffectiveLevel": 5,
@@ -37,7 +37,7 @@
         "requiredCasterLevel": 5
       },
       {
-        "id": "familiar_pseudodragon",
+        "id": "race:familiar_pseudodragon",
         "name": "Pseudodragon",
         "description": "Tiny good dragon with telepathy, poison sting, and spell resistance. Master must be good.",
         "minEffectiveLevel": 7,
@@ -45,7 +45,7 @@
         "requiredCasterLevel": 7
       },
       {
-        "id": "companion_devil_imp",
+        "id": "race:companion_devil_imp",
         "name": "Imp",
         "description": "Tiny lawful evil outsider with flight, poison sting, and at-will invisibility. Master must be lawful evil.",
         "minEffectiveLevel": 7,
@@ -53,7 +53,7 @@
         "requiredCasterLevel": 7
       },
       {
-        "id": "familiar_quasit",
+        "id": "race:familiar_quasit",
         "name": "Quasit",
         "description": "Tiny chaotic evil outsider with flight, invisibility, and alternate form. Master must be chaotic evil.",
         "minEffectiveLevel": 7,

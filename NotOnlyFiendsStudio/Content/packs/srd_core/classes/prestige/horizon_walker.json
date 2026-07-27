@@ -7,19 +7,19 @@
   "hitDie": 8,
   "skillPointsPerLevel": 4,
   "classSkills": [
-    "balance",
-    "climb",
-    "diplomacy",
-    "handle_animal",
-    "hide",
-    "knowledge_geography",
-    "listen",
-    "move_silently",
-    "profession",
-    "ride",
-    "speak_language",
-    "spot",
-    "survival"
+    "skill:balance",
+    "skill:climb",
+    "skill:diplomacy",
+    "skill:handle_animal",
+    "skill:hide",
+    "skill:knowledge_geography",
+    "skill:listen",
+    "skill:move_silently",
+    "skill:profession",
+    "skill:ride",
+    "skill:speak_language",
+    "skill:spot",
+    "skill:survival"
   ],
   "babProgression": "good",
   "saveProgression": {
@@ -61,12 +61,12 @@
   "prerequisites": [
     {
       "$type": "MinSkillRanks",
-      "skillId": "knowledge_geography",
+      "skillId": "skill:knowledge_geography",
       "value": 8
     },
     {
       "$type": "HasFeat",
-      "featId": "endurance"
+      "featId": "feat:endurance"
     }
   ],
   "maxLevel": 10

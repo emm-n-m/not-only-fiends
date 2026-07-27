@@ -7,10 +7,10 @@
   "hitDie": 12,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "craft",
-    "listen",
-    "sense_motive",
-    "spot"
+    "skill:craft",
+    "skill:listen",
+    "skill:sense_motive",
+    "skill:spot"
   ],
   "babProgression": "good",
   "saveProgression": {
@@ -106,7 +106,7 @@
     },
     {
       "$type": "HasRace",
-      "raceId": "dwarf"
+      "raceId": "race:dwarf"
     },
     {
       "$type": "MinBAB",
@@ -114,15 +114,15 @@
     },
     {
       "$type": "HasFeat",
-      "featId": "dodge"
+      "featId": "feat:dodge"
     },
     {
       "$type": "HasFeat",
-      "featId": "endurance"
+      "featId": "feat:endurance"
     },
     {
       "$type": "HasFeat",
-      "featId": "toughness"
+      "featId": "feat:toughness"
     }
   ],
   "maxLevel": 10

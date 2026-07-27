@@ -7,9 +7,9 @@
   "hitDie": 4,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "bluff", "concentration", "craft", "diplomacy",
-    "knowledge_arcana", "knowledge_religion", "knowledge_planes",
-    "profession", "sense_motive", "spellcraft"
+    "skill:bluff", "skill:concentration", "skill:craft", "skill:diplomacy",
+    "skill:knowledge_arcana", "skill:knowledge_religion", "skill:knowledge_planes",
+    "skill:profession", "skill:sense_motive", "skill:spellcraft"
   ],
   "babProgression": "poor",
   "saveProgression": {
@@ -85,9 +85,9 @@
     ]
   },
   "prerequisites": [
-    { "$type": "HasFeat", "featId": "spell_focus_conjuration" },
-    { "$type": "MinSkillRanks", "skillId": "knowledge_planes", "value": 24 },
-    { "$type": "HasFeatSelections", "featId": "energy_resistance", "minCount": 1 },
+    { "$type": "HasFeat", "featId": "feat:spell_focus_conjuration" },
+    { "$type": "MinSkillRanks", "skillId": "skill:knowledge_planes", "value": 24 },
+    { "$type": "HasFeatSelections", "featId": "feat:energy_resistance", "minCount": 1 },
     { "$type": "CanCastSpellLevel", "spellLevel": 9, "castingType": "Arcane" }
   ],
   "maxLevel": 10

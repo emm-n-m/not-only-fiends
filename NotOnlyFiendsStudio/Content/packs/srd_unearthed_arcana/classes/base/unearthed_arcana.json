@@ -7,9 +7,9 @@
   "hitDie": 6,
   "skillPointsPerLevel": 6,
   "classSkills": [
-    "concentration", "craft", "decipher_script", "diplomacy", "heal",
-    "knowledge",
-    "profession", "speak_language", "spellcraft"
+    "skill:concentration", "skill:craft", "skill:decipher_script", "skill:diplomacy", "skill:heal",
+    "skill:knowledge",
+    "skill:profession", "skill:speak_language", "skill:spellcraft"
   ],
   "babProgression": "poor",
   "saveProgression": {
@@ -46,8 +46,8 @@
   "perLevelPermabuffs": [],
   "levelPermabuffs": {
     "1": [
-      { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
-      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
+      { "$type": "GrantBonusFeat", "featId": "feat:simple_weapon_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_light" },
       {
         "$type": "GrantAbility",
         "ability": { "id": "cc_lore", "name": "Lore", "description": "Like a bard's bardic knowledge, using cleric level + INT modifier." }
@@ -72,9 +72,9 @@
   "hitDie": 10,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "concentration", "craft", "diplomacy", "handle_animal", "heal",
-    "knowledge_nobility", "knowledge_religion", "profession", "ride",
-    "sense_motive"
+    "skill:concentration", "skill:craft", "skill:diplomacy", "skill:handle_animal", "skill:heal",
+    "skill:knowledge_nobility", "skill:knowledge_religion", "skill:profession", "skill:ride",
+    "skill:sense_motive"
   ],
   "babProgression": "good",
   "saveProgression": {
@@ -108,12 +108,12 @@
   "perLevelPermabuffs": [],
   "levelPermabuffs": {
     "1": [
-      { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
-      { "$type": "GrantBonusFeat", "featId": "weapon_proficiency_martial" },
-      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
-      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_medium" },
-      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_heavy" },
-      { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "feat:simple_weapon_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "feat:weapon_proficiency_martial" },
+      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_light" },
+      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_medium" },
+      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_heavy" },
+      { "$type": "GrantBonusFeat", "featId": "feat:shield_proficiency" },
       {
         "$type": "GrantAbility",
         "ability": { "id": "pot_aura_evil", "name": "Aura of Evil", "description": "Evil aura power equals class level." }
@@ -178,10 +178,10 @@
   "hitDie": 8,
   "skillPointsPerLevel": 6,
   "classSkills": [
-    "climb", "concentration", "craft", "handle_animal", "heal",
-    "hide", "jump", "knowledge_geography", "knowledge_planes",
-    "listen", "move_silently", "profession", "ride", "search",
-    "speak_language", "spot", "survival", "swim", "use_rope"
+    "skill:climb", "skill:concentration", "skill:craft", "skill:handle_animal", "skill:heal",
+    "skill:hide", "skill:jump", "skill:knowledge_geography", "skill:knowledge_planes",
+    "skill:listen", "skill:move_silently", "skill:profession", "skill:ride", "skill:search",
+    "skill:speak_language", "skill:spot", "skill:survival", "skill:swim", "skill:use_rope"
   ],
   "babProgression": "good",
   "saveProgression": {
@@ -215,10 +215,10 @@
   "perLevelPermabuffs": [],
   "levelPermabuffs": {
     "1": [
-      { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
-      { "$type": "GrantBonusFeat", "featId": "weapon_proficiency_martial" },
-      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
-      { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "feat:simple_weapon_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "feat:weapon_proficiency_martial" },
+      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_light" },
+      { "$type": "GrantBonusFeat", "featId": "feat:shield_proficiency" },
       {
         "$type": "GrantAbility",
         "ability": { "id": "pr_favored_enemy", "name": "Favored Enemy", "description": "Select a favored enemy type. +2 bonus on Bluff, Listen, Sense Motive, Spot, Survival checks and weapon damage rolls." }
@@ -229,7 +229,7 @@
       },
       {
         "$type": "GrantBonusFeat",
-        "featId": "track"
+        "featId": "feat:track"
       }
     ],
     "2": [
@@ -241,7 +241,7 @@
     "3": [
       {
         "$type": "GrantBonusFeat",
-        "featId": "endurance"
+        "featId": "feat:endurance"
       }
     ],
     "4": [

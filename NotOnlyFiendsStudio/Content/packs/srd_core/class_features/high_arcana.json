@@ -1,6 +1,6 @@
 [
   {
-    "id": "high_arcana",
+    "id": "class_feature:high_arcana",
     "name": "High Arcana",
     "description": "An archmage gains one high arcana ability per level, chosen from the list below. Each ability trades one prepared spell slot of the indicated level for a permanent special ability.",
     "options": [

@@ -7,15 +7,15 @@
   "hitDie": 4,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "concentration",
-    "craft",
-    "diplomacy",
-    "knowledge_planes",
-    "knowledge_religion",
-    "profession",
-    "sense_motive",
-    "speak_language",
-    "spellcraft"
+    "skill:concentration",
+    "skill:craft",
+    "skill:diplomacy",
+    "skill:knowledge_planes",
+    "skill:knowledge_religion",
+    "skill:profession",
+    "skill:sense_motive",
+    "skill:speak_language",
+    "skill:spellcraft"
   ],
   "babProgression": "poor",
   "saveProgression": {
@@ -99,7 +99,7 @@
   "prerequisites": [
     {
       "$type": "HasFeat",
-      "featId": "spell_focus_conjuration"
+      "featId": "feat:spell_focus_conjuration"
     },
     {
       "$type": "CanCastSpellLevel",

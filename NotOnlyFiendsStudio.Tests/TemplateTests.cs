@@ -34,7 +34,7 @@ public class TemplateTests
         var character = new Character
         {
             Name = "Half-Fiend Outsider",
-            RaceId = "outsider",
+            RaceId = "race:outsider",
             TemplateIds = new List<string> { "template:half_fiend" },
             BaseAbilityScores = new AbilityScoreSet
             {
@@ -127,7 +127,7 @@ public class TemplateTests
         var character = new Character
         {
             Name = "SLA Test",
-            RaceId = "outsider",
+            RaceId = "race:outsider",
             TemplateIds = new List<string> { "template:half_fiend" },
             BaseAbilityScores = new AbilityScoreSet
             {
@@ -165,7 +165,7 @@ public class TemplateTests
         var character = new Character
         {
             Name = "SR Test",
-            RaceId = "outsider",
+            RaceId = "race:outsider",
             TemplateIds = new List<string> { "template:half_fiend" },
             BaseAbilityScores = new AbilityScoreSet
             {
@@ -205,7 +205,7 @@ public class TemplateTests
         var registry = new ContentRegistry();
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "human",
+            Id = "race:human",
             Name = "Human",
             Type = CreatureType.Humanoid,
             Size = Size.Medium,
@@ -227,7 +227,7 @@ public class TemplateTests
         var character = new Character
         {
             Name = "Template Test",
-            RaceId = "human",
+            RaceId = "race:human",
             TemplateIds = new List<string> { "template:test" },
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick> { new() { DriverId = "class:fighter" } }

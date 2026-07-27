@@ -7,8 +7,8 @@
   "hitDie": 8,
   "skillPointsPerLevel": 8,
   "classSkills": [
-    "bluff", "craft", "knowledge_planes", "listen", "search",
-    "sense_motive", "spot", "survival"
+    "skill:bluff", "skill:craft", "skill:knowledge_planes", "skill:listen", "skill:search",
+    "skill:sense_motive", "skill:spot", "skill:survival"
   ],
   "babProgression": "good",
   "saveProgression": {

@@ -23,7 +23,7 @@
   "name": "Elemental (Generic)",
   "hitDie": 8,
   "skillPointsPerLevel": 2,
-  "classSkills": ["listen", "spot"],
+  "classSkills": ["skill:listen", "skill:spot"],
   "babProgression": "average",
   "saveProgression": {
     "fort": "poor",
@@ -40,7 +40,7 @@
   "name": "Elemental (Air)",
   "hitDie": 8,
   "skillPointsPerLevel": 2,
-  "classSkills": ["listen", "spot"],
+  "classSkills": ["skill:listen", "skill:spot"],
   "babProgression": "average",
   "saveProgression": {
     "fort": "poor",
@@ -57,7 +57,7 @@
   "name": "Elemental (Water)",
   "hitDie": 8,
   "skillPointsPerLevel": 2,
-  "classSkills": ["listen", "spot"],
+  "classSkills": ["skill:listen", "skill:spot"],
   "babProgression": "average",
   "saveProgression": {
     "fort": "good",
@@ -109,8 +109,8 @@
   "hitDie": 8,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "climb", "craft", "hide", "listen", "move_silently",
-    "search", "spot", "survival"
+    "skill:climb", "skill:craft", "skill:hide", "skill:listen", "skill:move_silently",
+    "skill:search", "skill:spot", "skill:survival"
   ],
   "babProgression": "good",
   "saveProgression": {
@@ -129,7 +129,7 @@
   "hitDie": 12,
   "skillPointsPerLevel": 4,
   "classSkills": [
-    "hide", "listen", "move_silently", "search", "spot"
+    "skill:hide", "skill:listen", "skill:move_silently", "skill:search", "skill:spot"
   ],
   "babProgression": "poor",
   "saveProgression": {
@@ -164,7 +164,7 @@
   "name": "Giant",
   "hitDie": 8,
   "skillPointsPerLevel": 2,
-  "classSkills": ["climb", "jump", "listen", "spot"],
+  "classSkills": ["skill:climb", "skill:jump", "skill:listen", "skill:spot"],
   "babProgression": "average",
   "saveProgression": {
     "fort": "good",

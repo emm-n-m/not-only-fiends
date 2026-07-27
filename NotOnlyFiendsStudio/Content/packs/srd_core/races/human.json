@@ -1,18 +1,18 @@
 [
-{
-  "id": "human",
-  "name": "Human",
-  "description": "Medium humanoid. 1 bonus feat at 1st level, +4 skill points at 1st level, +1 skill point per level thereafter.",
-  "type": "humanoid",
-  "subtypes": [],
-  "size": "medium",
-  "speeds": {
-    "land": 30
-  },
-  "levelAdjustment": 0,
-  "bonusFeats": 1,
-  "bonusSkillPointsPerHD": 1,
-  "racialPermabuffs": [],
-  "scalingFormulas": []
-}
+  {
+    "id": "race:human",
+    "name": "Human",
+    "description": "Medium humanoid. 1 bonus feat at 1st level, +4 skill points at 1st level, +1 skill point per level thereafter.",
+    "type": "humanoid",
+    "subtypes": [],
+    "size": "medium",
+    "speeds": {
+      "land": 30
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 1,
+    "bonusSkillPointsPerHD": 1,
+    "racialPermabuffs": [],
+    "scalingFormulas": []
+  }
 ]

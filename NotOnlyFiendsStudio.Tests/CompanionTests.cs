@@ -24,7 +24,7 @@ public class CompanionTests
         new GrantCompanionSlot
         {
             LinkType = "animal_companion",
-            ClassFeatureType = "animal_companion_options",
+            ClassFeatureType = "class_feature:animal_companion_options",
             EffectiveLevelFormula = new Formula("ClassLevel(druid)")
         }.Apply(ctx);
 
@@ -32,9 +32,9 @@ public class CompanionTests
         var slot = state.CompanionSlots[0];
         Assert.Equal("animal_companion", slot.LinkType);
         Assert.Equal("class:druid", slot.Granter);
-        Assert.Equal("animal_companion_options", slot.ClassFeatureType);
+        Assert.Equal("class_feature:animal_companion_options", slot.ClassFeatureType);
         Assert.Equal(1, state.PendingCompanionSelections["animal_companion"]);
-        Assert.Equal(1, state.PendingClassFeatureSelections["animal_companion_options"]);
+        Assert.Equal(1, state.PendingClassFeatureSelections["class_feature:animal_companion_options"]);
     }
 
     [Fact]
@@ -48,21 +48,21 @@ public class CompanionTests
         new GrantCompanionSlot
         {
             LinkType = "animal_companion",
-            ClassFeatureType = "animal_companion_options",
+            ClassFeatureType = "class_feature:animal_companion_options",
             EffectiveLevelFormula = new Formula("ClassLevel(druid)")
         }.Apply(ctx);
 
         new GrantCompanionSlot
         {
             LinkType = "animal_companion",
-            ClassFeatureType = "animal_companion_options",
+            ClassFeatureType = "class_feature:animal_companion_options",
             EffectiveLevelFormula = new Formula("ClassLevel(druid) + ClassLevel(ranger) - 3"),
             UpgradeOnly = true
         }.Apply(ctx);
 
         Assert.Single(state.CompanionSlots);
         Assert.Equal(1, state.PendingCompanionSelections["animal_companion"]);
-        Assert.Equal(1, state.PendingClassFeatureSelections["animal_companion_options"]);
+        Assert.Equal(1, state.PendingClassFeatureSelections["class_feature:animal_companion_options"]);
         Assert.Equal("ClassLevel(druid) + ClassLevel(ranger) - 3",
                      state.CompanionSlots[0].EffectiveLevelFormula.Expression);
     }
@@ -76,7 +76,7 @@ public class CompanionTests
         new GrantCompanionSlot
         {
             LinkType = "animal_companion",
-            ClassFeatureType = "animal_companion_options",
+            ClassFeatureType = "class_feature:animal_companion_options",
             EffectiveLevelFormula = new Formula("ClassLevel(ranger) - 3"),
             UpgradeOnly = true
         }.Apply(ctx);
@@ -171,7 +171,7 @@ public class CompanionTests
                         new GrantCompanionSlot
                         {
                             LinkType = "animal_companion",
-                            ClassFeatureType = "animal_companion_options",
+                            ClassFeatureType = "class_feature:animal_companion_options",
                             EffectiveLevelFormula = new Formula("ClassLevel(druid)")
                         }
                     }
@@ -182,7 +182,7 @@ public class CompanionTests
         var engine = new ReplayStudio(registry);
         var character = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 14, CHA = 10 },
             Ticks = Enumerable.Range(0, 5).Select(_ => new Tick { DriverId = "class:druid" }).ToList()
         };
@@ -191,7 +191,7 @@ public class CompanionTests
 
         Assert.Single(state.CompanionSlots);
         Assert.Equal(5, state.CompanionSlots[0].EffectiveLevel);
-        Assert.Equal(1, state.PendingClassFeatureSelections["animal_companion_options"]);
+        Assert.Equal(1, state.PendingClassFeatureSelections["class_feature:animal_companion_options"]);
     }
 
     [Fact]
@@ -201,7 +201,7 @@ public class CompanionTests
         registry.RegisterDriver(BuildDruidDriver());
         registry.RegisterClassFeature(new ClassFeatureDefinition
         {
-            Id = "animal_companion_options",
+            Id = "class_feature:animal_companion_options",
             Name = "Animal Companion Options",
             Options = new List<ClassFeatureOption>
             {
@@ -213,7 +213,7 @@ public class CompanionTests
         var engine = new ReplayStudio(registry);
         var character = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 14, CHA = 10 },
             Ticks =
             {
@@ -224,7 +224,7 @@ public class CompanionTests
                     {
                         ClassFeatureChoices = new Dictionary<string, List<string>>
                         {
-                            ["animal_companion_options"] = new() { "leopard" }
+                            ["class_feature:animal_companion_options"] = new() { "leopard" }
                         }
                     }
                 }
@@ -246,7 +246,7 @@ public class CompanionTests
         registry.RegisterDriver(BuildFighterDriver());
         registry.RegisterFeat(new FeatDefinition
         {
-            Id = "leadership",
+            Id = "feat:leadership",
             Name = "Leadership",
             Type = FeatType.General,
             Prerequisites = new List<Prerequisite> { new MinHD { Value = 6 } }
@@ -255,7 +255,7 @@ public class CompanionTests
         var engine = new ReplayStudio(registry);
         var character = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 14 },
             // 7 fighter levels, take Leadership at L7 via the standard L6 feat slot (HD 6).
             Ticks = Enumerable.Range(0, 7).Select(i =>
@@ -263,14 +263,14 @@ public class CompanionTests
                     ? new Tick
                         {
                             DriverId = "class:fighter",
-                            Choices = new TickChoices { FeatIds = new List<string> { "leadership" } }
+                            Choices = new TickChoices { FeatIds = new List<string> { "feat:leadership" } }
                         }
                     : new Tick { DriverId = "class:fighter" }).ToList()
         };
 
         var state = engine.Evaluate(character);
 
-        Assert.Contains("leadership", state.Feats);
+        Assert.Contains("feat:leadership", state.Feats);
         // 7 HD + Mod(CHA 14)=+2 + 0 modifier = 9
         Assert.Equal(9, state.LeadershipScore);
         Assert.Equal(5, state.MaxCohortLevel); // min(9-2, 7-2) = 5
@@ -284,7 +284,7 @@ public class CompanionTests
         registry.RegisterDriver(BuildFighterDriver());
         registry.RegisterFeat(new FeatDefinition
         {
-            Id = "leadership",
+            Id = "feat:leadership",
             Name = "Leadership",
             Type = FeatType.General,
             Prerequisites = new List<Prerequisite> { new MinHD { Value = 6 } }
@@ -294,14 +294,14 @@ public class CompanionTests
         // Fighter 8 with CHA 18 → score = 8 + 4 = 12 → 8 first-level followers per DMG.
         var character = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 18 },
             Ticks = Enumerable.Range(0, 8).Select(i =>
                 i == 5
                     ? new Tick
                         {
                             DriverId = "class:fighter",
-                            Choices = new TickChoices { FeatIds = new List<string> { "leadership" } }
+                            Choices = new TickChoices { FeatIds = new List<string> { "feat:leadership" } }
                         }
                     : new Tick { DriverId = "class:fighter" }).ToList()
         };
@@ -355,7 +355,7 @@ public class CompanionTests
         // Companion creature race.
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "companion_test_beast",
+            Id = "race:companion_test_beast",
             Name = "Test Beast",
             Type = CreatureType.Animal,
             Size = Size.Medium,
@@ -394,7 +394,7 @@ public class CompanionTests
         var companion = new Character
         {
             Name = "Shadow",
-            RaceId = "companion_test_beast",
+            RaceId = "race:companion_test_beast",
             TemplateIds = new List<string> { "template:animal_companion_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 2, WIS = 10, CHA = 6 },
             Ticks = new List<Tick>
@@ -436,7 +436,7 @@ public class CompanionTests
         var engine = new ReplayStudio(registry);
         var character = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             TemplateIds = new List<string> { "template:animal_companion_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 }
             // No CompanionOrigin → not a companion build → scaling must NOT fire.
@@ -470,7 +470,7 @@ public class CompanionTests
         });
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "companion_wolf",
+            Id = "race:companion_wolf",
             Name = "Wolf",
             Type = CreatureType.Animal,
             Size = Size.Medium,
@@ -491,7 +491,7 @@ public class CompanionTests
         var wolf = new Character
         {
             Name = "Wolf",
-            RaceId = "companion_wolf",
+            RaceId = "race:companion_wolf",
             TemplateIds = new List<string> { "template:animal_companion_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 2, WIS = 10, CHA = 6 },
             Ticks = new List<Tick>
@@ -504,7 +504,7 @@ public class CompanionTests
         var druid = new Character
         {
             Name = "Daenra",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 14, CHA = 10 },
             Ticks = Enumerable.Range(0, 5).Select(_ => new Tick { DriverId = "class:druid" }).ToList(),
             CompanionLinks = new List<CompanionLink>
@@ -536,7 +536,7 @@ public class CompanionTests
 
         var druid = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 14, CHA = 10 },
             Ticks = new List<Tick> { new() { DriverId = "class:druid" } },
             CompanionLinks = new List<CompanionLink>
@@ -560,7 +560,7 @@ public class CompanionTests
         var registry = new ContentRegistry();
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "human",
+            Id = "race:human",
             Name = "Human",
             Type = CreatureType.Humanoid,
             Size = Size.Medium,
@@ -590,7 +590,7 @@ public class CompanionTests
                     new GrantCompanionSlot
                     {
                         LinkType = "animal_companion",
-                        ClassFeatureType = "animal_companion_options",
+                        ClassFeatureType = "class_feature:animal_companion_options",
                         EffectiveLevelFormula = new Formula("ClassLevel(druid)")
                     }
                 }
@@ -625,7 +625,7 @@ public class CompanionTests
         var druid = new Character
         {
             Name = "Daenra",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 14, CHA = 10 },
             Ticks = Enumerable.Range(0, 5).Select(_ => new Tick { DriverId = "class:druid" }).ToList()
         };
@@ -636,7 +636,7 @@ public class CompanionTests
         Assert.Equal("animal_companion", slot.LinkType);
         Assert.Equal("class:druid", slot.Granter);
         Assert.Equal(5, slot.EffectiveLevel);
-        Assert.Equal(1, state.PendingClassFeatureSelections["animal_companion_options"]);
+        Assert.Equal(1, state.PendingClassFeatureSelections["class_feature:animal_companion_options"]);
     }
 
     [Fact]
@@ -648,7 +648,7 @@ public class CompanionTests
         var druid = new Character
         {
             Name = "Daenra",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 14, CHA = 10 },
             Ticks = Enumerable.Range(0, 5).Select(i =>
                 i == 0
@@ -659,7 +659,7 @@ public class CompanionTests
                             {
                                 ClassFeatureChoices = new Dictionary<string, List<string>>
                                 {
-                                    ["animal_companion_options"] = new() { "companion_wolf" }
+                                    ["class_feature:animal_companion_options"] = new() { "race:companion_wolf" }
                                 }
                             }
                         }
@@ -670,7 +670,7 @@ public class CompanionTests
                 {
                     LinkType = "animal_companion",
                     CompanionId = "wolf-companion",
-                    SelectedSpecies = "companion_wolf",
+                    SelectedSpecies = "race:companion_wolf",
                     EffectiveLevelFormula = new Formula("ClassLevel(druid)")
                 }
             }
@@ -682,7 +682,7 @@ public class CompanionTests
         var wolf = new Character
         {
             Name = "Lupa",
-            RaceId = "companion_wolf",
+            RaceId = "race:companion_wolf",
             TemplateIds = new List<string> { "template:animal_companion_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
@@ -696,7 +696,7 @@ public class CompanionTests
         var result = resolver.Build(druid);
 
         // Master side
-        Assert.Equal("companion_wolf", result.MasterState.CompanionSlots[0].SelectedSpecies);
+        Assert.Equal("race:companion_wolf", result.MasterState.CompanionSlots[0].SelectedSpecies);
         Assert.Equal(5, result.MasterState.CompanionSlots[0].EffectiveLevel);
 
         // Companion side
@@ -731,7 +731,7 @@ public class CompanionTests
         var wizard = new Character
         {
             Name = "Vex",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 16, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -742,7 +742,7 @@ public class CompanionTests
                     {
                         ClassFeatureChoices = new Dictionary<string, List<string>>
                         {
-                            ["familiar_options"] = new() { "familiar_cat" }
+                            ["class_feature:familiar_options"] = new() { "race:familiar_cat" }
                         }
                     }
                 }
@@ -753,7 +753,7 @@ public class CompanionTests
                 {
                     LinkType = "familiar",
                     CompanionId = "cat-familiar",
-                    SelectedSpecies = "familiar_cat",
+                    SelectedSpecies = "race:familiar_cat",
                     EffectiveLevelFormula = new Formula("CasterLevel(wizard) + CasterLevel(sorcerer)")
                 }
             }
@@ -763,7 +763,7 @@ public class CompanionTests
         var cat = new Character
         {
             Name = "Whiskers",
-            RaceId = "familiar_cat",
+            RaceId = "race:familiar_cat",
             TemplateIds = new List<string> { "template:familiar_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick> { new() { DriverId = "racial_hd:animal" } }
@@ -776,7 +776,7 @@ public class CompanionTests
         var slot = Assert.Single(result.MasterState.CompanionSlots);
         Assert.Equal("familiar", slot.LinkType);
         Assert.Equal(1, slot.EffectiveLevel);
-        Assert.Equal("familiar_cat", slot.SelectedSpecies);
+        Assert.Equal("race:familiar_cat", slot.SelectedSpecies);
 
         // Companion side
         var catBuild = Assert.Single(result.Companions);
@@ -806,7 +806,7 @@ public class CompanionTests
         var sorcerer = new Character
         {
             Name = "Mira",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 16 },
             Ticks = new List<Tick> { new() { DriverId = "class:sorcerer" } }
         };
@@ -816,7 +816,7 @@ public class CompanionTests
         var slot = Assert.Single(state.CompanionSlots);
         Assert.Equal("familiar", slot.LinkType);
         Assert.Equal(1, slot.EffectiveLevel);
-        Assert.Equal(1, state.PendingClassFeatureSelections["familiar_options"]);
+        Assert.Equal(1, state.PendingClassFeatureSelections["class_feature:familiar_options"]);
     }
 
     // ---------- PR 3: Paladin mount + Ranger AC ----------
@@ -829,7 +829,7 @@ public class CompanionTests
 
         var paladin = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 10, CON = 12, INT = 10, WIS = 12, CHA = 14 },
             Ticks = Enumerable.Range(0, 4).Select(_ => new Tick { DriverId = "class:paladin" }).ToList()
         };
@@ -837,7 +837,7 @@ public class CompanionTests
         var state = engine.Evaluate(paladin);
 
         Assert.Empty(state.CompanionSlots);
-        Assert.False(state.PendingClassFeatureSelections.ContainsKey("paladin_mount_options"));
+        Assert.False(state.PendingClassFeatureSelections.ContainsKey("class_feature:paladin_mount_options"));
     }
 
     [Fact]
@@ -848,7 +848,7 @@ public class CompanionTests
 
         var paladin = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 10, CON = 12, INT = 10, WIS = 12, CHA = 14 },
             Ticks = Enumerable.Range(0, 5).Select(_ => new Tick { DriverId = "class:paladin" }).ToList()
         };
@@ -859,7 +859,7 @@ public class CompanionTests
         Assert.Equal("special_mount", slot.LinkType);
         Assert.Equal("class:paladin", slot.Granter);
         Assert.Equal(5, slot.EffectiveLevel);
-        Assert.Equal(1, state.PendingClassFeatureSelections["paladin_mount_options"]);
+        Assert.Equal(1, state.PendingClassFeatureSelections["class_feature:paladin_mount_options"]);
     }
 
     [Fact]
@@ -871,7 +871,7 @@ public class CompanionTests
         var paladin = new Character
         {
             Name = "Sir Aldric",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 10, CON = 12, INT = 10, WIS = 12, CHA = 14 },
             Ticks = Enumerable.Range(0, 5).Select(i =>
                 i == 4
@@ -882,7 +882,7 @@ public class CompanionTests
                             {
                                 ClassFeatureChoices = new Dictionary<string, List<string>>
                                 {
-                                    ["paladin_mount_options"] = new() { "companion_heavy_warhorse" }
+                                    ["class_feature:paladin_mount_options"] = new() { "race:companion_heavy_warhorse" }
                                 }
                             }
                         }
@@ -893,7 +893,7 @@ public class CompanionTests
                 {
                     LinkType = "special_mount",
                     CompanionId = "warhorse",
-                    SelectedSpecies = "companion_heavy_warhorse",
+                    SelectedSpecies = "race:companion_heavy_warhorse",
                     EffectiveLevelFormula = new Formula("ClassLevel(paladin)")
                 }
             }
@@ -903,7 +903,7 @@ public class CompanionTests
         var warhorse = new Character
         {
             Name = "Daystar",
-            RaceId = "companion_heavy_warhorse",
+            RaceId = "race:companion_heavy_warhorse",
             TemplateIds = new List<string> { "template:special_mount_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 4).Select(_ => new Tick { DriverId = "racial_hd:animal" }).ToList()
@@ -913,7 +913,7 @@ public class CompanionTests
         var result = resolver.Build(paladin);
 
         // Master side
-        Assert.Equal("companion_heavy_warhorse", result.MasterState.CompanionSlots[0].SelectedSpecies);
+        Assert.Equal("race:companion_heavy_warhorse", result.MasterState.CompanionSlots[0].SelectedSpecies);
         Assert.Equal(5, result.MasterState.CompanionSlots[0].EffectiveLevel);
 
         // Companion side
@@ -949,7 +949,7 @@ public class CompanionTests
 
         var paladin = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 10, CON = 12, INT = 10, WIS = 12, CHA = 14 },
             Ticks = Enumerable.Range(0, 11).Select(_ => new Tick { DriverId = "class:paladin" }).ToList(),
             CompanionLinks = new List<CompanionLink>
@@ -964,7 +964,7 @@ public class CompanionTests
         };
         var warhorse = new Character
         {
-            RaceId = "companion_heavy_warhorse",
+            RaceId = "race:companion_heavy_warhorse",
             TemplateIds = new List<string> { "template:special_mount_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 4).Select(_ => new Tick { DriverId = "racial_hd:animal" }).ToList()
@@ -992,7 +992,7 @@ public class CompanionTests
 
         var ranger = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 12, DEX = 14, CON = 10, INT = 10, WIS = 14, CHA = 10 },
             Ticks = Enumerable.Range(0, 6).Select(_ => new Tick { DriverId = "class:ranger" }).ToList()
         };
@@ -1013,7 +1013,7 @@ public class CompanionTests
 
         var ranger = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 12, DEX = 14, CON = 10, INT = 10, WIS = 14, CHA = 10 },
             Ticks = Enumerable.Range(0, 3).Select(_ => new Tick { DriverId = "class:ranger" }).ToList()
         };
@@ -1030,7 +1030,7 @@ public class CompanionTests
 
         var character = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 14, CON = 12, INT = 10, WIS = 14, CHA = 10 },
             Ticks =
                 Enumerable.Range(0, 3).Select(_ => new Tick { DriverId = "class:druid" })
@@ -1053,7 +1053,7 @@ public class CompanionTests
 
         var character = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 14, CON = 12, INT = 10, WIS = 14, CHA = 10 },
             // Reverse order: ranger first, then druid.
             Ticks =
@@ -1081,7 +1081,7 @@ public class CompanionTests
         // adding a low-level ranger dip should not reduce the AC progression.
         var character = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 14, CON = 12, INT = 10, WIS = 14, CHA = 10 },
             Ticks =
                 Enumerable.Range(0, 5).Select(_ => new Tick { DriverId = "class:druid" })
@@ -1107,24 +1107,24 @@ public class CompanionTests
         // Take Improved Familiar at HD 6 standard feat slot.
         var wizard = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 16, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 7).Select(i =>
                 i == 5
                     ? new Tick
                         {
                             DriverId = "class:wizard",
-                            Choices = new TickChoices { FeatIds = new List<string> { "improved_familiar" } }
+                            Choices = new TickChoices { FeatIds = new List<string> { "feat:improved_familiar" } }
                         }
                     : new Tick { DriverId = "class:wizard" }).ToList()
         };
 
         var state = engine.Evaluate(wizard);
 
-        Assert.Contains("improved_familiar", state.Feats);
+        Assert.Contains("feat:improved_familiar", state.Feats);
         // Basic familiar pool from wizard L1 + improved familiar pool from the feat → both pending.
-        Assert.Equal(1, state.PendingClassFeatureSelections["familiar_options"]);
-        Assert.Equal(1, state.PendingClassFeatureSelections["improved_familiar_options"]);
+        Assert.Equal(1, state.PendingClassFeatureSelections["class_feature:familiar_options"]);
+        Assert.Equal(1, state.PendingClassFeatureSelections["class_feature:improved_familiar_options"]);
     }
 
     [Fact]
@@ -1138,7 +1138,7 @@ public class CompanionTests
         {
             Name = "Aldric",
             Alignment = Alignment.NG,
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 16, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 7).Select(i =>
                 i == 5
@@ -1147,10 +1147,10 @@ public class CompanionTests
                             DriverId = "class:wizard",
                             Choices = new TickChoices
                             {
-                                FeatIds = new List<string> { "improved_familiar" },
+                                FeatIds = new List<string> { "feat:improved_familiar" },
                                 ClassFeatureChoices = new Dictionary<string, List<string>>
                                 {
-                                    ["improved_familiar_options"] = new() { "familiar_pseudodragon" }
+                                    ["class_feature:improved_familiar_options"] = new() { "race:familiar_pseudodragon" }
                                 }
                             }
                         }
@@ -1161,7 +1161,7 @@ public class CompanionTests
                 {
                     LinkType = "familiar",
                     CompanionId = "psd",
-                    SelectedSpecies = "familiar_pseudodragon",
+                    SelectedSpecies = "race:familiar_pseudodragon",
                     EffectiveLevelFormula = new Formula("CasterLevel(wizard) + CasterLevel(sorcerer)")
                 }
             }
@@ -1170,7 +1170,7 @@ public class CompanionTests
         var pseudo = new Character
         {
             Name = "Verdant",
-            RaceId = "familiar_pseudodragon",
+            RaceId = "race:familiar_pseudodragon",
             TemplateIds = new List<string> { "template:familiar_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
@@ -1208,7 +1208,7 @@ public class CompanionTests
         // the improved pool. Should warn: no pending selection for improved_familiar_options.
         var wizard = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 16, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 7).Select(i =>
                 i == 0
@@ -1219,7 +1219,7 @@ public class CompanionTests
                             {
                                 ClassFeatureChoices = new Dictionary<string, List<string>>
                                 {
-                                    ["improved_familiar_options"] = new() { "familiar_pseudodragon" }
+                                    ["class_feature:improved_familiar_options"] = new() { "race:familiar_pseudodragon" }
                                 }
                             }
                         }
@@ -1228,7 +1228,7 @@ public class CompanionTests
 
         var state = engine.Evaluate(wizard);
         Assert.Contains(state.Warnings, w =>
-            w.Contains("improved_familiar_options", StringComparison.OrdinalIgnoreCase)
+            w.Contains("class_feature:improved_familiar_options", StringComparison.OrdinalIgnoreCase)
             && w.Contains("no pending", StringComparison.OrdinalIgnoreCase));
     }
 
@@ -1240,27 +1240,27 @@ public class CompanionTests
 
         var fighter = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 12, CON = 12, INT = 10, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 6).Select(i =>
                 i == 5
                     ? new Tick
                         {
                             DriverId = "class:fighter",
-                            Choices = new TickChoices { FeatIds = new List<string> { "wild_cohort" } }
+                            Choices = new TickChoices { FeatIds = new List<string> { "feat:wild_cohort" } }
                         }
                     : new Tick { DriverId = "class:fighter" }).ToList()
         };
 
         var state = engine.Evaluate(fighter);
 
-        Assert.Contains("wild_cohort", state.Feats);
+        Assert.Contains("feat:wild_cohort", state.Feats);
         var slot = Assert.Single(state.CompanionSlots);
         Assert.Equal("wild_cohort", slot.LinkType);
         Assert.Equal("feat:wild_cohort", slot.Granter);
         // max(1, 6 - 3) = 3.
         Assert.Equal(3, slot.EffectiveLevel);
-        Assert.Equal(1, state.PendingClassFeatureSelections["wild_cohort_options"]);
+        Assert.Equal(1, state.PendingClassFeatureSelections["class_feature:wild_cohort_options"]);
     }
 
     [Fact]
@@ -1271,14 +1271,14 @@ public class CompanionTests
 
         var fighter = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 12, CON = 12, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
                 new()
                 {
                     DriverId = "class:fighter",
-                    Choices = new TickChoices { FeatIds = new List<string> { "wild_cohort" } }
+                    Choices = new TickChoices { FeatIds = new List<string> { "feat:wild_cohort" } }
                 }
             }
         };
@@ -1298,7 +1298,7 @@ public class CompanionTests
 
         var fighter = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 12, CON = 12, INT = 10, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 6).Select(i =>
                 i == 5
@@ -1307,10 +1307,10 @@ public class CompanionTests
                             DriverId = "class:fighter",
                             Choices = new TickChoices
                             {
-                                FeatIds = new List<string> { "wild_cohort" },
+                                FeatIds = new List<string> { "feat:wild_cohort" },
                                 ClassFeatureChoices = new Dictionary<string, List<string>>
                                 {
-                                    ["wild_cohort_options"] = new() { "companion_wolf" }
+                                    ["class_feature:wild_cohort_options"] = new() { "race:companion_wolf" }
                                 }
                             }
                         }
@@ -1321,7 +1321,7 @@ public class CompanionTests
                 {
                     LinkType = "wild_cohort",
                     CompanionId = "wolf",
-                    SelectedSpecies = "companion_wolf",
+                    SelectedSpecies = "race:companion_wolf",
                     EffectiveLevelFormula = new Formula("max(1, TotalHD - 3)")
                 }
             }
@@ -1331,7 +1331,7 @@ public class CompanionTests
         var wolf = new Character
         {
             Name = "Lupa",
-            RaceId = "companion_wolf",
+            RaceId = "race:companion_wolf",
             TemplateIds = new List<string> { "template:animal_companion_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
@@ -1344,7 +1344,7 @@ public class CompanionTests
         var result = new CompanionResolver(engine, _ => wolf).Build(fighter);
 
         // Master side
-        Assert.Equal("companion_wolf", result.MasterState.CompanionSlots[0].SelectedSpecies);
+        Assert.Equal("race:companion_wolf", result.MasterState.CompanionSlots[0].SelectedSpecies);
         Assert.Equal(3, result.MasterState.CompanionSlots[0].EffectiveLevel);
 
         // Companion side: AC progression at effective level 3 = tier 3.
@@ -1373,7 +1373,7 @@ public class CompanionTests
         var druid = new Character
         {
             Name = "Wynn",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 14, CHA = 10 },
             Ticks = Enumerable.Range(0, 7).Select(i =>
                 i == 0
@@ -1384,7 +1384,7 @@ public class CompanionTests
                             {
                                 ClassFeatureChoices = new Dictionary<string, List<string>>
                                 {
-                                    ["animal_companion_options"] = new() { "companion_dire_wolf" }
+                                    ["class_feature:animal_companion_options"] = new() { "race:companion_dire_wolf" }
                                 }
                             }
                         }
@@ -1395,7 +1395,7 @@ public class CompanionTests
                 {
                     LinkType = "animal_companion",
                     CompanionId = "fenris",
-                    SelectedSpecies = "companion_dire_wolf",
+                    SelectedSpecies = "race:companion_dire_wolf",
                     EffectiveLevelFormula = new Formula("max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)")
                 }
             }
@@ -1405,7 +1405,7 @@ public class CompanionTests
         var direWolf = new Character
         {
             Name = "Fenris",
-            RaceId = "companion_dire_wolf",
+            RaceId = "race:companion_dire_wolf",
             TemplateIds = new List<string> { "template:animal_companion_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 6).Select(_ => new Tick { DriverId = "racial_hd:animal" }).ToList()
@@ -1413,7 +1413,7 @@ public class CompanionTests
 
         var result = new CompanionResolver(engine, _ => direWolf).Build(druid);
 
-        Assert.Equal("companion_dire_wolf", result.MasterState.CompanionSlots[0].SelectedSpecies);
+        Assert.Equal("race:companion_dire_wolf", result.MasterState.CompanionSlots[0].SelectedSpecies);
         Assert.Equal(7, result.MasterState.CompanionSlots[0].EffectiveLevel);
 
         var fen = Assert.Single(result.Companions);
@@ -1433,7 +1433,7 @@ public class CompanionTests
 
         var druid = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 16, CHA = 10 },
             Ticks = Enumerable.Range(0, 12).Select(_ => new Tick { DriverId = "class:druid" }).ToList(),
             CompanionLinks = new List<CompanionLink>
@@ -1450,7 +1450,7 @@ public class CompanionTests
         // Dire bear has 12 base HD per SRD.
         var direBear = new Character
         {
-            RaceId = "companion_bear_dire",
+            RaceId = "race:companion_bear_dire",
             TemplateIds = new List<string> { "template:animal_companion_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 12).Select(_ => new Tick { DriverId = "racial_hd:animal" }).ToList()
@@ -1481,7 +1481,7 @@ public class CompanionTests
         // Druid 20 — full PHB AC progression should fire (tiers 1, 3, 6, 9, 12, 15, 18).
         var druid = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 18, CHA = 10 },
             Ticks = Enumerable.Range(0, 20).Select(_ => new Tick { DriverId = "class:druid" }).ToList(),
             CompanionLinks = new List<CompanionLink>
@@ -1498,7 +1498,7 @@ public class CompanionTests
         // Dire tiger: 16 base HD.
         var direTiger = new Character
         {
-            RaceId = "companion_tiger_dire",
+            RaceId = "race:companion_tiger_dire",
             TemplateIds = new List<string> { "template:animal_companion_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 16).Select(_ => new Tick { DriverId = "racial_hd:animal" }).ToList()
@@ -1532,7 +1532,7 @@ public class CompanionTests
 
         var druid = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 18, CHA = 10 },
             Ticks = Enumerable.Range(0, 20).Select(_ => new Tick { DriverId = "class:druid" }).ToList(),
             CompanionLinks = new List<CompanionLink>
@@ -1549,7 +1549,7 @@ public class CompanionTests
         // Elephant has 11 HD per SRD; Huge size.
         var elephant = new Character
         {
-            RaceId = "companion_elephant",
+            RaceId = "race:companion_elephant",
             TemplateIds = new List<string> { "template:animal_companion_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 11).Select(_ => new Tick { DriverId = "racial_hd:animal" }).ToList()
@@ -1574,7 +1574,7 @@ public class CompanionTests
         // (ECL exceeds 20, but tests the formula at high levels.)
         var character = new Character
         {
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 16, CHA = 10 },
             Ticks =
                 Enumerable.Range(0, 17).Select(_ => new Tick { DriverId = "class:druid" })
@@ -1596,7 +1596,7 @@ public class CompanionTests
         var wizard = new Character
         {
             Name = "Vex",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 16, WIS = 10, CHA = 10 },
             Ticks = Enumerable.Range(0, 9).Select(_ => new Tick { DriverId = "class:wizard" }).ToList(),
             CompanionLinks = new List<CompanionLink>
@@ -1605,7 +1605,7 @@ public class CompanionTests
                 {
                     LinkType = "familiar",
                     CompanionId = "owl-familiar",
-                    SelectedSpecies = "familiar_owl",
+                    SelectedSpecies = "race:familiar_owl",
                     EffectiveLevelFormula = new Formula("CasterLevel(wizard) + CasterLevel(sorcerer)")
                 }
             }
@@ -1614,7 +1614,7 @@ public class CompanionTests
         var owl = new Character
         {
             Name = "Hoot",
-            RaceId = "familiar_owl",
+            RaceId = "race:familiar_owl",
             TemplateIds = new List<string> { "template:familiar_standard" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick> { new() { DriverId = "racial_hd:animal" } }

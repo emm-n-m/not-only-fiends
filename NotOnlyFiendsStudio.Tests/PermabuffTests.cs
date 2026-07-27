@@ -188,18 +188,18 @@ public class PermabuffTests
     public void AddClassSkills_AddsToHashSet()
     {
         var state = CreateState();
-        new AddClassSkills(new List<string> { "climb", "swim", "jump" }).Apply(state);
-        Assert.Contains("climb", state.ClassSkills);
-        Assert.Contains("swim", state.ClassSkills);
-        Assert.Contains("jump", state.ClassSkills);
+        new AddClassSkills(new List<string> { "skill:climb", "skill:swim", "skill:jump" }).Apply(state);
+        Assert.Contains("skill:climb", state.ClassSkills);
+        Assert.Contains("skill:swim", state.ClassSkills);
+        Assert.Contains("skill:jump", state.ClassSkills);
     }
 
     [Fact]
     public void AddClassSkills_NoDuplicates()
     {
         var state = CreateState();
-        new AddClassSkills(new List<string> { "climb" }).Apply(state);
-        new AddClassSkills(new List<string> { "climb", "swim" }).Apply(state);
+        new AddClassSkills(new List<string> { "skill:climb" }).Apply(state);
+        new AddClassSkills(new List<string> { "skill:climb", "skill:swim" }).Apply(state);
         Assert.Equal(2, state.ClassSkills.Count);
     }
 
@@ -209,19 +209,19 @@ public class PermabuffTests
     public void GrantAbility_AddsToList()
     {
         var state = CreateState();
-        new GrantAbility { Ability = new GrantedAbility { Id = "rage", Name = "Rage" } }.Apply(state);
+        new GrantAbility { Ability = new GrantedAbility { Id = "spell:rage", Name = "Rage" } }.Apply(state);
         Assert.Single(state.Abilities);
-        Assert.Equal("rage", state.Abilities[0].Id);
+        Assert.Equal("spell:rage", state.Abilities[0].Id);
     }
 
     [Fact]
     public void RevokeAbility_RemovesById()
     {
         var state = CreateState();
-        state.Abilities.Add(new GrantedAbility { Id = "rage", Name = "Rage" });
+        state.Abilities.Add(new GrantedAbility { Id = "spell:rage", Name = "Rage" });
         state.Abilities.Add(new GrantedAbility { Id = "fast_movement", Name = "Fast Movement" });
 
-        new RevokeAbility { AbilityId = "rage" }.Apply(state);
+        new RevokeAbility { AbilityId = "spell:rage" }.Apply(state);
         Assert.Single(state.Abilities);
         Assert.Equal("fast_movement", state.Abilities[0].Id);
     }
@@ -269,21 +269,21 @@ public class PermabuffTests
     public void GrantSLA_AddsToList()
     {
         var state = CreateState();
-        new GrantSLA { SLA = new SLA { Id = "darkness", Name = "Darkness", UsesPerDay = "3" } }.Apply(state);
+        new GrantSLA { SLA = new SLA { Id = "spell:darkness", Name = "Darkness", UsesPerDay = "3" } }.Apply(state);
         Assert.Single(state.SLAs);
-        Assert.Equal("darkness", state.SLAs[0].Id);
+        Assert.Equal("spell:darkness", state.SLAs[0].Id);
     }
 
     [Fact]
     public void RevokeSLA_RemovesById()
     {
         var state = CreateState();
-        state.SLAs.Add(new SLA { Id = "darkness", Name = "Darkness" });
-        state.SLAs.Add(new SLA { Id = "desecrate", Name = "Desecrate" });
+        state.SLAs.Add(new SLA { Id = "spell:darkness", Name = "Darkness" });
+        state.SLAs.Add(new SLA { Id = "spell:desecrate", Name = "Desecrate" });
 
-        new RevokeSLA { SLAId = "darkness" }.Apply(state);
+        new RevokeSLA { SLAId = "spell:darkness" }.Apply(state);
         Assert.Single(state.SLAs);
-        Assert.Equal("desecrate", state.SLAs[0].Id);
+        Assert.Equal("spell:desecrate", state.SLAs[0].Id);
     }
 
     // --- GrantBonusFeat ---
@@ -292,8 +292,8 @@ public class PermabuffTests
     public void GrantBonusFeat_AddsFeatToList()
     {
         var state = CreateState();
-        new GrantBonusFeat { FeatId = "improved_initiative" }.Apply(state);
-        Assert.Contains("improved_initiative", state.Feats);
+        new GrantBonusFeat { FeatId = "feat:improved_initiative" }.Apply(state);
+        Assert.Contains("feat:improved_initiative", state.Feats);
     }
 
     // --- ModifyAttribute ---
@@ -413,9 +413,9 @@ public class PermabuffTests
     {
         var state = CreateState();
         new GrantImmunity { Immunity = "electricity" }.Apply(state);
-        new GrantImmunity { Immunity = "poison" }.Apply(state);
+        new GrantImmunity { Immunity = "spell:poison" }.Apply(state);
         Assert.Contains("electricity", state.Immunities);
-        Assert.Contains("poison", state.Immunities);
+        Assert.Contains("spell:poison", state.Immunities);
     }
 
     [Fact]
@@ -454,17 +454,17 @@ public class PermabuffTests
     public void GrantSkillBonus_AddsBonus()
     {
         var state = CreateState();
-        new GrantSkillBonus { SkillId = "listen", Value = 8 }.Apply(state);
-        Assert.Equal(8, state.SkillBonuses["listen"]);
+        new GrantSkillBonus { SkillId = "skill:listen", Value = 8 }.Apply(state);
+        Assert.Equal(8, state.SkillBonuses["skill:listen"]);
     }
 
     [Fact]
     public void GrantSkillBonus_StacksAdditively()
     {
         var state = CreateState();
-        new GrantSkillBonus { SkillId = "spot", Value = 4 }.Apply(state);
-        new GrantSkillBonus { SkillId = "spot", Value = 8 }.Apply(state);
-        Assert.Equal(12, state.SkillBonuses["spot"]);
+        new GrantSkillBonus { SkillId = "skill:spot", Value = 4 }.Apply(state);
+        new GrantSkillBonus { SkillId = "skill:spot", Value = 8 }.Apply(state);
+        Assert.Equal(12, state.SkillBonuses["skill:spot"]);
     }
 
     // --- BAB/Save multiclass stacking ---

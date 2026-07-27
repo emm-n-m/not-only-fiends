@@ -7,7 +7,7 @@
   "hitDie": 10,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "climb", "craft", "handle_animal", "intimidate", "jump", "ride", "swim"
+    "skill:climb", "skill:craft", "skill:handle_animal", "skill:intimidate", "skill:jump", "skill:ride", "skill:swim"
   ],
   "babProgression": "good",
   "saveProgression": {
@@ -18,13 +18,13 @@
   "perLevelPermabuffs": [],
   "levelPermabuffs": {
     "1": [
-      { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
-      { "$type": "GrantBonusFeat", "featId": "weapon_proficiency_martial" },
-      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
-      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_medium" },
-      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_heavy" },
-      { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
-      { "$type": "GrantBonusFeat", "featId": "tower_shield_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "feat:simple_weapon_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "feat:weapon_proficiency_martial" },
+      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_light" },
+      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_medium" },
+      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_heavy" },
+      { "$type": "GrantBonusFeat", "featId": "feat:shield_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "feat:tower_shield_proficiency" },
       { "$type": "GrantFeatSlot", "restriction": "fighter_bonus" }
     ],
     "2": [

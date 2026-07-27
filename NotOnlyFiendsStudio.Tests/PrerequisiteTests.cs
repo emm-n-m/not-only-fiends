@@ -8,7 +8,7 @@ public class PrerequisiteTests
     {
         return new CharacterState
         {
-            RaceId = "human",
+            RaceId = "race:human",
             Type = CreatureType.Humanoid,
             Size = Size.Medium,
             Alignment = Alignment.NG,
@@ -19,8 +19,8 @@ public class PrerequisiteTests
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
             },
             ClassLevels = new Dictionary<string, int> { { "class:fighter", 5 } },
-            Feats = new List<string> { "power_attack", "cleave" },
-            SkillHalfRanks = new Dictionary<string, int> { { "intimidate", 10 } }, // 5 ranks in half-rank system
+            Feats = new List<string> { "feat:power_attack", "feat:cleave" },
+            SkillHalfRanks = new Dictionary<string, int> { { "skill:intimidate", 10 } }, // 5 ranks in half-rank system
         };
     }
 
@@ -59,15 +59,15 @@ public class PrerequisiteTests
     {
         var state = CreateState();
         // state has 10 half-ranks = 5 ranks in intimidate
-        Assert.True(new MinSkillRanks { SkillId = "intimidate", Value = 5 }.IsMet(state));
-        Assert.True(new MinSkillRanks { SkillId = "intimidate", Value = 1 }.IsMet(state));
+        Assert.True(new MinSkillRanks { SkillId = "skill:intimidate", Value = 5 }.IsMet(state));
+        Assert.True(new MinSkillRanks { SkillId = "skill:intimidate", Value = 1 }.IsMet(state));
     }
 
     [Fact]
     public void MinSkillRanks_NotMet()
     {
         var state = CreateState();
-        Assert.False(new MinSkillRanks { SkillId = "intimidate", Value = 6 }.IsMet(state));
+        Assert.False(new MinSkillRanks { SkillId = "skill:intimidate", Value = 6 }.IsMet(state));
     }
 
     [Fact]
@@ -75,15 +75,15 @@ public class PrerequisiteTests
     {
         // 9 half-ranks = 4.5 ranks, should not meet "5 ranks required"
         var state = CreateState();
-        state.SkillHalfRanks["intimidate"] = 9;
-        Assert.False(new MinSkillRanks { SkillId = "intimidate", Value = 5 }.IsMet(state));
+        state.SkillHalfRanks["skill:intimidate"] = 9;
+        Assert.False(new MinSkillRanks { SkillId = "skill:intimidate", Value = 5 }.IsMet(state));
     }
 
     [Fact]
     public void MinSkillRanks_MissingSkill()
     {
         var state = CreateState();
-        Assert.False(new MinSkillRanks { SkillId = "tumble", Value = 1 }.IsMet(state));
+        Assert.False(new MinSkillRanks { SkillId = "skill:tumble", Value = 1 }.IsMet(state));
     }
 
     [Fact]
@@ -105,32 +105,32 @@ public class PrerequisiteTests
     public void HasFeat_Met()
     {
         var state = CreateState();
-        Assert.True(new HasFeat { FeatId = "power_attack" }.IsMet(state));
-        Assert.True(new HasFeat { FeatId = "cleave" }.IsMet(state));
+        Assert.True(new HasFeat { FeatId = "feat:power_attack" }.IsMet(state));
+        Assert.True(new HasFeat { FeatId = "feat:cleave" }.IsMet(state));
     }
 
     [Fact]
     public void HasFeat_NotMet()
     {
         var state = CreateState();
-        Assert.False(new HasFeat { FeatId = "great_cleave" }.IsMet(state));
+        Assert.False(new HasFeat { FeatId = "feat:great_cleave" }.IsMet(state));
     }
 
     [Fact]
     public void HasFeat_MatchesSelectionVariant()
     {
-        // Greater Spell Focus requires "spell_focus" — selection stores as "spell_focus_evocation".
+        // Greater Spell Focus requires "feat:spell_focus" — selection stores as "spell_focus_evocation".
         var state = CreateState();
-        state.Feats.Add("spell_focus_evocation");
-        Assert.True(new HasFeat { FeatId = "spell_focus" }.IsMet(state));
+        state.Feats.Add("feat:spell_focus_evocation");
+        Assert.True(new HasFeat { FeatId = "feat:spell_focus" }.IsMet(state));
     }
 
     [Fact]
     public void HasFeat_DoesNotFalsePositiveOnUnrelatedPrefix()
     {
-        // "cleave" must not match "great_cleave" — prefix check uses "cleave_" separator.
-        var state = new CharacterState { Feats = new List<string> { "great_cleave" } };
-        Assert.False(new HasFeat { FeatId = "cleave" }.IsMet(state));
+        // "feat:cleave" must not match "feat:great_cleave" — prefix check uses "cleave_" separator.
+        var state = new CharacterState { Feats = new List<string> { "feat:great_cleave" } };
+        Assert.False(new HasFeat { FeatId = "feat:cleave" }.IsMet(state));
     }
 
     [Fact]
@@ -166,14 +166,14 @@ public class PrerequisiteTests
     public void HasRace_Met()
     {
         var state = CreateState();
-        Assert.True(new HasRace { RaceId = "human" }.IsMet(state));
+        Assert.True(new HasRace { RaceId = "race:human" }.IsMet(state));
     }
 
     [Fact]
     public void HasRace_NotMet()
     {
         var state = CreateState();
-        Assert.False(new HasRace { RaceId = "elf" }.IsMet(state));
+        Assert.False(new HasRace { RaceId = "race:elf" }.IsMet(state));
     }
 
     [Fact]
@@ -304,19 +304,19 @@ public class PrerequisiteTests
     public void HasAnyRace_Met()
     {
         var state = CreateState();
-        state.RaceId = "elf";
-        Assert.True(new HasAnyRace { RaceIds = new List<string> { "elf", "half_elf" } }.IsMet(state));
+        state.RaceId = "race:elf";
+        Assert.True(new HasAnyRace { RaceIds = new List<string> { "race:elf", "race:half_elf" } }.IsMet(state));
 
-        state.RaceId = "half_elf";
-        Assert.True(new HasAnyRace { RaceIds = new List<string> { "elf", "half_elf" } }.IsMet(state));
+        state.RaceId = "race:half_elf";
+        Assert.True(new HasAnyRace { RaceIds = new List<string> { "race:elf", "race:half_elf" } }.IsMet(state));
     }
 
     [Fact]
     public void HasAnyRace_NotMet()
     {
         var state = CreateState();
-        state.RaceId = "dwarf";
-        Assert.False(new HasAnyRace { RaceIds = new List<string> { "elf", "half_elf" } }.IsMet(state));
+        state.RaceId = "race:dwarf";
+        Assert.False(new HasAnyRace { RaceIds = new List<string> { "race:elf", "race:half_elf" } }.IsMet(state));
     }
 
     [Fact]

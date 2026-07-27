@@ -7,18 +7,18 @@
   "hitDie": 12,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "concentration",
-    "craft",
-    "diplomacy",
-    "escape_artist",
-    "gather_information",
-    "knowledge",
-    "listen",
-    "profession",
-    "search",
-    "speak_language",
-    "spellcraft",
-    "spot"
+    "skill:concentration",
+    "skill:craft",
+    "skill:diplomacy",
+    "skill:escape_artist",
+    "skill:gather_information",
+    "skill:knowledge",
+    "skill:listen",
+    "skill:profession",
+    "skill:search",
+    "skill:speak_language",
+    "skill:spellcraft",
+    "skill:spot"
   ],
   "babProgression": "average",
   "saveProgression": {
@@ -116,7 +116,7 @@
   "prerequisites": [
     {
       "$type": "MinSkillRanks",
-      "skillId": "knowledge_arcana",
+      "skillId": "skill:knowledge_arcana",
       "value": 8
     },
     {

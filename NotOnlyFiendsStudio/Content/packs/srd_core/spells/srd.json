@@ -1,6 +1,6 @@
 [
   {
-    "id": "acid_arrow",
+    "id": "spell:acid_arrow",
     "name": "Acid Arrow",
     "school": "conjuration",
     "classLevels": {
@@ -27,7 +27,7 @@
     "effect": "One arrow of acid"
   },
   {
-    "id": "acid_fog",
+    "id": "spell:acid_fog",
     "name": "Acid Fog",
     "school": "conjuration",
     "classLevels": {
@@ -53,7 +53,7 @@
     "area": "Fog spreads in 20-ft. radius, 20 ft. high"
   },
   {
-    "id": "acid_splash",
+    "id": "spell:acid_splash",
     "name": "Acid Splash",
     "school": "conjuration",
     "classLevels": {
@@ -78,7 +78,7 @@
     "effect": "One missile of acid"
   },
   {
-    "id": "aid",
+    "id": "spell:aid",
     "name": "Aid",
     "school": "enchantment",
     "classLevels": {
@@ -103,7 +103,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "air_walk",
+    "id": "spell:air_walk",
     "name": "Air Walk",
     "school": "transmutation",
     "classLevels": {
@@ -127,7 +127,7 @@
     "target": "Creature (Gargantuan or smaller) touched"
   },
   {
-    "id": "alarm",
+    "id": "spell:alarm",
     "name": "Alarm",
     "school": "abjuration",
     "classLevels": {
@@ -151,7 +151,7 @@
     "area": "20-ft.-radius emanation centered on a point in space"
   },
   {
-    "id": "align_weapon",
+    "id": "spell:align_weapon",
     "name": "Align Weapon",
     "school": "transmutation",
     "classLevels": {
@@ -171,7 +171,7 @@
     "target": "Weapon touched or fifty projectiles (all of which must be in contact with each other at the time of casting)"
   },
   {
-    "id": "alter_self",
+    "id": "spell:alter_self",
     "name": "Alter Self",
     "school": "transmutation",
     "classLevels": {
@@ -193,7 +193,7 @@
     "target": "you"
   },
   {
-    "id": "analyze_dweomer",
+    "id": "spell:analyze_dweomer",
     "name": "Analyze Dweomer",
     "school": "divination",
     "classLevels": {
@@ -216,7 +216,7 @@
     "target": "(CASTERLEVEL) objects or creatures"
   },
   {
-    "id": "animal_growth",
+    "id": "spell:animal_growth",
     "name": "Animal Growth",
     "school": "transmutation",
     "classLevels": {
@@ -239,7 +239,7 @@
     "target": "Up to (CASTERLEVEL/2) animals [Gargantuan or smaller], no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "animal_messenger",
+    "id": "spell:animal_messenger",
     "name": "Animal Messenger",
     "school": "enchantment",
     "classLevels": {
@@ -266,7 +266,7 @@
     "target": "One Tiny animal"
   },
   {
-    "id": "animal_shapes",
+    "id": "spell:animal_shapes",
     "name": "Animal Shapes",
     "school": "transmutation",
     "classLevels": {
@@ -286,7 +286,7 @@
     "target": "Up to (CASTERLEVEL) willing creatures, all within 30 ft. of each other"
   },
   {
-    "id": "animal_trance",
+    "id": "spell:animal_trance",
     "name": "Animal Trance",
     "school": "enchantment",
     "classLevels": {
@@ -313,7 +313,7 @@
     "target": "Animals or magical beasts with Intelligence 1 or 2"
   },
   {
-    "id": "animate_dead",
+    "id": "spell:animate_dead",
     "name": "Animate Dead",
     "school": "necromancy",
     "classLevels": {
@@ -340,7 +340,7 @@
     "target": "One or more corpses touched"
   },
   {
-    "id": "animate_objects",
+    "id": "spell:animate_objects",
     "name": "Animate Objects",
     "school": "transmutation",
     "classLevels": {
@@ -361,7 +361,7 @@
     "target": "(CASTERLEVEL) Small objects; see text"
   },
   {
-    "id": "animate_plants",
+    "id": "spell:animate_plants",
     "name": "Animate Plants",
     "school": "transmutation",
     "classLevels": {
@@ -381,7 +381,7 @@
     "target": "(CASTERLEVEL/3) Large plants or all plants within range; see text"
   },
   {
-    "id": "animate_rope",
+    "id": "spell:animate_rope",
     "name": "Animate Rope",
     "school": "transmutation",
     "classLevels": {
@@ -403,7 +403,7 @@
     "target": "One ropelike object, length up to ((CASTERLEVEL*5)+50) ft.; see text"
   },
   {
-    "id": "antilife_shell",
+    "id": "spell:antilife_shell",
     "name": "Antilife Shell",
     "school": "abjuration",
     "classLevels": {
@@ -424,7 +424,7 @@
     "area": "10-ft.-radius emanation, centered on you"
   },
   {
-    "id": "antimagic_field",
+    "id": "spell:antimagic_field",
     "name": "Antimagic Field",
     "school": "abjuration",
     "classLevels": {
@@ -447,7 +447,7 @@
     "area": "10-ft.-radius emanation, centered on you"
   },
   {
-    "id": "antipathy",
+    "id": "spell:antipathy",
     "name": "Antipathy",
     "school": "enchantment",
     "classLevels": {
@@ -474,7 +474,7 @@
     "area": "One location of up to a (CASTERLEVEL) 10 ft. cube or one object"
   },
   {
-    "id": "antiplant_shell",
+    "id": "spell:antiplant_shell",
     "name": "Antiplant Shell",
     "school": "abjuration",
     "classLevels": {
@@ -494,7 +494,7 @@
     "area": "10-ft.-radius emanation, centered on you"
   },
   {
-    "id": "arcane_eye",
+    "id": "spell:arcane_eye",
     "name": "Arcane Eye",
     "school": "divination",
     "classLevels": {
@@ -517,7 +517,7 @@
     "target": "Magical sensor"
   },
   {
-    "id": "arcane_lock",
+    "id": "spell:arcane_lock",
     "name": "Arcane Lock",
     "school": "abjuration",
     "classLevels": {
@@ -539,7 +539,7 @@
     "target": "The door, chest, or portal touched, up to (CASTERLEVEL*30) sq. ft in size"
   },
   {
-    "id": "arcane_mark",
+    "id": "spell:arcane_mark",
     "name": "Arcane Mark",
     "school": "universal",
     "classLevels": {
@@ -560,7 +560,7 @@
     "target": "One personal rune or mark, all of which must fit within 1 sq. ft."
   },
   {
-    "id": "arcane_sight",
+    "id": "spell:arcane_sight",
     "name": "Arcane Sight",
     "school": "divination",
     "classLevels": {
@@ -581,7 +581,7 @@
     "target": "you"
   },
   {
-    "id": "arcane_sight_greater",
+    "id": "spell:arcane_sight_greater",
     "name": "Arcane Sight, Greater",
     "school": "divination",
     "classLevels": {
@@ -602,7 +602,7 @@
     "target": "you"
   },
   {
-    "id": "armor_of_darkness",
+    "id": "spell:armor_of_darkness",
     "name": "Armor of Darkness",
     "school": "abjuration",
     "classLevels": {
@@ -625,7 +625,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "astral_projection",
+    "id": "spell:astral_projection",
     "name": "Astral Projection",
     "school": "necromancy",
     "classLevels": {
@@ -648,7 +648,7 @@
     "target": "You plus (CASTERLEVEL/2) additional willing creatures touched"
   },
   {
-    "id": "atonement",
+    "id": "spell:atonement",
     "name": "Atonement",
     "school": "abjuration",
     "classLevels": {
@@ -672,7 +672,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "augury",
+    "id": "spell:augury",
     "name": "Augury",
     "school": "divination",
     "classLevels": {
@@ -694,7 +694,7 @@
     "target": "you"
   },
   {
-    "id": "awaken",
+    "id": "spell:awaken",
     "name": "Awaken",
     "school": "transmutation",
     "classLevels": {
@@ -715,7 +715,7 @@
     "target": "Animal or tree touched"
   },
   {
-    "id": "baleful_polymorph",
+    "id": "spell:baleful_polymorph",
     "name": "Baleful Polymorph",
     "school": "transmutation",
     "classLevels": {
@@ -738,7 +738,7 @@
     "target": "One creature"
   },
   {
-    "id": "bane",
+    "id": "spell:bane",
     "name": "Bane",
     "school": "enchantment",
     "classLevels": {
@@ -763,7 +763,7 @@
     "target": "All enemies within 50 ft."
   },
   {
-    "id": "banishment",
+    "id": "spell:banishment",
     "name": "Banishment",
     "school": "abjuration",
     "classLevels": {
@@ -786,7 +786,7 @@
     "target": "One or more extraplanar creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "barkskin",
+    "id": "spell:barkskin",
     "name": "Barkskin",
     "school": "transmutation",
     "classLevels": {
@@ -807,7 +807,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "bears_endurance",
+    "id": "spell:bears_endurance",
     "name": "Bear's Endurance",
     "school": "transmutation",
     "classLevels": {
@@ -831,7 +831,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "bears_endurance_mass",
+    "id": "spell:bears_endurance_mass",
     "name": "Bear's Endurance, Mass",
     "school": "transmutation",
     "classLevels": {
@@ -854,7 +854,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "bestow_curse",
+    "id": "spell:bestow_curse",
     "name": "Bestow Curse",
     "school": "necromancy",
     "classLevels": {
@@ -877,7 +877,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "binding",
+    "id": "spell:binding",
     "name": "Binding",
     "school": "enchantment",
     "classLevels": {
@@ -903,7 +903,7 @@
     "target": "One living creature"
   },
   {
-    "id": "black_tentacles",
+    "id": "spell:black_tentacles",
     "name": "Black Tentacles",
     "school": "conjuration",
     "classLevels": {
@@ -926,7 +926,7 @@
     "area": "20-ft.-radius spread"
   },
   {
-    "id": "blacklight",
+    "id": "spell:blacklight",
     "name": "Blacklight",
     "school": "evocation",
     "classLevels": {
@@ -951,7 +951,7 @@
     "area": "A 20-ft-radious emanation centered on a creature, object, or a point in space"
   },
   {
-    "id": "blade_barrier",
+    "id": "spell:blade_barrier",
     "name": "Blade Barrier",
     "school": "evocation",
     "classLevels": {
@@ -974,7 +974,7 @@
     "area": "Wall of whirling blades up to (CASTERLEVEL*20) ft. long, or a ringed wall of whirling blades with a radius of up to ((CASTERLEVEL*5)/2) ft; either form 20 ft. high"
   },
   {
-    "id": "blasphemy",
+    "id": "spell:blasphemy",
     "name": "Blasphemy",
     "school": "evocation",
     "classLevels": {
@@ -998,7 +998,7 @@
     "area": "Nonevil creatures in a 40-ft.-radius spread centered on you"
   },
   {
-    "id": "bless",
+    "id": "spell:bless",
     "name": "Bless",
     "school": "enchantment",
     "classLevels": {
@@ -1024,7 +1024,7 @@
     "area": "The caster and all allies within a 50-ft. burst, centered on the caster"
   },
   {
-    "id": "bless_water",
+    "id": "spell:bless_water",
     "name": "Bless Water",
     "school": "transmutation",
     "classLevels": {
@@ -1049,7 +1049,7 @@
     "target": "Flask of water touched"
   },
   {
-    "id": "bless_weapon",
+    "id": "spell:bless_weapon",
     "name": "Bless Weapon",
     "school": "transmutation",
     "classLevels": {
@@ -1069,7 +1069,7 @@
     "target": "Weapon touched"
   },
   {
-    "id": "blight",
+    "id": "spell:blight",
     "name": "Blight",
     "school": "necromancy",
     "classLevels": {
@@ -1091,7 +1091,7 @@
     "target": "one plant/plant-creature"
   },
   {
-    "id": "blindness_deafness",
+    "id": "spell:blindness_deafness",
     "name": "Blindness/Deafness",
     "school": "necromancy",
     "classLevels": {
@@ -1114,7 +1114,7 @@
     "target": "One living creature"
   },
   {
-    "id": "blink",
+    "id": "spell:blink",
     "name": "Blink",
     "school": "transmutation",
     "classLevels": {
@@ -1136,7 +1136,7 @@
     "target": "you"
   },
   {
-    "id": "blur",
+    "id": "spell:blur",
     "name": "Blur",
     "school": "illusion",
     "classLevels": {
@@ -1159,7 +1159,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "bolt_of_glory",
+    "id": "spell:bolt_of_glory",
     "name": "Bolt of Glory",
     "school": "evocation",
     "classLevels": {
@@ -1182,7 +1182,7 @@
     "effect": "Ray"
   },
   {
-    "id": "bolts_of_bedevilment",
+    "id": "spell:bolts_of_bedevilment",
     "name": "Bolts of Bedevilment",
     "school": "enchantment",
     "subschool": "compulsion",
@@ -1206,7 +1206,7 @@
     "effect": "Ray"
   },
   {
-    "id": "break_enchantment",
+    "id": "spell:break_enchantment",
     "name": "Break Enchantment",
     "school": "abjuration",
     "classLevels": {
@@ -1231,7 +1231,7 @@
     "target": "Up to (CASTERLEVEL) creatures, all within 30 ft. of each other"
   },
   {
-    "id": "bulls_strength",
+    "id": "spell:bulls_strength",
     "name": "Bull's Strength",
     "school": "transmutation",
     "classLevels": {
@@ -1257,7 +1257,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "bulls_strength_mass",
+    "id": "spell:bulls_strength_mass",
     "name": "Bull's Strength, Mass",
     "school": "transmutation",
     "classLevels": {
@@ -1281,7 +1281,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "burning_hands",
+    "id": "spell:burning_hands",
     "name": "Burning Hands",
     "school": "evocation",
     "classLevels": {
@@ -1306,7 +1306,7 @@
     "area": "Cone-shaped burst"
   },
   {
-    "id": "call_lightning",
+    "id": "spell:call_lightning",
     "name": "Call Lightning",
     "school": "evocation",
     "classLevels": {
@@ -1329,7 +1329,7 @@
     "area": "One or more 30-ft.-long vertical lines of lightning"
   },
   {
-    "id": "call_lightning_storm",
+    "id": "spell:call_lightning_storm",
     "name": "Call Lightning Storm",
     "school": "evocation",
     "classLevels": {
@@ -1352,7 +1352,7 @@
     "area": "One or more 30-ft.-long vertical lines of lightning"
   },
   {
-    "id": "calm_animals",
+    "id": "spell:calm_animals",
     "name": "Calm Animals",
     "school": "enchantment",
     "classLevels": {
@@ -1377,7 +1377,7 @@
     "target": "Animals within 30 ft. of each other"
   },
   {
-    "id": "calm_emotions",
+    "id": "spell:calm_emotions",
     "name": "Calm Emotions",
     "school": "enchantment",
     "classLevels": {
@@ -1402,7 +1402,7 @@
     "area": "Creatures in a 20-ft.-radius spread"
   },
   {
-    "id": "cats_grace",
+    "id": "spell:cats_grace",
     "name": "Cat's Grace",
     "school": "transmutation",
     "classLevels": {
@@ -1428,7 +1428,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "cats_grace_mass",
+    "id": "spell:cats_grace_mass",
     "name": "Cat's Grace, Mass",
     "school": "transmutation",
     "classLevels": {
@@ -1452,7 +1452,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "cause_fear",
+    "id": "spell:cause_fear",
     "name": "Cause Fear",
     "school": "necromancy",
     "classLevels": {
@@ -1480,7 +1480,7 @@
     "target": "One living creature with 5 or fewer HD"
   },
   {
-    "id": "chain_lightning",
+    "id": "spell:chain_lightning",
     "name": "Chain Lightning",
     "school": "evocation",
     "classLevels": {
@@ -1505,7 +1505,7 @@
     "target": "One primary target, plus (CASTERLEVEL) secondary targets (each of which must be within 30 ft. of the primary target)"
   },
   {
-    "id": "changestaff",
+    "id": "spell:changestaff",
     "name": "Changestaff",
     "school": "transmutation",
     "classLevels": {
@@ -1526,7 +1526,7 @@
     "target": "Your touched staff"
   },
   {
-    "id": "chaos_hammer",
+    "id": "spell:chaos_hammer",
     "name": "Chaos Hammer",
     "school": "evocation",
     "classLevels": {
@@ -1549,7 +1549,7 @@
     "area": "20-ft.-radius burst"
   },
   {
-    "id": "charm_animal",
+    "id": "spell:charm_animal",
     "name": "Charm Animal",
     "school": "enchantment",
     "classLevels": {
@@ -1574,7 +1574,7 @@
     "target": "One animal"
   },
   {
-    "id": "charm_monster",
+    "id": "spell:charm_monster",
     "name": "Charm Monster",
     "school": "enchantment",
     "classLevels": {
@@ -1600,7 +1600,7 @@
     "target": "One living creature"
   },
   {
-    "id": "charm_monster_mass",
+    "id": "spell:charm_monster_mass",
     "name": "Charm Monster, Mass",
     "school": "enchantment",
     "classLevels": {
@@ -1626,7 +1626,7 @@
     "target": "One or more creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "charm_person",
+    "id": "spell:charm_person",
     "name": "Charm Person",
     "school": "enchantment",
     "classLevels": {
@@ -1652,7 +1652,7 @@
     "target": "One humanoid creature"
   },
   {
-    "id": "chill_metal",
+    "id": "spell:chill_metal",
     "name": "Chill Metal",
     "school": "transmutation",
     "classLevels": {
@@ -1675,7 +1675,7 @@
     "target": "Metal equipment of (CASTERLEVEL/2) creatures, no two of which can be more than 30 ft. apart; or (CASTERLEVEL*25) lbs of metal"
   },
   {
-    "id": "chill_touch",
+    "id": "spell:chill_touch",
     "name": "Chill Touch",
     "school": "necromancy",
     "classLevels": {
@@ -1696,7 +1696,7 @@
     "target": "Up to (CASTERLEVEL) Creatures touched"
   },
   {
-    "id": "circle_of_death",
+    "id": "spell:circle_of_death",
     "name": "Circle of Death",
     "school": "necromancy",
     "classLevels": {
@@ -1721,7 +1721,7 @@
     "area": "Several living creatures within a 40-ft.-radius burst"
   },
   {
-    "id": "clairaudience_clairvoyance",
+    "id": "spell:clairaudience_clairvoyance",
     "name": "Clairaudience/Clairvoyance",
     "school": "divination",
     "classLevels": {
@@ -1745,7 +1745,7 @@
     "target": "Magical sensor"
   },
   {
-    "id": "clenched_fist",
+    "id": "spell:clenched_fist",
     "name": "Clenched Fist",
     "school": "evocation",
     "classLevels": {
@@ -1770,7 +1770,7 @@
     "target": "10-ft. hand"
   },
   {
-    "id": "cloak_of_chaos",
+    "id": "spell:cloak_of_chaos",
     "name": "Cloak of Chaos",
     "school": "abjuration",
     "classLevels": {
@@ -1794,7 +1794,7 @@
     "area": "(CASTERLEVEL) creatures in a 20-ft.-radius burst centered on you"
   },
   {
-    "id": "clone",
+    "id": "spell:clone",
     "name": "Clone",
     "school": "necromancy",
     "classLevels": {
@@ -1817,7 +1817,7 @@
     "target": "One clone"
   },
   {
-    "id": "cloudkill",
+    "id": "spell:cloudkill",
     "name": "Cloudkill",
     "school": "conjuration",
     "classLevels": {
@@ -1839,7 +1839,7 @@
     "area": "Cloud spreads in 20-ft. radius, 20 ft. high"
   },
   {
-    "id": "color_spray",
+    "id": "spell:color_spray",
     "name": "Color Spray",
     "school": "illusion",
     "classLevels": {
@@ -1865,7 +1865,7 @@
     "area": "Cone-shaped burst"
   },
   {
-    "id": "command",
+    "id": "spell:command",
     "name": "Command",
     "school": "enchantment",
     "classLevels": {
@@ -1891,7 +1891,7 @@
     "target": "One living creature"
   },
   {
-    "id": "command_greater",
+    "id": "spell:command_greater",
     "name": "Command, Greater",
     "school": "enchantment",
     "classLevels": {
@@ -1916,7 +1916,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "command_plants",
+    "id": "spell:command_plants",
     "name": "Command Plants",
     "school": "transmutation",
     "classLevels": {
@@ -1937,7 +1937,7 @@
     "target": "Up to (CASTERLEVEL*2) HD of plant creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "command_undead",
+    "id": "spell:command_undead",
     "name": "Command Undead",
     "school": "necromancy",
     "classLevels": {
@@ -1959,7 +1959,7 @@
     "target": "One undead creature"
   },
   {
-    "id": "commune",
+    "id": "spell:commune",
     "name": "Commune",
     "school": "divination",
     "classLevels": {
@@ -1982,7 +1982,7 @@
     "target": "you"
   },
   {
-    "id": "commune_with_nature",
+    "id": "spell:commune_with_nature",
     "name": "Commune with Nature",
     "school": "divination",
     "classLevels": {
@@ -2003,7 +2003,7 @@
     "target": "you"
   },
   {
-    "id": "comprehend_languages",
+    "id": "spell:comprehend_languages",
     "name": "Comprehend Languages",
     "school": "divination",
     "classLevels": {
@@ -2028,7 +2028,7 @@
     "target": "you"
   },
   {
-    "id": "cone_of_cold",
+    "id": "spell:cone_of_cold",
     "name": "Cone of Cold",
     "school": "evocation",
     "classLevels": {
@@ -2053,7 +2053,7 @@
     "area": "Cone-shaped burst"
   },
   {
-    "id": "confusion",
+    "id": "spell:confusion",
     "name": "Confusion",
     "school": "enchantment",
     "classLevels": {
@@ -2080,7 +2080,7 @@
     "area": "All creatures in a 15-ft. radius burst"
   },
   {
-    "id": "confusion_lesser",
+    "id": "spell:confusion_lesser",
     "name": "Confusion, Lesser",
     "school": "enchantment",
     "classLevels": {
@@ -2104,7 +2104,7 @@
     "target": "One living creature"
   },
   {
-    "id": "consecrate",
+    "id": "spell:consecrate",
     "name": "Consecrate",
     "school": "evocation",
     "classLevels": {
@@ -2128,7 +2128,7 @@
     "area": "20-ft.-radius emanation"
   },
   {
-    "id": "contact_other_plane",
+    "id": "spell:contact_other_plane",
     "name": "Contact Other Plane",
     "school": "divination",
     "classLevels": {
@@ -2149,7 +2149,7 @@
     "target": "you"
   },
   {
-    "id": "contagion",
+    "id": "spell:contagion",
     "name": "Contagion",
     "school": "necromancy",
     "classLevels": {
@@ -2176,7 +2176,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "contingency",
+    "id": "spell:contingency",
     "name": "Contingency",
     "school": "evocation",
     "classLevels": {
@@ -2199,7 +2199,7 @@
     "target": "you"
   },
   {
-    "id": "continual_flame",
+    "id": "spell:continual_flame",
     "name": "Continual Flame",
     "school": "evocation",
     "classLevels": {
@@ -2226,7 +2226,7 @@
     "target": "Object touched Magical, heatless flame"
   },
   {
-    "id": "control_plants",
+    "id": "spell:control_plants",
     "name": "Control Plants",
     "school": "transmutation",
     "classLevels": {
@@ -2246,7 +2246,7 @@
     "target": "(CASTERLEVEL*2) HD of plant creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "control_undead",
+    "id": "spell:control_undead",
     "name": "Control Undead",
     "school": "necromancy",
     "classLevels": {
@@ -2268,7 +2268,7 @@
     "target": "(CASTERLEVEL*2) HD of undead creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "control_water",
+    "id": "spell:control_water",
     "name": "Control Water",
     "school": "transmutation",
     "classLevels": {
@@ -2295,7 +2295,7 @@
     "target": "Water in a volume of (CASTERLEVEL*10) ft by (CASTERLEVEL*10) ft by (CASTERLEVEL*2) ft [S]"
   },
   {
-    "id": "control_weather",
+    "id": "spell:control_weather",
     "name": "Control Weather",
     "school": "transmutation",
     "classLevels": {
@@ -2318,7 +2318,7 @@
     "area": "2-mile-radius circle, centered on you; see text"
   },
   {
-    "id": "control_winds",
+    "id": "spell:control_winds",
     "name": "Control Winds",
     "school": "transmutation",
     "classLevels": {
@@ -2341,7 +2341,7 @@
     "area": "(CASTERLEVEL*40) ft. radius cylinder 40 ft. high"
   },
   {
-    "id": "create_food_and_water",
+    "id": "spell:create_food_and_water",
     "name": "Create Food and Water",
     "school": "conjuration",
     "classLevels": {
@@ -2362,7 +2362,7 @@
     "target": "Food and water to sustain (CASTERLEVEL*3) humans or (CASTERLEVEL) horses for 24 hours"
   },
   {
-    "id": "create_greater_undead",
+    "id": "spell:create_greater_undead",
     "name": "Create Greater Undead",
     "school": "necromancy",
     "classLevels": {
@@ -2388,7 +2388,7 @@
     "target": "One corpse"
   },
   {
-    "id": "create_undead",
+    "id": "spell:create_undead",
     "name": "Create Undead",
     "school": "necromancy",
     "classLevels": {
@@ -2414,7 +2414,7 @@
     "target": "One corpse"
   },
   {
-    "id": "create_water",
+    "id": "spell:create_water",
     "name": "Create Water",
     "school": "conjuration",
     "classLevels": {
@@ -2441,7 +2441,7 @@
     "target": "Up to (CASTERLEVEL*2) gallons of water"
   },
   {
-    "id": "creeping_doom",
+    "id": "spell:creeping_doom",
     "name": "Creeping Doom",
     "school": "conjuration",
     "classLevels": {
@@ -2462,7 +2462,7 @@
     "target": "(CASTERLEVEL/2) swarms of centipedes"
   },
   {
-    "id": "crown_of_glory",
+    "id": "spell:crown_of_glory",
     "name": "Crown of Glory",
     "school": "evocation",
     "classLevels": {
@@ -2484,7 +2484,7 @@
     "area": "120-ft.-radius emanation centered on you"
   },
   {
-    "id": "crushing_despair",
+    "id": "spell:crushing_despair",
     "name": "Crushing Despair",
     "school": "enchantment",
     "classLevels": {
@@ -2511,7 +2511,7 @@
     "area": "Cone-shaped burst"
   },
   {
-    "id": "crushing_hand",
+    "id": "spell:crushing_hand",
     "name": "Crushing Hand",
     "school": "evocation",
     "classLevels": {
@@ -2537,7 +2537,7 @@
     "target": "10-ft. hand"
   },
   {
-    "id": "cure_critical_wounds",
+    "id": "spell:cure_critical_wounds",
     "name": "Cure Critical Wounds",
     "school": "conjuration",
     "classLevels": {
@@ -2561,7 +2561,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "cure_critical_wounds_mass",
+    "id": "spell:cure_critical_wounds_mass",
     "name": "Cure Critical Wounds, Mass",
     "school": "conjuration",
     "classLevels": {
@@ -2583,7 +2583,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "cure_light_wounds",
+    "id": "spell:cure_light_wounds",
     "name": "Cure Light Wounds",
     "school": "conjuration",
     "classLevels": {
@@ -2609,7 +2609,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "cure_light_wounds_mass",
+    "id": "spell:cure_light_wounds_mass",
     "name": "Cure Light Wounds, Mass",
     "school": "conjuration",
     "classLevels": {
@@ -2632,7 +2632,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "cure_minor_wounds",
+    "id": "spell:cure_minor_wounds",
     "name": "Cure Minor Wounds",
     "school": "conjuration",
     "classLevels": {
@@ -2655,7 +2655,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "cure_moderate_wounds",
+    "id": "spell:cure_moderate_wounds",
     "name": "Cure Moderate Wounds",
     "school": "conjuration",
     "classLevels": {
@@ -2681,7 +2681,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "cure_moderate_wounds_mass",
+    "id": "spell:cure_moderate_wounds_mass",
     "name": "Cure Moderate Wounds, Mass",
     "school": "conjuration",
     "classLevels": {
@@ -2704,7 +2704,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "cure_serious_wounds",
+    "id": "spell:cure_serious_wounds",
     "name": "Cure Serious Wounds",
     "school": "conjuration",
     "classLevels": {
@@ -2730,7 +2730,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "cure_serious_wounds_mass",
+    "id": "spell:cure_serious_wounds_mass",
     "name": "Cure Serious Wounds, Mass",
     "school": "conjuration",
     "classLevels": {
@@ -2752,7 +2752,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "curse_water",
+    "id": "spell:curse_water",
     "name": "Curse Water",
     "school": "necromancy",
     "classLevels": {
@@ -2776,7 +2776,7 @@
     "target": "Flask of water touched"
   },
   {
-    "id": "dancing_lights",
+    "id": "spell:dancing_lights",
     "name": "Dancing Lights",
     "school": "evocation",
     "classLevels": {
@@ -2801,7 +2801,7 @@
     "area": "Up to four lights, all within a 10-ft.-radius area"
   },
   {
-    "id": "darkness",
+    "id": "spell:darkness",
     "name": "Darkness",
     "school": "evocation",
     "classLevels": {
@@ -2829,7 +2829,7 @@
     "target": "Object touched"
   },
   {
-    "id": "darkvision",
+    "id": "spell:darkvision",
     "name": "Darkvision",
     "school": "transmutation",
     "classLevels": {
@@ -2852,7 +2852,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "daylight",
+    "id": "spell:daylight",
     "name": "Daylight",
     "school": "evocation",
     "classLevels": {
@@ -2881,7 +2881,7 @@
     "target": "Object touched"
   },
   {
-    "id": "daze",
+    "id": "spell:daze",
     "name": "Daze",
     "school": "enchantment",
     "classLevels": {
@@ -2908,7 +2908,7 @@
     "target": "One humanoid creature of 4 HD or less"
   },
   {
-    "id": "daze_monster",
+    "id": "spell:daze_monster",
     "name": "Daze Monster",
     "school": "enchantment",
     "classLevels": {
@@ -2935,7 +2935,7 @@
     "target": "One living creature of 6 HD or less"
   },
   {
-    "id": "death_knell",
+    "id": "spell:death_knell",
     "name": "Death Knell",
     "school": "necromancy",
     "classLevels": {
@@ -2959,7 +2959,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "death_ward",
+    "id": "spell:death_ward",
     "name": "Death Ward",
     "school": "necromancy",
     "classLevels": {
@@ -2981,7 +2981,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "deathwatch",
+    "id": "spell:deathwatch",
     "name": "Deathwatch",
     "school": "necromancy",
     "classLevels": {
@@ -3004,7 +3004,7 @@
     "area": "Cone-shaped emanation"
   },
   {
-    "id": "deep_slumber",
+    "id": "spell:deep_slumber",
     "name": "Deep Slumber",
     "school": "enchantment",
     "classLevels": {
@@ -3031,7 +3031,7 @@
     "area": "One or more living creatures within a 10-ft.-radius burst"
   },
   {
-    "id": "deeper_darkness",
+    "id": "spell:deeper_darkness",
     "name": "Deeper Darkness",
     "school": "evocation",
     "classLevels": {
@@ -3056,7 +3056,7 @@
     "target": "Object touched"
   },
   {
-    "id": "delay_poison",
+    "id": "spell:delay_poison",
     "name": "Delay Poison",
     "school": "conjuration",
     "classLevels": {
@@ -3082,7 +3082,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "delayed_blast_fireball",
+    "id": "spell:delayed_blast_fireball",
     "name": "Delayed Blast Fireball",
     "school": "evocation",
     "classLevels": {
@@ -3107,7 +3107,7 @@
     "area": "20-ft.-radius spread"
   },
   {
-    "id": "demand",
+    "id": "spell:demand",
     "name": "Demand",
     "school": "enchantment",
     "classLevels": {
@@ -3133,7 +3133,7 @@
     "target": "One creature"
   },
   {
-    "id": "desecrate",
+    "id": "spell:desecrate",
     "name": "Desecrate",
     "school": "evocation",
     "classLevels": {
@@ -3157,7 +3157,7 @@
     "area": "20-ft.-radius emanation"
   },
   {
-    "id": "destruction",
+    "id": "spell:destruction",
     "name": "Destruction",
     "school": "necromancy",
     "classLevels": {
@@ -3181,7 +3181,7 @@
     "target": "One creature"
   },
   {
-    "id": "detect_animals_or_plants",
+    "id": "spell:detect_animals_or_plants",
     "name": "Detect Animals or Plants",
     "school": "divination",
     "classLevels": {
@@ -3202,7 +3202,7 @@
     "area": "Cone-shaped emanation"
   },
   {
-    "id": "detect_chaos",
+    "id": "spell:detect_chaos",
     "name": "Detect Chaos",
     "school": "divination",
     "classLevels": {
@@ -3223,7 +3223,7 @@
     "area": "Cone-shaped emanation"
   },
   {
-    "id": "detect_evil",
+    "id": "spell:detect_evil",
     "name": "Detect Evil",
     "school": "divination",
     "classLevels": {
@@ -3244,7 +3244,7 @@
     "area": "Cone-shaped emanation"
   },
   {
-    "id": "detect_good",
+    "id": "spell:detect_good",
     "name": "Detect Good",
     "school": "divination",
     "classLevels": {
@@ -3265,7 +3265,7 @@
     "area": "Cone-shaped emanation"
   },
   {
-    "id": "detect_law",
+    "id": "spell:detect_law",
     "name": "Detect Law",
     "school": "divination",
     "classLevels": {
@@ -3286,7 +3286,7 @@
     "area": "Cone-shaped emanation"
   },
   {
-    "id": "detect_magic",
+    "id": "spell:detect_magic",
     "name": "Detect Magic",
     "school": "divination",
     "classLevels": {
@@ -3311,7 +3311,7 @@
     "area": "Cone-shaped emanation"
   },
   {
-    "id": "detect_poison",
+    "id": "spell:detect_poison",
     "name": "Detect Poison",
     "school": "divination",
     "classLevels": {
@@ -3336,7 +3336,7 @@
     "area": "One creature, one object, or a 5-ft. cube"
   },
   {
-    "id": "detect_scrying",
+    "id": "spell:detect_scrying",
     "name": "Detect Scrying",
     "school": "divination",
     "classLevels": {
@@ -3359,7 +3359,7 @@
     "area": "40-ft.-radius emanation centered on you"
   },
   {
-    "id": "detect_secret_doors",
+    "id": "spell:detect_secret_doors",
     "name": "Detect Secret Doors",
     "school": "divination",
     "classLevels": {
@@ -3381,7 +3381,7 @@
     "area": "Cone-shaped emanation"
   },
   {
-    "id": "detect_snares_and_pits",
+    "id": "spell:detect_snares_and_pits",
     "name": "Detect Snares and Pits",
     "school": "divination",
     "classLevels": {
@@ -3402,7 +3402,7 @@
     "area": "Cone-shaped emanation"
   },
   {
-    "id": "detect_thoughts",
+    "id": "spell:detect_thoughts",
     "name": "Detect Thoughts",
     "school": "divination",
     "classLevels": {
@@ -3428,7 +3428,7 @@
     "area": "Cone-shaped emanation"
   },
   {
-    "id": "detect_undead",
+    "id": "spell:detect_undead",
     "name": "Detect Undead",
     "school": "divination",
     "classLevels": {
@@ -3452,7 +3452,7 @@
     "area": "Cone-shaped emanation"
   },
   {
-    "id": "dictum",
+    "id": "spell:dictum",
     "name": "Dictum",
     "school": "evocation",
     "classLevels": {
@@ -3476,7 +3476,7 @@
     "area": "Nonlawful creatures in a 40-ft.-radius spread centered on you"
   },
   {
-    "id": "dimension_door",
+    "id": "spell:dimension_door",
     "name": "Dimension Door",
     "school": "conjuration",
     "classLevels": {
@@ -3499,7 +3499,7 @@
     "target": "You and touched objects or other touched willing creatures"
   },
   {
-    "id": "dimensional_anchor",
+    "id": "spell:dimensional_anchor",
     "name": "Dimensional Anchor",
     "school": "abjuration",
     "classLevels": {
@@ -3521,7 +3521,7 @@
     "effect": "Ray"
   },
   {
-    "id": "dimensional_lock",
+    "id": "spell:dimensional_lock",
     "name": "Dimensional Lock",
     "school": "abjuration",
     "classLevels": {
@@ -3543,7 +3543,7 @@
     "area": "20-ft.-radius emanation centered on a point in space"
   },
   {
-    "id": "diminish_plants",
+    "id": "spell:diminish_plants",
     "name": "Diminish Plants",
     "school": "transmutation",
     "classLevels": {
@@ -3564,7 +3564,7 @@
     "target": "See text"
   },
   {
-    "id": "discern_lies",
+    "id": "spell:discern_lies",
     "name": "Discern Lies",
     "school": "divination",
     "classLevels": {
@@ -3585,7 +3585,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "discern_location",
+    "id": "spell:discern_location",
     "name": "Discern Location",
     "school": "divination",
     "classLevels": {
@@ -3607,7 +3607,7 @@
     "target": "One creature or object"
   },
   {
-    "id": "disguise_self",
+    "id": "spell:disguise_self",
     "name": "Disguise Self",
     "school": "illusion",
     "classLevels": {
@@ -3630,7 +3630,7 @@
     "target": "you"
   },
   {
-    "id": "disintegrate",
+    "id": "spell:disintegrate",
     "name": "Disintegrate",
     "school": "transmutation",
     "classLevels": {
@@ -3652,7 +3652,7 @@
     "effect": "Ray"
   },
   {
-    "id": "dismissal",
+    "id": "spell:dismissal",
     "name": "Dismissal",
     "school": "abjuration",
     "classLevels": {
@@ -3674,7 +3674,7 @@
     "target": "One extraplanar creature"
   },
   {
-    "id": "dispel_chaos",
+    "id": "spell:dispel_chaos",
     "name": "Dispel Chaos",
     "school": "abjuration",
     "classLevels": {
@@ -3698,7 +3698,7 @@
     "target": "You and a touched chaotic creature from another plane; or you and an enchantment or chaotic spell on a touched creature or object"
   },
   {
-    "id": "dispel_evil",
+    "id": "spell:dispel_evil",
     "name": "Dispel Evil",
     "school": "abjuration",
     "classLevels": {
@@ -3722,7 +3722,7 @@
     "target": "You and a touched evil creature from another plane; or you and an enchantment or evil spell on a touched creature or object"
   },
   {
-    "id": "dispel_good",
+    "id": "spell:dispel_good",
     "name": "Dispel Good",
     "school": "abjuration",
     "classLevels": {
@@ -3745,7 +3745,7 @@
     "target": "You and a touched good creature from another plane; or you and an enchantment or good spell on a touched creature or object"
   },
   {
-    "id": "dispel_law",
+    "id": "spell:dispel_law",
     "name": "Dispel Law",
     "school": "abjuration",
     "classLevels": {
@@ -3768,7 +3768,7 @@
     "target": "You and a touched lawful creature from another plane; or you and an enchantment or lawful spell on a touched creature or object"
   },
   {
-    "id": "dispel_magic",
+    "id": "spell:dispel_magic",
     "name": "Dispel Magic",
     "school": "abjuration",
     "classLevels": {
@@ -3793,7 +3793,7 @@
     "area": "One spellcaster, creature, or object; or 20-ft.-radius burst"
   },
   {
-    "id": "dispel_magic_greater",
+    "id": "spell:dispel_magic_greater",
     "name": "Dispel Magic, Greater",
     "school": "abjuration",
     "classLevels": {
@@ -3817,7 +3817,7 @@
     "area": "One spellcaster, creature, or object; or 20-ft.-radius burst"
   },
   {
-    "id": "displacement",
+    "id": "spell:displacement",
     "name": "Displacement",
     "school": "illusion",
     "classLevels": {
@@ -3841,7 +3841,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "disrupt_undead",
+    "id": "spell:disrupt_undead",
     "name": "Disrupt Undead",
     "school": "necromancy",
     "classLevels": {
@@ -3862,7 +3862,7 @@
     "effect": "Ray"
   },
   {
-    "id": "disrupting_weapon",
+    "id": "spell:disrupting_weapon",
     "name": "Disrupting Weapon",
     "school": "transmutation",
     "classLevels": {
@@ -3882,7 +3882,7 @@
     "target": "One melee weapon"
   },
   {
-    "id": "divination",
+    "id": "spell:divination",
     "name": "Divination",
     "school": "divination",
     "classLevels": {
@@ -3903,7 +3903,7 @@
     "target": "you"
   },
   {
-    "id": "divine_favor",
+    "id": "spell:divine_favor",
     "name": "Divine Favor",
     "school": "evocation",
     "classLevels": {
@@ -3924,7 +3924,7 @@
     "target": "you"
   },
   {
-    "id": "divine_power",
+    "id": "spell:divine_power",
     "name": "Divine Power",
     "school": "evocation",
     "classLevels": {
@@ -3944,7 +3944,7 @@
     "target": "you"
   },
   {
-    "id": "dominate_animal",
+    "id": "spell:dominate_animal",
     "name": "Dominate Animal",
     "school": "enchantment",
     "classLevels": {
@@ -3968,7 +3968,7 @@
     "target": "One animal"
   },
   {
-    "id": "dominate_monster",
+    "id": "spell:dominate_monster",
     "name": "Dominate Monster",
     "school": "enchantment",
     "classLevels": {
@@ -3993,7 +3993,7 @@
     "target": "One creature"
   },
   {
-    "id": "dominate_person",
+    "id": "spell:dominate_person",
     "name": "Dominate Person",
     "school": "enchantment",
     "classLevels": {
@@ -4019,7 +4019,7 @@
     "target": "One humanoid"
   },
   {
-    "id": "doom",
+    "id": "spell:doom",
     "name": "Doom",
     "school": "necromancy",
     "classLevels": {
@@ -4043,7 +4043,7 @@
     "target": "One living creature"
   },
   {
-    "id": "dream",
+    "id": "spell:dream",
     "name": "Dream",
     "school": "illusion",
     "classLevels": {
@@ -4069,7 +4069,7 @@
     "target": "One living creature touched"
   },
   {
-    "id": "eagles_splendor",
+    "id": "spell:eagles_splendor",
     "name": "Eagle's Splendor",
     "school": "transmutation",
     "classLevels": {
@@ -4094,7 +4094,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "eagles_splendor_mass",
+    "id": "spell:eagles_splendor_mass",
     "name": "Eagle's Splendor, Mass",
     "school": "transmutation",
     "classLevels": {
@@ -4118,7 +4118,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "earthquake",
+    "id": "spell:earthquake",
     "name": "Earthquake",
     "school": "evocation",
     "classLevels": {
@@ -4142,7 +4142,7 @@
     "area": "80-ft.-radius spread [S]"
   },
   {
-    "id": "elemental_swarm",
+    "id": "spell:elemental_swarm",
     "name": "Elemental Swarm",
     "school": "conjuration",
     "classLevels": {
@@ -4163,7 +4163,7 @@
     "target": "Two or more summoned creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "endure_elements",
+    "id": "spell:endure_elements",
     "name": "Endure Elements",
     "school": "abjuration",
     "classLevels": {
@@ -4189,7 +4189,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "energy_drain",
+    "id": "spell:energy_drain",
     "name": "Energy Drain",
     "school": "necromancy",
     "classLevels": {
@@ -4211,7 +4211,7 @@
     "effect": "Ray of negative energy"
   },
   {
-    "id": "enervation",
+    "id": "spell:enervation",
     "name": "Enervation",
     "school": "necromancy",
     "classLevels": {
@@ -4232,7 +4232,7 @@
     "effect": "Ray of negative energy"
   },
   {
-    "id": "enlarge_person",
+    "id": "spell:enlarge_person",
     "name": "Enlarge Person",
     "school": "transmutation",
     "classLevels": {
@@ -4254,7 +4254,7 @@
     "target": "One humanoid creature"
   },
   {
-    "id": "enlarge_person_mass",
+    "id": "spell:enlarge_person_mass",
     "name": "Enlarge Person, Mass",
     "school": "transmutation",
     "classLevels": {
@@ -4276,7 +4276,7 @@
     "target": "(CASTERLEVEL) humanoid creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "entangle",
+    "id": "spell:entangle",
     "name": "Entangle",
     "school": "transmutation",
     "classLevels": {
@@ -4297,7 +4297,7 @@
     "area": "Plants in a 40-ft.-radius spread"
   },
   {
-    "id": "enthrall",
+    "id": "spell:enthrall",
     "name": "Enthrall",
     "school": "enchantment",
     "classLevels": {
@@ -4319,7 +4319,7 @@
     "target": "Any number of creatures"
   },
   {
-    "id": "entropic_shield",
+    "id": "spell:entropic_shield",
     "name": "Entropic Shield",
     "school": "abjuration",
     "classLevels": {
@@ -4339,7 +4339,7 @@
     "target": "you"
   },
   {
-    "id": "erase",
+    "id": "spell:erase",
     "name": "Erase",
     "school": "transmutation",
     "classLevels": {
@@ -4361,7 +4361,7 @@
     "target": "One scroll or two pages"
   },
   {
-    "id": "ethereal_jaunt",
+    "id": "spell:ethereal_jaunt",
     "name": "Ethereal Jaunt",
     "school": "transmutation",
     "classLevels": {
@@ -4383,7 +4383,7 @@
     "target": "you"
   },
   {
-    "id": "etherealness",
+    "id": "spell:etherealness",
     "name": "Etherealness",
     "school": "transmutation",
     "classLevels": {
@@ -4405,7 +4405,7 @@
     "target": "You and (CASTERLEVEL/3) other touched creatures"
   },
   {
-    "id": "expeditious_retreat",
+    "id": "spell:expeditious_retreat",
     "name": "Expeditious Retreat",
     "school": "transmutation",
     "classLevels": {
@@ -4427,7 +4427,7 @@
     "target": "you"
   },
   {
-    "id": "explosive_runes",
+    "id": "spell:explosive_runes",
     "name": "Explosive Runes",
     "school": "abjuration",
     "classLevels": {
@@ -4451,7 +4451,7 @@
     "target": "One touched object weighing no more than 10 lb."
   },
   {
-    "id": "eyebite",
+    "id": "spell:eyebite",
     "name": "Eyebite",
     "school": "necromancy",
     "classLevels": {
@@ -4476,7 +4476,7 @@
     "target": "One living creature"
   },
   {
-    "id": "fabricate",
+    "id": "spell:fabricate",
     "name": "Fabricate",
     "school": "transmutation",
     "classLevels": {
@@ -4498,7 +4498,7 @@
     "target": "Up to (CASTERLEVEL*10) cu. ft; see text"
   },
   {
-    "id": "faerie_fire",
+    "id": "spell:faerie_fire",
     "name": "Faerie Fire",
     "school": "evocation",
     "classLevels": {
@@ -4521,7 +4521,7 @@
     "area": "Creatures and objects within a 5-ft.-radius burst"
   },
   {
-    "id": "false_life",
+    "id": "spell:false_life",
     "name": "False Life",
     "school": "necromancy",
     "classLevels": {
@@ -4543,7 +4543,7 @@
     "target": "you"
   },
   {
-    "id": "false_vision",
+    "id": "spell:false_vision",
     "name": "False Vision",
     "school": "illusion",
     "classLevels": {
@@ -4567,7 +4567,7 @@
     "area": "40-ft.-radius emanation"
   },
   {
-    "id": "fear",
+    "id": "spell:fear",
     "name": "Fear",
     "school": "necromancy",
     "classLevels": {
@@ -4594,7 +4594,7 @@
     "area": "Cone-shaped burst"
   },
   {
-    "id": "feather_fall",
+    "id": "spell:feather_fall",
     "name": "Feather Fall",
     "school": "transmutation",
     "classLevels": {
@@ -4616,7 +4616,7 @@
     "target": "(CASTERLEVEL) Medium or smaller freefalling objects or creatures, no two of which may be more than 20 ft. apart"
   },
   {
-    "id": "feeblemind",
+    "id": "spell:feeblemind",
     "name": "Feeblemind",
     "school": "enchantment",
     "classLevels": {
@@ -4642,7 +4642,7 @@
     "target": "One creature"
   },
   {
-    "id": "find_the_path",
+    "id": "spell:find_the_path",
     "name": "Find the Path",
     "school": "divination",
     "classLevels": {
@@ -4665,7 +4665,7 @@
     "target": "You or creature touched"
   },
   {
-    "id": "find_traps",
+    "id": "spell:find_traps",
     "name": "Find Traps",
     "school": "divination",
     "classLevels": {
@@ -4685,7 +4685,7 @@
     "target": "you"
   },
   {
-    "id": "finger_of_death",
+    "id": "spell:finger_of_death",
     "name": "Finger of Death",
     "school": "necromancy",
     "classLevels": {
@@ -4710,7 +4710,7 @@
     "target": "One living creature"
   },
   {
-    "id": "fire_seeds",
+    "id": "spell:fire_seeds",
     "name": "Fire Seeds",
     "school": "conjuration",
     "classLevels": {
@@ -4735,7 +4735,7 @@
     "target": "Up to four touched acorns or up to eight touched holly berries"
   },
   {
-    "id": "fire_shield",
+    "id": "spell:fire_shield",
     "name": "Fire Shield",
     "school": "evocation",
     "classLevels": {
@@ -4760,7 +4760,7 @@
     "target": "you"
   },
   {
-    "id": "fire_storm",
+    "id": "spell:fire_storm",
     "name": "Fire Storm",
     "school": "evocation",
     "classLevels": {
@@ -4784,7 +4784,7 @@
     "area": "(CASTERLEVEL*2) 10-ft. cubes [S]"
   },
   {
-    "id": "fire_trap",
+    "id": "spell:fire_trap",
     "name": "Fire Trap",
     "school": "abjuration",
     "classLevels": {
@@ -4810,7 +4810,7 @@
     "target": "Object touched"
   },
   {
-    "id": "fireball",
+    "id": "spell:fireball",
     "name": "Fireball",
     "school": "evocation",
     "classLevels": {
@@ -4835,7 +4835,7 @@
     "area": "20-ft.-radius spread"
   },
   {
-    "id": "flame_arrow",
+    "id": "spell:flame_arrow",
     "name": "Flame Arrow",
     "school": "transmutation",
     "classLevels": {
@@ -4860,7 +4860,7 @@
     "target": "Fifty projectiles, all of which must be in contact with each other at the time of casting"
   },
   {
-    "id": "flame_blade",
+    "id": "spell:flame_blade",
     "name": "Flame Blade",
     "school": "evocation",
     "classLevels": {
@@ -4883,7 +4883,7 @@
     "effect": "Sword-like beam"
   },
   {
-    "id": "flame_strike",
+    "id": "spell:flame_strike",
     "name": "Flame Strike",
     "school": "evocation",
     "classLevels": {
@@ -4907,7 +4907,7 @@
     "area": "Cylinder (10-ft. radius, 40 ft. high)"
   },
   {
-    "id": "flaming_sphere",
+    "id": "spell:flaming_sphere",
     "name": "Flaming Sphere",
     "school": "evocation",
     "classLevels": {
@@ -4933,7 +4933,7 @@
     "target": "5-ft.-diameter sphere"
   },
   {
-    "id": "flare",
+    "id": "spell:flare",
     "name": "Flare",
     "school": "evocation",
     "classLevels": {
@@ -4959,7 +4959,7 @@
     "area": "Burst of light"
   },
   {
-    "id": "flesh_to_stone",
+    "id": "spell:flesh_to_stone",
     "name": "Flesh to Stone",
     "school": "transmutation",
     "classLevels": {
@@ -4981,7 +4981,7 @@
     "target": "One creature"
   },
   {
-    "id": "floating_disk",
+    "id": "spell:floating_disk",
     "name": "Floating Disk",
     "school": "evocation",
     "classLevels": {
@@ -5006,7 +5006,7 @@
     "target": "3-ft.-diameter disk of force"
   },
   {
-    "id": "fly",
+    "id": "spell:fly",
     "name": "Fly",
     "school": "transmutation",
     "classLevels": {
@@ -5028,7 +5028,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "fog_cloud",
+    "id": "spell:fog_cloud",
     "name": "Fog Cloud",
     "school": "conjuration",
     "classLevels": {
@@ -5051,7 +5051,7 @@
     "area": "Fog spreads in 20-ft. radius, 20 ft. high"
   },
   {
-    "id": "forbiddance",
+    "id": "spell:forbiddance",
     "name": "Forbiddance",
     "school": "abjuration",
     "classLevels": {
@@ -5072,7 +5072,7 @@
     "area": "(CASTERLEVEL) 60-ft. cubes [S]"
   },
   {
-    "id": "forcecage",
+    "id": "spell:forcecage",
     "name": "Forcecage",
     "school": "evocation",
     "classLevels": {
@@ -5097,7 +5097,7 @@
     "area": "Barred cage (20-ft. cube) or windowless cell (10-ft. cube)"
   },
   {
-    "id": "forceful_hand",
+    "id": "spell:forceful_hand",
     "name": "Forceful Hand",
     "school": "evocation",
     "classLevels": {
@@ -5122,7 +5122,7 @@
     "target": "10-ft. hand"
   },
   {
-    "id": "foresight",
+    "id": "spell:foresight",
     "name": "Foresight",
     "school": "divination",
     "classLevels": {
@@ -5145,7 +5145,7 @@
     "target": "See text"
   },
   {
-    "id": "foxs_cunning",
+    "id": "spell:foxs_cunning",
     "name": "Fox's Cunning",
     "school": "transmutation",
     "classLevels": {
@@ -5168,7 +5168,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "foxs_cunning_mass",
+    "id": "spell:foxs_cunning_mass",
     "name": "Fox's Cunning, Mass",
     "school": "transmutation",
     "classLevels": {
@@ -5191,7 +5191,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "freedom",
+    "id": "spell:freedom",
     "name": "Freedom",
     "school": "abjuration",
     "classLevels": {
@@ -5212,7 +5212,7 @@
     "target": "One creature"
   },
   {
-    "id": "freedom_of_movement",
+    "id": "spell:freedom_of_movement",
     "name": "Freedom of Movement",
     "school": "abjuration",
     "classLevels": {
@@ -5236,7 +5236,7 @@
     "target": "You or creature touched"
   },
   {
-    "id": "freezing_sphere",
+    "id": "spell:freezing_sphere",
     "name": "Freezing Sphere",
     "school": "evocation",
     "classLevels": {
@@ -5261,7 +5261,7 @@
     "target": "See text"
   },
   {
-    "id": "gaseous_form",
+    "id": "spell:gaseous_form",
     "name": "Gaseous Form",
     "school": "transmutation",
     "classLevels": {
@@ -5284,7 +5284,7 @@
     "target": "Willing corporeal creature touched"
   },
   {
-    "id": "gate",
+    "id": "spell:gate",
     "name": "Gate",
     "school": "conjuration",
     "classLevels": {
@@ -5307,7 +5307,7 @@
     "target": "See text"
   },
   {
-    "id": "geas_lesser",
+    "id": "spell:geas_lesser",
     "name": "Geas, Lesser",
     "school": "enchantment",
     "classLevels": {
@@ -5334,7 +5334,7 @@
     "target": "One living creature with 7 HD or less"
   },
   {
-    "id": "geas_quest",
+    "id": "spell:geas_quest",
     "name": "Geas/Quest",
     "school": "enchantment",
     "classLevels": {
@@ -5362,7 +5362,7 @@
     "target": "One living creature"
   },
   {
-    "id": "genesis",
+    "id": "spell:genesis",
     "name": "Genesis",
     "school": "conjuration",
     "subschool": "creation",
@@ -5386,7 +5386,7 @@
     "effect": "A demiplane on the Ethereal Plane centered on your location"
   },
   {
-    "id": "gentle_repose",
+    "id": "spell:gentle_repose",
     "name": "Gentle Repose",
     "school": "necromancy",
     "classLevels": {
@@ -5409,7 +5409,7 @@
     "target": "Corpse touched"
   },
   {
-    "id": "ghost_sound",
+    "id": "spell:ghost_sound",
     "name": "Ghost Sound",
     "school": "illusion",
     "classLevels": {
@@ -5434,7 +5434,7 @@
     "target": "Illusory sounds"
   },
   {
-    "id": "ghoul_touch",
+    "id": "spell:ghoul_touch",
     "name": "Ghoul Touch",
     "school": "necromancy",
     "classLevels": {
@@ -5456,7 +5456,7 @@
     "target": "Living humanoid touched"
   },
   {
-    "id": "giant_vermin",
+    "id": "spell:giant_vermin",
     "name": "Giant Vermin",
     "school": "transmutation",
     "classLevels": {
@@ -5477,7 +5477,7 @@
     "target": "Up to three vermin, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "glibness",
+    "id": "spell:glibness",
     "name": "Glibness",
     "school": "transmutation",
     "classLevels": {
@@ -5497,7 +5497,7 @@
     "target": "you"
   },
   {
-    "id": "glitterdust",
+    "id": "spell:glitterdust",
     "name": "Glitterdust",
     "school": "conjuration",
     "classLevels": {
@@ -5521,7 +5521,7 @@
     "area": "Creatures and objects within 10-ft.-radius spread"
   },
   {
-    "id": "globe_of_invulnerability",
+    "id": "spell:globe_of_invulnerability",
     "name": "Globe of Invulnerability",
     "school": "abjuration",
     "classLevels": {
@@ -5543,7 +5543,7 @@
     "area": "10-ft.-radius spherical emanation, centered on you"
   },
   {
-    "id": "globe_of_invulnerability_lesser",
+    "id": "spell:globe_of_invulnerability_lesser",
     "name": "Globe of Invulnerability (Lesser)",
     "school": "abjuration",
     "classLevels": {
@@ -5565,7 +5565,7 @@
     "area": "10-ft.-radius spherical emanation, centered on you"
   },
   {
-    "id": "glyph_of_warding",
+    "id": "spell:glyph_of_warding",
     "name": "Glyph of Warding",
     "school": "abjuration",
     "classLevels": {
@@ -5586,7 +5586,7 @@
     "target": "Object touched or up to (CASTERLEVEL*5) sq. ft"
   },
   {
-    "id": "glyph_of_warding_greater",
+    "id": "spell:glyph_of_warding_greater",
     "name": "Glyph of Warding, Greater",
     "school": "abjuration",
     "classLevels": {
@@ -5607,7 +5607,7 @@
     "target": "Object touched or up to (CASTERLEVEL*5) sq. ft"
   },
   {
-    "id": "good_hope",
+    "id": "spell:good_hope",
     "name": "Good Hope",
     "school": "enchantment",
     "classLevels": {
@@ -5631,7 +5631,7 @@
     "target": "(CASTERLEVEL) living creatures, no two of which may be more than 30 ft. apart"
   },
   {
-    "id": "goodberry",
+    "id": "spell:goodberry",
     "name": "Goodberry",
     "school": "transmutation",
     "classLevels": {
@@ -5651,7 +5651,7 @@
     "target": "2d4 fresh berries touched"
   },
   {
-    "id": "grasping_hand",
+    "id": "spell:grasping_hand",
     "name": "Grasping Hand",
     "school": "evocation",
     "classLevels": {
@@ -5676,7 +5676,7 @@
     "target": "10-ft. hand"
   },
   {
-    "id": "grease",
+    "id": "spell:grease",
     "name": "Grease",
     "school": "conjuration",
     "classLevels": {
@@ -5700,7 +5700,7 @@
     "target": "One object or a 10-ft. square"
   },
   {
-    "id": "guards_and_wards",
+    "id": "spell:guards_and_wards",
     "name": "Guards and Wards",
     "school": "abjuration",
     "classLevels": {
@@ -5723,7 +5723,7 @@
     "target": "Up to (CASTERLEVEL*200) sq. ft [S]"
   },
   {
-    "id": "guidance",
+    "id": "spell:guidance",
     "name": "Guidance",
     "school": "divination",
     "classLevels": {
@@ -5745,7 +5745,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "gust_of_wind",
+    "id": "spell:gust_of_wind",
     "name": "Gust of Wind",
     "school": "evocation",
     "classLevels": {
@@ -5770,7 +5770,7 @@
     "area": "Line-shaped gust of severe wind emanating out from you to the extreme of the range"
   },
   {
-    "id": "hallow",
+    "id": "spell:hallow",
     "name": "Hallow",
     "school": "evocation",
     "classLevels": {
@@ -5795,7 +5795,7 @@
     "area": "40-ft. radius emanating from the touched point"
   },
   {
-    "id": "hallucinatory_terrain",
+    "id": "spell:hallucinatory_terrain",
     "name": "Hallucinatory Terrain",
     "school": "illusion",
     "classLevels": {
@@ -5819,7 +5819,7 @@
     "area": "(CASTERLEVEL) 30-ft. cubes [S]"
   },
   {
-    "id": "halt_undead",
+    "id": "spell:halt_undead",
     "name": "Halt Undead",
     "school": "necromancy",
     "classLevels": {
@@ -5841,7 +5841,7 @@
     "target": "Up to three undead creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "hardening",
+    "id": "spell:hardening",
     "name": "Hardening",
     "school": "transmutation",
     "classLevels": {
@@ -5862,7 +5862,7 @@
     "target": "One item of a volume of no greater than (CASTERLEVEL*10) cu. ft."
   },
   {
-    "id": "harm",
+    "id": "spell:harm",
     "name": "Harm",
     "school": "necromancy",
     "classLevels": {
@@ -5882,7 +5882,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "haste",
+    "id": "spell:haste",
     "name": "Haste",
     "school": "transmutation",
     "classLevels": {
@@ -5905,7 +5905,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "heal",
+    "id": "spell:heal",
     "name": "Heal",
     "school": "conjuration",
     "classLevels": {
@@ -5928,7 +5928,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "heal_mass",
+    "id": "spell:heal_mass",
     "name": "Heal, Mass",
     "school": "conjuration",
     "classLevels": {
@@ -5949,7 +5949,7 @@
     "target": "One or more creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "heal_mount",
+    "id": "spell:heal_mount",
     "name": "Heal Mount",
     "school": "conjuration",
     "classLevels": {
@@ -5970,7 +5970,7 @@
     "target": "Your mount touched"
   },
   {
-    "id": "heat_metal",
+    "id": "spell:heat_metal",
     "name": "Heat Metal",
     "school": "transmutation",
     "classLevels": {
@@ -5993,7 +5993,7 @@
     "target": "Metal equipment of (CASTERLEVEL/2) creatures, no two of which can be more than 30 ft. apart; or (CASTERLEVEL*25) lb. of metal, all of which must be within a 30-ft. circle"
   },
   {
-    "id": "helping_hand",
+    "id": "spell:helping_hand",
     "name": "Helping Hand",
     "school": "evocation",
     "classLevels": {
@@ -6013,7 +6013,7 @@
     "target": "Ghostly hand"
   },
   {
-    "id": "heroes_feast",
+    "id": "spell:heroes_feast",
     "name": "Heroes' Feast",
     "school": "conjuration",
     "classLevels": {
@@ -6038,7 +6038,7 @@
     "target": "Feast for (CASTERLEVEL) creatures"
   },
   {
-    "id": "heroism",
+    "id": "spell:heroism",
     "name": "Heroism",
     "school": "enchantment",
     "classLevels": {
@@ -6064,7 +6064,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "heroism_greater",
+    "id": "spell:heroism_greater",
     "name": "Heroism, Greater",
     "school": "enchantment",
     "classLevels": {
@@ -6087,7 +6087,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "hide_from_animals",
+    "id": "spell:hide_from_animals",
     "name": "Hide from Animals",
     "school": "abjuration",
     "classLevels": {
@@ -6108,7 +6108,7 @@
     "target": "(CASTERLEVEL) creatures touched"
   },
   {
-    "id": "hide_from_undead",
+    "id": "spell:hide_from_undead",
     "name": "Hide from Undead",
     "school": "abjuration",
     "classLevels": {
@@ -6128,7 +6128,7 @@
     "target": "(CASTERLEVEL) touched creatures"
   },
   {
-    "id": "hideous_laughter",
+    "id": "spell:hideous_laughter",
     "name": "Hideous Laughter",
     "school": "enchantment",
     "classLevels": {
@@ -6155,7 +6155,7 @@
     "target": "One creature; see text"
   },
   {
-    "id": "hold_animal",
+    "id": "spell:hold_animal",
     "name": "Hold Animal",
     "school": "enchantment",
     "classLevels": {
@@ -6180,7 +6180,7 @@
     "target": "One animal"
   },
   {
-    "id": "hold_monster",
+    "id": "spell:hold_monster",
     "name": "Hold Monster",
     "school": "enchantment",
     "classLevels": {
@@ -6207,7 +6207,7 @@
     "target": "One living creature"
   },
   {
-    "id": "hold_monster_mass",
+    "id": "spell:hold_monster_mass",
     "name": "Hold Monster, Mass",
     "school": "enchantment",
     "classLevels": {
@@ -6233,7 +6233,7 @@
     "target": "One or more creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "hold_person",
+    "id": "spell:hold_person",
     "name": "Hold Person",
     "school": "enchantment",
     "classLevels": {
@@ -6261,7 +6261,7 @@
     "target": "One humanoid creature"
   },
   {
-    "id": "hold_person_mass",
+    "id": "spell:hold_person_mass",
     "name": "Hold Person, Mass",
     "school": "enchantment",
     "classLevels": {
@@ -6287,7 +6287,7 @@
     "target": "One or more humanoid creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "hold_portal",
+    "id": "spell:hold_portal",
     "name": "Hold Portal",
     "school": "abjuration",
     "classLevels": {
@@ -6308,7 +6308,7 @@
     "target": "One portal, up to (CASTERLEVEL*20) sq. ft"
   },
   {
-    "id": "holy_aura",
+    "id": "spell:holy_aura",
     "name": "Holy Aura",
     "school": "abjuration",
     "classLevels": {
@@ -6332,7 +6332,7 @@
     "area": "(CASTERLEVEL) creatures in a 20-ft.-radius burst centered on you"
   },
   {
-    "id": "holy_smite",
+    "id": "spell:holy_smite",
     "name": "Holy Smite",
     "school": "evocation",
     "classLevels": {
@@ -6355,7 +6355,7 @@
     "area": "20-ft.-radius burst"
   },
   {
-    "id": "holy_sword",
+    "id": "spell:holy_sword",
     "name": "Holy Sword",
     "school": "evocation",
     "classLevels": {
@@ -6378,7 +6378,7 @@
     "target": "Melee weapon touched"
   },
   {
-    "id": "holy_word",
+    "id": "spell:holy_word",
     "name": "Holy Word",
     "school": "evocation",
     "classLevels": {
@@ -6402,7 +6402,7 @@
     "area": "Nongood creatures in a 40-ft.-radius spread centered on you"
   },
   {
-    "id": "horrid_wilting",
+    "id": "spell:horrid_wilting",
     "name": "Horrid Wilting",
     "school": "necromancy",
     "classLevels": {
@@ -6424,7 +6424,7 @@
     "target": "Living creatures, no two of which can be more than 60 ft. apart"
   },
   {
-    "id": "hypnotic_pattern",
+    "id": "spell:hypnotic_pattern",
     "name": "Hypnotic Pattern",
     "school": "illusion",
     "classLevels": {
@@ -6450,7 +6450,7 @@
     "area": "Colorful lights in a 10-ft.-radius spread"
   },
   {
-    "id": "hypnotism",
+    "id": "spell:hypnotism",
     "name": "Hypnotism",
     "school": "enchantment",
     "classLevels": {
@@ -6476,7 +6476,7 @@
     "target": "Several living creatures, no two of which may be more than 30 ft. apart"
   },
   {
-    "id": "ice_storm",
+    "id": "spell:ice_storm",
     "name": "Ice Storm",
     "school": "evocation",
     "classLevels": {
@@ -6502,7 +6502,7 @@
     "area": "Cylinder (20-ft. radius, 40 ft. high)"
   },
   {
-    "id": "identify",
+    "id": "spell:identify",
     "name": "Identify",
     "school": "divination",
     "classLevels": {
@@ -6525,7 +6525,7 @@
     "target": "One touched object"
   },
   {
-    "id": "illusory_script",
+    "id": "spell:illusory_script",
     "name": "Illusory Script",
     "school": "illusion",
     "classLevels": {
@@ -6552,7 +6552,7 @@
     "target": "One touched object weighing no more than 10 lb."
   },
   {
-    "id": "illusory_wall",
+    "id": "spell:illusory_wall",
     "name": "Illusory Wall",
     "school": "illusion",
     "classLevels": {
@@ -6574,7 +6574,7 @@
     "target": "Image 1 ft. by 10 ft. by 10 ft."
   },
   {
-    "id": "imbue_with_spell_ability",
+    "id": "spell:imbue_with_spell_ability",
     "name": "Imbue with Spell Ability",
     "school": "evocation",
     "classLevels": {
@@ -6594,7 +6594,7 @@
     "target": "Creature touched; see text"
   },
   {
-    "id": "implosion",
+    "id": "spell:implosion",
     "name": "Implosion",
     "school": "evocation",
     "classLevels": {
@@ -6614,7 +6614,7 @@
     "target": "One corporeal creature/round"
   },
   {
-    "id": "imprisonment",
+    "id": "spell:imprisonment",
     "name": "Imprisonment",
     "school": "abjuration",
     "classLevels": {
@@ -6635,7 +6635,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "incendiary_cloud",
+    "id": "spell:incendiary_cloud",
     "name": "Incendiary Cloud",
     "school": "conjuration",
     "classLevels": {
@@ -6660,7 +6660,7 @@
     "area": "Cloud spreads in 20-ft. radius, 20 ft. high"
   },
   {
-    "id": "inflict_critical_wounds",
+    "id": "spell:inflict_critical_wounds",
     "name": "Inflict Critical Wounds",
     "school": "necromancy",
     "classLevels": {
@@ -6680,7 +6680,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "inflict_critical_wounds_mass",
+    "id": "spell:inflict_critical_wounds_mass",
     "name": "Inflict Critical Wounds, Mass",
     "school": "necromancy",
     "classLevels": {
@@ -6700,7 +6700,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "inflict_light_wounds",
+    "id": "spell:inflict_light_wounds",
     "name": "Inflict Light Wounds",
     "school": "necromancy",
     "classLevels": {
@@ -6720,7 +6720,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "inflict_light_wounds_mass",
+    "id": "spell:inflict_light_wounds_mass",
     "name": "Inflict Light Wounds, Mass",
     "school": "necromancy",
     "classLevels": {
@@ -6740,7 +6740,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "inflict_minor_wounds",
+    "id": "spell:inflict_minor_wounds",
     "name": "Inflict Minor Wounds",
     "school": "necromancy",
     "classLevels": {
@@ -6760,7 +6760,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "inflict_moderate_wounds",
+    "id": "spell:inflict_moderate_wounds",
     "name": "Inflict Moderate Wounds",
     "school": "necromancy",
     "classLevels": {
@@ -6780,7 +6780,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "inflict_moderate_wounds_mass",
+    "id": "spell:inflict_moderate_wounds_mass",
     "name": "Inflict Moderate Wounds, Mass",
     "school": "necromancy",
     "classLevels": {
@@ -6800,7 +6800,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "inflict_serious_wounds",
+    "id": "spell:inflict_serious_wounds",
     "name": "Inflict Serious Wounds",
     "school": "necromancy",
     "classLevels": {
@@ -6820,7 +6820,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "inflict_serious_wounds_mass",
+    "id": "spell:inflict_serious_wounds_mass",
     "name": "Inflict Serious Wounds, Mass",
     "school": "necromancy",
     "classLevels": {
@@ -6840,7 +6840,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "insanity",
+    "id": "spell:insanity",
     "name": "Insanity",
     "school": "enchantment",
     "classLevels": {
@@ -6865,7 +6865,7 @@
     "target": "One living creature"
   },
   {
-    "id": "insect_plague",
+    "id": "spell:insect_plague",
     "name": "Insect Plague",
     "school": "conjuration",
     "classLevels": {
@@ -6887,7 +6887,7 @@
     "target": "(CASTERLEVEL/3) swarms of locust, each of which must be adjacent to at least one other swarm"
   },
   {
-    "id": "instant_summons",
+    "id": "spell:instant_summons",
     "name": "Instant Summons",
     "school": "conjuration",
     "classLevels": {
@@ -6910,7 +6910,7 @@
     "target": "One object weighing 10 lb. or less whose longest dimension is 6 ft. or less"
   },
   {
-    "id": "interposing_hand",
+    "id": "spell:interposing_hand",
     "name": "Interposing Hand",
     "school": "evocation",
     "classLevels": {
@@ -6935,7 +6935,7 @@
     "target": "10-ft. hand"
   },
   {
-    "id": "invisibility",
+    "id": "spell:invisibility",
     "name": "Invisibility",
     "school": "illusion",
     "classLevels": {
@@ -6960,7 +6960,7 @@
     "target": "You or a creature or object weighing no more than (CASTERLEVEL*100) lbs"
   },
   {
-    "id": "invisibility_greater",
+    "id": "spell:invisibility_greater",
     "name": "Invisibility, Greater",
     "school": "illusion",
     "classLevels": {
@@ -6983,7 +6983,7 @@
     "target": "You or creature touched"
   },
   {
-    "id": "invisibility_mass",
+    "id": "spell:invisibility_mass",
     "name": "Invisibility, Mass",
     "school": "illusion",
     "classLevels": {
@@ -7006,7 +7006,7 @@
     "target": "Any number of creatures, no two of which can be more than 180 ft. apart"
   },
   {
-    "id": "invisibility_purge",
+    "id": "spell:invisibility_purge",
     "name": "Invisibility Purge",
     "school": "evocation",
     "classLevels": {
@@ -7026,7 +7026,7 @@
     "target": "you"
   },
   {
-    "id": "invisibility_sphere",
+    "id": "spell:invisibility_sphere",
     "name": "Invisibility Sphere",
     "school": "illusion",
     "classLevels": {
@@ -7050,7 +7050,7 @@
     "area": "10-ft.-radius emanation around the creature or object touched"
   },
   {
-    "id": "iron_body",
+    "id": "spell:iron_body",
     "name": "Iron Body",
     "school": "transmutation",
     "classLevels": {
@@ -7072,7 +7072,7 @@
     "target": "you"
   },
   {
-    "id": "ironwood",
+    "id": "spell:ironwood",
     "name": "Ironwood",
     "school": "transmutation",
     "classLevels": {
@@ -7093,7 +7093,7 @@
     "target": "An ironwood object weighing up to (CASTERLEVEL*5) lbs"
   },
   {
-    "id": "irresistible_dance",
+    "id": "spell:irresistible_dance",
     "name": "Irresistible Dance",
     "school": "enchantment",
     "classLevels": {
@@ -7119,7 +7119,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "jump",
+    "id": "spell:jump",
     "name": "Jump",
     "school": "transmutation",
     "classLevels": {
@@ -7143,7 +7143,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "keen_edge",
+    "id": "spell:keen_edge",
     "name": "Keen Edge",
     "school": "transmutation",
     "classLevels": {
@@ -7164,7 +7164,7 @@
     "target": "One weapon or fifty projectiles, all of which must be in contact with each other at the time of casting"
   },
   {
-    "id": "knock",
+    "id": "spell:knock",
     "name": "Knock",
     "school": "transmutation",
     "classLevels": {
@@ -7185,7 +7185,7 @@
     "target": "One door, box, or chest with an area of up to 10 sq. ft./level"
   },
   {
-    "id": "know_direction",
+    "id": "spell:know_direction",
     "name": "Know Direction",
     "school": "divination",
     "classLevels": {
@@ -7206,7 +7206,7 @@
     "target": "you"
   },
   {
-    "id": "legend_lore",
+    "id": "spell:legend_lore",
     "name": "Legend Lore",
     "school": "divination",
     "classLevels": {
@@ -7230,7 +7230,7 @@
     "target": "you"
   },
   {
-    "id": "levitate",
+    "id": "spell:levitate",
     "name": "Levitate",
     "school": "transmutation",
     "classLevels": {
@@ -7252,7 +7252,7 @@
     "target": "You or one willing creature or one object, total weight up to (CASTERLEVEL*100) lbs"
   },
   {
-    "id": "light",
+    "id": "spell:light",
     "name": "Light",
     "school": "evocation",
     "classLevels": {
@@ -7281,7 +7281,7 @@
     "target": "Object touched"
   },
   {
-    "id": "lightning_bolt",
+    "id": "spell:lightning_bolt",
     "name": "Lightning Bolt",
     "school": "evocation",
     "classLevels": {
@@ -7307,7 +7307,7 @@
     "area": "120-ft. line"
   },
   {
-    "id": "limited_wish",
+    "id": "spell:limited_wish",
     "name": "Limited Wish",
     "school": "universal",
     "classLevels": {
@@ -7329,7 +7329,7 @@
     "target": "See text"
   },
   {
-    "id": "liveoak",
+    "id": "spell:liveoak",
     "name": "Liveoak",
     "school": "transmutation",
     "classLevels": {
@@ -7349,7 +7349,7 @@
     "target": "Tree touched"
   },
   {
-    "id": "locate_creature",
+    "id": "spell:locate_creature",
     "name": "Locate Creature",
     "school": "divination",
     "classLevels": {
@@ -7372,7 +7372,7 @@
     "area": "Circle, centered on you, with a radius of ((CASTERLEVEL*40)+400) ft."
   },
   {
-    "id": "locate_object",
+    "id": "spell:locate_object",
     "name": "Locate Object",
     "school": "divination",
     "classLevels": {
@@ -7396,7 +7396,7 @@
     "area": "Circle, centered on you, with a radius of ((CASTERLEVEL*40)+400) ft."
   },
   {
-    "id": "longstrider",
+    "id": "spell:longstrider",
     "name": "Longstrider",
     "school": "transmutation",
     "classLevels": {
@@ -7418,7 +7418,7 @@
     "target": "you"
   },
   {
-    "id": "lullaby",
+    "id": "spell:lullaby",
     "name": "Lullaby",
     "school": "enchantment",
     "classLevels": {
@@ -7442,7 +7442,7 @@
     "area": "Living creatures within a 10-ft.-radius burst"
   },
   {
-    "id": "maddening_scream",
+    "id": "spell:maddening_scream",
     "name": "Maddening Scream",
     "school": "enchantment",
     "classLevels": {
@@ -7467,7 +7467,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "mage_armor",
+    "id": "spell:mage_armor",
     "name": "Mage Armor",
     "school": "conjuration",
     "classLevels": {
@@ -7493,7 +7493,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "mage_hand",
+    "id": "spell:mage_hand",
     "name": "Mage Hand",
     "school": "transmutation",
     "classLevels": {
@@ -7515,7 +7515,7 @@
     "target": "One nonmagical, unattended object weighing up to 5 lb."
   },
   {
-    "id": "mages_disjunction",
+    "id": "spell:mages_disjunction",
     "name": "Mage's Disjunction",
     "school": "abjuration",
     "classLevels": {
@@ -7536,7 +7536,7 @@
     "area": "All magical effects and magic items within a 40-ft.-radius burst"
   },
   {
-    "id": "mages_faithful_hound",
+    "id": "spell:mages_faithful_hound",
     "name": "Mage's Faithful Hound",
     "school": "conjuration",
     "classLevels": {
@@ -7559,7 +7559,7 @@
     "target": "Phantom watchdog"
   },
   {
-    "id": "mages_lucubration",
+    "id": "spell:mages_lucubration",
     "name": "Mage's Lucubration",
     "school": "transmutation",
     "classLevels": {
@@ -7579,7 +7579,7 @@
     "target": "you"
   },
   {
-    "id": "mages_magnificent_mansion",
+    "id": "spell:mages_magnificent_mansion",
     "name": "Mage's Magnificent Mansion",
     "school": "conjuration",
     "classLevels": {
@@ -7602,7 +7602,7 @@
     "area": "Extradimensional mansion, up to (CASTERLEVEL*3) 10-ft. cubes [S]"
   },
   {
-    "id": "mages_private_sanctum",
+    "id": "spell:mages_private_sanctum",
     "name": "Mage's Private Sanctum",
     "school": "abjuration",
     "classLevels": {
@@ -7624,7 +7624,7 @@
     "area": "(CASTERLEVEL*30) ft. cube [S]"
   },
   {
-    "id": "mages_sword",
+    "id": "spell:mages_sword",
     "name": "Mage's Sword",
     "school": "evocation",
     "classLevels": {
@@ -7649,7 +7649,7 @@
     "target": "One sword"
   },
   {
-    "id": "magic_aura",
+    "id": "spell:magic_aura",
     "name": "Magic Aura",
     "school": "illusion",
     "classLevels": {
@@ -7673,7 +7673,7 @@
     "target": "One touched object weighing up to (CASTERLEVEL*5) lbs"
   },
   {
-    "id": "magic_circle_against_chaos",
+    "id": "spell:magic_circle_against_chaos",
     "name": "Magic Circle against Chaos",
     "school": "abjuration",
     "classLevels": {
@@ -7700,7 +7700,7 @@
     "area": "10-ft.-radius emanation from touched creature"
   },
   {
-    "id": "magic_circle_against_evil",
+    "id": "spell:magic_circle_against_evil",
     "name": "Magic Circle against Evil",
     "school": "abjuration",
     "classLevels": {
@@ -7727,7 +7727,7 @@
     "area": "10-ft.-radius emanation from touched creature"
   },
   {
-    "id": "magic_circle_against_good",
+    "id": "spell:magic_circle_against_good",
     "name": "Magic Circle against Good",
     "school": "abjuration",
     "classLevels": {
@@ -7753,7 +7753,7 @@
     "area": "10-ft.-radius emanation from touched creature"
   },
   {
-    "id": "magic_circle_against_law",
+    "id": "spell:magic_circle_against_law",
     "name": "Magic Circle against Law",
     "school": "abjuration",
     "classLevels": {
@@ -7779,7 +7779,7 @@
     "area": "10-ft.-radius emanation from touched creature"
   },
   {
-    "id": "magic_fang",
+    "id": "spell:magic_fang",
     "name": "Magic Fang",
     "school": "transmutation",
     "classLevels": {
@@ -7800,7 +7800,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "magic_fang_greater",
+    "id": "spell:magic_fang_greater",
     "name": "Magic Fang, Greater",
     "school": "transmutation",
     "classLevels": {
@@ -7821,7 +7821,7 @@
     "target": "One living creature"
   },
   {
-    "id": "magic_jar",
+    "id": "spell:magic_jar",
     "name": "Magic Jar",
     "school": "necromancy",
     "classLevels": {
@@ -7843,7 +7843,7 @@
     "target": "One creature"
   },
   {
-    "id": "magic_missile",
+    "id": "spell:magic_missile",
     "name": "Magic Missile",
     "school": "evocation",
     "classLevels": {
@@ -7867,7 +7867,7 @@
     "target": "Up to five creatures, no two of which can be more than 15 ft. apart"
   },
   {
-    "id": "magic_mouth",
+    "id": "spell:magic_mouth",
     "name": "Magic Mouth",
     "school": "illusion",
     "classLevels": {
@@ -7891,7 +7891,7 @@
     "target": "One creature or object"
   },
   {
-    "id": "magic_stone",
+    "id": "spell:magic_stone",
     "name": "Magic Stone",
     "school": "transmutation",
     "classLevels": {
@@ -7912,7 +7912,7 @@
     "target": "Up to three pebbles touched"
   },
   {
-    "id": "magic_vestment",
+    "id": "spell:magic_vestment",
     "name": "Magic Vestment",
     "school": "transmutation",
     "classLevels": {
@@ -7932,7 +7932,7 @@
     "target": "Armor or shield touched"
   },
   {
-    "id": "magic_weapon",
+    "id": "spell:magic_weapon",
     "name": "Magic Weapon",
     "school": "transmutation",
     "classLevels": {
@@ -7955,7 +7955,7 @@
     "target": "Weapon touched"
   },
   {
-    "id": "magic_weapon_greater",
+    "id": "spell:magic_weapon_greater",
     "name": "Magic Weapon, Greater",
     "school": "transmutation",
     "classLevels": {
@@ -7979,7 +7979,7 @@
     "target": "One weapon or fifty projectiles (all of which must be in contact with each other at the time of casting)"
   },
   {
-    "id": "major_creation",
+    "id": "spell:major_creation",
     "name": "Major Creation",
     "school": "conjuration",
     "classLevels": {
@@ -8003,7 +8003,7 @@
     "target": "Unattended, nonmagical object of nonliving plant matter, up to 1 cu. ft./level"
   },
   {
-    "id": "major_image",
+    "id": "spell:major_image",
     "name": "Major Image",
     "school": "illusion",
     "classLevels": {
@@ -8027,7 +8027,7 @@
     "area": "Visual figment that cannot extend beyond (CASTERLEVEL+4) 10-ft. cubes[S]"
   },
   {
-    "id": "make_whole",
+    "id": "spell:make_whole",
     "name": "Make Whole",
     "school": "transmutation",
     "classLevels": {
@@ -8047,7 +8047,7 @@
     "target": "One object of up to (CASTERLEVEL*10) cu. ft"
   },
   {
-    "id": "mark_of_justice",
+    "id": "spell:mark_of_justice",
     "name": "Mark of Justice",
     "school": "necromancy",
     "classLevels": {
@@ -8068,7 +8068,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "maze",
+    "id": "spell:maze",
     "name": "Maze",
     "school": "conjuration",
     "classLevels": {
@@ -8090,7 +8090,7 @@
     "target": "One creature"
   },
   {
-    "id": "meld_into_stone",
+    "id": "spell:meld_into_stone",
     "name": "Meld into Stone",
     "school": "transmutation",
     "classLevels": {
@@ -8114,7 +8114,7 @@
     "target": "you"
   },
   {
-    "id": "mending",
+    "id": "spell:mending",
     "name": "Mending",
     "school": "transmutation",
     "classLevels": {
@@ -8139,7 +8139,7 @@
     "target": "One object of up to 1 lb."
   },
   {
-    "id": "message",
+    "id": "spell:message",
     "name": "Message",
     "school": "transmutation",
     "classLevels": {
@@ -8165,7 +8165,7 @@
     "target": "(CASTERLEVEL) creatures"
   },
   {
-    "id": "meteor_swarm",
+    "id": "spell:meteor_swarm",
     "name": "Meteor Swarm",
     "school": "evocation",
     "classLevels": {
@@ -8189,7 +8189,7 @@
     "area": "Four 40-ft.-radius spreads; see text"
   },
   {
-    "id": "mind_blank",
+    "id": "spell:mind_blank",
     "name": "Mind Blank",
     "school": "abjuration",
     "classLevels": {
@@ -8210,7 +8210,7 @@
     "target": "One creature"
   },
   {
-    "id": "mind_fog",
+    "id": "spell:mind_fog",
     "name": "Mind Fog",
     "school": "enchantment",
     "classLevels": {
@@ -8236,7 +8236,7 @@
     "area": "Fog spreads in 20-ft. radius, 20 ft. high"
   },
   {
-    "id": "minor_creation",
+    "id": "spell:minor_creation",
     "name": "Minor Creation",
     "school": "conjuration",
     "classLevels": {
@@ -8260,7 +8260,7 @@
     "target": "Unattended, nonmagical object of nonliving plant matter, up to 1 cu. ft./level"
   },
   {
-    "id": "minor_image",
+    "id": "spell:minor_image",
     "name": "Minor Image",
     "school": "illusion",
     "classLevels": {
@@ -8284,7 +8284,7 @@
     "area": "Visual figment that cannot extend beyond (CASTERLEVEL+4) 10-ft. cubes [S]"
   },
   {
-    "id": "miracle",
+    "id": "spell:miracle",
     "name": "Miracle",
     "school": "evocation",
     "classLevels": {
@@ -8304,7 +8304,7 @@
     "target": "See text"
   },
   {
-    "id": "mirage_arcana",
+    "id": "spell:mirage_arcana",
     "name": "Mirage Arcana",
     "school": "illusion",
     "classLevels": {
@@ -8327,7 +8327,7 @@
     "area": "(CASTERLEVEL) 20-ft. cubes [S]"
   },
   {
-    "id": "mirror_image",
+    "id": "spell:mirror_image",
     "name": "Mirror Image",
     "school": "illusion",
     "classLevels": {
@@ -8351,7 +8351,7 @@
     "target": "you"
   },
   {
-    "id": "misdirection",
+    "id": "spell:misdirection",
     "name": "Misdirection",
     "school": "illusion",
     "classLevels": {
@@ -8374,7 +8374,7 @@
     "area": "One creature or object, up to a 10-ft. cube in size"
   },
   {
-    "id": "mislead",
+    "id": "spell:mislead",
     "name": "Mislead",
     "school": "illusion",
     "classLevels": {
@@ -8397,7 +8397,7 @@
     "target": "You/one illusory double"
   },
   {
-    "id": "mnemonic_enhancer",
+    "id": "spell:mnemonic_enhancer",
     "name": "Mnemonic Enhancer",
     "school": "transmutation",
     "classLevels": {
@@ -8419,7 +8419,7 @@
     "target": "you"
   },
   {
-    "id": "modify_memory",
+    "id": "spell:modify_memory",
     "name": "Modify Memory",
     "school": "enchantment",
     "classLevels": {
@@ -8443,7 +8443,7 @@
     "target": "One living creature"
   },
   {
-    "id": "moment_of_prescience",
+    "id": "spell:moment_of_prescience",
     "name": "Moment of Prescience",
     "school": "divination",
     "classLevels": {
@@ -8464,7 +8464,7 @@
     "target": "you"
   },
   {
-    "id": "mount",
+    "id": "spell:mount",
     "name": "Mount",
     "school": "conjuration",
     "classLevels": {
@@ -8487,7 +8487,7 @@
     "target": "One mount"
   },
   {
-    "id": "move_earth",
+    "id": "spell:move_earth",
     "name": "Move Earth",
     "school": "transmutation",
     "classLevels": {
@@ -8513,7 +8513,7 @@
     "target": "Dirt in an area up to 750 ft. square and up to 10 ft. deep [S]"
   },
   {
-    "id": "neutralize_poison",
+    "id": "spell:neutralize_poison",
     "name": "Neutralize Poison",
     "school": "conjuration",
     "classLevels": {
@@ -8540,7 +8540,7 @@
     "target": "Creature or object of up to (CASTERLEVEL) cu. ft. touched"
   },
   {
-    "id": "nightmare",
+    "id": "spell:nightmare",
     "name": "Nightmare",
     "school": "illusion",
     "classLevels": {
@@ -8567,7 +8567,7 @@
     "target": "One living creature"
   },
   {
-    "id": "nondetection",
+    "id": "spell:nondetection",
     "name": "Nondetection",
     "school": "abjuration",
     "classLevels": {
@@ -8590,7 +8590,7 @@
     "target": "Creature or object touched"
   },
   {
-    "id": "obscure_object",
+    "id": "spell:obscure_object",
     "name": "Obscure Object",
     "school": "abjuration",
     "classLevels": {
@@ -8614,7 +8614,7 @@
     "target": "One object touched of up to (CASTERLEVEL*100) lbs"
   },
   {
-    "id": "obscuring_mist",
+    "id": "spell:obscuring_mist",
     "name": "Obscuring Mist",
     "school": "conjuration",
     "classLevels": {
@@ -8639,7 +8639,7 @@
     "area": "Cloud spreads in 20-ft. radius from you, 20 ft. high"
   },
   {
-    "id": "open_close",
+    "id": "spell:open_close",
     "name": "Open/Close",
     "school": "transmutation",
     "classLevels": {
@@ -8662,7 +8662,7 @@
     "target": "Object weighing up to 30 lb. or portal that can be opened or closed"
   },
   {
-    "id": "order_s_wrath",
+    "id": "spell:order_s_wrath",
     "name": "Order's Wrath",
     "school": "evocation",
     "classLevels": {
@@ -8685,7 +8685,7 @@
     "area": "Nonlawful creatures within a burst that fills a 30-ft. cube"
   },
   {
-    "id": "overland_flight",
+    "id": "spell:overland_flight",
     "name": "Overland Flight",
     "school": "transmutation",
     "classLevels": {
@@ -8706,7 +8706,7 @@
     "target": "you"
   },
   {
-    "id": "owls_wisdom",
+    "id": "spell:owls_wisdom",
     "name": "Owl's Wisdom",
     "school": "transmutation",
     "classLevels": {
@@ -8732,7 +8732,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "owls_wisdom_mass",
+    "id": "spell:owls_wisdom_mass",
     "name": "Owl's Wisdom, Mass",
     "school": "transmutation",
     "classLevels": {
@@ -8756,7 +8756,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "pass_without_trace",
+    "id": "spell:pass_without_trace",
     "name": "Pass without Trace",
     "school": "transmutation",
     "classLevels": {
@@ -8777,7 +8777,7 @@
     "target": "(CASTERLEVEL) creatures touched"
   },
   {
-    "id": "passwall",
+    "id": "spell:passwall",
     "name": "Passwall",
     "school": "transmutation",
     "classLevels": {
@@ -8799,7 +8799,7 @@
     "target": "5 ft. by 8 ft. opening, (((CASTERLEVEL/3)*5)+10) ft. deep"
   },
   {
-    "id": "permanency",
+    "id": "spell:permanency",
     "name": "Permanency",
     "school": "universal",
     "classLevels": {
@@ -8821,7 +8821,7 @@
     "target": "See text"
   },
   {
-    "id": "permanent_image",
+    "id": "spell:permanent_image",
     "name": "Permanent Image",
     "school": "illusion",
     "classLevels": {
@@ -8845,7 +8845,7 @@
     "area": "Figment that cannot extend beyond a 20-ft. cube + (CASTERLEVEL) 10-ft. cubes [S]"
   },
   {
-    "id": "persistent_image",
+    "id": "spell:persistent_image",
     "name": "Persistent Image",
     "school": "illusion",
     "classLevels": {
@@ -8869,7 +8869,7 @@
     "area": "Visual figment that cannot extend beyond (CASTERLEVEL+4) 10-ft. cubes [S]"
   },
   {
-    "id": "phantasmal_killer",
+    "id": "spell:phantasmal_killer",
     "name": "Phantasmal Killer",
     "school": "illusion",
     "classLevels": {
@@ -8895,7 +8895,7 @@
     "target": "One living creature"
   },
   {
-    "id": "phantom_steed",
+    "id": "spell:phantom_steed",
     "name": "Phantom Steed",
     "school": "conjuration",
     "classLevels": {
@@ -8918,7 +8918,7 @@
     "target": "One quasi-real, horselike creature"
   },
   {
-    "id": "phantom_trap",
+    "id": "spell:phantom_trap",
     "name": "Phantom Trap",
     "school": "illusion",
     "classLevels": {
@@ -8941,7 +8941,7 @@
     "target": "Object touched"
   },
   {
-    "id": "phase_door",
+    "id": "spell:phase_door",
     "name": "Phase Door",
     "school": "conjuration",
     "classLevels": {
@@ -8963,7 +8963,7 @@
     "target": "Ethereal 5 ft. by 8 ft. opening, (((CASTERLEVEL/3)*5)+10) ft. deep"
   },
   {
-    "id": "planar_ally",
+    "id": "spell:planar_ally",
     "name": "Planar Ally",
     "school": "conjuration",
     "classLevels": {
@@ -8988,7 +8988,7 @@
     "target": "1-2 called elementals or outsiders totaling no more than 12 HD, which cannot be more than 30 ft. apart when they appear"
   },
   {
-    "id": "planar_ally_greater",
+    "id": "spell:planar_ally_greater",
     "name": "Planar Ally, Greater",
     "school": "conjuration",
     "classLevels": {
@@ -9013,7 +9013,7 @@
     "target": "Up to three called elementals or outsiders, totaling no more than 18 HD, no two of which can be more than 30 ft. apart when they appear."
   },
   {
-    "id": "planar_ally_lesser",
+    "id": "spell:planar_ally_lesser",
     "name": "Planar Ally, Lesser",
     "school": "conjuration",
     "classLevels": {
@@ -9038,7 +9038,7 @@
     "target": "One called elemental or outsider of 6 HD or less"
   },
   {
-    "id": "planar_binding",
+    "id": "spell:planar_binding",
     "name": "Planar Binding",
     "school": "conjuration",
     "classLevels": {
@@ -9060,7 +9060,7 @@
     "target": "Up to three elementals or outsiders, totaling no more than 12 HD, no two of which can be more than 30 ft. apart when they appear"
   },
   {
-    "id": "planar_binding_greater",
+    "id": "spell:planar_binding_greater",
     "name": "Planar Binding, Greater",
     "school": "conjuration",
     "classLevels": {
@@ -9082,7 +9082,7 @@
     "target": "Up to three elementals or outsiders, totaling no more than 18 HD, no two of which can be more than 30 ft. apart when they appear."
   },
   {
-    "id": "planar_binding_lesser",
+    "id": "spell:planar_binding_lesser",
     "name": "Planar Binding, Lesser",
     "school": "conjuration",
     "classLevels": {
@@ -9104,7 +9104,7 @@
     "target": "One elemental or outsider with 6 HD or less"
   },
   {
-    "id": "plane_shift",
+    "id": "spell:plane_shift",
     "name": "Plane Shift",
     "school": "conjuration",
     "classLevels": {
@@ -9128,7 +9128,7 @@
     "target": "Creature touched, or up to eight willing creatures joining hands"
   },
   {
-    "id": "plant_growth",
+    "id": "spell:plant_growth",
     "name": "Plant Growth",
     "school": "transmutation",
     "classLevels": {
@@ -9149,7 +9149,7 @@
     "target": "See text"
   },
   {
-    "id": "poison",
+    "id": "spell:poison",
     "name": "Poison",
     "school": "necromancy",
     "classLevels": {
@@ -9170,7 +9170,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "polar_ray",
+    "id": "spell:polar_ray",
     "name": "Polar Ray",
     "school": "evocation",
     "classLevels": {
@@ -9195,7 +9195,7 @@
     "effect": "Ray"
   },
   {
-    "id": "polymorph",
+    "id": "spell:polymorph",
     "name": "Polymorph",
     "school": "transmutation",
     "classLevels": {
@@ -9218,7 +9218,7 @@
     "target": "Willing living creature touched"
   },
   {
-    "id": "polymorph_any_object",
+    "id": "spell:polymorph_any_object",
     "name": "Polymorph Any Object",
     "school": "transmutation",
     "classLevels": {
@@ -9240,7 +9240,7 @@
     "target": "One creature, or one nonmagical object of up to (CASTERLEVEL*100) cu. ft"
   },
   {
-    "id": "power_word_blind",
+    "id": "spell:power_word_blind",
     "name": "Power Word Blind",
     "school": "enchantment",
     "classLevels": {
@@ -9265,7 +9265,7 @@
     "target": "One creature with 200 hp or less"
   },
   {
-    "id": "power_word_kill",
+    "id": "spell:power_word_kill",
     "name": "Power Word Kill",
     "school": "enchantment",
     "classLevels": {
@@ -9291,7 +9291,7 @@
     "target": "One living creature with 100 hp or less"
   },
   {
-    "id": "power_word_stun",
+    "id": "spell:power_word_stun",
     "name": "Power Word Stun",
     "school": "enchantment",
     "classLevels": {
@@ -9316,7 +9316,7 @@
     "target": "One creature with 150 hp or less"
   },
   {
-    "id": "prayer",
+    "id": "spell:prayer",
     "name": "Prayer",
     "school": "enchantment",
     "classLevels": {
@@ -9341,7 +9341,7 @@
     "area": "All allies and foes within a 40-ft.-radius burst centered on you"
   },
   {
-    "id": "prestidigitation",
+    "id": "spell:prestidigitation",
     "name": "Prestidigitation",
     "school": "universal",
     "classLevels": {
@@ -9363,7 +9363,7 @@
     "target": "See text"
   },
   {
-    "id": "prismatic_sphere",
+    "id": "spell:prismatic_sphere",
     "name": "Prismatic Sphere",
     "school": "abjuration",
     "classLevels": {
@@ -9384,7 +9384,7 @@
     "area": "10-ft.-radius sphere centered on you"
   },
   {
-    "id": "prismatic_spray",
+    "id": "spell:prismatic_spray",
     "name": "Prismatic Spray",
     "school": "evocation",
     "classLevels": {
@@ -9405,7 +9405,7 @@
     "area": "Cone-shaped burst"
   },
   {
-    "id": "prismatic_wall",
+    "id": "spell:prismatic_wall",
     "name": "Prismatic Wall",
     "school": "abjuration",
     "classLevels": {
@@ -9426,7 +9426,7 @@
     "area": "Wall (CASTERLEVEL*4) ft wide, (CASTERLEVEL*2) ft high"
   },
   {
-    "id": "produce_flame",
+    "id": "spell:produce_flame",
     "name": "Produce Flame",
     "school": "evocation",
     "classLevels": {
@@ -9449,7 +9449,7 @@
     "target": "Flame in your palm"
   },
   {
-    "id": "programmed_image",
+    "id": "spell:programmed_image",
     "name": "Programmed Image",
     "school": "illusion",
     "classLevels": {
@@ -9473,7 +9473,7 @@
     "area": "Visual figment that cannot extend beyond a 20-ft. cube + one 10-ft. cube/level [S]"
   },
   {
-    "id": "project_image",
+    "id": "spell:project_image",
     "name": "Project Image",
     "school": "illusion",
     "classLevels": {
@@ -9497,7 +9497,7 @@
     "target": "One shadow duplicate"
   },
   {
-    "id": "protection_from_arrows",
+    "id": "spell:protection_from_arrows",
     "name": "Protection from Arrows",
     "school": "abjuration",
     "classLevels": {
@@ -9519,7 +9519,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "protection_from_chaos",
+    "id": "spell:protection_from_chaos",
     "name": "Protection from Chaos",
     "school": "abjuration",
     "classLevels": {
@@ -9547,7 +9547,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "protection_from_energy",
+    "id": "spell:protection_from_energy",
     "name": "Protection from Energy",
     "school": "abjuration",
     "classLevels": {
@@ -9571,7 +9571,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "protection_from_evil",
+    "id": "spell:protection_from_evil",
     "name": "Protection from Evil",
     "school": "abjuration",
     "classLevels": {
@@ -9599,7 +9599,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "protection_from_good",
+    "id": "spell:protection_from_good",
     "name": "Protection from Good",
     "school": "abjuration",
     "classLevels": {
@@ -9626,7 +9626,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "protection_from_law",
+    "id": "spell:protection_from_law",
     "name": "Protection from Law",
     "school": "abjuration",
     "classLevels": {
@@ -9653,7 +9653,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "protection_from_spells",
+    "id": "spell:protection_from_spells",
     "name": "Protection from Spells",
     "school": "abjuration",
     "classLevels": {
@@ -9676,7 +9676,7 @@
     "target": "Up to (CASTERLEVEL/4) creatures touched"
   },
   {
-    "id": "prying_eyes",
+    "id": "spell:prying_eyes",
     "name": "Prying Eyes",
     "school": "divination",
     "classLevels": {
@@ -9698,7 +9698,7 @@
     "target": "Ten or more levitating eyes"
   },
   {
-    "id": "prying_eyes_greater",
+    "id": "spell:prying_eyes_greater",
     "name": "Prying Eyes, Greater",
     "school": "divination",
     "classLevels": {
@@ -9720,7 +9720,7 @@
     "target": "Ten or more levitating eyes"
   },
   {
-    "id": "purify_food_and_drink",
+    "id": "spell:purify_food_and_drink",
     "name": "Purify Food and Drink",
     "school": "transmutation",
     "classLevels": {
@@ -9742,7 +9742,7 @@
     "target": "(CASTERLEVEL) cu. ft. of contaminated food and water"
   },
   {
-    "id": "pyrotechnics",
+    "id": "spell:pyrotechnics",
     "name": "Pyrotechnics",
     "school": "transmutation",
     "classLevels": {
@@ -9765,7 +9765,7 @@
     "area": "One fire source, up to a 20-ft. cube"
   },
   {
-    "id": "quench",
+    "id": "spell:quench",
     "name": "Quench",
     "school": "transmutation",
     "classLevels": {
@@ -9785,7 +9785,7 @@
     "area": "(CASTERLEVEL) 20-ft. cubes [S] or one fire-based magic item"
   },
   {
-    "id": "rage",
+    "id": "spell:rage",
     "name": "Rage",
     "school": "enchantment",
     "classLevels": {
@@ -9811,7 +9811,7 @@
     "target": "(CASTERLEVEL/3) willing living creatures, no two of which may be more than 30 ft. apart"
   },
   {
-    "id": "rainbow_pattern",
+    "id": "spell:rainbow_pattern",
     "name": "Rainbow Pattern",
     "school": "illusion",
     "classLevels": {
@@ -9838,7 +9838,7 @@
     "area": "Colorful lights with a 20-ft.-radius spread"
   },
   {
-    "id": "raise_dead",
+    "id": "spell:raise_dead",
     "name": "Raise Dead",
     "school": "conjuration",
     "classLevels": {
@@ -9861,7 +9861,7 @@
     "target": "Dead creature touched"
   },
   {
-    "id": "ray_of_enfeeblement",
+    "id": "spell:ray_of_enfeeblement",
     "name": "Ray of Enfeeblement",
     "school": "necromancy",
     "classLevels": {
@@ -9882,7 +9882,7 @@
     "effect": "Ray"
   },
   {
-    "id": "ray_of_exhaustion",
+    "id": "spell:ray_of_exhaustion",
     "name": "Ray of Exhaustion",
     "school": "necromancy",
     "classLevels": {
@@ -9904,7 +9904,7 @@
     "effect": "Ray"
   },
   {
-    "id": "ray_of_frost",
+    "id": "spell:ray_of_frost",
     "name": "Ray of Frost",
     "school": "evocation",
     "classLevels": {
@@ -9928,7 +9928,7 @@
     "effect": "Ray"
   },
   {
-    "id": "read_magic",
+    "id": "spell:read_magic",
     "name": "Read Magic",
     "school": "divination",
     "classLevels": {
@@ -9956,7 +9956,7 @@
     "target": "you"
   },
   {
-    "id": "reduce_animal",
+    "id": "spell:reduce_animal",
     "name": "Reduce Animal",
     "school": "transmutation",
     "classLevels": {
@@ -9977,7 +9977,7 @@
     "target": "One willing animal of Small, Medium, Large, or Huge size"
   },
   {
-    "id": "reduce_person",
+    "id": "spell:reduce_person",
     "name": "Reduce Person",
     "school": "transmutation",
     "classLevels": {
@@ -9999,7 +9999,7 @@
     "target": "One humanoid creature"
   },
   {
-    "id": "reduce_person_mass",
+    "id": "spell:reduce_person_mass",
     "name": "Reduce Person, Mass",
     "school": "transmutation",
     "classLevels": {
@@ -10021,7 +10021,7 @@
     "target": "(CASTERLEVEL) humanoid creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "refuge",
+    "id": "spell:refuge",
     "name": "Refuge",
     "school": "conjuration",
     "classLevels": {
@@ -10045,7 +10045,7 @@
     "target": "Object touched"
   },
   {
-    "id": "regenerate",
+    "id": "spell:regenerate",
     "name": "Regenerate",
     "school": "conjuration",
     "classLevels": {
@@ -10067,7 +10067,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "reincarnate",
+    "id": "spell:reincarnate",
     "name": "Reincarnate",
     "school": "transmutation",
     "classLevels": {
@@ -10088,7 +10088,7 @@
     "target": "Dead creature touched"
   },
   {
-    "id": "remove_blindness_deafness",
+    "id": "spell:remove_blindness_deafness",
     "name": "Remove Blindness/Deafness",
     "school": "conjuration",
     "classLevels": {
@@ -10110,7 +10110,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "remove_curse",
+    "id": "spell:remove_curse",
     "name": "Remove Curse",
     "school": "abjuration",
     "classLevels": {
@@ -10135,7 +10135,7 @@
     "target": "Creature or item touched"
   },
   {
-    "id": "remove_disease",
+    "id": "spell:remove_disease",
     "name": "Remove Disease",
     "school": "conjuration",
     "classLevels": {
@@ -10159,7 +10159,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "remove_fear",
+    "id": "spell:remove_fear",
     "name": "Remove Fear",
     "school": "abjuration",
     "classLevels": {
@@ -10180,7 +10180,7 @@
     "target": "((CASTERLEVEL/4)+1) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "remove_paralysis",
+    "id": "spell:remove_paralysis",
     "name": "Remove Paralysis",
     "school": "conjuration",
     "classLevels": {
@@ -10202,7 +10202,7 @@
     "target": "Up to four creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "repel_metal_or_stone",
+    "id": "spell:repel_metal_or_stone",
     "name": "Repel Metal or Stone",
     "school": "abjuration",
     "classLevels": {
@@ -10225,7 +10225,7 @@
     "area": "60 ft. line from you"
   },
   {
-    "id": "repel_vermin",
+    "id": "spell:repel_vermin",
     "name": "Repel Vermin",
     "school": "abjuration",
     "classLevels": {
@@ -10248,7 +10248,7 @@
     "area": "10 ft. radius emanation centered on you"
   },
   {
-    "id": "repel_wood",
+    "id": "spell:repel_wood",
     "name": "Repel Wood",
     "school": "transmutation",
     "classLevels": {
@@ -10268,7 +10268,7 @@
     "area": "60 ft. line-shaped emanation from you"
   },
   {
-    "id": "repulsion",
+    "id": "spell:repulsion",
     "name": "Repulsion",
     "school": "abjuration",
     "classLevels": {
@@ -10291,7 +10291,7 @@
     "area": "(CASTERLEVEL*10) ft. radius emanation centered on you"
   },
   {
-    "id": "resilient_sphere",
+    "id": "spell:resilient_sphere",
     "name": "Resilient Sphere",
     "school": "evocation",
     "classLevels": {
@@ -10316,7 +10316,7 @@
     "target": "(CASTERLEVEL) ft. diameter sphere, centered around a creature"
   },
   {
-    "id": "resist_energy",
+    "id": "spell:resist_energy",
     "name": "Resist Energy",
     "school": "abjuration",
     "classLevels": {
@@ -10342,7 +10342,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "resistance",
+    "id": "spell:resistance",
     "name": "Resistance",
     "school": "abjuration",
     "classLevels": {
@@ -10368,7 +10368,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "restoration",
+    "id": "spell:restoration",
     "name": "Restoration",
     "school": "conjuration",
     "classLevels": {
@@ -10392,7 +10392,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "restoration_greater",
+    "id": "spell:restoration_greater",
     "name": "Restoration, Greater",
     "school": "conjuration",
     "classLevels": {
@@ -10414,7 +10414,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "restoration_lesser",
+    "id": "spell:restoration_lesser",
     "name": "Restoration, Lesser",
     "school": "conjuration",
     "classLevels": {
@@ -10437,7 +10437,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "resurrection",
+    "id": "spell:resurrection",
     "name": "Resurrection",
     "school": "conjuration",
     "classLevels": {
@@ -10459,7 +10459,7 @@
     "target": "Dead creature touched"
   },
   {
-    "id": "reverse_gravity",
+    "id": "spell:reverse_gravity",
     "name": "Reverse Gravity",
     "school": "transmutation",
     "classLevels": {
@@ -10482,7 +10482,7 @@
     "area": "Up to (CASTERLEVEL/2) 10-ft. cube [S]"
   },
   {
-    "id": "righteous_might",
+    "id": "spell:righteous_might",
     "name": "Righteous Might",
     "school": "transmutation",
     "classLevels": {
@@ -10502,7 +10502,7 @@
     "target": "you"
   },
   {
-    "id": "rope_trick",
+    "id": "spell:rope_trick",
     "name": "Rope Trick",
     "school": "transmutation",
     "classLevels": {
@@ -10524,7 +10524,7 @@
     "target": "One touched piece of rope from 5 ft. to 30 ft. long"
   },
   {
-    "id": "rusting_grasp",
+    "id": "spell:rusting_grasp",
     "name": "Rusting Grasp",
     "school": "transmutation",
     "classLevels": {
@@ -10544,7 +10544,7 @@
     "target": "One nonmagical ferrous object (or the volume of the object within 3 ft. of the touched point) or one ferrous creature"
   },
   {
-    "id": "sanctuary",
+    "id": "spell:sanctuary",
     "name": "Sanctuary",
     "school": "abjuration",
     "classLevels": {
@@ -10564,7 +10564,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "scare",
+    "id": "spell:scare",
     "name": "Scare",
     "school": "necromancy",
     "classLevels": {
@@ -10591,7 +10591,7 @@
     "target": "(CASTERLEVEL/3) living creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "scintillating_pattern",
+    "id": "spell:scintillating_pattern",
     "name": "Scintillating Pattern",
     "school": "illusion",
     "classLevels": {
@@ -10617,7 +10617,7 @@
     "area": "Colorful lights in a 20-ft.-radius spread"
   },
   {
-    "id": "scorching_ray",
+    "id": "spell:scorching_ray",
     "name": "Scorching Ray",
     "school": "evocation",
     "classLevels": {
@@ -10642,7 +10642,7 @@
     "effect": "(1+min((CASTERLEVEL-3)/4,2)) rays"
   },
   {
-    "id": "screen",
+    "id": "spell:screen",
     "name": "Screen",
     "school": "illusion",
     "classLevels": {
@@ -10664,7 +10664,7 @@
     "area": "(CASTERLEVEL) 30-ft. cubes [S]"
   },
   {
-    "id": "scrying",
+    "id": "spell:scrying",
     "name": "Scrying",
     "school": "divination",
     "classLevels": {
@@ -10691,7 +10691,7 @@
     "target": "Magical sensor"
   },
   {
-    "id": "scrying_greater",
+    "id": "spell:scrying_greater",
     "name": "Scrying, Greater",
     "school": "divination",
     "classLevels": {
@@ -10716,7 +10716,7 @@
     "target": "Magical sensor"
   },
   {
-    "id": "sculpt_sound",
+    "id": "spell:sculpt_sound",
     "name": "Sculpt Sound",
     "school": "transmutation",
     "classLevels": {
@@ -10736,7 +10736,7 @@
     "target": "(CASTERLEVEL) creatures or objects, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "searing_light",
+    "id": "spell:searing_light",
     "name": "Searing Light",
     "school": "evocation",
     "classLevels": {
@@ -10756,7 +10756,7 @@
     "effect": "Ray"
   },
   {
-    "id": "secret_chest",
+    "id": "spell:secret_chest",
     "name": "Secret Chest",
     "school": "conjuration",
     "classLevels": {
@@ -10779,7 +10779,7 @@
     "target": "One chest and up to (CASTERLEVEL) cu. ft. of goods"
   },
   {
-    "id": "secret_page",
+    "id": "spell:secret_page",
     "name": "Secret Page",
     "school": "transmutation",
     "classLevels": {
@@ -10802,7 +10802,7 @@
     "target": "Page touched, up to 3 sq. ft. in size"
   },
   {
-    "id": "secure_shelter",
+    "id": "spell:secure_shelter",
     "name": "Secure Shelter",
     "school": "conjuration",
     "classLevels": {
@@ -10826,7 +10826,7 @@
     "target": "20 ft. square structure"
   },
   {
-    "id": "see_invisibility",
+    "id": "spell:see_invisibility",
     "name": "See Invisibility",
     "school": "divination",
     "classLevels": {
@@ -10850,7 +10850,7 @@
     "target": "you"
   },
   {
-    "id": "seeming",
+    "id": "spell:seeming",
     "name": "Seeming",
     "school": "illusion",
     "classLevels": {
@@ -10873,7 +10873,7 @@
     "target": "(CASTERLEVEL/2) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "sending",
+    "id": "spell:sending",
     "name": "Sending",
     "school": "evocation",
     "classLevels": {
@@ -10896,7 +10896,7 @@
     "target": "One creature"
   },
   {
-    "id": "sepia_snake_sigil",
+    "id": "spell:sepia_snake_sigil",
     "name": "Sepia Snake Sigil",
     "school": "conjuration",
     "classLevels": {
@@ -10923,7 +10923,7 @@
     "target": "One touched book or written work"
   },
   {
-    "id": "sequester",
+    "id": "spell:sequester",
     "name": "Sequester",
     "school": "abjuration",
     "classLevels": {
@@ -10945,7 +10945,7 @@
     "area": "One willing creature or object of up to (CASTERLEVEL*2) ft. cubed"
   },
   {
-    "id": "shades",
+    "id": "spell:shades",
     "name": "Shades",
     "school": "illusion",
     "classLevels": {
@@ -10967,7 +10967,7 @@
     "target": "See text"
   },
   {
-    "id": "shadow_conjuration",
+    "id": "spell:shadow_conjuration",
     "name": "Shadow Conjuration",
     "school": "illusion",
     "classLevels": {
@@ -10990,7 +10990,7 @@
     "target": "See text"
   },
   {
-    "id": "shadow_conjuration_greater",
+    "id": "spell:shadow_conjuration_greater",
     "name": "Shadow Conjuration, Greater",
     "school": "illusion",
     "classLevels": {
@@ -11012,7 +11012,7 @@
     "target": "See text"
   },
   {
-    "id": "shadow_evocation",
+    "id": "spell:shadow_evocation",
     "name": "Shadow Evocation",
     "school": "illusion",
     "classLevels": {
@@ -11035,7 +11035,7 @@
     "target": "See text"
   },
   {
-    "id": "shadow_evocation_greater",
+    "id": "spell:shadow_evocation_greater",
     "name": "Shadow Evocation, Greater",
     "school": "illusion",
     "classLevels": {
@@ -11057,7 +11057,7 @@
     "target": "See text"
   },
   {
-    "id": "shadow_walk",
+    "id": "spell:shadow_walk",
     "name": "Shadow Walk",
     "school": "illusion",
     "classLevels": {
@@ -11080,7 +11080,7 @@
     "target": "Up to (CASTERLEVEL) touched creatures"
   },
   {
-    "id": "shambler",
+    "id": "spell:shambler",
     "name": "Shambler",
     "school": "conjuration",
     "classLevels": {
@@ -11101,7 +11101,7 @@
     "target": "Three or more shambling mounds, no two of which can be more than 30 ft. apart; see text"
   },
   {
-    "id": "shapechange",
+    "id": "spell:shapechange",
     "name": "Shapechange",
     "school": "transmutation",
     "classLevels": {
@@ -11124,7 +11124,7 @@
     "target": "you"
   },
   {
-    "id": "shatter",
+    "id": "spell:shatter",
     "name": "Shatter",
     "school": "evocation",
     "classLevels": {
@@ -11151,7 +11151,7 @@
     "area": "5-ft.-radius spread; or one solid object or one crystalline creature"
   },
   {
-    "id": "shield",
+    "id": "spell:shield",
     "name": "Shield",
     "school": "abjuration",
     "classLevels": {
@@ -11175,7 +11175,7 @@
     "target": "you"
   },
   {
-    "id": "shield_of_faith",
+    "id": "spell:shield_of_faith",
     "name": "Shield of Faith",
     "school": "abjuration",
     "classLevels": {
@@ -11196,7 +11196,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "shield_of_law",
+    "id": "spell:shield_of_law",
     "name": "Shield of Law",
     "school": "abjuration",
     "classLevels": {
@@ -11220,7 +11220,7 @@
     "area": "(CASTERLEVEL) creatures in a 20-ft.-radius burst centered on you"
   },
   {
-    "id": "shield_other",
+    "id": "spell:shield_other",
     "name": "Shield Other",
     "school": "abjuration",
     "classLevels": {
@@ -11242,7 +11242,7 @@
     "target": "One creature"
   },
   {
-    "id": "shillelagh",
+    "id": "spell:shillelagh",
     "name": "Shillelagh",
     "school": "transmutation",
     "classLevels": {
@@ -11262,7 +11262,7 @@
     "target": "One touched nonmagical oak club or quarterstaff"
   },
   {
-    "id": "shocking_grasp",
+    "id": "spell:shocking_grasp",
     "name": "Shocking Grasp",
     "school": "evocation",
     "classLevels": {
@@ -11286,7 +11286,7 @@
     "target": "Creature or object touched"
   },
   {
-    "id": "shout",
+    "id": "spell:shout",
     "name": "Shout",
     "school": "evocation",
     "classLevels": {
@@ -11311,7 +11311,7 @@
     "area": "Cone-shaped burst"
   },
   {
-    "id": "shout_greater",
+    "id": "spell:shout_greater",
     "name": "Shout, Greater",
     "school": "evocation",
     "classLevels": {
@@ -11337,7 +11337,7 @@
     "area": "Cone-shaped burst"
   },
   {
-    "id": "shrink_item",
+    "id": "spell:shrink_item",
     "name": "Shrink Item",
     "school": "transmutation",
     "classLevels": {
@@ -11358,7 +11358,7 @@
     "target": "One touched object of up to (CASTERLEVEL*2) cu. ft"
   },
   {
-    "id": "silence",
+    "id": "spell:silence",
     "name": "Silence",
     "school": "illusion",
     "classLevels": {
@@ -11380,7 +11380,7 @@
     "area": "20 ft. radius emanation centered on a creature, object, or point in space"
   },
   {
-    "id": "silent_image",
+    "id": "spell:silent_image",
     "name": "Silent Image",
     "school": "illusion",
     "classLevels": {
@@ -11404,7 +11404,7 @@
     "area": "Visual figment that cannot extend beyond four 10-ft. cubes + one 10-ft. cube/level [S]"
   },
   {
-    "id": "simulacrum",
+    "id": "spell:simulacrum",
     "name": "Simulacrum",
     "school": "illusion",
     "classLevels": {
@@ -11428,7 +11428,7 @@
     "target": "One duplicate creature"
   },
   {
-    "id": "slay_living",
+    "id": "spell:slay_living",
     "name": "Slay Living",
     "school": "necromancy",
     "classLevels": {
@@ -11451,7 +11451,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "sleep",
+    "id": "spell:sleep",
     "name": "Sleep",
     "school": "enchantment",
     "classLevels": {
@@ -11479,7 +11479,7 @@
     "area": "One or more living creatures within a 10-ft.-radius burst"
   },
   {
-    "id": "sleet_storm",
+    "id": "spell:sleet_storm",
     "name": "Sleet Storm",
     "school": "conjuration",
     "classLevels": {
@@ -11506,7 +11506,7 @@
     "area": "Cylinder (40-ft. radius, 20 ft. high)"
   },
   {
-    "id": "slow",
+    "id": "spell:slow",
     "name": "Slow",
     "school": "transmutation",
     "classLevels": {
@@ -11529,7 +11529,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "snare",
+    "id": "spell:snare",
     "name": "Snare",
     "school": "transmutation",
     "classLevels": {
@@ -11550,7 +11550,7 @@
     "target": "Touched nonmagical circle of vine, rope, or thong with a 2 ft. diameter + 2 ft./level"
   },
   {
-    "id": "soften_earth_and_stone",
+    "id": "spell:soften_earth_and_stone",
     "name": "Soften Earth and Stone",
     "school": "transmutation",
     "classLevels": {
@@ -11573,7 +11573,7 @@
     "target": "(CASTERLEVEL*10) ft. square; see text"
   },
   {
-    "id": "solid_fog",
+    "id": "spell:solid_fog",
     "name": "Solid Fog",
     "school": "conjuration",
     "classLevels": {
@@ -11596,7 +11596,7 @@
     "area": "Fog spreads in 20-ft. radius, 20 ft. high"
   },
   {
-    "id": "song_of_discord",
+    "id": "spell:song_of_discord",
     "name": "Song of Discord",
     "school": "enchantment",
     "classLevels": {
@@ -11621,7 +11621,7 @@
     "area": "Creatures within a 20-ft.-radius spread"
   },
   {
-    "id": "soul_bind",
+    "id": "spell:soul_bind",
     "name": "Soul Bind",
     "school": "necromancy",
     "classLevels": {
@@ -11644,7 +11644,7 @@
     "target": "Corpse"
   },
   {
-    "id": "sound_burst",
+    "id": "spell:sound_burst",
     "name": "Sound Burst",
     "school": "evocation",
     "classLevels": {
@@ -11669,7 +11669,7 @@
     "area": "10-ft.-radius spread"
   },
   {
-    "id": "speak_with_animals",
+    "id": "spell:speak_with_animals",
     "name": "Speak with Animals",
     "school": "divination",
     "classLevels": {
@@ -11691,7 +11691,7 @@
     "target": "you"
   },
   {
-    "id": "speak_with_dead",
+    "id": "spell:speak_with_dead",
     "name": "Speak with Dead",
     "school": "necromancy",
     "classLevels": {
@@ -11714,7 +11714,7 @@
     "target": "One dead creature"
   },
   {
-    "id": "speak_with_plants",
+    "id": "spell:speak_with_plants",
     "name": "Speak with Plants",
     "school": "divination",
     "classLevels": {
@@ -11736,7 +11736,7 @@
     "target": "you"
   },
   {
-    "id": "spectral_hand",
+    "id": "spell:spectral_hand",
     "name": "Spectral Hand",
     "school": "necromancy",
     "classLevels": {
@@ -11757,7 +11757,7 @@
     "target": "One spectral hand"
   },
   {
-    "id": "spell_immunity",
+    "id": "spell:spell_immunity",
     "name": "Spell Immunity",
     "school": "abjuration",
     "classLevels": {
@@ -11777,7 +11777,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "spell_immunity_greater",
+    "id": "spell:spell_immunity_greater",
     "name": "Spell Immunity, Greater",
     "school": "abjuration",
     "classLevels": {
@@ -11797,7 +11797,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "spell_resistance",
+    "id": "spell:spell_resistance",
     "name": "Spell Resistance",
     "school": "abjuration",
     "classLevels": {
@@ -11817,7 +11817,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "spell_turning",
+    "id": "spell:spell_turning",
     "name": "Spell Turning",
     "school": "abjuration",
     "classLevels": {
@@ -11839,7 +11839,7 @@
     "target": "you"
   },
   {
-    "id": "spellstaff",
+    "id": "spell:spellstaff",
     "name": "Spellstaff",
     "school": "transmutation",
     "classLevels": {
@@ -11860,7 +11860,7 @@
     "target": "Wooden quarterstaff touched"
   },
   {
-    "id": "spider_climb",
+    "id": "spell:spider_climb",
     "name": "Spider Climb",
     "school": "transmutation",
     "classLevels": {
@@ -11883,7 +11883,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "spike_growth",
+    "id": "spell:spike_growth",
     "name": "Spike Growth",
     "school": "transmutation",
     "classLevels": {
@@ -11904,7 +11904,7 @@
     "target": "(CASTERLEVEL) 20-ft. squares"
   },
   {
-    "id": "spike_stones",
+    "id": "spell:spike_stones",
     "name": "Spike Stones",
     "school": "transmutation",
     "classLevels": {
@@ -11927,7 +11927,7 @@
     "target": "(CASTERLEVEL) 20-ft. squares"
   },
   {
-    "id": "spiritual_weapon",
+    "id": "spell:spiritual_weapon",
     "name": "Spiritual Weapon",
     "school": "evocation",
     "classLevels": {
@@ -11950,7 +11950,7 @@
     "target": "Magic weapon of force"
   },
   {
-    "id": "statue",
+    "id": "spell:statue",
     "name": "Statue",
     "school": "transmutation",
     "classLevels": {
@@ -11972,7 +11972,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "status",
+    "id": "spell:status",
     "name": "Status",
     "school": "divination",
     "classLevels": {
@@ -11992,7 +11992,7 @@
     "target": "(CASTERLEVEL/3) living creatures touched"
   },
   {
-    "id": "status_greater",
+    "id": "spell:status_greater",
     "name": "Status, Greater",
     "school": "divination",
     "classLevels": {
@@ -12013,7 +12013,7 @@
     "target": "(CASTERLEVEL/3) living creatures touched"
   },
   {
-    "id": "stinking_cloud",
+    "id": "spell:stinking_cloud",
     "name": "Stinking Cloud",
     "school": "conjuration",
     "classLevels": {
@@ -12036,7 +12036,7 @@
     "area": "Cloud spreads in 20-ft. radius, 20 ft. high"
   },
   {
-    "id": "stone_shape",
+    "id": "spell:stone_shape",
     "name": "Stone Shape",
     "school": "transmutation",
     "classLevels": {
@@ -12063,7 +12063,7 @@
     "target": "Stone or stone object touched, up to (CASTERLEVEL+10) cu. ft."
   },
   {
-    "id": "stone_tell",
+    "id": "spell:stone_tell",
     "name": "Stone Tell",
     "school": "divination",
     "classLevels": {
@@ -12083,7 +12083,7 @@
     "target": "you"
   },
   {
-    "id": "stone_to_flesh",
+    "id": "spell:stone_to_flesh",
     "name": "Stone to Flesh",
     "school": "transmutation",
     "classLevels": {
@@ -12105,7 +12105,7 @@
     "area": "One petrified creature or a cylinder of stone from 1 ft. to 3 ft. in diameter and up to 10 ft. long"
   },
   {
-    "id": "stoneskin",
+    "id": "spell:stoneskin",
     "name": "Stoneskin",
     "school": "abjuration",
     "classLevels": {
@@ -12129,7 +12129,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "storm_of_vengeance",
+    "id": "spell:storm_of_vengeance",
     "name": "Storm of Vengeance",
     "school": "conjuration",
     "classLevels": {
@@ -12151,7 +12151,7 @@
     "area": "360-ft.-radius storm cloud"
   },
   {
-    "id": "suggestion",
+    "id": "spell:suggestion",
     "name": "Suggestion",
     "school": "enchantment",
     "classLevels": {
@@ -12179,7 +12179,7 @@
     "target": "One living creature"
   },
   {
-    "id": "suggestion_mass",
+    "id": "spell:suggestion_mass",
     "name": "Suggestion, Mass",
     "school": "enchantment",
     "classLevels": {
@@ -12203,7 +12203,7 @@
     "target": "(CASTERLEVEL) creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_instrument",
+    "id": "spell:summon_instrument",
     "name": "Summon Instrument",
     "school": "conjuration",
     "classLevels": {
@@ -12224,7 +12224,7 @@
     "target": "One summoned handheld musical instrument"
   },
   {
-    "id": "summon_monster_i",
+    "id": "spell:summon_monster_i",
     "name": "Summon Monster I",
     "school": "conjuration",
     "classLevels": {
@@ -12249,7 +12249,7 @@
     "target": "One summoned creature"
   },
   {
-    "id": "summon_monster_ii",
+    "id": "spell:summon_monster_ii",
     "name": "Summon Monster II",
     "school": "conjuration",
     "classLevels": {
@@ -12274,7 +12274,7 @@
     "target": "One or more summoned creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_monster_iii",
+    "id": "spell:summon_monster_iii",
     "name": "Summon Monster III",
     "school": "conjuration",
     "classLevels": {
@@ -12299,7 +12299,7 @@
     "target": "One or more summoned creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_monster_iv",
+    "id": "spell:summon_monster_iv",
     "name": "Summon Monster IV",
     "school": "conjuration",
     "classLevels": {
@@ -12324,7 +12324,7 @@
     "target": "One or more summoned creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_monster_ix",
+    "id": "spell:summon_monster_ix",
     "name": "Summon Monster IX",
     "school": "conjuration",
     "classLevels": {
@@ -12348,7 +12348,7 @@
     "target": "One or more summoned creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_monster_v",
+    "id": "spell:summon_monster_v",
     "name": "Summon Monster V",
     "school": "conjuration",
     "classLevels": {
@@ -12373,7 +12373,7 @@
     "target": "One or more summoned creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_monster_vi",
+    "id": "spell:summon_monster_vi",
     "name": "Summon Monster VI",
     "school": "conjuration",
     "classLevels": {
@@ -12398,7 +12398,7 @@
     "target": "One or more summoned creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_monster_vii",
+    "id": "spell:summon_monster_vii",
     "name": "Summon Monster VII",
     "school": "conjuration",
     "classLevels": {
@@ -12422,7 +12422,7 @@
     "target": "One or more summoned creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_monster_viii",
+    "id": "spell:summon_monster_viii",
     "name": "Summon Monster VIII",
     "school": "conjuration",
     "classLevels": {
@@ -12446,7 +12446,7 @@
     "target": "One or more summoned creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_natures_ally_i",
+    "id": "spell:summon_natures_ally_i",
     "name": "Summon Nature's Ally I",
     "school": "conjuration",
     "classLevels": {
@@ -12468,7 +12468,7 @@
     "target": "One summoned creature"
   },
   {
-    "id": "summon_natures_ally_ii",
+    "id": "spell:summon_natures_ally_ii",
     "name": "Summon Nature's Ally II",
     "school": "conjuration",
     "classLevels": {
@@ -12490,7 +12490,7 @@
     "target": "One or more creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_natures_ally_iii",
+    "id": "spell:summon_natures_ally_iii",
     "name": "Summon Nature's Ally III",
     "school": "conjuration",
     "classLevels": {
@@ -12512,7 +12512,7 @@
     "target": "One or more creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_natures_ally_iv",
+    "id": "spell:summon_natures_ally_iv",
     "name": "Summon Nature's Ally IV",
     "school": "conjuration",
     "classLevels": {
@@ -12534,7 +12534,7 @@
     "target": "One or more creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_natures_ally_ix",
+    "id": "spell:summon_natures_ally_ix",
     "name": "Summon Nature's Ally IX",
     "school": "conjuration",
     "classLevels": {
@@ -12555,7 +12555,7 @@
     "target": "One or more creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_natures_ally_v",
+    "id": "spell:summon_natures_ally_v",
     "name": "Summon Nature's Ally V",
     "school": "conjuration",
     "classLevels": {
@@ -12576,7 +12576,7 @@
     "target": "One or more creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_natures_ally_vi",
+    "id": "spell:summon_natures_ally_vi",
     "name": "Summon Nature's Ally VI",
     "school": "conjuration",
     "classLevels": {
@@ -12597,7 +12597,7 @@
     "target": "One or more creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_natures_ally_vii",
+    "id": "spell:summon_natures_ally_vii",
     "name": "Summon Nature's Ally VII",
     "school": "conjuration",
     "classLevels": {
@@ -12618,7 +12618,7 @@
     "target": "One or more creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_natures_ally_viii",
+    "id": "spell:summon_natures_ally_viii",
     "name": "Summon Nature's Ally VIII",
     "school": "conjuration",
     "classLevels": {
@@ -12639,7 +12639,7 @@
     "target": "One or more creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "summon_swarm",
+    "id": "spell:summon_swarm",
     "name": "Summon Swarm",
     "school": "conjuration",
     "classLevels": {
@@ -12664,7 +12664,7 @@
     "target": "One swarm of bats, rats, or spiders"
   },
   {
-    "id": "sunbeam",
+    "id": "spell:sunbeam",
     "name": "Sunbeam",
     "school": "evocation",
     "classLevels": {
@@ -12687,7 +12687,7 @@
     "area": "Line from your hand"
   },
   {
-    "id": "sunburst",
+    "id": "spell:sunburst",
     "name": "Sunburst",
     "school": "evocation",
     "classLevels": {
@@ -12713,7 +12713,7 @@
     "area": "80-ft.-radius burst"
   },
   {
-    "id": "surelife",
+    "id": "spell:surelife",
     "name": "Surelife",
     "school": "abjuration",
     "classLevels": {
@@ -12735,7 +12735,7 @@
     "target": "You"
   },
   {
-    "id": "symbol_of_death",
+    "id": "spell:symbol_of_death",
     "name": "Symbol of Death",
     "school": "necromancy",
     "classLevels": {
@@ -12761,7 +12761,7 @@
     "target": "One symbol"
   },
   {
-    "id": "symbol_of_fear",
+    "id": "spell:symbol_of_fear",
     "name": "Symbol of Fear",
     "school": "necromancy",
     "classLevels": {
@@ -12788,7 +12788,7 @@
     "target": "One symbol"
   },
   {
-    "id": "symbol_of_insanity",
+    "id": "spell:symbol_of_insanity",
     "name": "Symbol of Insanity",
     "school": "enchantment",
     "classLevels": {
@@ -12815,7 +12815,7 @@
     "target": "One symbol"
   },
   {
-    "id": "symbol_of_pain",
+    "id": "spell:symbol_of_pain",
     "name": "Symbol of Pain",
     "school": "necromancy",
     "classLevels": {
@@ -12841,7 +12841,7 @@
     "target": "One symbol"
   },
   {
-    "id": "symbol_of_persuasion",
+    "id": "spell:symbol_of_persuasion",
     "name": "Symbol of Persuasion",
     "school": "enchantment",
     "classLevels": {
@@ -12868,7 +12868,7 @@
     "target": "One symbol"
   },
   {
-    "id": "symbol_of_sleep",
+    "id": "spell:symbol_of_sleep",
     "name": "Symbol of Sleep",
     "school": "enchantment",
     "classLevels": {
@@ -12895,7 +12895,7 @@
     "target": "One symbol"
   },
   {
-    "id": "symbol_of_stunning",
+    "id": "spell:symbol_of_stunning",
     "name": "Symbol of Stunning",
     "school": "enchantment",
     "classLevels": {
@@ -12922,7 +12922,7 @@
     "target": "One symbol"
   },
   {
-    "id": "symbol_of_weakness",
+    "id": "spell:symbol_of_weakness",
     "name": "Symbol of Weakness",
     "school": "necromancy",
     "classLevels": {
@@ -12948,7 +12948,7 @@
     "target": "One symbol"
   },
   {
-    "id": "sympathetic_vibration",
+    "id": "spell:sympathetic_vibration",
     "name": "Sympathetic Vibration",
     "school": "evocation",
     "classLevels": {
@@ -12972,7 +12972,7 @@
     "target": "One freestanding structure"
   },
   {
-    "id": "sympathy",
+    "id": "spell:sympathy",
     "name": "Sympathy",
     "school": "enchantment",
     "classLevels": {
@@ -12999,7 +12999,7 @@
     "area": "One location ((CASTERLEVEL) 10-ft. cubes) or one object"
   },
   {
-    "id": "telekinesis",
+    "id": "spell:telekinesis",
     "name": "Telekinesis",
     "school": "transmutation",
     "classLevels": {
@@ -13020,7 +13020,7 @@
     "target": "See text"
   },
   {
-    "id": "telekinetic_sphere",
+    "id": "spell:telekinetic_sphere",
     "name": "Telekinetic Sphere",
     "school": "evocation",
     "classLevels": {
@@ -13045,7 +13045,7 @@
     "target": "(CASTERLEVEL) ft. diameter sphere, centered around creatures or objects"
   },
   {
-    "id": "telepathic_bond",
+    "id": "spell:telepathic_bond",
     "name": "Telepathic Bond",
     "school": "divination",
     "classLevels": {
@@ -13067,7 +13067,7 @@
     "target": "You plus (CASTERLEVEL/3) willing creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "teleport",
+    "id": "spell:teleport",
     "name": "Teleport",
     "school": "conjuration",
     "classLevels": {
@@ -13089,7 +13089,7 @@
     "target": "You and touched objects or other touched willing creatures"
   },
   {
-    "id": "teleport_greater",
+    "id": "spell:teleport_greater",
     "name": "Teleport, Greater",
     "school": "conjuration",
     "classLevels": {
@@ -13111,7 +13111,7 @@
     "target": "You and touched objects or other touched willing creatures"
   },
   {
-    "id": "teleport_object",
+    "id": "spell:teleport_object",
     "name": "Teleport Object",
     "school": "conjuration",
     "classLevels": {
@@ -13133,7 +13133,7 @@
     "target": "One touched object of up to (CASTERLEVEL*50) lbs and (CASTERLEVEL*3)cu. ft."
   },
   {
-    "id": "teleportation_circle",
+    "id": "spell:teleportation_circle",
     "name": "Teleportation Circle",
     "school": "conjuration",
     "classLevels": {
@@ -13156,7 +13156,7 @@
     "area": "5-ft.-radius circle that teleports those who activate it"
   },
   {
-    "id": "temporal_stasis",
+    "id": "spell:temporal_stasis",
     "name": "Temporal Stasis",
     "school": "transmutation",
     "classLevels": {
@@ -13178,7 +13178,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "time_stop",
+    "id": "spell:time_stop",
     "name": "Time Stop",
     "school": "transmutation",
     "classLevels": {
@@ -13199,7 +13199,7 @@
     "target": "you"
   },
   {
-    "id": "tiny_hut",
+    "id": "spell:tiny_hut",
     "name": "Tiny Hut",
     "school": "evocation",
     "classLevels": {
@@ -13225,7 +13225,7 @@
     "area": "20-ft.-radius sphere centered on your location"
   },
   {
-    "id": "tongues",
+    "id": "spell:tongues",
     "name": "Tongues",
     "school": "divination",
     "classLevels": {
@@ -13250,7 +13250,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "touch_of_fatigue",
+    "id": "spell:touch_of_fatigue",
     "name": "Touch of Fatigue",
     "school": "necromancy",
     "classLevels": {
@@ -13273,7 +13273,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "touch_of_idiocy",
+    "id": "spell:touch_of_idiocy",
     "name": "Touch of Idiocy",
     "school": "enchantment",
     "classLevels": {
@@ -13298,7 +13298,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "touch_of_madness",
+    "id": "spell:touch_of_madness",
     "name": "Touch of Madness",
     "school": "enchantment",
     "subschool": "compulsion",
@@ -13322,7 +13322,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "transformation",
+    "id": "spell:transformation",
     "name": "Transformation",
     "school": "transmutation",
     "classLevels": {
@@ -13344,7 +13344,7 @@
     "target": "you"
   },
   {
-    "id": "transmute_metal_to_wood",
+    "id": "spell:transmute_metal_to_wood",
     "name": "Transmute Metal to Wood",
     "school": "transmutation",
     "classLevels": {
@@ -13364,7 +13364,7 @@
     "area": "All metal objects within a 40-ft.-radius burst"
   },
   {
-    "id": "transmute_mud_to_rock",
+    "id": "spell:transmute_mud_to_rock",
     "name": "Transmute Mud to Rock",
     "school": "transmutation",
     "classLevels": {
@@ -13390,7 +13390,7 @@
     "area": "Up to (CASTERLEVEL*2) 10 ft. cubes [S]"
   },
   {
-    "id": "transmute_rock_to_mud",
+    "id": "spell:transmute_rock_to_mud",
     "name": "Transmute Rock to Mud",
     "school": "transmutation",
     "classLevels": {
@@ -13416,7 +13416,7 @@
     "area": "Up to (CASTERLEVEL*2) 10 ft. cubes [S]"
   },
   {
-    "id": "transport_via_plants",
+    "id": "spell:transport_via_plants",
     "name": "Transport via Plants",
     "school": "conjuration",
     "classLevels": {
@@ -13437,7 +13437,7 @@
     "target": "You and touched objects or other touched willing creatures"
   },
   {
-    "id": "trap_the_soul",
+    "id": "spell:trap_the_soul",
     "name": "Trap the Soul",
     "school": "conjuration",
     "classLevels": {
@@ -13460,7 +13460,7 @@
     "target": "One creature"
   },
   {
-    "id": "tree_shape",
+    "id": "spell:tree_shape",
     "name": "Tree Shape",
     "school": "transmutation",
     "classLevels": {
@@ -13481,7 +13481,7 @@
     "target": "you"
   },
   {
-    "id": "tree_stride",
+    "id": "spell:tree_stride",
     "name": "Tree Stride",
     "school": "conjuration",
     "classLevels": {
@@ -13503,7 +13503,7 @@
     "target": "you"
   },
   {
-    "id": "true_creation",
+    "id": "spell:true_creation",
     "name": "True Creation",
     "school": "conjuration",
     "subschool": "creation",
@@ -13528,7 +13528,7 @@
     "effect": "Unattended, nonmagical object of nonliving matter, up to 1 cu. ft./level"
   },
   {
-    "id": "true_resurrection",
+    "id": "spell:true_resurrection",
     "name": "True Resurrection",
     "school": "conjuration",
     "classLevels": {
@@ -13550,7 +13550,7 @@
     "target": "Dead creature touched"
   },
   {
-    "id": "true_seeing",
+    "id": "spell:true_seeing",
     "name": "True Seeing",
     "school": "divination",
     "classLevels": {
@@ -13575,7 +13575,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "true_strike",
+    "id": "spell:true_strike",
     "name": "True Strike",
     "school": "divination",
     "classLevels": {
@@ -13597,7 +13597,7 @@
     "target": "you"
   },
   {
-    "id": "undeath_to_death",
+    "id": "spell:undeath_to_death",
     "name": "Undeath to Death",
     "school": "necromancy",
     "classLevels": {
@@ -13623,7 +13623,7 @@
     "area": "Several undead creatures within a 40-ft.-radius burst"
   },
   {
-    "id": "undetectable_alignment",
+    "id": "spell:undetectable_alignment",
     "name": "Undetectable Alignment",
     "school": "abjuration",
     "classLevels": {
@@ -13645,7 +13645,7 @@
     "target": "One creature or object"
   },
   {
-    "id": "unhallow",
+    "id": "spell:unhallow",
     "name": "Unhallow",
     "school": "evocation",
     "classLevels": {
@@ -13670,7 +13670,7 @@
     "area": "40-ft. radius emanating from the touched point"
   },
   {
-    "id": "unholy_aura",
+    "id": "spell:unholy_aura",
     "name": "Unholy Aura",
     "school": "abjuration",
     "classLevels": {
@@ -13694,7 +13694,7 @@
     "area": "(CASTERLEVEL) creatures in a 20-ft.-radius burst centered on you"
   },
   {
-    "id": "unholy_blight",
+    "id": "spell:unholy_blight",
     "name": "Unholy Blight",
     "school": "evocation",
     "classLevels": {
@@ -13717,7 +13717,7 @@
     "area": "20-ft.-radius spread"
   },
   {
-    "id": "unseen_servant",
+    "id": "spell:unseen_servant",
     "name": "Unseen Servant",
     "school": "conjuration",
     "classLevels": {
@@ -13741,7 +13741,7 @@
     "target": "One invisible, mindless, shapeless servant"
   },
   {
-    "id": "vampiric_touch",
+    "id": "spell:vampiric_touch",
     "name": "Vampiric Touch",
     "school": "necromancy",
     "classLevels": {
@@ -13762,7 +13762,7 @@
     "target": "Living creature touched"
   },
   {
-    "id": "veil",
+    "id": "spell:veil",
     "name": "Veil",
     "school": "illusion",
     "classLevels": {
@@ -13785,7 +13785,7 @@
     "target": "One or more creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "ventriloquism",
+    "id": "spell:ventriloquism",
     "name": "Ventriloquism",
     "school": "illusion",
     "classLevels": {
@@ -13809,7 +13809,7 @@
     "target": "Intelligible sound, usually speech"
   },
   {
-    "id": "virtue",
+    "id": "spell:virtue",
     "name": "Virtue",
     "school": "transmutation",
     "classLevels": {
@@ -13831,7 +13831,7 @@
     "target": "Creature touched"
   },
   {
-    "id": "vision",
+    "id": "spell:vision",
     "name": "Vision",
     "school": "divination",
     "classLevels": {
@@ -13854,7 +13854,7 @@
     "target": "you"
   },
   {
-    "id": "wail_of_the_banshee",
+    "id": "spell:wail_of_the_banshee",
     "name": "Wail of the Banshee",
     "school": "necromancy",
     "classLevels": {
@@ -13879,7 +13879,7 @@
     "area": "(CASTERLEVEL) living creatures within a 40-ft.-radius spread"
   },
   {
-    "id": "wall_of_fire",
+    "id": "spell:wall_of_fire",
     "name": "Wall of Fire",
     "school": "evocation",
     "classLevels": {
@@ -13906,7 +13906,7 @@
     "area": "Opaque sheet of flame up to (CASTERLEVEL*20) ft. long or a ring of fire with a radius of up to ((CASTERLEVEL/2)*5) ft; either form 20 ft. high"
   },
   {
-    "id": "wall_of_force",
+    "id": "spell:wall_of_force",
     "name": "Wall of Force",
     "school": "evocation",
     "classLevels": {
@@ -13931,7 +13931,7 @@
     "area": "Wall whose area is up to (CASTERLEVEL) 10-ft. squares"
   },
   {
-    "id": "wall_of_ice",
+    "id": "spell:wall_of_ice",
     "name": "Wall of Ice",
     "school": "evocation",
     "classLevels": {
@@ -13956,7 +13956,7 @@
     "area": "Anchored plane of ice, up to (CASTERLEVEL) 10-ft. squares, or hemisphere of ice with a radius of up to (CASTERLEVEL+3) ft"
   },
   {
-    "id": "wall_of_iron",
+    "id": "spell:wall_of_iron",
     "name": "Wall of Iron",
     "school": "conjuration",
     "classLevels": {
@@ -13979,7 +13979,7 @@
     "area": "Iron wall whose area is up to (CASTERLEVEL) 5-ft. squares; see text"
   },
   {
-    "id": "wall_of_stone",
+    "id": "spell:wall_of_stone",
     "name": "Wall of Stone",
     "school": "conjuration",
     "classLevels": {
@@ -14008,7 +14008,7 @@
     "area": "Stone wall whose area is up to (CASTERLEVEL) 5-ft. squares [S]"
   },
   {
-    "id": "wall_of_thorns",
+    "id": "spell:wall_of_thorns",
     "name": "Wall of Thorns",
     "school": "conjuration",
     "classLevels": {
@@ -14029,7 +14029,7 @@
     "area": "Wall of thorny brush, up to (CASTERLEVEL) 10-ft. cubes [S]"
   },
   {
-    "id": "warp_wood",
+    "id": "spell:warp_wood",
     "name": "Warp Wood",
     "school": "transmutation",
     "classLevels": {
@@ -14049,7 +14049,7 @@
     "area": "(CASTERLEVEL) Small wooden objects, all within a 20-ft. radius"
   },
   {
-    "id": "water_breathing",
+    "id": "spell:water_breathing",
     "name": "Water Breathing",
     "school": "transmutation",
     "classLevels": {
@@ -14073,7 +14073,7 @@
     "target": "Living creatures touched"
   },
   {
-    "id": "water_walk",
+    "id": "spell:water_walk",
     "name": "Water Walk",
     "school": "transmutation",
     "classLevels": {
@@ -14097,7 +14097,7 @@
     "target": "(CASTERLEVEL) touched creatures"
   },
   {
-    "id": "waves_of_exhaustion",
+    "id": "spell:waves_of_exhaustion",
     "name": "Waves of Exhaustion",
     "school": "necromancy",
     "classLevels": {
@@ -14118,7 +14118,7 @@
     "area": "Cone-shaped burst"
   },
   {
-    "id": "waves_of_fatigue",
+    "id": "spell:waves_of_fatigue",
     "name": "Waves of Fatigue",
     "school": "necromancy",
     "classLevels": {
@@ -14139,7 +14139,7 @@
     "area": "Cone-shaped burst"
   },
   {
-    "id": "web",
+    "id": "spell:web",
     "name": "Web",
     "school": "conjuration",
     "classLevels": {
@@ -14163,7 +14163,7 @@
     "area": "Webs in a 20-ft.-radius spread"
   },
   {
-    "id": "weird",
+    "id": "spell:weird",
     "name": "Weird",
     "school": "illusion",
     "classLevels": {
@@ -14189,7 +14189,7 @@
     "target": "Any number of creatures, no two of which can be more than 30 ft. apart"
   },
   {
-    "id": "whirlwind",
+    "id": "spell:whirlwind",
     "name": "Whirlwind",
     "school": "evocation",
     "classLevels": {
@@ -14212,7 +14212,7 @@
     "target": "Cyclone 10 ft. wide at base, 30 ft. wide at top, and 30 ft. tall"
   },
   {
-    "id": "whispering_wind",
+    "id": "spell:whispering_wind",
     "name": "Whispering Wind",
     "school": "transmutation",
     "classLevels": {
@@ -14237,7 +14237,7 @@
     "area": "10-ft.-radius spread"
   },
   {
-    "id": "wind_walk",
+    "id": "spell:wind_walk",
     "name": "Wind Walk",
     "school": "transmutation",
     "classLevels": {
@@ -14261,7 +14261,7 @@
     "target": "You and (CASTERLEVEL/3) touched creatures"
   },
   {
-    "id": "wind_wall",
+    "id": "spell:wind_wall",
     "name": "Wind Wall",
     "school": "evocation",
     "classLevels": {
@@ -14289,7 +14289,7 @@
     "area": "Wall up to (CASTERLEVEL*10) ft. long and (CASTERLEVEL*5) ft. high [S]"
   },
   {
-    "id": "wish",
+    "id": "spell:wish",
     "name": "Wish",
     "school": "universal",
     "classLevels": {
@@ -14311,7 +14311,7 @@
     "target": "See text"
   },
   {
-    "id": "wood_shape",
+    "id": "spell:wood_shape",
     "name": "Wood Shape",
     "school": "transmutation",
     "classLevels": {
@@ -14331,7 +14331,7 @@
     "target": "One touched piece of wood no larger than (CASTERLEVEL+10) cu. ft."
   },
   {
-    "id": "word_of_chaos",
+    "id": "spell:word_of_chaos",
     "name": "Word of Chaos",
     "school": "evocation",
     "classLevels": {
@@ -14355,7 +14355,7 @@
     "area": "Nonchaotic creatures in a 40-ft.- radius spread centered on you"
   },
   {
-    "id": "word_of_recall",
+    "id": "spell:word_of_recall",
     "name": "Word of Recall",
     "school": "conjuration",
     "classLevels": {
@@ -14377,7 +14377,7 @@
     "target": "You and touched objects or other willing creatures"
   },
   {
-    "id": "zone_of_silence",
+    "id": "spell:zone_of_silence",
     "name": "Zone of Silence",
     "school": "illusion",
     "classLevels": {
@@ -14398,7 +14398,7 @@
     "area": "5-ft.-radius emanation centered on you"
   },
   {
-    "id": "zone_of_truth",
+    "id": "spell:zone_of_truth",
     "name": "Zone of Truth",
     "school": "enchantment",
     "classLevels": {

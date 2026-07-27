@@ -7,9 +7,9 @@
   "hitDie": 8,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "concentration", "craft", "diplomacy", "heal", "knowledge_arcana",
-    "knowledge_history", "knowledge_planes", "knowledge_religion",
-    "profession", "spellcraft"
+    "skill:concentration", "skill:craft", "skill:diplomacy", "skill:heal", "skill:knowledge_arcana",
+    "skill:knowledge_history", "skill:knowledge_planes", "skill:knowledge_religion",
+    "skill:profession", "skill:spellcraft"
   ],
   "babProgression": "average",
   "saveProgression": {
@@ -46,11 +46,11 @@
   "perLevelPermabuffs": [],
   "levelPermabuffs": {
     "1": [
-      { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
-      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_light" },
-      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_medium" },
-      { "$type": "GrantBonusFeat", "featId": "armor_proficiency_heavy" },
-      { "$type": "GrantBonusFeat", "featId": "shield_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "feat:simple_weapon_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_light" },
+      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_medium" },
+      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_heavy" },
+      { "$type": "GrantBonusFeat", "featId": "feat:shield_proficiency" },
       {
         "$type": "GrantAbility",
         "ability": { "id": "turn_undead", "name": "Turn Undead", "description": "Turn or destroy undead creatures." }

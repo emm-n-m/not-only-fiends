@@ -9,7 +9,7 @@
         "ability": { "id": "domain_air_power", "name": "Air Domain Power", "description": "Turn/destroy earth creatures or rebuke/command air creatures." }
       }
     ],
-    "bonusSpells": { "1": "obscuring_mist", "2": "wind_wall", "3": "gaseous_form", "4": "air_walk", "5": "control_winds", "6": "chain_lightning", "7": "control_weather", "8": "whirlwind", "9": "elemental_swarm_air" }
+    "bonusSpells": { "1": "spell:obscuring_mist", "2": "spell:wind_wall", "3": "spell:gaseous_form", "4": "spell:air_walk", "5": "spell:control_winds", "6": "spell:chain_lightning", "7": "spell:control_weather", "8": "spell:whirlwind", "9": "spell:elemental_swarm_air" }
   },
   {
     "id": "domain:animal",
@@ -21,7 +21,7 @@
         "ability": { "id": "domain_animal_power", "name": "Animal Domain Power", "description": "Speak with animals 1/day as a spell-like ability. Knowledge (nature) is a class skill." }
       }
     ],
-    "bonusSpells": { "1": "calm_animals", "2": "hold_animal", "3": "dominate_animal", "4": "summon_natures_ally_iv", "5": "commune_with_nature", "6": "antilife_shell", "7": "animal_shapes", "8": "summon_natures_ally_viii", "9": "shapechange" }
+    "bonusSpells": { "1": "spell:calm_animals", "2": "spell:hold_animal", "3": "spell:dominate_animal", "4": "spell:summon_natures_ally_iv", "5": "spell:commune_with_nature", "6": "spell:antilife_shell", "7": "spell:animal_shapes", "8": "spell:summon_natures_ally_viii", "9": "spell:shapechange" }
   },
   {
     "id": "domain:charm",
@@ -33,7 +33,7 @@
         "ability": { "id": "domain_charm_power", "name": "Charm Domain Power", "description": "Boost Charisma by +4 as a free action, once per day, lasting 1 minute." }
       }
     ],
-    "bonusSpells": { "1": "charm_person", "2": "calm_emotions", "3": "suggestion", "4": "heroism", "5": "charm_monster", "6": "geas_quest", "7": "insanity", "8": "demand", "9": "dominate_monster" }
+    "bonusSpells": { "1": "spell:charm_person", "2": "spell:calm_emotions", "3": "spell:suggestion", "4": "spell:heroism", "5": "spell:charm_monster", "6": "spell:geas_quest", "7": "spell:insanity", "8": "spell:demand", "9": "spell:dominate_monster" }
   },
   {
     "id": "domain:chaos",
@@ -45,7 +45,7 @@
         "ability": { "id": "domain_chaos_power", "name": "Chaos Domain Power", "description": "Cast chaos spells at +1 caster level." }
       }
     ],
-    "bonusSpells": { "1": "protection_from_law", "2": "shatter", "3": "magic_circle_against_law", "4": "chaos_hammer", "5": "dispel_law", "6": "animate_objects", "7": "word_of_chaos", "8": "cloak_of_chaos", "9": "summon_monster_ix_chaos" }
+    "bonusSpells": { "1": "spell:protection_from_law", "2": "spell:shatter", "3": "spell:magic_circle_against_law", "4": "spell:chaos_hammer", "5": "spell:dispel_law", "6": "spell:animate_objects", "7": "spell:word_of_chaos", "8": "spell:cloak_of_chaos", "9": "spell:summon_monster_ix_chaos" }
   },
   {
     "id": "domain:death",
@@ -57,7 +57,7 @@
         "ability": { "id": "domain_death_power", "name": "Death Touch", "description": "Once per day, melee touch attack that kills if 1d6/cleric level >= target's current HP." }
       }
     ],
-    "bonusSpells": { "1": "cause_fear", "2": "death_knell", "3": "animate_dead", "4": "death_ward", "5": "slay_living", "6": "create_undead", "7": "destruction", "8": "create_greater_undead", "9": "wail_of_the_banshee" }
+    "bonusSpells": { "1": "spell:cause_fear", "2": "spell:death_knell", "3": "spell:animate_dead", "4": "spell:death_ward", "5": "spell:slay_living", "6": "spell:create_undead", "7": "spell:destruction", "8": "spell:create_greater_undead", "9": "spell:wail_of_the_banshee" }
   },
   {
     "id": "domain:destruction",
@@ -69,7 +69,7 @@
         "ability": { "id": "domain_destruction_power", "name": "Destruction Smite", "description": "Once per day, +4 attack and +cleric level damage on a single melee attack." }
       }
     ],
-    "bonusSpells": { "1": "inflict_light_wounds", "2": "shatter", "3": "contagion", "4": "inflict_critical_wounds", "5": "inflict_light_wounds_mass", "6": "harm", "7": "disintegrate", "8": "earthquake", "9": "implosion" }
+    "bonusSpells": { "1": "spell:inflict_light_wounds", "2": "spell:shatter", "3": "spell:contagion", "4": "spell:inflict_critical_wounds", "5": "spell:inflict_light_wounds_mass", "6": "spell:harm", "7": "spell:disintegrate", "8": "spell:earthquake", "9": "spell:implosion" }
   },
   {
     "id": "domain:earth",
@@ -81,7 +81,7 @@
         "ability": { "id": "domain_earth_power", "name": "Earth Domain Power", "description": "Turn/destroy air creatures or rebuke/command earth creatures." }
       }
     ],
-    "bonusSpells": { "1": "magic_stone", "2": "soften_earth_and_stone", "3": "stone_shape", "4": "spike_stones", "5": "wall_of_stone", "6": "stoneskin", "7": "earthquake", "8": "iron_body", "9": "elemental_swarm_earth" }
+    "bonusSpells": { "1": "spell:magic_stone", "2": "spell:soften_earth_and_stone", "3": "spell:stone_shape", "4": "spell:spike_stones", "5": "spell:wall_of_stone", "6": "spell:stoneskin", "7": "spell:earthquake", "8": "spell:iron_body", "9": "spell:elemental_swarm_earth" }
   },
   {
     "id": "domain:evil",
@@ -93,7 +93,7 @@
         "ability": { "id": "domain_evil_power", "name": "Evil Domain Power", "description": "Cast evil spells at +1 caster level." }
       }
     ],
-    "bonusSpells": { "1": "protection_from_good", "2": "desecrate", "3": "magic_circle_against_good", "4": "unholy_blight", "5": "dispel_good", "6": "create_undead", "7": "blasphemy", "8": "unholy_aura", "9": "summon_monster_ix_evil" }
+    "bonusSpells": { "1": "spell:protection_from_good", "2": "spell:desecrate", "3": "spell:magic_circle_against_good", "4": "spell:unholy_blight", "5": "spell:dispel_good", "6": "spell:create_undead", "7": "spell:blasphemy", "8": "spell:unholy_aura", "9": "spell:summon_monster_ix_evil" }
   },
   {
     "id": "domain:fire",
@@ -105,7 +105,7 @@
         "ability": { "id": "domain_fire_power", "name": "Fire Domain Power", "description": "Turn/destroy water creatures or rebuke/command fire creatures." }
       }
     ],
-    "bonusSpells": { "1": "burning_hands", "2": "produce_flame", "3": "resist_energy", "4": "wall_of_fire", "5": "fire_shield", "6": "fire_seeds", "7": "fire_storm", "8": "incendiary_cloud", "9": "elemental_swarm_fire" }
+    "bonusSpells": { "1": "spell:burning_hands", "2": "spell:produce_flame", "3": "spell:resist_energy", "4": "spell:wall_of_fire", "5": "spell:fire_shield", "6": "spell:fire_seeds", "7": "spell:fire_storm", "8": "spell:incendiary_cloud", "9": "spell:elemental_swarm_fire" }
   },
   {
     "id": "domain:good",
@@ -117,7 +117,7 @@
         "ability": { "id": "domain_good_power", "name": "Good Domain Power", "description": "Cast good spells at +1 caster level." }
       }
     ],
-    "bonusSpells": { "1": "protection_from_evil", "2": "aid", "3": "magic_circle_against_evil", "4": "holy_smite", "5": "dispel_evil", "6": "blade_barrier", "7": "holy_word", "8": "holy_aura", "9": "summon_monster_ix_good" }
+    "bonusSpells": { "1": "spell:protection_from_evil", "2": "spell:aid", "3": "spell:magic_circle_against_evil", "4": "spell:holy_smite", "5": "spell:dispel_evil", "6": "spell:blade_barrier", "7": "spell:holy_word", "8": "spell:holy_aura", "9": "spell:summon_monster_ix_good" }
   },
   {
     "id": "domain:healing",
@@ -129,7 +129,7 @@
         "ability": { "id": "domain_healing_power", "name": "Healing Domain Power", "description": "Cast healing spells at +1 caster level." }
       }
     ],
-    "bonusSpells": { "1": "cure_light_wounds", "2": "cure_moderate_wounds", "3": "cure_serious_wounds", "4": "cure_critical_wounds", "5": "cure_light_wounds_mass", "6": "heal", "7": "regenerate", "8": "cure_critical_wounds_mass", "9": "heal_mass" }
+    "bonusSpells": { "1": "spell:cure_light_wounds", "2": "spell:cure_moderate_wounds", "3": "spell:cure_serious_wounds", "4": "spell:cure_critical_wounds", "5": "spell:cure_light_wounds_mass", "6": "spell:heal", "7": "spell:regenerate", "8": "spell:cure_critical_wounds_mass", "9": "spell:heal_mass" }
   },
   {
     "id": "domain:knowledge",
@@ -141,7 +141,7 @@
         "ability": { "id": "domain_knowledge_power", "name": "Knowledge Domain Power", "description": "All Knowledge skills are class skills. Cast divination spells at +1 caster level." }
       }
     ],
-    "bonusSpells": { "1": "detect_secret_doors", "2": "detect_thoughts", "3": "clairaudience_clairvoyance", "4": "divination", "5": "true_seeing", "6": "find_the_path", "7": "legend_lore", "8": "discern_location", "9": "foresight" }
+    "bonusSpells": { "1": "spell:detect_secret_doors", "2": "spell:detect_thoughts", "3": "spell:clairaudience_clairvoyance", "4": "spell:divination", "5": "spell:true_seeing", "6": "spell:find_the_path", "7": "spell:legend_lore", "8": "spell:discern_location", "9": "spell:foresight" }
   },
   {
     "id": "domain:law",
@@ -153,7 +153,7 @@
         "ability": { "id": "domain_law_power", "name": "Law Domain Power", "description": "Cast law spells at +1 caster level." }
       }
     ],
-    "bonusSpells": { "1": "protection_from_chaos", "2": "calm_emotions", "3": "magic_circle_against_chaos", "4": "order_s_wrath", "5": "dispel_chaos", "6": "hold_monster", "7": "dictum", "8": "shield_of_law", "9": "summon_monster_ix_law" }
+    "bonusSpells": { "1": "spell:protection_from_chaos", "2": "spell:calm_emotions", "3": "spell:magic_circle_against_chaos", "4": "spell:order_s_wrath", "5": "spell:dispel_chaos", "6": "spell:hold_monster", "7": "spell:dictum", "8": "spell:shield_of_law", "9": "spell:summon_monster_ix_law" }
   },
   {
     "id": "domain:luck",
@@ -165,7 +165,7 @@
         "ability": { "id": "domain_luck_power", "name": "Good Fortune", "description": "Once per day, reroll one roll before success or failure is declared." }
       }
     ],
-    "bonusSpells": { "1": "entropic_shield", "2": "aid", "3": "protection_from_energy", "4": "freedom_of_movement", "5": "break_enchantment", "6": "mislead", "7": "spell_turning", "8": "moment_of_prescience", "9": "miracle" }
+    "bonusSpells": { "1": "spell:entropic_shield", "2": "spell:aid", "3": "spell:protection_from_energy", "4": "spell:freedom_of_movement", "5": "spell:break_enchantment", "6": "spell:mislead", "7": "spell:spell_turning", "8": "spell:moment_of_prescience", "9": "spell:miracle" }
   },
   {
     "id": "domain:magic",
@@ -177,7 +177,7 @@
         "ability": { "id": "domain_magic_power", "name": "Magic Domain Power", "description": "Use spell completion/trigger items as a wizard of half cleric level (min 1st)." }
       }
     ],
-    "bonusSpells": { "1": "magic_aura", "2": "identify", "3": "dispel_magic", "4": "imbue_with_spell_ability", "5": "spell_resistance", "6": "antimagic_field", "7": "spell_turning", "8": "protection_from_spells", "9": "mordenkainen_s_disjunction" }
+    "bonusSpells": { "1": "spell:magic_aura", "2": "spell:identify", "3": "spell:dispel_magic", "4": "spell:imbue_with_spell_ability", "5": "spell:spell_resistance", "6": "spell:antimagic_field", "7": "spell:spell_turning", "8": "spell:protection_from_spells", "9": "spell:mordenkainen_s_disjunction" }
   },
   {
     "id": "domain:plant",
@@ -189,7 +189,7 @@
         "ability": { "id": "domain_plant_power", "name": "Plant Domain Power", "description": "Rebuke or command plant creatures. Knowledge (nature) is a class skill." }
       }
     ],
-    "bonusSpells": { "1": "entangle", "2": "barkskin", "3": "plant_growth", "4": "command_plants", "5": "wall_of_thorns", "6": "repel_wood", "7": "animate_plants", "8": "control_plants", "9": "shambler" }
+    "bonusSpells": { "1": "spell:entangle", "2": "spell:barkskin", "3": "spell:plant_growth", "4": "spell:command_plants", "5": "spell:wall_of_thorns", "6": "spell:repel_wood", "7": "spell:animate_plants", "8": "spell:control_plants", "9": "spell:shambler" }
   },
   {
     "id": "domain:protection",
@@ -201,7 +201,7 @@
         "ability": { "id": "domain_protection_power", "name": "Protective Ward", "description": "Once per day, touch grants +cleric level resistance bonus on next saving throw (1 hour)." }
       }
     ],
-    "bonusSpells": { "1": "sanctuary", "2": "shield_other", "3": "protection_from_energy", "4": "spell_immunity", "5": "spell_resistance", "6": "antimagic_field", "7": "repulsion", "8": "mind_blank", "9": "prismatic_sphere" }
+    "bonusSpells": { "1": "spell:sanctuary", "2": "spell:shield_other", "3": "spell:protection_from_energy", "4": "spell:spell_immunity", "5": "spell:spell_resistance", "6": "spell:antimagic_field", "7": "spell:repulsion", "8": "spell:mind_blank", "9": "spell:prismatic_sphere" }
   },
   {
     "id": "domain:strength",
@@ -213,7 +213,7 @@
         "ability": { "id": "domain_strength_power", "name": "Feat of Strength", "description": "Once per day, +cleric level enhancement bonus to Strength for 1 round." }
       }
     ],
-    "bonusSpells": { "1": "enlarge_person", "2": "bull_s_strength", "3": "magic_vestment", "4": "spell_immunity", "5": "righteous_might", "6": "stoneskin", "7": "bigby_s_grasping_hand", "8": "bigby_s_clenched_fist", "9": "bigby_s_crushing_hand" }
+    "bonusSpells": { "1": "spell:enlarge_person", "2": "spell:bull_s_strength", "3": "spell:magic_vestment", "4": "spell:spell_immunity", "5": "spell:righteous_might", "6": "spell:stoneskin", "7": "spell:bigby_s_grasping_hand", "8": "spell:bigby_s_clenched_fist", "9": "spell:bigby_s_crushing_hand" }
   },
   {
     "id": "domain:sun",
@@ -225,7 +225,7 @@
         "ability": { "id": "domain_sun_power", "name": "Greater Turning", "description": "Once per day, greater turning destroys undead instead of turning them." }
       }
     ],
-    "bonusSpells": { "1": "endure_elements", "2": "heat_metal", "3": "searing_light", "4": "fire_shield", "5": "flame_strike", "6": "fire_seeds", "7": "sunbeam", "8": "sunburst", "9": "prismatic_sphere" }
+    "bonusSpells": { "1": "spell:endure_elements", "2": "spell:heat_metal", "3": "spell:searing_light", "4": "spell:fire_shield", "5": "spell:flame_strike", "6": "spell:fire_seeds", "7": "spell:sunbeam", "8": "spell:sunburst", "9": "spell:prismatic_sphere" }
   },
   {
     "id": "domain:travel",
@@ -237,7 +237,7 @@
         "ability": { "id": "domain_travel_power", "name": "Freedom of Movement", "description": "1 round/cleric level per day of automatic freedom of movement. Survival is a class skill." }
       }
     ],
-    "bonusSpells": { "1": "longstrider", "2": "locate_object", "3": "fly", "4": "dimension_door", "5": "teleport", "6": "find_the_path", "7": "greater_teleport", "8": "phase_door", "9": "astral_projection" }
+    "bonusSpells": { "1": "spell:longstrider", "2": "spell:locate_object", "3": "spell:fly", "4": "spell:dimension_door", "5": "spell:teleport", "6": "spell:find_the_path", "7": "spell:greater_teleport", "8": "spell:phase_door", "9": "spell:astral_projection" }
   },
   {
     "id": "domain:trickery",
@@ -249,7 +249,7 @@
         "ability": { "id": "domain_trickery_power", "name": "Trickery Domain Power", "description": "Add Bluff, Disguise, and Hide to cleric class skills." }
       }
     ],
-    "bonusSpells": { "1": "disguise_self", "2": "invisibility", "3": "nondetection", "4": "confusion", "5": "false_vision", "6": "mislead", "7": "screen", "8": "polymorph_any_object", "9": "time_stop" }
+    "bonusSpells": { "1": "spell:disguise_self", "2": "spell:invisibility", "3": "spell:nondetection", "4": "spell:confusion", "5": "spell:false_vision", "6": "spell:mislead", "7": "spell:screen", "8": "spell:polymorph_any_object", "9": "spell:time_stop" }
   },
   {
     "id": "domain:war",
@@ -261,7 +261,7 @@
         "ability": { "id": "domain_war_power", "name": "War Domain Power", "description": "Free Martial Weapon Proficiency and Weapon Focus with deity's favored weapon." }
       }
     ],
-    "bonusSpells": { "1": "magic_weapon", "2": "spiritual_weapon", "3": "magic_vestment", "4": "divine_power", "5": "flame_strike", "6": "blade_barrier", "7": "power_word_blind", "8": "power_word_stun", "9": "power_word_kill" }
+    "bonusSpells": { "1": "spell:magic_weapon", "2": "spell:spiritual_weapon", "3": "spell:magic_vestment", "4": "spell:divine_power", "5": "spell:flame_strike", "6": "spell:blade_barrier", "7": "spell:power_word_blind", "8": "spell:power_word_stun", "9": "spell:power_word_kill" }
   },
   {
     "id": "domain:water",
@@ -273,6 +273,6 @@
         "ability": { "id": "domain_water_power", "name": "Water Domain Power", "description": "Turn/destroy fire creatures or rebuke/command water creatures." }
       }
     ],
-    "bonusSpells": { "1": "obscuring_mist", "2": "fog_cloud", "3": "water_breathing", "4": "control_water", "5": "ice_storm", "6": "cone_of_cold", "7": "acid_fog", "8": "horrid_wilting", "9": "elemental_swarm_water" }
+    "bonusSpells": { "1": "spell:obscuring_mist", "2": "spell:fog_cloud", "3": "spell:water_breathing", "4": "spell:control_water", "5": "spell:ice_storm", "6": "spell:cone_of_cold", "7": "spell:acid_fog", "8": "spell:horrid_wilting", "9": "spell:elemental_swarm_water" }
   }
 ]

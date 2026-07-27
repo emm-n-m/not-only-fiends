@@ -1,118 +1,266 @@
 [
-{
-  "id": "familiar_cat",
-  "name": "Cat",
-  "description": "Tiny animal familiar with low-light vision and scent. Master gains +3 Move Silently.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "tiny",
-  "speeds": { "land": 30 },
-  "abilityModifiers": { "str": -7, "dex": 5, "con": 0, "int": -8, "wis": 2, "cha": -3 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
-    { "$type": "GrantAbility", "ability": { "id": "cat_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "cat_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "familiar_lizard",
-  "name": "Lizard",
-  "description": "Tiny animal familiar with climb speed and low-light vision. Master gains +3 Climb.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "tiny",
-  "speeds": { "land": 20, "climb": 20 },
-  "abilityModifiers": { "str": -7, "dex": 5, "con": 0, "int": -9, "wis": 2, "cha": -8 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "GrantAbility", "ability": { "id": "lizard_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "familiar_owl",
-  "name": "Owl",
-  "description": "Tiny flying animal familiar with low-light vision and a +14 racial bonus to Spot in shadowy areas. Master gains +3 Spot in shadowy conditions.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "tiny",
-  "speeds": { "land": 10, "fly": 40 },
-  "abilityModifiers": { "str": -6, "dex": 7, "con": 0, "int": -8, "wis": 4, "cha": -6 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
-    { "$type": "GrantAbility", "ability": { "id": "owl_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantSkillBonus", "skillId": "spot", "value": 14 }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "familiar_rat",
-  "name": "Rat",
-  "description": "Tiny animal familiar with climb and swim speeds, low-light vision, and scent. Master gains +2 Fortitude saves.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "tiny",
-  "speeds": { "land": 15, "climb": 15, "swim": 15 },
-  "abilityModifiers": { "str": -8, "dex": 5, "con": 0, "int": -8, "wis": 2, "cha": -8 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "GrantAbility", "ability": { "id": "rat_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "rat_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "familiar_toad",
-  "name": "Toad",
-  "description": "Diminutive amphibious animal familiar with low-light vision. Master gains +3 hp.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "diminutive",
-  "speeds": { "land": 5 },
-  "abilityModifiers": { "str": -9, "dex": 2, "con": 1, "int": -9, "wis": 4, "cha": -6 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "GrantAbility", "ability": { "id": "toad_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "toad_amphibious", "name": "Amphibious", "description": "Breathes both air and water." } }
-  ],
-  "scalingFormulas": []
-},
-{
-  "id": "familiar_weasel",
-  "name": "Weasel",
-  "description": "Tiny animal familiar with climb speed, low-light vision, scent, and an attach attack. Master gains +2 Reflex saves.",
-  "type": "animal",
-  "subtypes": [],
-  "size": "tiny",
-  "speeds": { "land": 20, "climb": 20 },
-  "abilityModifiers": { "str": -7, "dex": 5, "con": 0, "int": -8, "wis": 2, "cha": -5 },
-  "levelAdjustment": 0,
-  "bonusFeats": 0,
-  "bonusSkillPointsPerHD": 0,
-  "racialHDDriverId": "racial_hd:animal",
-  "racialPermabuffs": [
-    { "$type": "GrantAbility", "ability": { "id": "weasel_low_light", "name": "Low-Light Vision", "description": "Can see twice as far as a human in dim light." } },
-    { "$type": "GrantAbility", "ability": { "id": "weasel_scent", "name": "Scent", "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell." } },
-    { "$type": "GrantAbility", "ability": { "id": "weasel_attach", "name": "Attach", "description": "On a successful bite, latches on automatically (no separate grapple check required)." } }
-  ],
-  "scalingFormulas": []
-}
+  {
+    "id": "race:familiar_cat",
+    "name": "Cat",
+    "description": "Tiny animal familiar with low-light vision and scent. Master gains +3 Move Silently.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "tiny",
+    "speeds": {
+      "land": 30
+    },
+    "abilityModifiers": {
+      "str": -7,
+      "dex": 5,
+      "con": 0,
+      "int": -8,
+      "wis": 2,
+      "cha": -3
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 2
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "cat_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "cat_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:familiar_lizard",
+    "name": "Lizard",
+    "description": "Tiny animal familiar with climb speed and low-light vision. Master gains +3 Climb.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "tiny",
+    "speeds": {
+      "land": 20,
+      "climb": 20
+    },
+    "abilityModifiers": {
+      "str": -7,
+      "dex": 5,
+      "con": 0,
+      "int": -9,
+      "wis": 2,
+      "cha": -8
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "lizard_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:familiar_owl",
+    "name": "Owl",
+    "description": "Tiny flying animal familiar with low-light vision and a +14 racial bonus to Spot in shadowy areas. Master gains +3 Spot in shadowy conditions.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "tiny",
+    "speeds": {
+      "land": 10,
+      "fly": 40
+    },
+    "abilityModifiers": {
+      "str": -6,
+      "dex": 7,
+      "con": 0,
+      "int": -8,
+      "wis": 4,
+      "cha": -6
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 1
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "owl_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:spot",
+        "value": 14
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:familiar_rat",
+    "name": "Rat",
+    "description": "Tiny animal familiar with climb and swim speeds, low-light vision, and scent. Master gains +2 Fortitude saves.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "tiny",
+    "speeds": {
+      "land": 15,
+      "climb": 15,
+      "swim": 15
+    },
+    "abilityModifiers": {
+      "str": -8,
+      "dex": 5,
+      "con": 0,
+      "int": -8,
+      "wis": 2,
+      "cha": -8
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "rat_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "rat_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:familiar_toad",
+    "name": "Toad",
+    "description": "Diminutive amphibious animal familiar with low-light vision. Master gains +3 hp.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "diminutive",
+    "speeds": {
+      "land": 5
+    },
+    "abilityModifiers": {
+      "str": -9,
+      "dex": 2,
+      "con": 1,
+      "int": -9,
+      "wis": 4,
+      "cha": -6
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "toad_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "toad_amphibious",
+          "name": "Amphibious",
+          "description": "Breathes both air and water."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:familiar_weasel",
+    "name": "Weasel",
+    "description": "Tiny animal familiar with climb speed, low-light vision, scent, and an attach attack. Master gains +2 Reflex saves.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "tiny",
+    "speeds": {
+      "land": 20,
+      "climb": 20
+    },
+    "abilityModifiers": {
+      "str": -7,
+      "dex": 5,
+      "con": 0,
+      "int": -8,
+      "wis": 2,
+      "cha": -5
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weasel_low_light",
+          "name": "Low-Light Vision",
+          "description": "Can see twice as far as a human in dim light."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weasel_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "weasel_attach",
+          "name": "Attach",
+          "description": "On a successful bite, latches on automatically (no separate grapple check required)."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  }
 ]

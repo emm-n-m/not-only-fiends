@@ -7,14 +7,14 @@
   "hitDie": 8,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "concentration",
-    "craft",
-    "diplomacy",
-    "heal",
-    "knowledge_arcana",
-    "knowledge_religion",
-    "profession",
-    "spellcraft"
+    "skill:concentration",
+    "skill:craft",
+    "skill:diplomacy",
+    "skill:heal",
+    "skill:knowledge_arcana",
+    "skill:knowledge_religion",
+    "skill:profession",
+    "skill:spellcraft"
   ],
   "babProgression": "poor",
   "saveProgression": {
@@ -60,7 +60,7 @@
   "prerequisites": [
     {
       "$type": "MinSkillRanks",
-      "skillId": "knowledge_religion",
+      "skillId": "skill:knowledge_religion",
       "value": 15
     },
     {

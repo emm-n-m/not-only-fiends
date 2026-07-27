@@ -7,12 +7,12 @@
   "hitDie": 4,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "concentration",
-    "craft_alchemy",
-    "knowledge",
-    "profession",
-    "search",
-    "spellcraft"
+    "skill:concentration",
+    "skill:craft_alchemy",
+    "skill:knowledge",
+    "skill:profession",
+    "skill:search",
+    "skill:spellcraft"
   ],
   "babProgression": "poor",
   "saveProgression": {
@@ -32,31 +32,31 @@
       },
       {
         "$type": "GrantClassFeatureSelection",
-        "featureType": "high_arcana"
+        "featureType": "class_feature:high_arcana"
       }
     ],
     "2": [
       {
         "$type": "GrantClassFeatureSelection",
-        "featureType": "high_arcana"
+        "featureType": "class_feature:high_arcana"
       }
     ],
     "3": [
       {
         "$type": "GrantClassFeatureSelection",
-        "featureType": "high_arcana"
+        "featureType": "class_feature:high_arcana"
       }
     ],
     "4": [
       {
         "$type": "GrantClassFeatureSelection",
-        "featureType": "high_arcana"
+        "featureType": "class_feature:high_arcana"
       }
     ],
     "5": [
       {
         "$type": "GrantClassFeatureSelection",
-        "featureType": "high_arcana"
+        "featureType": "class_feature:high_arcana"
       }
     ]
   },
@@ -69,21 +69,21 @@
   "prerequisites": [
     {
       "$type": "HasFeat",
-      "featId": "skill_focus_spellcraft"
+      "featId": "feat:skill_focus_spellcraft"
     },
     {
       "$type": "HasFeatSelections",
-      "featId": "spell_focus",
+      "featId": "feat:spell_focus",
       "minCount": 2
     },
     {
       "$type": "MinSkillRanks",
-      "skillId": "knowledge_arcana",
+      "skillId": "skill:knowledge_arcana",
       "value": 15
     },
     {
       "$type": "MinSkillRanks",
-      "skillId": "spellcraft",
+      "skillId": "skill:spellcraft",
       "value": 15
     },
     {

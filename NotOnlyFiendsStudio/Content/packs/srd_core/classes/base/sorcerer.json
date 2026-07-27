@@ -7,7 +7,7 @@
   "hitDie": 4,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "bluff", "concentration", "craft", "knowledge_arcana", "profession", "spellcraft"
+    "skill:bluff", "skill:concentration", "skill:craft", "skill:knowledge_arcana", "skill:profession", "skill:spellcraft"
   ],
   "babProgression": "poor",
   "saveProgression": {
@@ -66,7 +66,7 @@
   "perLevelPermabuffs": [],
   "levelPermabuffs": {
     "1": [
-      { "$type": "GrantBonusFeat", "featId": "simple_weapon_proficiency" },
+      { "$type": "GrantBonusFeat", "featId": "feat:simple_weapon_proficiency" },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -78,7 +78,7 @@
       {
         "$type": "GrantCompanionSlot",
         "linkType": "familiar",
-        "classFeatureType": "familiar_options",
+        "classFeatureType": "class_feature:familiar_options",
         "effectiveLevelFormula": { "expression": "CasterLevel(wizard) + CasterLevel(sorcerer)" }
       }
     ]

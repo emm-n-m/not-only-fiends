@@ -328,7 +328,7 @@ public class ReplayStudio
         }
 
         // (b) Leadership finalization.
-        if (state.Feats.Contains("leadership"))
+        if (state.Feats.Contains("feat:leadership"))
         {
             state.LeadershipScore = state.TotalHD
                                     + AbilityScoreSet.Modifier(state.AbilityScores.CHA)
@@ -951,7 +951,7 @@ public class ReplayStudio
 
         var mainHand = pass.Weapons.FirstOrDefault(w => w.MainHand) ?? pass.Weapons[0];
         var offHand = pass.Weapons.FirstOrDefault(w => !w.MainHand);
-        var twoWeaponFighting = state.Feats.Contains("two_weapon_fighting");
+        var twoWeaponFighting = state.Feats.Contains("feat:two_weapon_fighting");
 
         var bab = state.EffectiveBAB;
         var strMod = AbilityScoreSet.Modifier(state.AbilityScores.STR);

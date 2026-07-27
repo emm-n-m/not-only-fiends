@@ -66,13 +66,13 @@ public static class PcgConverter
         {
             result.Warnings.Add($"Race '{data.Race}' has no engine mapping — using 'human' as fallback");
             result.RaceDropped = true;
-            character.RaceId = "human";
+            character.RaceId = "race:human";
         }
         else if (registry != null && !registry.GetAllRaces().Any(r => r.Id == raceId))
         {
             result.Warnings.Add($"Race '{data.Race}' maps to '{raceId}' but not found in content — using 'human' as fallback");
             result.RaceDropped = true;
-            character.RaceId = "human";
+            character.RaceId = "race:human";
         }
         else
         {
@@ -151,7 +151,7 @@ public static class PcgConverter
                 if (featDef?.SelectionRequired != null && selection.Length > 0)
                 {
                     var suffix = featDef.SelectionRequired == "skill"
-                        ? mapper.MapSkill(selection)
+                        ? PcgIdMapper.MapSkillBare(selection)
                         : PcgIdMapper.DefaultIdTransform(selection);
                     featIds.Add($"{featId}_{suffix}");
                 }

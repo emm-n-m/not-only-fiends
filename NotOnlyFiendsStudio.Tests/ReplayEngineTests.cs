@@ -12,7 +12,7 @@ public class ReplayStudioTests
         // Human race
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "human",
+            Id = "race:human",
             Name = "Human",
             Type = CreatureType.Humanoid,
             Size = Size.Medium,
@@ -28,7 +28,7 @@ public class ReplayStudioTests
             Name = "Fighter",
             HitDie = 10,
             SkillPointsPerLevel = 2,
-            ClassSkills = new List<string> { "climb", "craft", "handle_animal", "intimidate", "jump", "ride", "swim" },
+            ClassSkills = new List<string> { "skill:climb", "craft", "skill:handle_animal", "skill:intimidate", "jump", "skill:ride", "skill:swim" },
             BABProgression = BABProgression.Good,
             SaveProgression = new SaveProgression
             {
@@ -57,12 +57,12 @@ public class ReplayStudioTests
             SkillPointsPerLevel = 8,
             ClassSkills = new List<string>
             {
-                "appraise", "balance", "bluff", "climb", "craft", "decipher_script",
-                "diplomacy", "disable_device", "disguise", "escape_artist", "forgery",
-                "gather_information", "hide", "intimidate", "jump", "knowledge_local",
-                "listen", "move_silently", "open_lock", "perform", "profession",
-                "search", "sense_motive", "sleight_of_hand", "spot", "swim",
-                "tumble", "use_magic_device", "use_rope"
+                "skill:appraise", "skill:balance", "skill:bluff", "skill:climb", "craft", "skill:decipher_script",
+                "skill:diplomacy", "skill:disable_device", "skill:disguise", "skill:escape_artist", "skill:forgery",
+                "skill:gather_information", "skill:hide", "skill:intimidate", "jump", "skill:knowledge_local",
+                "skill:listen", "skill:move_silently", "skill:open_lock", "perform", "profession",
+                "skill:search", "skill:sense_motive", "skill:sleight_of_hand", "skill:spot", "skill:swim",
+                "skill:tumble", "skill:use_magic_device", "skill:use_rope"
             },
             BABProgression = BABProgression.Average,
             SaveProgression = new SaveProgression
@@ -92,11 +92,11 @@ public class ReplayStudioTests
         // so the fixture has to declare the ones it exercises.
         foreach (var (id, ability) in new[]
                  {
-                     ("climb", "str"), ("jump", "str"), ("swim", "str"),
-                     ("bluff", "cha"), ("hide", "dex"), ("move_silently", "dex"),
-                     ("intimidate", "cha"), ("ride", "dex"), ("spot", "wis"),
-                     ("listen", "wis"), ("tumble", "dex"), ("concentration", "con"),
-                     ("spellcraft", "int"), ("knowledge_arcana", "int"),
+                     ("skill:climb", "str"), ("jump", "str"), ("skill:swim", "str"),
+                     ("skill:bluff", "cha"), ("skill:hide", "dex"), ("skill:move_silently", "dex"),
+                     ("skill:intimidate", "cha"), ("skill:ride", "dex"), ("skill:spot", "wis"),
+                     ("skill:listen", "wis"), ("skill:tumble", "dex"), ("skill:concentration", "con"),
+                     ("skill:spellcraft", "int"), ("skill:knowledge_arcana", "int"),
                  })
         {
             registry.RegisterSkill(new SkillDefinition { Id = id, Name = id, KeyAbility = ability });
@@ -114,7 +114,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Test Fighter",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
@@ -132,7 +132,7 @@ public class ReplayStudioTests
         var state = engine.Evaluate(character);
 
         // Identity
-        Assert.Equal("human", state.RaceId);
+        Assert.Equal("race:human", state.RaceId);
         Assert.Equal(CreatureType.Humanoid, state.Type);
         Assert.Equal(Size.Medium, state.Size);
 
@@ -182,7 +182,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Test Fighter",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
@@ -214,7 +214,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Multiclass Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 14, DEX = 16, CON = 12, INT = 14, WIS = 10, CHA = 8
@@ -253,9 +253,9 @@ public class ReplayStudioTests
         Assert.Contains(state.Abilities, a => a.Id == "trapfinding");
 
         // Class skills from both classes should be merged
-        Assert.Contains("climb", state.ClassSkills);      // both
-        Assert.Contains("tumble", state.ClassSkills);      // rogue only
-        Assert.Contains("handle_animal", state.ClassSkills); // fighter only
+        Assert.Contains("skill:climb", state.ClassSkills);      // both
+        Assert.Contains("skill:tumble", state.ClassSkills);      // rogue only
+        Assert.Contains("skill:handle_animal", state.ClassSkills); // fighter only
 
         // Feat slots: standard at HD 1, 3 = 2 + Human bonus = 3
         // Fighter bonus: levels 1, 2 = 2
@@ -269,7 +269,7 @@ public class ReplayStudioTests
         var registry = CreateContentRegistry();
         registry.RegisterFeat(new FeatDefinition
         {
-            Id = "power_attack",
+            Id = "feat:power_attack",
             Name = "Power Attack",
             Type = FeatType.General,
             // Fighter-bonus eligibility is a tag, not a type: Power Attack is a general feat
@@ -283,7 +283,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Feat Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
@@ -295,7 +295,7 @@ public class ReplayStudioTests
                     DriverId = "class:fighter",
                     Choices = new TickChoices
                     {
-                        FeatIds = new List<string> { "power_attack" }
+                        FeatIds = new List<string> { "feat:power_attack" }
                     }
                 },
             }
@@ -303,7 +303,7 @@ public class ReplayStudioTests
 
         var state = engine.Evaluate(character);
 
-        Assert.Contains("power_attack", state.Feats);
+        Assert.Contains("feat:power_attack", state.Feats);
         // HD 1 gives 1 standard feat + 1 Human bonus = 2 standard
         // Fighter level 1 gives 1 bonus feat (fighter_bonus restriction)
         // Power Attack carries the fighter_bonus tag → consumes the bonus slot first
@@ -320,7 +320,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Tome Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10
@@ -361,7 +361,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Valid Build",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -382,7 +382,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Skill Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -393,7 +393,7 @@ public class ReplayStudioTests
                     {
                         SkillAllocations = new List<SkillAllocation>
                         {
-                            new() { SkillId = "climb", HalfRanks = 2 }  // 1 rank, class skill
+                            new() { SkillId = "skill:climb", HalfRanks = 2 }  // 1 rank, class skill
                         }
                     }
                 },
@@ -404,7 +404,7 @@ public class ReplayStudioTests
 
         // Fighter HD 1: (2+0)*4 = 8 skill points. Spent 1 (class skill: 2 half-ranks costs 1 pt)
         Assert.Equal(7, state.UnspentSkillPoints);
-        Assert.Equal(2, state.SkillHalfRanks["climb"]);
+        Assert.Equal(2, state.SkillHalfRanks["skill:climb"]);
         Assert.Empty(state.Warnings);
     }
 
@@ -417,7 +417,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Cross-Class Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -428,7 +428,7 @@ public class ReplayStudioTests
                     {
                         SkillAllocations = new List<SkillAllocation>
                         {
-                            new() { SkillId = "bluff", HalfRanks = 1 }  // 0.5 rank, cross-class
+                            new() { SkillId = "skill:bluff", HalfRanks = 1 }  // 0.5 rank, cross-class
                         }
                     }
                 },
@@ -439,7 +439,7 @@ public class ReplayStudioTests
 
         // Cross-class costs 1 point per half-rank
         Assert.Equal(7, state.UnspentSkillPoints);
-        Assert.Equal(1, state.SkillHalfRanks["bluff"]);
+        Assert.Equal(1, state.SkillHalfRanks["skill:bluff"]);
         Assert.Empty(state.Warnings);
     }
 
@@ -453,7 +453,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Max Rank Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -464,7 +464,7 @@ public class ReplayStudioTests
                     {
                         SkillAllocations = new List<SkillAllocation>
                         {
-                            new() { SkillId = "climb", HalfRanks = 10 }  // 5 ranks, exceeds max 4
+                            new() { SkillId = "skill:climb", HalfRanks = 10 }  // 5 ranks, exceeds max 4
                         }
                     }
                 },
@@ -473,8 +473,8 @@ public class ReplayStudioTests
 
         var state = engine.Evaluate(character);
 
-        Assert.Equal(10, state.SkillHalfRanks["climb"]);
-        Assert.Contains(state.Warnings, w => w.Contains("climb") && w.Contains("exceeding max"));
+        Assert.Equal(10, state.SkillHalfRanks["skill:climb"]);
+        Assert.Contains(state.Warnings, w => w.Contains("skill:climb") && w.Contains("exceeding max"));
     }
 
     [Fact]
@@ -486,7 +486,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Overspend Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -498,9 +498,9 @@ public class ReplayStudioTests
                         SkillAllocations = new List<SkillAllocation>
                         {
                             // Fighter HD1 human: (2+0)*4 = 8 pts. Spend 8 half-ranks class = 4 pts each
-                            new() { SkillId = "climb", HalfRanks = 8 },  // 4 pts
-                            new() { SkillId = "swim", HalfRanks = 8 },   // 4 pts
-                            new() { SkillId = "jump", HalfRanks = 4 },   // 2 pts → total 10, but only 8 available
+                            new() { SkillId = "skill:climb", HalfRanks = 8 },  // 4 pts
+                            new() { SkillId = "skill:swim", HalfRanks = 8 },   // 4 pts
+                            new() { SkillId = "skill:jump", HalfRanks = 4 },   // 2 pts → total 10, but only 8 available
                         }
                     }
                 },
@@ -522,7 +522,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Wrong HD Ability Increase",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -550,7 +550,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Equipped Fighter",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 16, DEX = 10, CON = 14, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -583,7 +583,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Geared Fighter",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 14, CON = 14, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -628,7 +628,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Tome Reader",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 16, DEX = 10, CON = 14, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -661,7 +661,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Mid-Level Tome",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -700,7 +700,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Tome at End",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -740,7 +740,7 @@ public class ReplayStudioTests
         // Human race
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "human",
+            Id = "race:human",
             Name = "Human",
             Type = CreatureType.Humanoid,
             Size = Size.Medium,
@@ -750,7 +750,7 @@ public class ReplayStudioTests
         // Outsider race (for racial HD)
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "outsider",
+            Id = "race:outsider",
             Name = "Outsider",
             Type = CreatureType.Outsider,
             Size = Size.Medium,
@@ -819,7 +819,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Outsider Ranger",
-            RaceId = "outsider",
+            RaceId = "race:outsider",
             TemplateIds = new List<string> { "template:ranger_affinity" },
             BaseAbilityScores = new AbilityScoreSet
             {
@@ -865,7 +865,7 @@ public class ReplayStudioTests
 
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "outsider",
+            Id = "race:outsider",
             Name = "Outsider",
             Type = CreatureType.Outsider,
             Size = Size.Medium,
@@ -905,7 +905,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Plain Outsider Ranger",
-            RaceId = "outsider",
+            RaceId = "race:outsider",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 14, CON = 14, INT = 10, WIS = 14, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -933,7 +933,7 @@ public class ReplayStudioTests
 
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "human", Name = "Human", Type = CreatureType.Humanoid,
+            Id = "race:human", Name = "Human", Type = CreatureType.Humanoid,
             Size = Size.Medium, Speeds = new Dictionary<MovementMode, int> { { MovementMode.Land, 30 } }
         });
 
@@ -979,7 +979,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Arcane Prodigy",
-            RaceId = "human",
+            RaceId = "race:human",
             TemplateIds = new List<string> { "template:arcane_affinity" },
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 12, CON = 12, INT = 14, WIS = 10, CHA = 16 },
             Ticks = new List<Tick>
@@ -1013,7 +1013,7 @@ public class ReplayStudioTests
             Kind = DriverKind.Class,
             HitDie = 6,
             SkillPointsPerLevel = 4,
-            ClassSkills = new List<string> { "hide", "move_silently" },
+            ClassSkills = new List<string> { "skill:hide", "skill:move_silently" },
             BABProgression = BABProgression.Average,
             SaveProgression = new SaveProgression
             {
@@ -1043,7 +1043,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Multiclass Sneak",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 10, DEX = 16, CON = 12, INT = 14, WIS = 10, CHA = 8
@@ -1074,15 +1074,15 @@ public class ReplayStudioTests
         // "Imp" race: outsider with custom class skills (adds hide/spellcraft, removes survival)
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "imp",
+            Id = "race:imp",
             Name = "Imp",
             Type = CreatureType.Outsider,
             Subtypes = new List<string> { "evil", "lawful" },
             Size = Size.Tiny,
             Speeds = new Dictionary<MovementMode, int> { { MovementMode.Land, 20 }, { MovementMode.Fly, 50 } },
             RacialHDDriverId = "racial_hd:outsider",
-            RacialClassSkillAdditions = new List<string> { "hide", "spellcraft" },
-            RacialClassSkillRemovals = new List<string> { "survival" }
+            RacialClassSkillAdditions = new List<string> { "skill:hide", "skill:spellcraft" },
+            RacialClassSkillRemovals = new List<string> { "skill:survival" }
         });
 
         // Generic outsider racial HD driver with base class skills
@@ -1093,7 +1093,7 @@ public class ReplayStudioTests
             Name = "Outsider",
             HitDie = 8,
             SkillPointsPerLevel = 8,
-            ClassSkills = new List<string> { "bluff", "craft", "knowledge_planes", "listen", "search", "sense_motive", "spot", "survival" },
+            ClassSkills = new List<string> { "skill:bluff", "craft", "skill:knowledge_planes", "skill:listen", "skill:search", "skill:sense_motive", "skill:spot", "skill:survival" },
             BABProgression = BABProgression.Good,
             SaveProgression = new SaveProgression
             {
@@ -1108,7 +1108,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Test Imp",
-            RaceId = "imp",
+            RaceId = "race:imp",
             BaseAbilityScores = new AbilityScoreSet { STR = 6, DEX = 16, CON = 10, INT = 10, WIS = 12, CHA = 14 },
             Ticks = new List<Tick>
             {
@@ -1121,21 +1121,21 @@ public class ReplayStudioTests
         var state = engine.Evaluate(character);
 
         // Base outsider skills should be present
-        Assert.Contains("bluff", state.ClassSkills);
-        Assert.Contains("listen", state.ClassSkills);
-        Assert.Contains("spot", state.ClassSkills);
+        Assert.Contains("skill:bluff", state.ClassSkills);
+        Assert.Contains("skill:listen", state.ClassSkills);
+        Assert.Contains("skill:spot", state.ClassSkills);
 
         // Added skills should be present
-        Assert.Contains("hide", state.ClassSkills);
-        Assert.Contains("spellcraft", state.ClassSkills);
+        Assert.Contains("skill:hide", state.ClassSkills);
+        Assert.Contains("skill:spellcraft", state.ClassSkills);
 
         // Removed skills should NOT be present
-        Assert.DoesNotContain("survival", state.ClassSkills);
+        Assert.DoesNotContain("skill:survival", state.ClassSkills);
 
         // CurrentTickClassSkills on last tick should also reflect the delta
-        Assert.Contains("hide", state.CurrentTickClassSkills);
-        Assert.Contains("spellcraft", state.CurrentTickClassSkills);
-        Assert.DoesNotContain("survival", state.CurrentTickClassSkills);
+        Assert.Contains("skill:hide", state.CurrentTickClassSkills);
+        Assert.Contains("skill:spellcraft", state.CurrentTickClassSkills);
+        Assert.DoesNotContain("skill:survival", state.CurrentTickClassSkills);
     }
 
     [Fact]
@@ -1146,7 +1146,7 @@ public class ReplayStudioTests
         // Race with no delta — should use driver skills as-is
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "generic_outsider",
+            Id = "race:generic_outsider",
             Name = "Generic Outsider",
             Type = CreatureType.Outsider,
             Size = Size.Medium,
@@ -1161,7 +1161,7 @@ public class ReplayStudioTests
             Name = "Outsider",
             HitDie = 8,
             SkillPointsPerLevel = 8,
-            ClassSkills = new List<string> { "bluff", "listen", "spot", "survival" },
+            ClassSkills = new List<string> { "skill:bluff", "skill:listen", "skill:spot", "skill:survival" },
             BABProgression = BABProgression.Good,
             SaveProgression = new SaveProgression
             {
@@ -1176,7 +1176,7 @@ public class ReplayStudioTests
         var character = new Character
         {
             Name = "Default Outsider",
-            RaceId = "generic_outsider",
+            RaceId = "race:generic_outsider",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
             Ticks = new List<Tick>
             {
@@ -1187,9 +1187,9 @@ public class ReplayStudioTests
         var state = engine.Evaluate(character);
 
         // All driver skills present, nothing added or removed
-        Assert.Contains("bluff", state.ClassSkills);
-        Assert.Contains("listen", state.ClassSkills);
-        Assert.Contains("spot", state.ClassSkills);
-        Assert.Contains("survival", state.ClassSkills);
+        Assert.Contains("skill:bluff", state.ClassSkills);
+        Assert.Contains("skill:listen", state.ClassSkills);
+        Assert.Contains("skill:spot", state.ClassSkills);
+        Assert.Contains("skill:survival", state.ClassSkills);
     }
 }

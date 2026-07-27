@@ -36,7 +36,7 @@ public class ContentValidationTests
         var registry = new ContentRegistry();
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "test_race",
+            Id = "race:test_race",
             Name = "Test",
             Type = CreatureType.Humanoid,
             Size = Size.Medium,
@@ -56,11 +56,11 @@ public class ContentValidationTests
         var registry = new ContentRegistry();
         registry.RegisterFeat(new FeatDefinition
         {
-            Id = "bad_feat",
+            Id = "feat:bad_feat",
             Name = "Bad Feat",
             Prerequisites = new List<Prerequisite>
             {
-                new HasFeat { FeatId = "nonexistent_feat" }
+                new HasFeat { FeatId = "feat:nonexistent_feat" }
             }
         });
         registry.Validate();
@@ -77,7 +77,7 @@ public class ContentValidationTests
         var registry = new ContentRegistry();
         registry.RegisterFeat(new FeatDefinition
         {
-            Id = "bad_feat",
+            Id = "feat:bad_feat",
             Name = "Bad Feat",
             Prerequisites = new List<Prerequisite>
             {
@@ -106,7 +106,7 @@ public class ContentValidationTests
             SaveProgression = new SaveProgression { Fort = ProgressionRate.Good, Ref = ProgressionRate.Poor, Will = ProgressionRate.Poor },
             LevelPermabuffs = new Dictionary<int, List<Permabuff>>
             {
-                { 1, new List<Permabuff> { new GrantBonusFeat { FeatId = "nonexistent_feat" } } }
+                { 1, new List<Permabuff> { new GrantBonusFeat { FeatId = "feat:nonexistent_feat" } } }
             }
         });
         registry.Validate();
@@ -123,7 +123,7 @@ public class ContentValidationTests
         var registry = new ContentRegistry();
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "human",
+            Id = "race:human",
             Name = "Human",
             Type = CreatureType.Humanoid,
             Size = Size.Medium
@@ -139,7 +139,7 @@ public class ContentValidationTests
         });
         registry.RegisterFeat(new FeatDefinition
         {
-            Id = "power_attack",
+            Id = "feat:power_attack",
             Name = "Power Attack"
         });
         registry.Validate();
@@ -157,25 +157,25 @@ public class ContentValidationTests
         // Simulate a homebrew feat by registering directly
         registry.RegisterFeat(new FeatDefinition
         {
-            Id = "custom_feat",
+            Id = "feat:custom_feat",
             Name = "Custom Feat"
         });
 
         var countAfter = registry.GetAllFeats().Count();
         Assert.Equal(countBefore + 1, countAfter);
-        Assert.NotNull(registry.GetFeat("custom_feat"));
+        Assert.NotNull(registry.GetFeat("feat:custom_feat"));
 
         // Original feats still present
-        Assert.NotNull(registry.GetFeat("power_attack"));
+        Assert.NotNull(registry.GetFeat("feat:power_attack"));
     }
 
     [Fact]
     public void SameIdOverride_LaterWins()
     {
         var registry = new ContentRegistry();
-        registry.RegisterFeat(new FeatDefinition { Id = "test_feat", Name = "Version 1" });
-        registry.RegisterFeat(new FeatDefinition { Id = "test_feat", Name = "Version 2" });
+        registry.RegisterFeat(new FeatDefinition { Id = "feat:test_feat", Name = "Version 1" });
+        registry.RegisterFeat(new FeatDefinition { Id = "feat:test_feat", Name = "Version 2" });
 
-        Assert.Equal("Version 2", registry.GetFeat("test_feat").Name);
+        Assert.Equal("Version 2", registry.GetFeat("feat:test_feat").Name);
     }
 }

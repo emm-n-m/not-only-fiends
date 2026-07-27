@@ -1,181 +1,362 @@
 [
   {
-    "id": "dromite",
+    "id": "race:dromite",
     "name": "Dromite",
     "description": "Small monstrous humanoid with insectoid chitin, elemental resistance, scent, and psionic energy ray. LA +1.",
     "type": "monstrousHumanoid",
-    "subtypes": ["psionic"],
-    "size": "small",
-    "speeds": { "land": 20 },
-    "abilityModifiers": { "str": -2, "dex": 0, "con": 0, "int": 0, "wis": -2, "cha": 2 },
-    "levelAdjustment": 1,
-    "bonusFeats": 0,
-    "bonusSkillPointsPerHD": 0,
-    "racialPermabuffs": [
-      { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 3 },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "dromite_chitin_resistance", "name": "Chitin Energy Resistance 5", "description": "Resistance 5 to one energy type (cold, electricity, fire, or sonic), chosen at character creation. Determines caste. Stacks with other energy resistance." }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "dromite_naturally_psionic", "name": "Naturally Psionic", "description": "Gain 1 bonus power point at 1st level. Does not grant manifesting." }
-      },
-      {
-        "$type": "GrantSLA",
-        "sla": { "id": "dromite_energy_ray", "name": "Energy Ray (Psi-Like)", "usesPerDay": "1/day", "casterLevel": 1 }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "dromite_scent", "name": "Scent", "description": "Detect opponents by scent within 30 ft. (60 ft. upwind, 15 ft. downwind). Can pinpoint within 5 ft." }
-      },
-      { "$type": "GrantBonusFeat", "featId": "blind_fight" },
-      { "$type": "GrantSkillBonus", "skillId": "spot", "value": 2 }
+    "subtypes": [
+      "psionic"
     ],
-    "scalingFormulas": []
-  },
-  {
-    "id": "duergar",
-    "name": "Duergar (Gray Dwarf)",
-    "description": "Medium humanoid (dwarf). Subterranean psionic dwarves with darkvision 120 ft., immunities to paralysis/phantasms/poison, stonecunning, and light sensitivity. LA +1.",
-    "type": "humanoid",
-    "subtypes": ["dwarf", "psionic"],
-    "size": "medium",
-    "speeds": { "land": 20 },
-    "abilityModifiers": { "str": 0, "dex": 0, "con": 2, "int": 0, "wis": 0, "cha": -4 },
+    "size": "small",
+    "speeds": {
+      "land": 20
+    },
+    "abilityModifiers": {
+      "str": -2,
+      "dex": 0,
+      "con": 0,
+      "int": 0,
+      "wis": -2,
+      "cha": 2
+    },
     "levelAdjustment": 1,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialPermabuffs": [
       {
-        "$type": "GrantAbility",
-        "ability": { "id": "duergar_darkvision_120", "name": "Darkvision 120 ft.", "description": "Duergar can see in the dark up to 120 feet." }
-      },
-      { "$type": "GrantImmunity", "immunity": "paralysis" },
-      { "$type": "GrantImmunity", "immunity": "phantasm" },
-      { "$type": "GrantImmunity", "immunity": "poison" },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "duergar_spell_resistance_save", "name": "Magic Resistance", "description": "+2 racial bonus on saving throws against spells and spell-like effects." }
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 3
       },
       {
         "$type": "GrantAbility",
-        "ability": { "id": "duergar_stability", "name": "Stability", "description": "+4 racial bonus on ability checks to resist being bull rushed or tripped while standing on the ground." }
+        "ability": {
+          "id": "dromite_chitin_resistance",
+          "name": "Chitin Energy Resistance 5",
+          "description": "Resistance 5 to one energy type (cold, electricity, fire, or sonic), chosen at character creation. Determines caste. Stacks with other energy resistance."
+        }
       },
       {
         "$type": "GrantAbility",
-        "ability": { "id": "duergar_stonecunning", "name": "Stonecunning", "description": "+2 racial bonus on Search checks to notice unusual stonework. Passive search within 10 ft. Can intuit depth underground." }
+        "ability": {
+          "id": "dromite_naturally_psionic",
+          "name": "Naturally Psionic",
+          "description": "Gain 1 bonus power point at 1st level. Does not grant manifesting."
+        }
       },
       {
         "$type": "GrantSLA",
-        "sla": { "id": "duergar_expansion", "name": "Expansion (Psi-Like)", "usesPerDay": "1/day", "casterLevel": 3 }
-      },
-      {
-        "$type": "GrantSLA",
-        "sla": { "id": "duergar_invisibility_psionic", "name": "Invisibility (Psi-Like)", "usesPerDay": "1/day", "casterLevel": 3 }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "duergar_naturally_psionic", "name": "Naturally Psionic", "description": "Gain 3 bonus power points at 1st level. Does not grant manifesting." }
+        "sla": {
+          "id": "dromite_energy_ray",
+          "name": "Energy Ray (Psi-Like)",
+          "usesPerDay": "1/day",
+          "casterLevel": 1
+        }
       },
       {
         "$type": "GrantAbility",
-        "ability": { "id": "duergar_giant_dodge", "name": "Dodge Giants", "description": "+4 dodge bonus to Armor Class against monsters of the giant type." }
+        "ability": {
+          "id": "dromite_scent",
+          "name": "Scent",
+          "description": "Detect opponents by scent within 30 ft. (60 ft. upwind, 15 ft. downwind). Can pinpoint within 5 ft."
+        }
       },
       {
-        "$type": "GrantAbility",
-        "ability": { "id": "duergar_light_sensitivity", "name": "Light Sensitivity (Ex)", "description": "Dazzled in sunlight or within the radius of a daylight spell." }
-      },
-      { "$type": "GrantSkillBonus", "skillId": "move_silently", "value": 4 },
-      { "$type": "GrantSkillBonus", "skillId": "listen", "value": 1 },
-      { "$type": "GrantSkillBonus", "skillId": "spot", "value": 1 },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "duergar_appraise_stone_metal", "name": "Appraise (Stone/Metal)", "description": "+2 racial bonus on Appraise checks related to stone or metal items." }
+        "$type": "GrantBonusFeat",
+        "featId": "feat:blind_fight"
       },
       {
-        "$type": "GrantAbility",
-        "ability": { "id": "duergar_craft_stone_metal", "name": "Craft (Stone/Metal)", "description": "+2 racial bonus on Craft checks related to stone or metal." }
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:spot",
+        "value": 2
       }
     ],
     "scalingFormulas": []
   },
   {
-    "id": "elan",
+    "id": "race:duergar",
+    "name": "Duergar (Gray Dwarf)",
+    "description": "Medium humanoid (dwarf). Subterranean psionic dwarves with darkvision 120 ft., immunities to paralysis/phantasms/poison, stonecunning, and light sensitivity. LA +1.",
+    "type": "humanoid",
+    "subtypes": [
+      "dwarf",
+      "psionic"
+    ],
+    "size": "medium",
+    "speeds": {
+      "land": 20
+    },
+    "abilityModifiers": {
+      "str": 0,
+      "dex": 0,
+      "con": 2,
+      "int": 0,
+      "wis": 0,
+      "cha": -4
+    },
+    "levelAdjustment": 1,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "duergar_darkvision_120",
+          "name": "Darkvision 120 ft.",
+          "description": "Duergar can see in the dark up to 120 feet."
+        }
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "paralysis"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "phantasm"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "poison"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "duergar_spell_resistance_save",
+          "name": "Magic Resistance",
+          "description": "+2 racial bonus on saving throws against spells and spell-like effects."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "duergar_stability",
+          "name": "Stability",
+          "description": "+4 racial bonus on ability checks to resist being bull rushed or tripped while standing on the ground."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "duergar_stonecunning",
+          "name": "Stonecunning",
+          "description": "+2 racial bonus on Search checks to notice unusual stonework. Passive search within 10 ft. Can intuit depth underground."
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "duergar_expansion",
+          "name": "Expansion (Psi-Like)",
+          "usesPerDay": "1/day",
+          "casterLevel": 3
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "duergar_invisibility_psionic",
+          "name": "Invisibility (Psi-Like)",
+          "usesPerDay": "1/day",
+          "casterLevel": 3
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "duergar_naturally_psionic",
+          "name": "Naturally Psionic",
+          "description": "Gain 3 bonus power points at 1st level. Does not grant manifesting."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "duergar_giant_dodge",
+          "name": "Dodge Giants",
+          "description": "+4 dodge bonus to Armor Class against monsters of the giant type."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "duergar_light_sensitivity",
+          "name": "Light Sensitivity (Ex)",
+          "description": "Dazzled in sunlight or within the radius of a daylight spell."
+        }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
+        "value": 4
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:listen",
+        "value": 1
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:spot",
+        "value": 1
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "duergar_appraise_stone_metal",
+          "name": "Appraise (Stone/Metal)",
+          "description": "+2 racial bonus on Appraise checks related to stone or metal items."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "duergar_craft_stone_metal",
+          "name": "Craft (Stone/Metal)",
+          "description": "+2 racial bonus on Craft checks related to stone or metal."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
+    "id": "race:elan",
     "name": "Elan",
     "description": "Medium aberration. Formerly-humanoid beings sustained by psionic energy. Immune to humanoid-targeting spells. LA +0.",
     "type": "aberration",
-    "subtypes": ["psionic"],
+    "subtypes": [
+      "psionic"
+    ],
     "size": "medium",
-    "speeds": { "land": 30 },
-    "abilityModifiers": { "str": 0, "dex": 0, "con": 0, "int": 0, "wis": 0, "cha": -2 },
+    "speeds": {
+      "land": 30
+    },
+    "abilityModifiers": {
+      "str": 0,
+      "dex": 0,
+      "con": 0,
+      "int": 0,
+      "wis": 0,
+      "cha": -2
+    },
     "levelAdjustment": 0,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialPermabuffs": [
       {
         "$type": "GrantAbility",
-        "ability": { "id": "elan_naturally_psionic", "name": "Naturally Psionic", "description": "Gain 2 bonus power points at 1st level. Does not grant manifesting." }
+        "ability": {
+          "id": "elan_naturally_psionic",
+          "name": "Naturally Psionic",
+          "description": "Gain 2 bonus power points at 1st level. Does not grant manifesting."
+        }
       },
       {
         "$type": "GrantAbility",
-        "ability": { "id": "elan_resistance", "name": "Resistance (Su)", "description": "Immediate action, spend 1 power point: +4 racial bonus on saving throws until the beginning of the elan's next action." }
+        "ability": {
+          "id": "elan_resistance",
+          "name": "Resistance (Su)",
+          "description": "Immediate action, spend 1 power point: +4 racial bonus on saving throws until the beginning of the elan's next action."
+        }
       },
       {
         "$type": "GrantAbility",
-        "ability": { "id": "elan_resilience", "name": "Resilience (Su)", "description": "Immediate action, spend power points to reduce incoming damage by 2 HP per 1 PP spent." }
+        "ability": {
+          "id": "elan_resilience",
+          "name": "Resilience (Su)",
+          "description": "Immediate action, spend power points to reduce incoming damage by 2 HP per 1 PP spent."
+        }
       },
       {
         "$type": "GrantAbility",
-        "ability": { "id": "elan_repletion", "name": "Repletion (Su)", "description": "Spend 1 power point to forgo the need for food or water for 24 hours." }
+        "ability": {
+          "id": "elan_repletion",
+          "name": "Repletion (Su)",
+          "description": "Spend 1 power point to forgo the need for food or water for 24 hours."
+        }
       }
     ],
     "scalingFormulas": []
   },
   {
-    "id": "half_giant",
+    "id": "race:half_giant",
     "name": "Half-Giant",
     "description": "Medium giant with powerful build, low-light vision, fire resistance bonus, and psionic stomp. LA +1.",
     "type": "giant",
-    "subtypes": ["psionic"],
+    "subtypes": [
+      "psionic"
+    ],
     "size": "medium",
-    "speeds": { "land": 30 },
-    "abilityModifiers": { "str": 2, "dex": -2, "con": 2, "int": 0, "wis": 0, "cha": 0 },
+    "speeds": {
+      "land": 30
+    },
+    "abilityModifiers": {
+      "str": 2,
+      "dex": -2,
+      "con": 2,
+      "int": 0,
+      "wis": 0,
+      "cha": 0
+    },
     "levelAdjustment": 1,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialPermabuffs": [
       {
         "$type": "GrantAbility",
-        "ability": { "id": "half_giant_low_light_vision", "name": "Low-Light Vision", "description": "A half-giant can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination, retaining color and detail." }
+        "ability": {
+          "id": "half_giant_low_light_vision",
+          "name": "Low-Light Vision",
+          "description": "A half-giant can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination, retaining color and detail."
+        }
       },
       {
         "$type": "GrantAbility",
-        "ability": { "id": "half_giant_fire_acclimated", "name": "Fire Acclimated", "description": "+2 racial bonus on saving throws against all fire spells and effects." }
+        "ability": {
+          "id": "half_giant_fire_acclimated",
+          "name": "Fire Acclimated",
+          "description": "+2 racial bonus on saving throws against all fire spells and effects."
+        }
       },
       {
         "$type": "GrantAbility",
-        "ability": { "id": "half_giant_powerful_build", "name": "Powerful Build", "description": "Treated as one size larger for size modifiers in opposed checks (grapple, bull rush, trip), for being targeted by size-based special attacks, and for using weapons one size larger. Space and reach are unchanged." }
+        "ability": {
+          "id": "half_giant_powerful_build",
+          "name": "Powerful Build",
+          "description": "Treated as one size larger for size modifiers in opposed checks (grapple, bull rush, trip), for being targeted by size-based special attacks, and for using weapons one size larger. Space and reach are unchanged."
+        }
       },
       {
         "$type": "GrantAbility",
-        "ability": { "id": "half_giant_naturally_psionic", "name": "Naturally Psionic", "description": "Gain 2 bonus power points at 1st level. Does not grant manifesting." }
+        "ability": {
+          "id": "half_giant_naturally_psionic",
+          "name": "Naturally Psionic",
+          "description": "Gain 2 bonus power points at 1st level. Does not grant manifesting."
+        }
       },
       {
         "$type": "GrantSLA",
-        "sla": { "id": "half_giant_stomp", "name": "Stomp (Psi-Like)", "usesPerDay": "1/day", "casterLevel": 1 }
+        "sla": {
+          "id": "half_giant_stomp",
+          "name": "Stomp (Psi-Like)",
+          "usesPerDay": "1/day",
+          "casterLevel": 1
+        }
       }
     ],
     "scalingFormulas": []
   },
   {
-    "id": "maenad",
+    "id": "race:maenad",
     "name": "Maenad",
     "description": "Medium humanoid with sonic psi-like abilities and a rage-based physical outburst. LA +0.",
     "type": "humanoid",
-    "subtypes": ["psionic"],
+    "subtypes": [
+      "psionic"
+    ],
     "size": "medium",
-    "speeds": { "land": 30 },
+    "speeds": {
+      "land": 30
+    },
     "abilityModifiers": null,
     "levelAdjustment": 0,
     "bonusFeats": 0,
@@ -183,47 +364,87 @@
     "racialPermabuffs": [
       {
         "$type": "GrantAbility",
-        "ability": { "id": "maenad_naturally_psionic", "name": "Naturally Psionic", "description": "Gain 2 bonus power points at 1st level. Does not grant manifesting." }
+        "ability": {
+          "id": "maenad_naturally_psionic",
+          "name": "Naturally Psionic",
+          "description": "Gain 2 bonus power points at 1st level. Does not grant manifesting."
+        }
       },
       {
         "$type": "GrantSLA",
-        "sla": { "id": "maenad_energy_ray_sonic", "name": "Energy Ray — Sonic (Psi-Like)", "usesPerDay": "1/day", "casterLevel": 1 }
+        "sla": {
+          "id": "maenad_energy_ray_sonic",
+          "name": "Energy Ray \u2014 Sonic (Psi-Like)",
+          "usesPerDay": "1/day",
+          "casterLevel": 1
+        }
       },
       {
         "$type": "GrantAbility",
-        "ability": { "id": "maenad_outburst", "name": "Outburst (Ex)", "description": "1/day for up to 4 rounds: -2 Intelligence and Wisdom, +2 Strength. Subjugates mentality for raw physical power." }
+        "ability": {
+          "id": "maenad_outburst",
+          "name": "Outburst (Ex)",
+          "description": "1/day for up to 4 rounds: -2 Intelligence and Wisdom, +2 Strength. Subjugates mentality for raw physical power."
+        }
       }
     ],
     "scalingFormulas": []
   },
   {
-    "id": "xeph",
+    "id": "race:xeph",
     "name": "Xeph",
     "description": "Medium humanoid with darkvision, innate psionic/magic resistance, and a 3/day burst of speed. LA +0.",
     "type": "humanoid",
-    "subtypes": ["psionic"],
+    "subtypes": [
+      "psionic"
+    ],
     "size": "medium",
-    "speeds": { "land": 30 },
-    "abilityModifiers": { "str": -2, "dex": 2, "con": 0, "int": 0, "wis": 0, "cha": 0 },
+    "speeds": {
+      "land": 30
+    },
+    "abilityModifiers": {
+      "str": -2,
+      "dex": 2,
+      "con": 0,
+      "int": 0,
+      "wis": 0,
+      "cha": 0
+    },
     "levelAdjustment": 0,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialPermabuffs": [
       {
         "$type": "GrantAbility",
-        "ability": { "id": "xeph_darkvision_60", "name": "Darkvision 60 ft.", "description": "Xephs can see in the dark up to 60 feet." }
+        "ability": {
+          "id": "xeph_darkvision_60",
+          "name": "Darkvision 60 ft.",
+          "description": "Xephs can see in the dark up to 60 feet."
+        }
       },
       {
         "$type": "GrantAbility",
-        "ability": { "id": "xeph_psionic_magic_resistance", "name": "Psionic/Magic Resistance", "description": "+1 racial bonus on saving throws against powers, spells, and spell-like effects." }
+        "ability": {
+          "id": "xeph_psionic_magic_resistance",
+          "name": "Psionic/Magic Resistance",
+          "description": "+1 racial bonus on saving throws against powers, spells, and spell-like effects."
+        }
       },
       {
         "$type": "GrantAbility",
-        "ability": { "id": "xeph_naturally_psionic", "name": "Naturally Psionic", "description": "Gain 1 bonus power point at 1st level. Does not grant manifesting." }
+        "ability": {
+          "id": "xeph_naturally_psionic",
+          "name": "Naturally Psionic",
+          "description": "Gain 1 bonus power point at 1st level. Does not grant manifesting."
+        }
       },
       {
         "$type": "GrantAbility",
-        "ability": { "id": "xeph_burst", "name": "Burst (Su)", "description": "3/day competence bonus to base speed: +10 ft. (plus +10 ft. per four character levels beyond 1st, max +30 ft. at 9th level). Lasts 3 rounds." }
+        "ability": {
+          "id": "xeph_burst",
+          "name": "Burst (Su)",
+          "description": "3/day competence bonus to base speed: +10 ft. (plus +10 ft. per four character levels beyond 1st, max +30 ft. at 9th level). Lasts 3 rounds."
+        }
       }
     ],
     "scalingFormulas": []

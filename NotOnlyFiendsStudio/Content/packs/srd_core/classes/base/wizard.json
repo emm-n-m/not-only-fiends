@@ -7,12 +7,12 @@
   "hitDie": 4,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "concentration",
-    "craft",
-    "decipher_script",
-    "knowledge",
-    "profession",
-    "spellcraft"
+    "skill:concentration",
+    "skill:craft",
+    "skill:decipher_script",
+    "skill:knowledge",
+    "skill:profession",
+    "skill:spellcraft"
   ],
   "babProgression": "poor",
   "saveProgression": {
@@ -231,14 +231,14 @@
       {
         "$type": "GrantCompanionSlot",
         "linkType": "familiar",
-        "classFeatureType": "familiar_options",
+        "classFeatureType": "class_feature:familiar_options",
         "effectiveLevelFormula": {
           "expression": "CasterLevel(wizard) + CasterLevel(sorcerer)"
         }
       },
       {
         "$type": "GrantBonusFeat",
-        "featId": "scribe_scroll"
+        "featId": "feat:scribe_scroll"
       },
       {
         "$type": "GrantAbility",

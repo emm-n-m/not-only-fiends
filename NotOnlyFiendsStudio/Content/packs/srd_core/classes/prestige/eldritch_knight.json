@@ -7,9 +7,9 @@
   "hitDie": 6,
   "skillPointsPerLevel": 2,
   "classSkills": [
-    "concentration", "craft", "decipher_script", "jump",
-    "knowledge_arcana", "knowledge_nobility", "ride",
-    "sense_motive", "spellcraft", "swim"
+    "skill:concentration", "skill:craft", "skill:decipher_script", "skill:jump",
+    "skill:knowledge_arcana", "skill:knowledge_nobility", "skill:ride",
+    "skill:sense_motive", "skill:spellcraft", "skill:swim"
   ],
   "babProgression": "good",
   "saveProgression": {
@@ -54,7 +54,7 @@
     ]
   },
   "prerequisites": [
-    { "$type": "HasFeat", "featId": "weapon_proficiency_martial" },
+    { "$type": "HasFeat", "featId": "feat:weapon_proficiency_martial" },
     { "$type": "CanCastSpellLevel", "spellLevel": 3, "castingType": "Arcane" }
   ],
   "maxLevel": 10

@@ -10,7 +10,7 @@ public class EquipmentTests
         var registry = new ContentRegistry();
         registry.RegisterRace(new RaceDefinition
         {
-            Id = "human",
+            Id = "race:human",
             Name = "Human",
             Type = CreatureType.Humanoid,
             Size = Size.Medium,
@@ -33,7 +33,7 @@ public class EquipmentTests
         });
         registry.RegisterFeat(new FeatDefinition
         {
-            Id = "two_weapon_fighting",
+            Id = "feat:two_weapon_fighting",
             Name = "Two-Weapon Fighting",
             Type = FeatType.General
         });
@@ -48,7 +48,7 @@ public class EquipmentTests
         return new Character
         {
             Name = "Test Fighter",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = str, DEX = dex, CON = con, INT = 10, WIS = 10, CHA = 10 },
             Ticks = ticks
         };
@@ -379,7 +379,7 @@ public class EquipmentTests
                 }
             }
         });
-        character.Ticks[0].Choices = new TickChoices { FeatIds = new List<string> { "two_weapon_fighting" } };
+        character.Ticks[0].Choices = new TickChoices { FeatIds = new List<string> { "feat:two_weapon_fighting" } };
 
         var state = engine.Evaluate(character);
 

@@ -7,23 +7,23 @@
   "hitDie": 8,
   "skillPointsPerLevel": 6,
   "classSkills": [
-    "balance",
-    "bluff",
-    "decipher_script",
-    "diplomacy",
-    "disguise",
-    "escape_artist",
-    "hide",
-    "jump",
-    "listen",
-    "move_silently",
-    "perform",
-    "profession",
-    "search",
-    "sleight_of_hand",
-    "spot",
-    "tumble",
-    "use_rope"
+    "skill:balance",
+    "skill:bluff",
+    "skill:decipher_script",
+    "skill:diplomacy",
+    "skill:disguise",
+    "skill:escape_artist",
+    "skill:hide",
+    "skill:jump",
+    "skill:listen",
+    "skill:move_silently",
+    "skill:perform",
+    "skill:profession",
+    "skill:search",
+    "skill:sleight_of_hand",
+    "skill:spot",
+    "skill:tumble",
+    "skill:use_rope"
   ],
   "babProgression": "average",
   "saveProgression": {
@@ -193,30 +193,30 @@
   "prerequisites": [
     {
       "$type": "MinSkillRanks",
-      "skillId": "hide",
+      "skillId": "skill:hide",
       "value": 10
     },
     {
       "$type": "MinSkillRanks",
-      "skillId": "move_silently",
+      "skillId": "skill:move_silently",
       "value": 8
     },
     {
       "$type": "MinSkillRanks",
-      "skillId": "perform_dance",
+      "skillId": "skill:perform_dance",
       "value": 5
     },
     {
       "$type": "HasFeat",
-      "featId": "combat_reflexes"
+      "featId": "feat:combat_reflexes"
     },
     {
       "$type": "HasFeat",
-      "featId": "dodge"
+      "featId": "feat:dodge"
     },
     {
       "$type": "HasFeat",
-      "featId": "mobility"
+      "featId": "feat:mobility"
     }
   ],
   "maxLevel": 10

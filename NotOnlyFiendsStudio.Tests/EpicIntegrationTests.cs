@@ -28,7 +28,7 @@ public class EpicIntegrationTests
         var character = new Character
         {
             Name = "Epic Fighter",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
@@ -80,7 +80,7 @@ public class EpicIntegrationTests
         var character = new Character
         {
             Name = "Pre-Post Epic",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10
@@ -114,7 +114,7 @@ public class EpicIntegrationTests
         var character = new Character
         {
             Name = "Epic Feat Slots",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10
@@ -146,7 +146,7 @@ public class EpicIntegrationTests
         var character = new Character
         {
             Name = "Tome Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10
@@ -205,7 +205,7 @@ public class EpicIntegrationTests
         var character = new Character
         {
             Name = "Complex Build",
-            RaceId = "outsider",
+            RaceId = "race:outsider",
             TemplateIds = new List<string> { "template:half_fiend" },
             BaseAbilityScores = new AbilityScoreSet
             {
@@ -259,7 +259,7 @@ public class EpicIntegrationTests
         var character = new Character
         {
             Name = "Snapshot Test",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8

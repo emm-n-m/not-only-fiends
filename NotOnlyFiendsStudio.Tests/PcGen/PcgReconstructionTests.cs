@@ -348,7 +348,7 @@ public class PcgReconstructionTests
         var state = engine.Evaluate(character);
 
         // Identity
-        Assert.Equal("human", state.RaceId);
+        Assert.Equal("race:human", state.RaceId);
         Assert.Equal(6, state.TotalHD);
         Assert.Equal(6, state.ClassLevels["class:cleric"]);
 

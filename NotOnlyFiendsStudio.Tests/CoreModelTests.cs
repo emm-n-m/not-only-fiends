@@ -10,7 +10,7 @@ public class CoreModelTests
         var character = new Character
         {
             Name = "Test Fighter",
-            RaceId = "human",
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
@@ -31,7 +31,7 @@ public class CoreModelTests
     {
         var state = new CharacterState
         {
-            RaceId = "human",
+            RaceId = "race:human",
             Type = CreatureType.Humanoid,
             Size = Size.Medium,
             TotalHD = 1,
