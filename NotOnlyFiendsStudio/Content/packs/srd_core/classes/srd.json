@@ -285,7 +285,8 @@
       {"$type": "HasFeat", "featId": "point_blank_shot"},
       {"$type": "HasFeat", "featId": "precise_shot"},
       {"$type": "HasFeat", "featId": "weapon_focus"},
-      {"$type": "CanCastSpellLevel", "spellLevel": 1, "castingType": "Arcane"}
+      {"$type": "CanCastSpellLevel", "spellLevel": 1, "castingType": "Arcane"},
+      {"$type": "HasAnyRace", "raceIds": ["elf", "half_elf"]}
     ],
     "maxLevel": 10
   },
@@ -406,7 +407,8 @@
       {"$type": "MinSkillRanks", "skillId": "disable_device", "value": 7},
       {"$type": "MinSkillRanks", "skillId": "escape_artist", "value": 7},
       {"$type": "MinSkillRanks", "skillId": "knowledge_arcana", "value": 4},
-      {"$type": "CanCastSpellLevel", "spellLevel": 3, "castingType": "Arcane"}
+      {"$type": "CanCastSpellLevel", "spellLevel": 0, "castingType": "Arcane"},
+      {"$type": "MinCounter", "counterId": "sneak_attack_dice", "value": 2}
     ],
     "maxLevel": 10
   },
@@ -1547,7 +1549,9 @@
     "perLevelPermabuffs": [],
     "prerequisites": [
       { "$type": "MinSkillRanks", "skillId": "knowledge_arcana", "value": 8 },
-      { "$type": "HasSpontaneousCasting", "castingType": "Arcane" }
+      { "$type": "HasSpontaneousCasting", "castingType": "Arcane" },
+      { "$type": "HasLanguage", "languageId": "draconic" },
+      { "$type": "LacksTemplate", "templateId": "half_dragon" }
     ],
     "maxLevel": 10
   },

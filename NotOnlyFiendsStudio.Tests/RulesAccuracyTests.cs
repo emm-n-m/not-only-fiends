@@ -421,13 +421,13 @@ public class RulesAccuracyTests
     /// </summary>
     public static TheoryData<string, int> SrdPrestigeClasses() => new()
     {
-        { "class:arcane_archer", 5 },
-        { "class:arcane_trickster", 6 },
+        { "class:arcane_archer", 6 },
+        { "class:arcane_trickster", 7 },
         { "class:archmage", 6 },
         { "class:assassin", 4 },
         { "class:blackguard", 7 },
-        { "class:cosmic_descryer", 3 },
-        { "class:dragon_disciple", 2 },
+        { "class:cosmic_descryer", 4 },
+        { "class:dragon_disciple", 4 },
         { "class:duelist", 6 },
         { "class:dwarven_defender", 6 },
         { "class:eldritch_knight", 2 },
@@ -582,8 +582,9 @@ public class RulesAccuracyTests
         // exists — there are five, one per element (energy_resistance_acid/cold/electricity/
         // fire/sonic). HasFeatSelections' FeatId-or-FeatId+"_" prefix match already covers
         // "any one of them" without a new Prerequisite primitive.
-        // "Ability to cast gate" is a separate gap, deferred to TODO.md §2's KnowsSpell
-        // primitive (not yet implemented) rather than forked here.
+        // "Ability to cast gate" is covered separately by CanCastSpellLevel (see
+        // CosmicDescryer_RequiresAbilityToCastGate below) rather than a dedicated
+        // KnowsSpell primitive — see that test for why.
         var driver = (HDDriver)Content.Value.GetDriver("class:cosmic_descryer");
         var energyResistance = driver.Prerequisites.OfType<HasFeatSelections>()
             .Single(f => f.FeatId == "energy_resistance");
@@ -594,6 +595,82 @@ public class RulesAccuracyTests
         var withFeat = new CharacterState();
         withFeat.Feats.Add("energy_resistance_fire");
         Assert.True(energyResistance.IsMet(withFeat));
+    }
+
+    [Fact]
+    public void CosmicDescryer_RequiresAbilityToCastGate()
+    {
+        // "Feats: ... Ability to cast gate." No KnowsSpell primitive was built for this:
+        // the data to track known spell identities exists (SpellcastingState.SelectedSpells)
+        // but is populated only from TickChoices.SpellSelections, which the REST API never
+        // exposes — an agent-built character could never satisfy an identity check. Instead
+        // this reuses CanCastSpellLevel, the codebase's existing idiom for "ability to cast
+        // [a specific spell]" (already used the same way for Arcane Trickster/Thaumaturgist).
+        // gate is a 9th-level spell for cleric/sorcerer/wizard; Cosmic Descryer advances
+        // arcane casting via its own AdvanceSpellcasting entries.
+        var driver = (HDDriver)Content.Value.GetDriver("class:cosmic_descryer");
+
+        Assert.Contains(driver.Prerequisites.OfType<CanCastSpellLevel>(),
+            p => p.SpellLevel == 9 && p.CastingType == CastingType.Arcane);
+    }
+
+    [Fact]
+    public void ArcaneArcher_RequiresElfOrHalfElf()
+    {
+        // "Race: Elf or half-elf."
+        var driver = (HDDriver)Content.Value.GetDriver("class:arcane_archer");
+        var race = driver.Prerequisites.OfType<HasAnyRace>().Single();
+
+        Assert.Equal(new[] { "elf", "half_elf" }, race.RaceIds);
+
+        var elf = new CharacterState { RaceId = "elf" };
+        Assert.True(race.IsMet(elf));
+
+        var dwarf = new CharacterState { RaceId = "dwarf" };
+        Assert.False(race.IsMet(dwarf));
+    }
+
+    [Fact]
+    public void DragonDisciple_RequiresDraconicAndExcludesHalfDragon()
+    {
+        // "Any nondragon (cannot already be a half-dragon)" and "Languages: Draconic."
+        // Both are correctly implemented and unit-tested here, but currently unsatisfiable
+        // by any real character build: no race/class content grants "draconic" as a fixed
+        // language, and no "half_dragon" template exists in content yet. Content gaps for
+        // future work, not code defects — see TODO.md §2.
+        var driver = (HDDriver)Content.Value.GetDriver("class:dragon_disciple");
+        var language = driver.Prerequisites.OfType<HasLanguage>().Single();
+        var noDragon = driver.Prerequisites.OfType<LacksTemplate>().Single();
+
+        Assert.Equal("draconic", language.LanguageId);
+        Assert.Equal("half_dragon", noDragon.TemplateId);
+
+        var withLanguage = new CharacterState();
+        withLanguage.Languages.Add("draconic");
+        Assert.True(language.IsMet(withLanguage));
+        Assert.False(language.IsMet(new CharacterState()));
+
+        var withTemplate = new CharacterState();
+        withTemplate.TemplateIds.Add("half_dragon");
+        Assert.False(noDragon.IsMet(withTemplate));
+        Assert.True(noDragon.IsMet(new CharacterState()));
+    }
+
+    [Fact]
+    public void ArcaneTrickster_RequiresMageHandLevelAndSneakAttackTwoDice()
+    {
+        // "Ability to cast mage hand" — mage_hand is a 0-level spell; the prior
+        // CanCastSpellLevel(3, Arcane) entry was too strict and is corrected here.
+        // "Sneak attack +2d6" — sneak_attack_dice is incremented by ModifyCounter once per
+        // die gained (rogue, assassin, blackguard, arcane_trickster all emit it).
+        var driver = (HDDriver)Content.Value.GetDriver("class:arcane_trickster");
+
+        Assert.Contains(driver.Prerequisites.OfType<CanCastSpellLevel>(),
+            p => p.SpellLevel == 0 && p.CastingType == CastingType.Arcane);
+
+        var sneakAttack = driver.Prerequisites.OfType<MinCounter>()
+            .Single(c => c.CounterId == "sneak_attack_dice");
+        Assert.Equal(2, sneakAttack.Value);
     }
 
     [Fact]

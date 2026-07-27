@@ -299,4 +299,69 @@ public class PrerequisiteTests
         state.FeatTagCounts["abyssal_heritor"] = 1;
         Assert.False(new HasFeatWithTag { Tag = "abyssal_heritor", MinCount = 2 }.IsMet(state));
     }
+
+    [Fact]
+    public void HasAnyRace_Met()
+    {
+        var state = CreateState();
+        state.RaceId = "elf";
+        Assert.True(new HasAnyRace { RaceIds = new List<string> { "elf", "half_elf" } }.IsMet(state));
+
+        state.RaceId = "half_elf";
+        Assert.True(new HasAnyRace { RaceIds = new List<string> { "elf", "half_elf" } }.IsMet(state));
+    }
+
+    [Fact]
+    public void HasAnyRace_NotMet()
+    {
+        var state = CreateState();
+        state.RaceId = "dwarf";
+        Assert.False(new HasAnyRace { RaceIds = new List<string> { "elf", "half_elf" } }.IsMet(state));
+    }
+
+    [Fact]
+    public void LacksTemplate_Met()
+    {
+        var state = CreateState();
+        Assert.True(new LacksTemplate { TemplateId = "half_dragon" }.IsMet(state));
+    }
+
+    [Fact]
+    public void LacksTemplate_NotMet()
+    {
+        var state = CreateState();
+        state.TemplateIds.Add("half_dragon");
+        Assert.False(new LacksTemplate { TemplateId = "half_dragon" }.IsMet(state));
+    }
+
+    [Fact]
+    public void HasLanguage_Met()
+    {
+        var state = CreateState();
+        state.Languages.Add("draconic");
+        Assert.True(new HasLanguage { LanguageId = "draconic" }.IsMet(state));
+    }
+
+    [Fact]
+    public void HasLanguage_NotMet()
+    {
+        var state = CreateState();
+        Assert.False(new HasLanguage { LanguageId = "draconic" }.IsMet(state));
+    }
+
+    [Fact]
+    public void MinCounter_Met()
+    {
+        var state = CreateState();
+        state.Counters["sneak_attack_dice"] = 2;
+        Assert.True(new MinCounter { CounterId = "sneak_attack_dice", Value = 2 }.IsMet(state));
+    }
+
+    [Fact]
+    public void MinCounter_NotMet()
+    {
+        var state = CreateState();
+        state.Counters["sneak_attack_dice"] = 1;
+        Assert.False(new MinCounter { CounterId = "sneak_attack_dice", Value = 2 }.IsMet(state));
+    }
 }

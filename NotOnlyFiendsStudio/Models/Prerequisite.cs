@@ -21,6 +21,10 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(MinSkillRanksAcross), "MinSkillRanksAcross")]
 [JsonDerivedType(typeof(HasFeatOfAnyType), "HasFeatOfAnyType")]
 [JsonDerivedType(typeof(HasSpontaneousCasting), "HasSpontaneousCasting")]
+[JsonDerivedType(typeof(HasAnyRace), "HasAnyRace")]
+[JsonDerivedType(typeof(LacksTemplate), "LacksTemplate")]
+[JsonDerivedType(typeof(HasLanguage), "HasLanguage")]
+[JsonDerivedType(typeof(MinCounter), "MinCounter")]
 public abstract class Prerequisite
 {
     public abstract bool IsMet(CharacterState state);
@@ -241,4 +245,42 @@ public class HasSpontaneousCasting : Prerequisite
     public override string Description => CastingType.HasValue
         ? $"Able to cast {CastingType.Value} spells without preparation"
         : "Able to cast spells without preparation";
+}
+
+public class HasAnyRace : Prerequisite
+{
+    public List<string> RaceIds { get; set; } = new();
+    public override bool IsMet(CharacterState state) => RaceIds.Contains(state.RaceId);
+    public override string Description => $"Race: {string.Join(" or ", RaceIds)}";
+}
+
+/// <summary>
+/// Excludes characters who already carry a given template — e.g. Dragon Disciple
+/// forbidding an existing half-dragon template. Checks state.TemplateIds, not RaceId.
+/// </summary>
+public class LacksTemplate : Prerequisite
+{
+    public string TemplateId { get; set; } = string.Empty;
+    public override bool IsMet(CharacterState state) => !state.TemplateIds.Contains(TemplateId);
+    public override string Description => $"Must not have the {TemplateId} template";
+}
+
+public class HasLanguage : Prerequisite
+{
+    public string LanguageId { get; set; } = string.Empty;
+    public override bool IsMet(CharacterState state) => state.Languages.Contains(LanguageId);
+    public override string Description => $"Language: {LanguageId}";
+}
+
+/// <summary>
+/// Generic threshold check against state.Counters (populated by the ModifyCounter
+/// permabuff) — e.g. "sneak attack +2d6" for Arcane Trickster via counterId
+/// "sneak_attack_dice". Not sneak-attack-specific; reusable for any counter.
+/// </summary>
+public class MinCounter : Prerequisite
+{
+    public string CounterId { get; set; } = string.Empty;
+    public int Value { get; set; }
+    public override bool IsMet(CharacterState state) => state.Counters.GetValueOrDefault(CounterId) >= Value;
+    public override string Description => $"{CounterId} {Value}+";
 }

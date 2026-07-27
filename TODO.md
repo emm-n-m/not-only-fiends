@@ -66,19 +66,50 @@ data to disambiguate). Regressions: `AirElemental_HasGoodReflexSave`,
 
 ---
 
-## 2. Missing prerequisite primitives
+## 2. Missing prerequisite primitives — **Fixed**
 
-These SRD requirements have no expressible form, so the affected classes are under-gated.
-Add to `NotOnlyFiendsStudio/Models/Prerequisite.cs` (each is a `Prerequisite` subclass plus a
-`[JsonDerivedType]` entry), then backfill the content.
+These SRD requirements had no expressible form, so the affected classes were under-gated.
+Four new `Prerequisite` subclasses were added to `NotOnlyFiendsStudio/Models/Prerequisite.cs`,
+and content backfilled. Two corrections to the original plan below.
 
-| primitive | needed for | SRD wording |
-|---|---|---|
-| `HasAnyRace` | Arcane Archer | "Race: Elf **or** half-elf" |
-| `NotRace` / excluded template | Dragon Disciple | "Any nondragon (cannot already be a half-dragon)" |
-| `KnowsSpell` | Arcane Trickster, Thaumaturgist, Cosmic Descryer | "Ability to cast *mage hand*", "*lesser planar ally*", "*gate*" |
-| `HasLanguage` | Dragon Disciple | "Languages: Draconic" |
-| ability magnitude threshold | Arcane Trickster | "Sneak attack +2d6" (`HasAbility` is presence-only) |
+| primitive | needed for | SRD wording | status |
+|---|---|---|---|
+| `HasAnyRace` | Arcane Archer | "Race: Elf **or** half-elf" | **Fixed** — `HasAnyRace{raceIds:[elf,half_elf]}` |
+| `LacksTemplate` (renamed from `NotRace`) | Dragon Disciple | "Any nondragon (cannot already be a half-dragon)" | **Fixed**, but see content-gap note below |
+| ~~`KnowsSpell`~~ | Arcane Trickster, Thaumaturgist, Cosmic Descryer | "Ability to cast *mage hand*", "*lesser planar ally*", "*gate*" | **Not built** — see note below |
+| `HasLanguage` | Dragon Disciple | "Languages: Draconic" | **Fixed**, but see content-gap note below |
+| `MinCounter` (ability magnitude threshold) | Arcane Trickster | "Sneak attack +2d6" (`HasAbility` is presence-only) | **Fixed** — `MinCounter{counterId:sneak_attack_dice,value:2}` |
+
+Regression tests: `PrerequisiteTests.cs` (`HasAnyRace_*`, `LacksTemplate_*`, `HasLanguage_*`,
+`MinCounter_*`) and `RulesAccuracyTests.cs` (`ArcaneArcher_RequiresElfOrHalfElf`,
+`DragonDisciple_RequiresDraconicAndExcludesHalfDragon`,
+`ArcaneTrickster_RequiresMageHandLevelAndSneakAttackTwoDice`,
+`CosmicDescryer_RequiresAbilityToCastGate`).
+
+**`KnowsSpell` was deliberately not built.** The data to track known-spell identity exists
+(`SpellcastingState.SelectedSpells`), but it's populated only from `TickChoices.SpellSelections`,
+which the REST API never exposes — an agent-built character could never satisfy an identity
+check. Reused `CanCastSpellLevel` instead (the codebase's existing idiom for "ability to cast
+[spell]"), which also caught a real bug: Arcane Trickster's prerequisite required 3rd-level
+arcane spells to stand in for "ability to cast *mage hand*", but `mage_hand` is a 0-level
+spell — corrected to `spellLevel: 0`. Thaumaturgist's existing `CanCastSpellLevel(4, Divine)`
+already exactly matched *lesser planar ally* (a real 4th-level cleric spell) — no change
+needed there. Cosmic Descryer gained `CanCastSpellLevel(9, Arcane)` for *gate*.
+
+**Content gap, not a code defect:** Dragon Disciple's `HasLanguage{"draconic"}` and
+`LacksTemplate{"half_dragon"}` prerequisites are correctly implemented and unit-tested, but
+currently unsatisfiable by any real character build — no race/class content grants
+`draconic` as a fixed language (a new `GrantLanguage` permabuff and `CharacterState.Languages`
+field were added, but nothing populates them yet), and **no `half_dragon` template exists in
+content yet, even though Half-Dragon is a genuine SRD template** (not homebrew — it's the
+standard inherited template applied to nondragon creatures, same category as `half_fiend`,
+which already exists at `Content/packs/srd_core/templates/half_fiend.json`). It needs proper
+extraction via the `extract-template` skill from the SRD mirror or a source PDF — neither was
+available on this machine when this was written (mirror not synced here; author was away from
+the machine with the source copy). **Next session: extract `half_dragon` as a template
+(mirroring `half_fiend.json`'s shape — type override, ability modifiers, natural armor,
+breath weapon, etc.), then this prerequisite becomes real.** Do not add a fabricated grant to
+make it pass in the meantime.
 
 Deliberately **not** modelled — narrative gates with no mechanical test:
 Assassin ("must kill someone for no other reason than to join the assassins"), Blackguard

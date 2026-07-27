@@ -9,6 +9,7 @@ public class CharacterState
     public Size Size { get; set; }
     public Alignment Alignment { get; set; }
     public List<string> TemplateIds { get; set; } = new();
+    public HashSet<string> Languages { get; set; } = new();
 
     // Ability Scores (fully modified at current HD)
     public AbilityScoreSet AbilityScores { get; set; } = new();

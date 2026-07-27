@@ -31,6 +31,7 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(GrantTypedBonus), "GrantTypedBonus")]
 [JsonDerivedType(typeof(GrantArmorProfile), "GrantArmorProfile")]
 [JsonDerivedType(typeof(GrantWeaponLine), "GrantWeaponLine")]
+[JsonDerivedType(typeof(GrantLanguage), "GrantLanguage")]
 public abstract class Permabuff
 {
     public abstract void Apply(PermabuffContext ctx);
@@ -176,6 +177,13 @@ public class ModifyCounter : Permabuff
         ctx.State.Counters.TryAdd(CounterId, 0);
         ctx.State.Counters[CounterId] += Value;
     }
+}
+
+public class GrantLanguage : Permabuff
+{
+    public string LanguageId { get; set; } = string.Empty;
+
+    public override void Apply(PermabuffContext ctx) => ctx.State.Languages.Add(LanguageId);
 }
 
 public class GrantSLA : Permabuff
