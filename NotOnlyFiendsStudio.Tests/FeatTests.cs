@@ -84,7 +84,7 @@ public class FeatTests
 
         // Should have a warning about missing power_attack prereq
         Assert.NotEmpty(state.Warnings);
-        Assert.Contains(state.Warnings, w => w.Contains("feat:power_attack") || w.Contains("Power Attack"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("feat:power_attack") || w.Message.Contains("Power Attack"));
     }
 
     [Fact]
@@ -111,7 +111,7 @@ public class FeatTests
         var state = engine.Evaluate(character);
 
         // Should have warning about BAB requirement
-        Assert.Contains(state.Warnings, w => w.Contains("BAB"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("BAB"));
     }
 
     [Fact]
@@ -141,7 +141,7 @@ public class FeatTests
         Assert.Contains("feat:improved_initiative", state.Feats);
         Assert.Contains("feat:lightning_reflexes", state.Feats);
         Assert.DoesNotContain("feat:iron_will", state.Feats);
-        Assert.Contains(state.Warnings, w => w.Contains("feat:iron_will") && w.Contains("no available feat slot"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("feat:iron_will") && w.Message.Contains("no available feat slot"));
     }
 
     [Fact]

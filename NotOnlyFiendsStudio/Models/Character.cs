@@ -162,6 +162,8 @@ public class CharacterSheet
             kv => kv.Key,
             kv => SpellcastingSummary.FromState(kv.Value)),
         Warnings = state.Warnings
+            .Select(w => w.TickIndex.HasValue ? $"HD {w.TickIndex}: {w.Message}" : w.Message)
+            .ToList()
     };
 }
 

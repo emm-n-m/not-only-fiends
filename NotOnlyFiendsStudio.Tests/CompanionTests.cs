@@ -550,7 +550,7 @@ public class CompanionTests
         var result = resolver.Build(druid);
 
         Assert.Empty(result.Companions);
-        Assert.Contains(result.MasterState.Warnings, w => w.Contains("missing companion"));
+        Assert.Contains(result.MasterState.Warnings, w => w.Message.Contains("missing companion"));
     }
 
     // ---------- helpers ----------
@@ -1228,8 +1228,8 @@ public class CompanionTests
 
         var state = engine.Evaluate(wizard);
         Assert.Contains(state.Warnings, w =>
-            w.Contains("class_feature:improved_familiar_options", StringComparison.OrdinalIgnoreCase)
-            && w.Contains("no pending", StringComparison.OrdinalIgnoreCase));
+            w.Message.Contains("class_feature:improved_familiar_options", StringComparison.OrdinalIgnoreCase)
+            && w.Message.Contains("no pending", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

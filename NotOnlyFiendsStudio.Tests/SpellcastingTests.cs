@@ -248,7 +248,7 @@ public class SpellcastingTests
         var sc = state.Spellcasting["class:sorcerer"];
 
         Assert.Empty(sc.SelectedSpells);
-        Assert.Contains(state.Warnings, w => w.Contains("unknown spellcasting class") && w.Contains("class:wizard"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("unknown spellcasting class") && w.Message.Contains("class:wizard"));
     }
 
     [Fact]
@@ -357,7 +357,7 @@ public class SpellcastingTests
         // Wizard should NOT be advanced: still CL 1
         Assert.Equal(1, state.Spellcasting["class:wizard"].CasterLevel);
         // No warning about needing selection since we provided it
-        Assert.DoesNotContain(state.Warnings, w => w.Contains("multiple matching"));
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("multiple matching"));
     }
 
     [Fact]
@@ -426,7 +426,7 @@ public class SpellcastingTests
         var state = engine.Evaluate(character);
 
         // Should warn about needing to select
-        Assert.Contains(state.Warnings, w => w.Contains("multiple matching"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("multiple matching"));
         // Neither should be advanced
         Assert.Equal(1, state.Spellcasting["class:sorcerer"].CasterLevel);
         Assert.Equal(1, state.Spellcasting["class:wizard"].CasterLevel);
@@ -459,7 +459,7 @@ public class SpellcastingTests
         };
 
         var state = engine.Evaluate(character);
-        Assert.Contains(state.Warnings, w => w.Contains("unknown domain") && w.Contains("nonexistent"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("unknown domain") && w.Message.Contains("nonexistent"));
         Assert.Equal(2, state.PendingDomainSelections["class:cleric"]); // 2 granted, unknown doesn't decrement
     }
 
@@ -490,6 +490,6 @@ public class SpellcastingTests
         };
 
         var state = engine.Evaluate(character);
-        Assert.Contains(state.Warnings, w => w.Contains("exceeds max spell level"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("exceeds max spell level"));
     }
 }

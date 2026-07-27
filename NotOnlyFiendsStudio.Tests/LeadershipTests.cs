@@ -90,8 +90,8 @@ public class LeadershipTests
 
         var state = engine.Evaluate(fighter);
         Assert.Contains(state.Warnings, w =>
-            w.Contains("leadership", StringComparison.OrdinalIgnoreCase)
-            && w.Contains("prerequisite", StringComparison.OrdinalIgnoreCase));
+            w.Message.Contains("leadership", StringComparison.OrdinalIgnoreCase)
+            && w.Message.Contains("prerequisite", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -149,7 +149,7 @@ public class LeadershipTests
         Assert.Equal(13, result.MasterState.LeadershipScore);
         Assert.Equal(8, result.MasterState.MaxCohortLevel);
         Assert.DoesNotContain(result.MasterState.Warnings, w =>
-            w.Contains("exceeds max cohort level", StringComparison.OrdinalIgnoreCase));
+            w.Message.Contains("exceeds max cohort level", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -183,7 +183,7 @@ public class LeadershipTests
 
         Assert.Equal(5, result.MasterState.MaxCohortLevel);
         Assert.Contains(result.MasterState.Warnings, w =>
-            w.Contains("exceeds max cohort level", StringComparison.OrdinalIgnoreCase));
+            w.Message.Contains("exceeds max cohort level", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -220,7 +220,7 @@ public class LeadershipTests
         Assert.Equal(8, result.MasterState.MaxCohortLevel);
         Assert.Equal(8, result.Companions[0].State.ECL);
         Assert.DoesNotContain(result.MasterState.Warnings, w =>
-            w.Contains("exceeds max cohort level", StringComparison.OrdinalIgnoreCase));
+            w.Message.Contains("exceeds max cohort level", StringComparison.OrdinalIgnoreCase));
     }
 
     // ---------- helper ----------

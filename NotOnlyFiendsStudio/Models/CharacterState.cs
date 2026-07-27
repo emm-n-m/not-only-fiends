@@ -120,7 +120,13 @@ public class CharacterState
     public int EffectiveMasterLevel { get; set; }
 
     // Validation
-    public List<string> Warnings { get; set; } = new();
+    public List<Warning> Warnings { get; set; } = new();
+}
+
+public class Warning
+{
+    public int? TickIndex { get; set; }
+    public string Message { get; set; } = string.Empty;
 }
 
 public class CompanionSlotState

@@ -1284,7 +1284,7 @@ else
             if (newSlots.Count > 0)
                 _tickNewCompanionSlots[i] = newSlots;
 
-            var advanceWarning = state.Warnings.FirstOrDefault(w => w.Contains("AdvanceSpellcasting") && w.Contains("multiple matching"));
+            var advanceWarning = state.Warnings.FirstOrDefault(w => w.Message.Contains("AdvanceSpellcasting") && w.Message.Contains("multiple matching"));
             var pendingTotal = state.PendingDomainSelections.Values.Sum();
             if (pendingTotal > 0 || state.Spellcasting.Any() || advanceWarning != null)
             {

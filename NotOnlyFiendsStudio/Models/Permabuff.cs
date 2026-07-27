@@ -362,7 +362,7 @@ public class AdvanceSpellcasting : Permabuff
         }
         else if (matches.Count == 0)
         {
-            state.Warnings.Add($"AdvanceSpellcasting({TypeLabel}): no matching spellcasting class found");
+            state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"AdvanceSpellcasting({TypeLabel}): no matching spellcasting class found" });
         }
         else
         {
@@ -381,7 +381,7 @@ public class AdvanceSpellcasting : Permabuff
             else
             {
                 var classNames = string.Join(", ", matches.Select(m => m.ClassId));
-                state.Warnings.Add($"AdvanceSpellcasting({TypeLabel}): multiple matching classes ({classNames}), selection required via ClassFeatureChoices[\"advance_spellcasting\"]");
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"AdvanceSpellcasting({TypeLabel}): multiple matching classes ({classNames}), selection required via ClassFeatureChoices[\"advance_spellcasting\"]" });
             }
         }
     }

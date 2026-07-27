@@ -40,7 +40,7 @@ public class RulesAccuracyTests
             }
         }));
 
-        Assert.Contains(state.Warnings, w => w.Contains("unknown skill 'skill:underwater_basketweaving'"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("unknown skill 'skill:underwater_basketweaving'"));
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class RulesAccuracyTests
             Choices = new TickChoices { FeatIds = new List<string> { "feat:dodge", "feat:dodge" } }
         }));
 
-        Assert.Contains(state.Warnings, w => w.Contains("duplicate feat 'feat:dodge'"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("duplicate feat 'feat:dodge'"));
         Assert.Single(state.Feats, f => f == "feat:dodge");
     }
 
@@ -69,7 +69,7 @@ public class RulesAccuracyTests
             }
         }));
 
-        Assert.DoesNotContain(state.Warnings, w => w.Contains("duplicate feat"));
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("duplicate feat"));
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class RulesAccuracyTests
             }
         }));
 
-        Assert.Contains(state.Warnings, w => w.Contains("unknown spell 'spell:fake_spell_xyz'"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("unknown spell 'spell:fake_spell_xyz'"));
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class RulesAccuracyTests
             }
         }));
 
-        Assert.Contains(state.Warnings, w => w.Contains("not on the class:wizard spell list"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("not on the class:wizard spell list"));
     }
 
     [Fact]
@@ -125,7 +125,7 @@ public class RulesAccuracyTests
             }
         }));
 
-        Assert.Contains(state.Warnings, w => w.Contains("is level 1 for class:wizard, not 0"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("is level 1 for class:wizard, not 0"));
     }
 
     [Fact]
@@ -146,7 +146,7 @@ public class RulesAccuracyTests
             }
         }));
 
-        Assert.Contains(state.Warnings, w => w.Contains("knows 3 level-1 spells, exceeding 2"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("knows 3 level-1 spells, exceeding 2"));
     }
 
     [Fact]
@@ -163,7 +163,7 @@ public class RulesAccuracyTests
             Choices = new TickChoices { SpellSelections = many }
         }));
 
-        Assert.DoesNotContain(state.Warnings, w => w.Contains("exceeding"));
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("exceeding"));
     }
 
     // ---- fighter bonus feat restriction ----------------------------------
@@ -211,7 +211,7 @@ public class RulesAccuracyTests
             Choices = new TickChoices { FeatIds = new List<string> { "feat:weapon_proficiency_martial" } }
         }));
 
-        Assert.Contains(state.Warnings, w => w.Contains("cannot be selected"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("cannot be selected"));
         Assert.DoesNotContain("feat:weapon_proficiency_martial", state.Feats);
     }
 

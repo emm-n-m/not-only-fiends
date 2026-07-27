@@ -169,7 +169,7 @@ public class DomainTests
 
         var state = engine.Evaluate(character);
 
-        Assert.DoesNotContain(state.Warnings, w => w.Contains("unknown spellcasting class"));
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("unknown spellcasting class"));
         var sc = state.Spellcasting["class:cleric"];
         Assert.Contains(sc.SelectedSpells, s => s.SpellId == "spell:magic_weapon" && s.ClassId == "domain:war");
     }

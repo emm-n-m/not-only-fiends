@@ -79,11 +79,11 @@ public class ReplayStudio
             if (driver is HDDriver hdDriver && hdDriver.MaxLevel.HasValue
                 && driverLevel > hdDriver.MaxLevel.Value
                 && state.TotalHD <= _rules.EpicThreshold)
-                state.Warnings.Add($"HD {state.TotalHD}: {driver.Name} level {driverLevel} exceeds max level {hdDriver.MaxLevel.Value}");
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"{driver.Name} level {driverLevel} exceeds max level {hdDriver.MaxLevel.Value}" });
             foreach (var prereq in driver.Prerequisites)
             {
                 if (!prereq.IsMet(state))
-                    state.Warnings.Add($"HD {state.TotalHD}: prerequisite not met for {driver.Name}: {prereq.Description}");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"prerequisite not met for {driver.Name}: {prereq.Description}" });
             }
 
             // b. Track class levels
@@ -270,18 +270,18 @@ public class ReplayStudio
             }
             catch (KeyNotFoundException)
             {
-                ctx.State.Warnings.Add($"GrantRacialSpellcasting: class driver '{buff.ClassId}' not in content");
+                ctx.State.Warnings.Add(new Warning { TickIndex = ctx.State.TotalHD, Message = $"GrantRacialSpellcasting: class driver '{buff.ClassId}' not in content" });
                 continue;
             }
             if (hd?.Spellcasting is null)
             {
-                ctx.State.Warnings.Add($"GrantRacialSpellcasting: class driver '{buff.ClassId}' has no spellcasting progression");
+                ctx.State.Warnings.Add(new Warning { TickIndex = ctx.State.TotalHD, Message = $"GrantRacialSpellcasting: class driver '{buff.ClassId}' has no spellcasting progression" });
                 continue;
             }
 
             if (!hd.Spellcasting.SpellsPerDay.TryGetValue(level, out var spd))
             {
-                ctx.State.Warnings.Add($"GrantRacialSpellcasting: '{buff.ClassId}' progression has no level {level} entry");
+                ctx.State.Warnings.Add(new Warning { TickIndex = ctx.State.TotalHD, Message = $"GrantRacialSpellcasting: '{buff.ClassId}' progression has no level {level} entry" });
                 continue;
             }
 
@@ -504,8 +504,7 @@ public class ReplayStudio
                 var chosen = group.Count();
                 if (chosen > limit)
                 {
-                    state.Warnings.Add(
-                        $"HD {state.TotalHD}: {sc.ClassId} knows {chosen} level-{group.Key} spells, exceeding {limit}");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"{sc.ClassId} knows {chosen} level-{group.Key} spells, exceeding {limit}" });
                 }
             }
         }
@@ -525,16 +524,14 @@ public class ReplayStudio
                 // filters these out, so reaching here means the choice bypassed that list.
                 if (featDef is { Repeatable: false } && state.Feats.Contains(featId))
                 {
-                    state.Warnings.Add(
-                        $"HD {state.TotalHD}: duplicate feat '{featId}' — {featDef.Name} is not repeatable");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"duplicate feat '{featId}' — {featDef.Name} is not repeatable" });
                     continue;
                 }
 
                 // Grant-only entries (class proficiencies, markers) are not choosable with a slot.
                 if (featDef is { Selectable: false })
                 {
-                    state.Warnings.Add(
-                        $"HD {state.TotalHD}: feat '{featId}' cannot be selected — {featDef.Name} is granted, not chosen");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"feat '{featId}' cannot be selected — {featDef.Name} is granted, not chosen" });
                     continue;
                 }
 
@@ -550,8 +547,7 @@ public class ReplayStudio
 
                 if (slot == null)
                 {
-                    state.Warnings.Add(
-                        $"HD {state.TotalHD}: feat '{featId}' dropped — no available feat slot");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"feat '{featId}' dropped — no available feat slot" });
                     continue;
                 }
 
@@ -560,14 +556,14 @@ public class ReplayStudio
 
                 if (featDef == null)
                 {
-                    state.Warnings.Add($"HD {state.TotalHD}: unknown feat '{featId}'");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown feat '{featId}'" });
                     continue;
                 }
 
                 foreach (var prereq in featDef.Prerequisites)
                 {
                     if (!prereq.IsMet(state))
-                        state.Warnings.Add($"HD {state.TotalHD}: prerequisite not met for feat {featDef.Name}: {prereq.Description}");
+                        state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"prerequisite not met for feat {featDef.Name}: {prereq.Description}" });
                 }
 
                 ctx.CurrentFeatId = featId;
@@ -590,13 +586,13 @@ public class ReplayStudio
                 // Unknown ids would otherwise silently consume skill points and materialise
                 // a phantom skill on the sheet, so surface them the way unknown feats are.
                 if (!_content.TryGetSkill(alloc.SkillId, out _))
-                    state.Warnings.Add($"HD {state.TotalHD}: unknown skill '{alloc.SkillId}'");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown skill '{alloc.SkillId}'" });
 
                 state.SkillHalfRanks.TryAdd(alloc.SkillId, 0);
                 var newTotal = state.SkillHalfRanks[alloc.SkillId] + alloc.HalfRanks;
 
                 if (newTotal > state.MaxHalfRanks)
-                    state.Warnings.Add($"HD {state.TotalHD}: skill '{alloc.SkillId}' would have {newTotal / 2.0} ranks, exceeding max {state.MaxHalfRanks / 2.0}");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"skill '{alloc.SkillId}' would have {newTotal / 2.0} ranks, exceeding max {state.MaxHalfRanks / 2.0}" });
 
                 state.SkillHalfRanks[alloc.SkillId] = newTotal;
                 var cost = state.CurrentTickClassSkills.Contains(alloc.SkillId)
@@ -606,7 +602,7 @@ public class ReplayStudio
             }
 
             if (state.UnspentSkillPoints < 0)
-                state.Warnings.Add($"HD {state.TotalHD}: spent {-state.UnspentSkillPoints} more skill points than available");
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"spent {-state.UnspentSkillPoints} more skill points than available" });
         }
 
         // Domain selections — each pick consumes a pending slot from the granting class
@@ -618,20 +614,20 @@ public class ReplayStudio
             {
                 if (state.Domains.Contains(domainId))
                 {
-                    state.Warnings.Add($"HD {state.TotalHD}: duplicate domain selection '{domainId}' ignored");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"duplicate domain selection '{domainId}' ignored" });
                     continue;
                 }
 
                 var ownerClassId = ChooseDomainOwner(state, ctx.CurrentDriverId);
                 if (ownerClassId == null)
                 {
-                    state.Warnings.Add($"HD {state.TotalHD}: no pending domain selections for '{domainId}'");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"no pending domain selections for '{domainId}'" });
                     continue;
                 }
 
                 if (!_content.TryGetDomain(domainId, out var domainDef) || domainDef == null)
                 {
-                    state.Warnings.Add($"HD {state.TotalHD}: unknown domain '{domainId}'");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown domain '{domainId}'" });
                     continue;
                 }
 
@@ -666,7 +662,7 @@ public class ReplayStudio
             {
                 if (string.IsNullOrWhiteSpace(selection.ClassId) || string.IsNullOrWhiteSpace(selection.SpellId))
                 {
-                    state.Warnings.Add($"HD {state.TotalHD}: incomplete spell selection ignored");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"incomplete spell selection ignored" });
                     continue;
                 }
 
@@ -676,14 +672,12 @@ public class ReplayStudio
                 {
                     if (!state.DomainOwners.TryGetValue(selection.ClassId, out var owner))
                     {
-                        state.Warnings.Add(
-                            $"HD {state.TotalHD}: domain spell '{selection.SpellId}' references unselected domain '{selection.ClassId}'");
+                        state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"domain spell '{selection.SpellId}' references unselected domain '{selection.ClassId}'" });
                         continue;
                     }
                     if (owner == GrantDomainSelection.OrphanOwner)
                     {
-                        state.Warnings.Add(
-                            $"HD {state.TotalHD}: domain '{selection.ClassId}' has no spellcasting owner; spell '{selection.SpellId}' dropped");
+                        state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"domain '{selection.ClassId}' has no spellcasting owner; spell '{selection.SpellId}' dropped" });
                         continue;
                     }
                     routedClassId = owner;
@@ -691,27 +685,24 @@ public class ReplayStudio
 
                 if (!state.Spellcasting.TryGetValue(routedClassId, out var sc))
                 {
-                    state.Warnings.Add(
-                        $"HD {state.TotalHD}: unknown spellcasting class '{routedClassId}' for spell '{selection.SpellId}'");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown spellcasting class '{routedClassId}' for spell '{selection.SpellId}'" });
                     continue;
                 }
 
                 if (selection.SpellLevel < 0)
                 {
-                    state.Warnings.Add(
-                        $"HD {state.TotalHD}: invalid spell level {selection.SpellLevel} for spell '{selection.SpellId}'");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"invalid spell level {selection.SpellLevel} for spell '{selection.SpellId}'" });
                     continue;
                 }
 
                 if (selection.SpellLevel > sc.MaxSpellLevel)
                 {
-                    state.Warnings.Add(
-                        $"HD {state.TotalHD}: spell '{selection.SpellId}' at level {selection.SpellLevel} exceeds max spell level {sc.MaxSpellLevel} for {selection.ClassId}");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"spell '{selection.SpellId}' at level {selection.SpellLevel} exceeds max spell level {sc.MaxSpellLevel} for {selection.ClassId}" });
                 }
 
                 if (!_content.TryGetSpell(selection.SpellId, out var spellDef) || spellDef == null)
                 {
-                    state.Warnings.Add($"HD {state.TotalHD}: unknown spell '{selection.SpellId}'");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown spell '{selection.SpellId}'" });
                 }
                 else if (!selection.ClassId.StartsWith("domain:", StringComparison.Ordinal))
                 {
@@ -719,13 +710,11 @@ public class ReplayStudio
                     // checked against the class spell list.
                     if (!spellDef.ClassLevels.TryGetValue(routedClassId, out var listLevel))
                     {
-                        state.Warnings.Add(
-                            $"HD {state.TotalHD}: spell '{selection.SpellId}' is not on the {routedClassId} spell list");
+                        state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"spell '{selection.SpellId}' is not on the {routedClassId} spell list" });
                     }
                     else if (listLevel != selection.SpellLevel)
                     {
-                        state.Warnings.Add(
-                            $"HD {state.TotalHD}: spell '{selection.SpellId}' is level {listLevel} for {routedClassId}, not {selection.SpellLevel}");
+                        state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"spell '{selection.SpellId}' is level {listLevel} for {routedClassId}, not {selection.SpellLevel}" });
                     }
                 }
 
@@ -753,7 +742,7 @@ public class ReplayStudio
 
                 if (!_content.TryGetClassFeature(featureType, out var featureDef) || featureDef == null)
                 {
-                    state.Warnings.Add($"HD {state.TotalHD}: unknown class feature type '{featureType}'");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown class feature type '{featureType}'" });
                     continue;
                 }
 
@@ -761,14 +750,14 @@ public class ReplayStudio
                 {
                     if (!state.PendingClassFeatureSelections.TryGetValue(featureType, out var pending) || pending <= 0)
                     {
-                        state.Warnings.Add($"HD {state.TotalHD}: no pending '{featureType}' selections for '{optionId}'");
+                        state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"no pending '{featureType}' selections for '{optionId}'" });
                         continue;
                     }
 
                     // Prevent duplicate selection within the same feature type
                     if (state.ClassFeatureSelections.TryGetValue(featureType, out var existing) && existing.Contains(optionId))
                     {
-                        state.Warnings.Add($"HD {state.TotalHD}: duplicate '{featureType}' selection '{optionId}' ignored");
+                        state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"duplicate '{featureType}' selection '{optionId}' ignored" });
                         continue;
                     }
 
@@ -795,7 +784,7 @@ public class ReplayStudio
                         continue;
                     }
 
-                    state.Warnings.Add($"HD {state.TotalHD}: unknown class feature option '{featureType}/{optionId}'");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown class feature option '{featureType}/{optionId}'" });
                 }
             }
         }
@@ -1091,13 +1080,13 @@ public class ReplayStudio
         {
             if (!state.Feats.Contains(optionId))
             {
-                state.Warnings.Add($"HD {state.TotalHD}: '{featureType}' selection '{optionId}' — character does not have that feat");
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"'{featureType}' selection '{optionId}' — character does not have that feat" });
                 return false;
             }
 
             if (!_content.TryGetFeat(optionId, out var featDef) || featDef == null)
             {
-                state.Warnings.Add($"HD {state.TotalHD}: '{featureType}' selection '{optionId}' — feat not found in content");
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"'{featureType}' selection '{optionId}' — feat not found in content" });
                 return false;
             }
 
@@ -1105,26 +1094,26 @@ public class ReplayStudio
             {
                 if (!Enum.TryParse<FeatType>(source.FeatType, ignoreCase: true, out var requiredType))
                 {
-                    state.Warnings.Add($"HD {state.TotalHD}: '{featureType}' has invalid featType '{source.FeatType}'");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"'{featureType}' has invalid featType '{source.FeatType}'" });
                     return false;
                 }
                 if (featDef.Type != requiredType)
                 {
-                    state.Warnings.Add($"HD {state.TotalHD}: '{featureType}' selection '{optionId}' — feat is not of type {source.FeatType}");
+                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"'{featureType}' selection '{optionId}' — feat is not of type {source.FeatType}" });
                     return false;
                 }
             }
 
             if (source.Tag != null && !featDef.Tags.Contains(source.Tag))
             {
-                state.Warnings.Add($"HD {state.TotalHD}: '{featureType}' selection '{optionId}' — feat lacks tag '{source.Tag}'");
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"'{featureType}' selection '{optionId}' — feat lacks tag '{source.Tag}'" });
                 return false;
             }
 
             return true;
         }
 
-        state.Warnings.Add($"HD {state.TotalHD}: '{featureType}' has unknown dynamicSource kind '{source.Kind}'");
+        state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"'{featureType}' has unknown dynamicSource kind '{source.Kind}'" });
         return false;
     }
 }

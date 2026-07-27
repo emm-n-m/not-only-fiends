@@ -39,8 +39,11 @@ public class CompanionResolver
             var companion = _lookup(link.CompanionId);
             if (companion == null)
             {
-                result.MasterState.Warnings.Add(
-                    $"Companion link '{link.LinkType}' references missing companion '{link.CompanionId}'");
+                result.MasterState.Warnings.Add(new Warning
+                {
+                    TickIndex = null,
+                    Message = $"Companion link '{link.LinkType}' references missing companion '{link.CompanionId}'"
+                });
                 continue;
             }
 
@@ -67,10 +70,13 @@ public class CompanionResolver
             if (link.LinkType == "leadership_cohort"
                 && companionState.ECL > result.MasterState.MaxCohortLevel)
             {
-                result.MasterState.Warnings.Add(
-                    $"Leadership cohort '{link.CompanionId}' ECL {companionState.ECL} exceeds "
-                    + $"max cohort level {result.MasterState.MaxCohortLevel} "
-                    + $"(Leadership score {result.MasterState.LeadershipScore}).");
+                result.MasterState.Warnings.Add(new Warning
+                {
+                    TickIndex = null,
+                    Message = $"Leadership cohort '{link.CompanionId}' ECL {companionState.ECL} exceeds "
+                        + $"max cohort level {result.MasterState.MaxCohortLevel} "
+                        + $"(Leadership score {result.MasterState.LeadershipScore})."
+                });
             }
         }
 

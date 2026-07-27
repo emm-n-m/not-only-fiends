@@ -34,7 +34,7 @@ public sealed class CharacterMutationResponseDto
     public CharacterState State { get; set; } = new();
     public PendingChoicesDto PendingChoices { get; set; } = new();
     public List<FeatSummaryDto> QualifiedFeats { get; set; } = new();
-    public List<string> Warnings { get; set; } = new();
+    public List<Warning> Warnings { get; set; } = new();
 }
 
 public sealed class RulesDto
@@ -223,7 +223,7 @@ public sealed class CharacterPreviewDto
     public AbilityScoreSet AbilityScores { get; set; } = new();
     public Dictionary<string, int> ClassLevels { get; set; } = new();
     public int UnspentSkillPoints { get; set; }
-    public List<string> Warnings { get; set; } = new();
+    public List<Warning> Warnings { get; set; } = new();
 }
 
 public sealed class PendingChoicesDto

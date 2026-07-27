@@ -474,7 +474,7 @@ public class ReplayStudioTests
         var state = engine.Evaluate(character);
 
         Assert.Equal(10, state.SkillHalfRanks["skill:climb"]);
-        Assert.Contains(state.Warnings, w => w.Contains("skill:climb") && w.Contains("exceeding max"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("skill:climb") && w.Message.Contains("exceeding max"));
     }
 
     [Fact]
@@ -510,7 +510,7 @@ public class ReplayStudioTests
         var state = engine.Evaluate(character);
 
         Assert.True(state.UnspentSkillPoints < 0);
-        Assert.Contains(state.Warnings, w => w.Contains("more skill points than available"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("more skill points than available"));
     }
 
     [Fact]

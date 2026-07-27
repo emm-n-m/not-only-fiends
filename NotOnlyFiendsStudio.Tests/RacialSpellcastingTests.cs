@@ -144,6 +144,6 @@ public class RacialSpellcastingTests
         Assert.True(state.Spellcasting.TryGetValue("class:sorcerer", out var sc),
             "Loremaster should have found the couatl's racial sorcerer casting");
         Assert.Equal(12, sc!.CasterLevel);
-        Assert.DoesNotContain(state.Warnings, w => w.Contains("no matching spellcasting class"));
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("no matching spellcasting class"));
     }
 }
