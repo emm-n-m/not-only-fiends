@@ -126,7 +126,8 @@ divination spells" (only the "3rd level or higher" half is captured).
 Use the `verify-content` skill. Tier 1 (all 48 drivers in the public packs) is **done**.
 
 - **Tier 2** — SRD races, feat prerequisites and feat `type` values, domains.
-- **Tier 3** — the 1,466 spells. Highest count, lowest per-item blast radius.
+- **Tier 3** — the 617 spells (corrected from an earlier estimate of ~1,466 — confirmed count
+  while splitting `spells/srd.json` in §7). Highest count, lowest per-item blast radius.
 - **Private packs** — the 17 non-SRD classes (Hellfire Warlock, Archfiend, Blood Witch,
   Dark Temptress, Hellreaver, …) have **no SRD ground truth**. They cannot be verified this
   way; verifying them from model recall would manufacture false findings. They need either
@@ -143,17 +144,25 @@ giant BAB fix changes every giant PC's attack bonus. No warning, no record.
 
 Do these **in order** — the first is cheap and catches the most:
 
-1. **Extend the PCG golden baseline to computed sheets.** `PcgImportRegression` already
-   replays 54 real characters against a stored baseline with diff-on-mismatch and
-   `UPDATE_PCG_BASELINE=1` to accept changes. But the per-character record holds only import
+1. **Extend the PCG golden baseline to computed sheets — Fixed.** `PcgImportRegression`
+   already replayed 54 real characters against a stored baseline with diff-on-mismatch and
+   `UPDATE_PCG_BASELINE=1` to accept changes, but the per-character record only held import
    *mapping* fidelity (`droppedFeats`, `raceDropped`, warnings) — no computed values, which is
-   why it passed unchanged through every rules fix this session. Add `hp / bab / saves /
-   skillRanks / feats / classLevels / casterLevels` and content drift becomes a failing test
-   with a reviewable diff. **No version numbers needed.**
-2. **Derived per-character content fingerprints.** For saves outside the corpus: hash only the
-   definitions a character actually references (replay already walks exactly that set), store
-   on the character, compare at load. Gives "class:eldritch_knight changed since this was
-   saved" with no noise from unrelated content and no authoring discipline.
+   why it passed unchanged through every rules fix this session. Added `hp / bab / saves /
+   skillRanks / feats / classLevels / casterLevels`, compared field-by-field, rendered in the
+   markdown diff alongside the existing dropped-item lists. **Could not be executed or
+   regenerated on this machine** — the test is gated behind `PCGEN_CHARACTERS_PATH`, unset
+   here (the private PCGen character corpus lives elsewhere). It compiles clean and is
+   structurally complete; **next session (or on a machine with that env var set): run
+   `UPDATE_PCG_BASELINE=1 dotnet test --filter PcgImportRegression`** to seed the new fields
+   into the committed baseline — until then, a first VERIFY-mode run will show every character
+   as changed (all-fields-added), which is expected, not a regression.
+2. **Derived per-character content fingerprints.** Not started. For saves outside the corpus:
+   hash only the definitions a character actually references (replay already walks exactly
+   that set), store on the character, compare at load. Gives "class:eldritch_knight changed
+   since this was saved" with no noise from unrelated content and no authoring discipline.
+   Genuinely new infrastructure (no hashing utility exists yet, no tracking of which content
+   IDs a replay touches) — sized closer to its own feature than a quick fix.
 3. **Semantic pack versions.** Only genuinely needed for *interchange* — a character built
    against packs you don't have, where nothing can be recomputed. `PackManifest.Version`
    exists but is decorative (it stayed `"3.5"` through every breaking change this session).
@@ -162,27 +171,45 @@ Do these **in order** — the first is cheap and catches the most:
 
 ---
 
-## 5. API surface
+## 5. API surface — 3 of 4 remaining items fixed
 
-Done this session: `optionDetail` / `driverIds` on `next-step` (8.3 MB → 93 KB), a real error
+Done previously: `optionDetail` / `driverIds` on `next-step` (8.3 MB → 93 KB), a real error
 body on malformed request bodies, and validation for unknown skills/spells, off-list spells,
 duplicate non-repeatable feats and spontaneous-caster spells-known.
 
-Remaining:
+Done this session:
 
-- **`skillRanks` units differ by endpoint** — doubled in `/state`, whole ranks in `/sheet`,
-  with no unit marker or schema description on either. At minimum document it; better, name
-  the fields differently.
-- **Warnings are whole-replay, not per-tick.** A mistake at HD 6 keeps resurfacing in every
-  later simulation, so a caller must diff warnings before/after to know whether *its* tick
-  caused anything. Consider tagging each warning with the tick index that produced it.
-- **ID convention inconsistency** — drivers are prefixed (`class:wizard`), races are bare
-  (`human`). Guessing `race:human` is a 404. Fixing it is a breaking change to every saved
-  character, so it needs a decision, not a patch. Cheap interim: document it, or accept both.
-- **ETag / conditional GET on content endpoints.** Content is immutable between restarts, so
-  an ETag derived from loaded pack versions would let a polling agent skip refetching. This is
-  the one idea worth taking from dnd5eapi.co — its `{index, name, url}` reference envelope was
-  evaluated and rejected, because it optimises for *browsing* and this is a character builder.
+- **`skillRanks` units differ by endpoint** — **Fixed.** Renamed `CharacterState.SkillRanks`
+  → `SkillHalfRanks` (confirmed zero JSON/HTTP consumers before renaming — the Blazor Server
+  app reads C# objects in-process, not via HTTP). `CharacterSheet.Skills` (whole ranks) was
+  already clearly named; no change needed there.
+- **Warnings are whole-replay, not per-tick** — **Fixed.** `CharacterState.Warnings` is now
+  `List<Warning>` (`{TickIndex, Message}`) instead of `List<string>`, across ~38 write sites.
+  `CharacterSheet.Warnings` stays `List<string>` (a display snapshot, not something callers
+  filter programmatically) with `TickIndex` folded back into the text. The API DTOs
+  (`CharacterMutationResponseDto`, `CharacterPreviewDto`) are now structured — the actual point
+  of this item, giving callers a real field to filter on. `ImportPcgResponse.Warnings` (a
+  separate, unrelated PCGen-import warnings list) is untouched.
+- **ID convention inconsistency** — **Fixed via full unification**, not the cheap-interim
+  options originally listed. Since the project isn't public yet, there was no migration cost,
+  so races/feats/skills/spells/class-features were all given the same prefix convention
+  drivers/domains/equipment already had (`race:`, `feat:`, `skill:`, `spell:`,
+  `class_feature:`) — ~1,300 definitions and ~1,500+ reference sites across all 5 content
+  packs, scripted rather than hand-edited. Uncovered and fixed three sharp edges along the way:
+  a double-prefix bug in `PcgConverter`'s compound feat-selection-suffix builder, a
+  double-prefix in `GrantCompanionSlot`'s manual `"feat:"` concatenation, and two hardcoded
+  bare feat literals in `ReplayEngine` (`leadership`, `two_weapon_fighting`). Also surfaced and
+  fixed a pre-existing content bug unrelated to the rename: `srd_epic/feats/srd_epic.json`
+  contained 715 raw, un-cleaned PCGen LST stub entries (`"CATEGORY=FEAT|...".MOD` artifacts,
+  zero mechanical content) plus 5 genuine duplicate `epic_*` feats defined identically in two
+  packs, silently shadowed by the engine's default `LastWins` conflict resolution — the
+  rename's collision check caught what the loader was quietly hiding. All extraction skill
+  docs (`extract-race/feat/skill/spell/domain`) updated so future extractions use the new
+  convention instead of regrowing bare ids.
+- **ETag / conditional GET on content endpoints** — not done this session (deprioritized in
+  favor of the ID unification once its real scope became clear). Still worth doing: content is
+  immutable between restarts, so an ETag derived from loaded pack versions would let a polling
+  agent skip refetching.
 
 ---
 
@@ -209,13 +236,20 @@ Non-blocking:
 
 ---
 
-## 7. File organisation
+## 7. File organisation — **Fixed**
 
-`srd_core/classes/srd.json` holds 26 classes in ~100 KB, and editing it surgically is painful
+`srd_core/classes/srd.json` held 26 classes in ~100 KB, and editing it surgically was painful
 — a first attempt at a four-class change produced a 470-line diff that was almost entirely
 reformatting churn, and had to be redone as line-targeted surgery. The right pattern already
-exists next to it (`classes/base/fighter.json`, `classes/prestige/eldritch_knight.json`, one
-class per file). Split it, and `spells/srd.json` (379 KB) after.
+existed next to it (`classes/base/fighter.json`, `classes/prestige/eldritch_knight.json`, one
+class per file).
 
-This is the cheapest quality-of-life win in the list, and it makes every future content diff
-reviewable.
+Split both flat files: the 26 remaining classes into `classes/{base,prestige,npc}/` (added a
+new `npc/` bucket for adept/aristocrat/commoner/expert/warrior — no `category` field exists in
+the data, so bucketing was a judgment call, not derived), and `spells/srd.json` (617 spells,
+not the ~1,466 originally estimated here) into one file per spell — the spell split happened
+*after* TODO §5's ID unification so it wrote already-`spell:`-prefixed content once rather than
+touching 617 files twice. Confirmed purely mechanical: the loader already recurses over any
+`*.json` file structure with no manifest, so zero loader/schema code changes were needed.
+`extract-class`/`extract-spell` skill docs updated to point at the per-file convention instead
+of a flat file to append to.
