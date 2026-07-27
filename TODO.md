@@ -153,10 +153,10 @@ Do these **in order** — the first is cheap and catches the most:
    markdown diff alongside the existing dropped-item lists. **Could not be executed or
    regenerated on this machine** — the test is gated behind `PCGEN_CHARACTERS_PATH`, unset
    here (the private PCGen character corpus lives elsewhere). It compiles clean and is
-   structurally complete; **next session (or on a machine with that env var set): run
-   `UPDATE_PCG_BASELINE=1 dotnet test --filter PcgImportRegression`** to seed the new fields
-   into the committed baseline — until then, a first VERIFY-mode run will show every character
-   as changed (all-fields-added), which is expected, not a regression.
+   structurally complete. **Done 2026-07-27 on the machine with the corpus:** baseline seeded
+   via `UPDATE_PCG_BASELINE=1` after a VERIFY-mode inspection of the all-fields-added diff;
+   all 54 characters now carry hp/bab/saves/skillRanks/feats/classLevels/casterLevels, and a
+   follow-up VERIFY run passes clean.
 2. **Derived per-character content fingerprints.** Not started. For saves outside the corpus:
    hash only the definitions a character actually references (replay already walks exactly
    that set), store on the character, compare at load. Gives "class:eldritch_knight changed
@@ -205,7 +205,12 @@ Done this session:
   packs, silently shadowed by the engine's default `LastWins` conflict resolution — the
   rename's collision check caught what the loader was quietly hiding. All extraction skill
   docs (`extract-race/feat/skill/spell/domain`) updated so future extractions use the new
-  convention instead of regrowing bare ids.
+  convention instead of regrowing bare ids. **The private packs repo was unreachable from the
+  machine that did the rename and was migrated separately on 2026-07-27** (1,048 definition
+  ids + 156 reference sites, field rules derived from commit `a30df61`'s diff) — the gap had
+  surfaced as a `PcgImportRegression` OK→WARN regression (private-pack feats/races silently
+  dropping) plus one stale bare-id assertion in `SpellContentTests` that only runs with
+  private packs loaded.
 - **ETag / conditional GET on content endpoints** — not done this session (deprioritized in
   favor of the ID unification once its real scope became clear). Still worth doing: content is
   immutable between restarts, so an ETag derived from loaded pack versions would let a polling

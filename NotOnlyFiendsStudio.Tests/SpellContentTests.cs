@@ -46,7 +46,7 @@ public class SpellContentTests
 
         Assert.NotEmpty(corruptionSpells);
         Assert.All(corruptionSpells, spell => Assert.True(spell.ClassLevels.ContainsKey("domain:corruption")));
-        Assert.Contains(corruptionSpells, s => s.Id == "befoul");
+        Assert.Contains(corruptionSpells, s => s.Id == "spell:befoul");
     }
 
     [Fact]
