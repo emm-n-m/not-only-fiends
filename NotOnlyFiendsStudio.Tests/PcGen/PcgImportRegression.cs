@@ -52,10 +52,14 @@ public class PcgImportRegression
                 var data = PcgParser.ParseText(File.ReadAllText(path), fileName);
                 var result = PcgConverter.Convert(data, mapper, registry);
                 // Populate the "save-time snapshot" sheet (convention from Character.Sheet docs)
-                // so files written to CHARACTERS_PATH match what the UI would produce.
+                // so files written to CHARACTERS_PATH match what the UI would produce. Also
+                // captures the computed values below — content drift (e.g. a save-progression
+                // fix silently changing every character that uses that class) otherwise passes
+                // through this harness unnoticed, since only import-mapping fidelity was compared.
+                CharacterState? state = null;
                 try
                 {
-                    var state = engine.Evaluate(result.Character);
+                    state = engine.Evaluate(result.Character);
                     result.Character.Sheet = CharacterSheet.FromState(state);
                 }
                 catch
@@ -79,6 +83,15 @@ public class PcgImportRegression
                     DroppedTemplates = result.DroppedTemplates,
                     DroppedDomains = result.DroppedDomains,
                     DroppedEquipment = result.DroppedEquipment,
+                    Hp = state?.HP ?? 0,
+                    Bab = state?.EffectiveBAB ?? 0,
+                    Saves = state?.EffectiveSaves,
+                    SkillRanks = state == null ? new() : new Dictionary<string, int>(state.SkillHalfRanks),
+                    Feats = state == null ? new() : new List<string>(state.Feats),
+                    ClassLevels = state == null ? new() : new Dictionary<string, int>(state.ClassLevels),
+                    CasterLevels = state == null
+                        ? new()
+                        : state.Spellcasting.ToDictionary(kv => kv.Key, kv => kv.Value.CasterLevel),
                 });
             }
             catch (Exception ex)
@@ -410,6 +423,15 @@ public class PcgImportRegression
         var equipmentResolved = b.DroppedEquipment.Except(f.DroppedEquipment, StringComparer.OrdinalIgnoreCase).ToList();
         var raceIdChanged = !string.Equals(b.RaceId, f.RaceId, StringComparison.Ordinal) || b.RaceDropped != f.RaceDropped;
 
+        var hpChanged = b.Hp != f.Hp;
+        var babChanged = b.Bab != f.Bab;
+        var savesChanged = !SavesEqual(b.Saves, f.Saves);
+        var skillRanksChanged = DictChanged(b.SkillRanks, f.SkillRanks);
+        var classLevelsChanged = DictChanged(b.ClassLevels, f.ClassLevels);
+        var casterLevelsChanged = DictChanged(b.CasterLevels, f.CasterLevels);
+        var allFeatsAdded = f.Feats.Except(b.Feats, StringComparer.OrdinalIgnoreCase).ToList();
+        var allFeatsResolved = b.Feats.Except(f.Feats, StringComparer.OrdinalIgnoreCase).ToList();
+
         var anyChange = oldStatus != newStatus
             || warnAdded.Count > 0 || warnResolved.Count > 0
             || classesAdded.Count > 0 || classesResolved.Count > 0
@@ -418,7 +440,10 @@ public class PcgImportRegression
             || templatesAdded.Count > 0 || templatesResolved.Count > 0
             || domainsAdded.Count > 0 || domainsResolved.Count > 0
             || equipmentAdded.Count > 0 || equipmentResolved.Count > 0
-            || raceIdChanged;
+            || raceIdChanged
+            || hpChanged || babChanged || savesChanged
+            || skillRanksChanged || classLevelsChanged || casterLevelsChanged
+            || allFeatsAdded.Count > 0 || allFeatsResolved.Count > 0;
 
         if (!anyChange) return null;
 
@@ -445,7 +470,44 @@ public class PcgImportRegression
             DomainsResolved = domainsResolved,
             EquipmentAdded = equipmentAdded,
             EquipmentResolved = equipmentResolved,
+            HpChanged = hpChanged,
+            OldHp = b.Hp,
+            NewHp = f.Hp,
+            BabChanged = babChanged,
+            OldBab = b.Bab,
+            NewBab = f.Bab,
+            SavesChanged = savesChanged,
+            OldSaves = b.Saves,
+            NewSaves = f.Saves,
+            SkillRanksChanged = skillRanksChanged,
+            OldSkillRanks = b.SkillRanks,
+            NewSkillRanks = f.SkillRanks,
+            ClassLevelsChanged = classLevelsChanged,
+            OldClassLevels = b.ClassLevels,
+            NewClassLevels = f.ClassLevels,
+            CasterLevelsChanged = casterLevelsChanged,
+            OldCasterLevels = b.CasterLevels,
+            NewCasterLevels = f.CasterLevels,
+            AllFeatsAdded = allFeatsAdded,
+            AllFeatsResolved = allFeatsResolved,
         };
+    }
+
+    private static bool SavesEqual(SaveSet? a, SaveSet? b)
+    {
+        if (a is null && b is null) return true;
+        if (a is null || b is null) return false;
+        return a.Fort == b.Fort && a.Ref == b.Ref && a.Will == b.Will;
+    }
+
+    private static bool DictChanged(Dictionary<string, int> a, Dictionary<string, int> b)
+    {
+        if (a.Count != b.Count) return true;
+        foreach (var (key, value) in a)
+        {
+            if (!b.TryGetValue(key, out var other) || other != value) return true;
+        }
+        return false;
     }
 
     private static string StatusOf(CharacterReport c) =>
@@ -503,6 +565,17 @@ public class PcgImportRegression
                 sb.AppendLine($"### `{c.File}` — {c.Name}  _({c.OldStatus} → {c.NewStatus})_");
                 if (c.RaceIdChanged)
                     sb.AppendLine($"- Race: `{c.OldRaceId}` → `{c.NewRaceId}`");
+                if (c.HpChanged) WriteScalarChange(sb, "HP", c.OldHp, c.NewHp);
+                if (c.BabChanged) WriteScalarChange(sb, "BAB", c.OldBab, c.NewBab);
+                if (c.SavesChanged)
+                    WriteScalarChange(sb, "Saves",
+                        c.OldSaves is { } os ? $"F{os.Fort}/R{os.Ref}/W{os.Will}" : "(none)",
+                        c.NewSaves is { } ns ? $"F{ns.Fort}/R{ns.Ref}/W{ns.Will}" : "(none)");
+                if (c.SkillRanksChanged) WriteDictChange(sb, "Skill ranks", c.OldSkillRanks, c.NewSkillRanks);
+                if (c.ClassLevelsChanged) WriteDictChange(sb, "Class levels", c.OldClassLevels, c.NewClassLevels);
+                if (c.CasterLevelsChanged) WriteDictChange(sb, "Caster levels", c.OldCasterLevels, c.NewCasterLevels);
+                WriteListChange(sb, "Feats added", c.AllFeatsAdded);
+                WriteListChange(sb, "Feats resolved", c.AllFeatsResolved);
                 WriteListChange(sb, "Warnings added", c.WarningsAdded);
                 WriteListChange(sb, "Warnings resolved", c.WarningsResolved);
                 WriteListChange(sb, "Dropped classes added", c.ClassesAdded);
@@ -593,6 +666,29 @@ public class PcgImportRegression
         sb.AppendLine($"- **{label}:** {string.Join(", ", items.Select(i => $"`{i}`"))}");
     }
 
+    private static void WriteScalarChange(StringBuilder sb, string label, object? oldValue, object? newValue)
+    {
+        sb.AppendLine($"- **{label}:** `{oldValue}` → `{newValue}`");
+    }
+
+    private static void WriteDictChange(StringBuilder sb, string label, Dictionary<string, int> oldDict, Dictionary<string, int> newDict)
+    {
+        var keys = oldDict.Keys.Union(newDict.Keys, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(k => k, StringComparer.OrdinalIgnoreCase);
+        var parts = new List<string>();
+        foreach (var key in keys)
+        {
+            var hasOld = oldDict.TryGetValue(key, out var oldVal);
+            var hasNew = newDict.TryGetValue(key, out var newVal);
+            if (hasOld && hasNew && oldVal == newVal) continue;
+            parts.Add(!hasOld ? $"{key}: added ({newVal})"
+                : !hasNew ? $"{key}: removed (was {oldVal})"
+                : $"{key}: {oldVal} → {newVal}");
+        }
+        if (parts.Count == 0) return;
+        sb.AppendLine($"- **{label}:** {string.Join(", ", parts.Select(p => $"`{p}`"))}");
+    }
+
     private static readonly JsonSerializerOptions JsonOpts = new()
     {
         WriteIndented = true,
@@ -649,6 +745,17 @@ public class PcgImportRegression
         public List<string> DroppedTemplates { get; set; } = new();
         public List<string> DroppedDomains { get; set; } = new();
         public List<string> DroppedEquipment { get; set; } = new();
+
+        // Computed-sheet fields (item 1 of TODO.md §4): catches content drift — a rules fix
+        // that silently changes a saved character's stats — as a reviewable diff instead of
+        // passing through unnoticed. Null/default when evaluation itself failed.
+        public int Hp { get; set; }
+        public int Bab { get; set; }
+        public SaveSet? Saves { get; set; }
+        public Dictionary<string, int> SkillRanks { get; set; } = new();
+        public List<string> Feats { get; set; } = new();
+        public Dictionary<string, int> ClassLevels { get; set; } = new();
+        public Dictionary<string, int> CasterLevels { get; set; } = new();
     }
 
     private sealed class ParseFailure
@@ -702,6 +809,27 @@ public class PcgImportRegression
         public List<string> DomainsResolved { get; set; } = new();
         public List<string> EquipmentAdded { get; set; } = new();
         public List<string> EquipmentResolved { get; set; } = new();
+
+        public bool HpChanged { get; set; }
+        public int OldHp { get; set; }
+        public int NewHp { get; set; }
+        public bool BabChanged { get; set; }
+        public int OldBab { get; set; }
+        public int NewBab { get; set; }
+        public bool SavesChanged { get; set; }
+        public SaveSet? OldSaves { get; set; }
+        public SaveSet? NewSaves { get; set; }
+        public bool SkillRanksChanged { get; set; }
+        public Dictionary<string, int> OldSkillRanks { get; set; } = new();
+        public Dictionary<string, int> NewSkillRanks { get; set; } = new();
+        public bool ClassLevelsChanged { get; set; }
+        public Dictionary<string, int> OldClassLevels { get; set; } = new();
+        public Dictionary<string, int> NewClassLevels { get; set; } = new();
+        public bool CasterLevelsChanged { get; set; }
+        public Dictionary<string, int> OldCasterLevels { get; set; } = new();
+        public Dictionary<string, int> NewCasterLevels { get; set; } = new();
+        public List<string> AllFeatsAdded { get; set; } = new();
+        public List<string> AllFeatsResolved { get; set; } = new();
     }
 
     private sealed class TallyDelta
