@@ -435,6 +435,46 @@ public class RulesAccuracyTests
     }
 
     [Fact]
+    public void Loremaster_RequiresSkillFocusInAKnowledgeSkill_NotJustAnySkillFocus()
+    {
+        // "Feats: Any three metamagic or item creation feats, plus Skill Focus
+        //  (Knowledge [any individual Knowledge skill])."
+        // Selection ids are {feat}_{skill} and every Knowledge skill id starts with
+        // "knowledge_", so HasFeat's prefix match discriminates exactly.
+        var driver = (HDDriver)Content.Value.GetDriver("class:loremaster");
+        var skillFocus = driver.Prerequisites.OfType<HasFeat>()
+            .Single(f => f.FeatId.StartsWith("skill_focus", StringComparison.Ordinal));
+
+        var wrongSkill = new CharacterState();
+        wrongSkill.Feats.Add("skill_focus_spellcraft");
+        Assert.False(skillFocus.IsMet(wrongSkill));
+
+        var knowledge = new CharacterState();
+        knowledge.Feats.Add("skill_focus_knowledge_arcana");
+        Assert.True(skillFocus.IsMet(knowledge));
+
+        var otherKnowledge = new CharacterState();
+        otherKnowledge.Feats.Add("skill_focus_knowledge_religion");
+        Assert.True(skillFocus.IsMet(otherKnowledge));
+    }
+
+    [Fact]
+    public void Thaumaturgist_RequiresSpellFocusInConjurationSpecifically()
+    {
+        // "Feats: Spell Focus (conjuration)." — one named school, so pin it exactly.
+        var driver = (HDDriver)Content.Value.GetDriver("class:thaumaturgist");
+        var spellFocus = driver.Prerequisites.OfType<HasFeat>().Single();
+
+        var wrongSchool = new CharacterState();
+        wrongSchool.Feats.Add("spell_focus_evocation");
+        Assert.False(spellFocus.IsMet(wrongSchool));
+
+        var right = new CharacterState();
+        right.Feats.Add("spell_focus_conjuration");
+        Assert.True(spellFocus.IsMet(right));
+    }
+
+    [Fact]
     public void DwarvenDefender_RequiresBeingADwarf()
     {
         // "Race: Dwarf."

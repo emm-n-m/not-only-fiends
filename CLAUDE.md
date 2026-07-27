@@ -12,6 +12,12 @@ Custom subagents in `.claude/agents/` for autonomous content pipeline work:
 
 ### Skills (invoked by agents or directly via `/skill-name`)
 
-Content extraction skills in `.claude/skills/`: `extract-class`, `extract-race`, `extract-feat`, `extract-spell`, `extract-template`, `extract-domain`, `extract-skill`. Each reads a PDF, parses content, writes JSON to the appropriate `Content/` subdirectory, and runs tests.
+**Adding content** — `extract-class`, `extract-race`, `extract-feat`, `extract-spell`, `extract-template`, `extract-domain`, `extract-skill`, `extract-equipment`. Each reads a source (HTML preferred, PDF fallback), parses content, writes JSON to the appropriate `Content/` subdirectory, and runs tests.
 
-`gap-analysis` — Runs PCGen character reconstruction tests to report buildability status and missing content.
+**Auditing what exists** —
+
+- `verify-content` — Diffs content JSON against the SRD HTML mirror and reports mismatches with quoted sources. Report-only; never edits. Ground truth is the mirror, never model recall — content with no SRD page is explicitly out of scope. Tier 1 (all 48 public-pack drivers) done 2026-07-27; races/feats/domains and spells remain.
+- `audit-agent-api` — Builds a character end-to-end using only the REST API, to find discoverability gaps, silently-accepted illegal input, and oversized payloads. Run after API or engine changes.
+- `gap-analysis` — Runs PCGen character reconstruction tests to report buildability status and missing content.
+
+Outstanding work from these audits is tracked in [TODO.md](TODO.md).

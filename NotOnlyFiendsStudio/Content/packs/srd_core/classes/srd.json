@@ -2445,7 +2445,7 @@
         "minCount": 2
       },
       { "$type": "HasFeatOfAnyType", "featTypes": ["Metamagic", "ItemCreation"], "minCount": 3 },
-      {"$type": "HasFeat", "featId": "skill_focus"},
+      {"$type": "HasFeat", "featId": "skill_focus_knowledge"},
       { "$type": "CanCastSpellLevel", "spellLevel": 3 }
     ],
     "maxLevel": 10
@@ -3758,7 +3758,7 @@
       { "$type": "AdvanceSpellcasting" }
     ],
     "prerequisites": [
-      {"$type": "HasFeat", "featId": "spell_focus"},
+      {"$type": "HasFeat", "featId": "spell_focus_conjuration"},
       {"$type": "CanCastSpellLevel", "spellLevel": 4, "castingType": "Divine"}
     ],
     "maxLevel": 5
