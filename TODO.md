@@ -82,16 +82,28 @@ from §5's id unification or §7's spell split renaming the spells without updat
 | `domain:air` / `earth` / `fire` / `water` | 9 | `spell:elemental_swarm_<element>` | `spell:elemental_swarm` |
 | `domain:chaos` / `evil` / `good` / `law` | 9 | `spell:summon_monster_ix_<alignment>` | `spell:summon_monster_ix` |
 
-Eight of these are core SRD domains, so the blast radius is any cleric using them. The first
-six are mechanical renames. The element/alignment variants need a decision first: is
-`elemental_swarm` one spell whose element is chosen at casting (current content says yes), or
-should there be four entries? Same question for `summon_monster_ix`. **Add a loader-level or
-test-level guard for dangling content references at the same time** — this class of breakage
-is invisible today, and the equivalent private-pack bug (`domain:fury` 2 →
-`spell:bull_s_strength`) was correct-per-the-book and still broken, so a content audit alone
-would not have found it. A guard now exists for the Fiendish Codex domains only
-(`FiendishCodexDomains_ReferenceOnlyRealSpells`); generalising it is blocked on fixing the 11
-above, since it would fail immediately.
+Eight of these are core SRD domains, so the blast radius is any cleric using them.
+
+**All 11 are mechanical renames — no design decision is needed.** (An earlier draft of this
+entry claimed the element/alignment variants needed a ruling first; that was wrong. A summoning
+spell takes the alignment descriptor of whichever creature is summoned, so `summon_monster_ix`
+is one spell with a casting-time creature choice and has no elemental dimension at all;
+`elemental_swarm` likewise opens a portal to the plane of the caster's choosing. No per-element
+or per-alignment spell exists in any pack, and none should.)
+
+Both sides of those two links are broken, so fixing the domain refs is only half of it:
+`spell:elemental_swarm` carries only `class:druid: 9` and is missing `domain:air/earth/fire/
+water: 9`, and `spell:summon_monster_ix` is missing `domain:chaos/evil/good/law: 9`. The
+`domain:` keys in a spell's `classLevels` are the established convention (the Fiendish Codex
+spells use them).
+
+**Add a loader-level or test-level guard for dangling content references at the same time** —
+this class of breakage is invisible today, and the equivalent private-pack bug (`domain:fury`
+2 → `spell:bull_s_strength`) was correct-per-the-book and still broken, so a content audit
+alone would not have found it. A guard currently exists for the Fiendish Codex domains only
+(`FiendishCodexDomains_ReferenceOnlyRealSpells`); generalise it once the 11 above are fixed,
+since today it would fail immediately. Worth widening beyond domains too — nothing checks that
+feat, class or race cross-references resolve either.
 
 - **Skill synergies unimplemented** (found 2026-07-28 by the strict-deserialization
   test). `srd_core/skills/srd.json` carries structured synergy data on 9 skills
