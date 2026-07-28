@@ -133,10 +133,22 @@ Use the `verify-content` skill. Tier 1 (all 48 drivers in the public packs) is *
 - **Tier 2** — SRD races, feat prerequisites and feat `type` values, domains.
 - **Tier 3** — the 617 spells (corrected from an earlier estimate of ~1,466 — confirmed count
   while splitting `spells/srd.json` in §7). Highest count, lowest per-item blast radius.
-- **Private packs** — the 17 non-SRD classes (Hellfire Warlock, Archfiend, Blood Witch,
-  Dark Temptress, Hellreaver, …) have **no SRD ground truth**. They cannot be verified this
-  way; verifying them from model recall would manufacture false findings. They need either
-  the source books to hand or an explicit decision to leave them unverified.
+- **Private packs** — ~~no ground truth~~ **audited 2026-07-27** with the
+  `verify-content-lst` skill against the PCGen LST data set (`PCGEN_DATA_PATH`). Full
+  report + fix status: `{EXTRA_PACKS_PATH}/test-reports/lst_audit_2026-07-27.md`.
+  Patterns P2/P3/P5 and all user rulings are **fixed** (2026-07-28). Remaining:
+  - **P1** — the dropped-prerequisites sweep (largest batch; ~40 findings across
+    12_to_midnight, curses, mongoose, necromancer, sword_and_sorcery, deceit classes).
+    Cross-check restored prereqs against the `.pcg` corpus (see skill's
+    "second witness" section). Needs schema additions: KnowsSpell-or-equivalent,
+    school-gated casting, deity, PC-level.
+  - **P4** — Eldritch Sorcery spells: 51 `DOMAINS:` and 10 Assassin/Blackguard
+    `classLevels` assignments (representable with existing conventions).
+  - **Fiendish Codex 1/2** — no LSTs exist; audit against the PDFs at
+    `SOURCE_PDFS_PATH`, verify-content-style with page-quoted findings.
+  - Engine gaps noted in the report: flat-HP grant, non-equipment typed AC bonuses,
+    class/feat speed grants, feat selections (Elemental Resistance), Curse Repertoire
+    spells-known feature, template prerequisites, HDDriver spell-list field.
 
 ---
 
