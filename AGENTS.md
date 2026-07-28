@@ -76,7 +76,7 @@ See `ARCHITECTURE.md` for the full class hierarchy, replay algorithm, and formul
 
 ## External Data (symlinks)
 
-- **`pcgen_data/`** → PCGen 3.5e LST data files (Wizards, third-party publishers). Contains subdirectories per publisher (e.g., `wizards_of_the_coast/`, `12_to_midnight/`).
+- **PCGen LST data** → path configured via `PCGEN_DATA_PATH` in `.env`. PCGen 3.5e LST data files (Wizards, third-party publishers), subdirectories per publisher (e.g., `wizards_of_the_coast/`, `12_to_midnight/`). Ground truth for auditing private-pack content.
 - **PCGen `.pcg` characters** → path configured via `PCGEN_CHARACTERS_PATH` in `.env`. Used by the PCGen reconstruction test suite, which skips automatically when the path is unset or the directory is missing.
 - **PCG import regression** → `PcgImportRegression` test runs the converter over every `.pcg` file and compares against a golden baseline stored in `{EXTRA_PACKS_PATH}/test-reports/`. Run after any change that could affect PCG import (converter, id mapper, new/changed content that touches mapped names). On mismatch the test writes `pcg_import_report.diff.md` and fails with review instructions. Re-run with `UPDATE_PCG_BASELINE=1` to accept intentional changes.
-- **`sources/`** → Source PDFs (gitignored). Drop PDFs here for content extraction.
+- **`sources/`** → Source PDFs (gitignored). Drop PDFs here for content extraction. Long-term storage of owned PDFs is configured via `SOURCE_PDFS_PATH` in `.env` — for books with no PCGen LST data (e.g. the Fiendish Codices), these PDFs are the audit ground truth.
