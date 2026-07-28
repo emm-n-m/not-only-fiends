@@ -442,9 +442,9 @@ the same `PcgImportRegression` / `PcgReconstructionTests` methods that skip for 
 
 ### Ranked follow-ups this run found and did not do
 
-1. **Backfill the 345 missing `domain:` keys on the spell side** (Task 2). The domain spell picker
-   reads the spell-side key, so most domains offer an empty spell list. Mechanical and derivable
-   from data already in the repo; needs its own task because it touches ~300 public spell files.
+1. **The builder offers spells-known selection to prepared casters** — see the correction below.
+   Fixing that supersedes what this report originally ranked first (backfilling 345 `domain:`
+   keys), which would have populated a control that should not be a dropdown at all.
 2. **A prerequisite that can match a skill category** — `skill:type_perform`,
    `skill:type_<ability>`. Disguise Spell and ten epic feats are unenterable without it.
 3. **Define `skill:speak_language`** — 9 classes list it as a class skill; nothing defines it. Needs
@@ -459,3 +459,63 @@ the same `PcgImportRegression` / `PcgReconstructionTests` methods that skip for 
    half-dragon" restriction has nothing to test against.
 7. **5b, on a machine with the SRD mirror** — race language schema field, backfill, and the
    `extract-race` skill update.
+
+---
+
+## Correction — the builder offers spells-known selection to prepared casters
+
+Raised after the run by the user, and confirmed in code. **This supersedes what this report
+originally ranked as follow-up #1.**
+
+### The bug
+
+`BuilderView.razor:400` shows the spell panel for any caster, and `:442-473` renders an
+"Add spell..." dropdown per spell level gated only on whether spells exist at that level. It never
+asks whether the class is prepared or spontaneous. So a cleric is offered a spells-known style
+choice at every level, listing the entire cleric list — when a cleric knows their whole list and
+prepares from it daily. There is no such choice in 3.5.
+
+It affects **10 of the 13 spellcasting classes**: `cleric`, `cloistered_cleric`, `druid`, `adept`,
+`paladin`, `paladin_of_tyranny`, `ranger`, `planar_ranger`, `blackguard`, `wizard`. Only `sorcerer`
+and `bard` (and racial casters that stack onto them) legitimately have spells known.
+
+Secondary effect: `alreadyKnown` (`:445`) is only computed when `SpellsKnown != null`, so for
+prepared casters the filter at `:454` passes everything and the **same spell can be added
+repeatedly**.
+
+### The engine is not at fault
+
+`SpellsKnown == null` is this codebase's definition of a prepared caster, and two places apply it
+correctly:
+
+- `HasSpontaneousCasting.IsMet` (`Prerequisite.cs:240`) tests exactly `s.SpellsKnown != null`.
+- `CheckSpellsKnownLimits` (`ReplayEngine.cs:550`) skips those casters, with a comment saying why —
+  "a wizard's spellbook is unbounded".
+
+So the distinction is modelled and enforced; the builder simply never consults it. Note the nuance
+the engine comment implies: for a **wizard** a selection is meaningful (it is a spellbook, just
+unbounded), while for cleric, druid, paladin, ranger, adept and blackguard it is meaningless.
+
+### Why this changes the domain-spell recommendation
+
+This report originally ranked "backfill the 345 missing `domain:` keys" first, so that the
+"Add domain spell..." dropdown would populate. **That was the wrong conclusion.** A domain's bonus
+slot at level N has exactly one legal spell — whichever the domain lists — so a dropdown is the
+wrong control regardless of how many keys exist. The spell is determined, not chosen.
+
+The facts behind the original finding still hold: `DomainDefinition.BonusSpells` is read by no
+engine or UI code, the picker filters on the spell-side `domain:` key, and only 42 of 387 slots
+carry one. But the fix they point to is the opposite of a backfill: **read `BonusSpells` — the
+dictionary that is currently inert — and display which spell fills each domain slot.** That needs
+no content change at all, and it makes the domain side of the link the consumed one, which is where
+the data already lives and where the 14 ids fixed in Task 2 already are.
+
+### Suggested shape of the fix
+
+1. Gate the class spell picker on `SpellsKnown != null`. For prepared casters show the available
+   list read-only (or, for the wizard, label it "spellbook" and keep it unbounded and deduplicated).
+2. Replace the domain spell dropdown with a read-only line per domain slot, sourced from
+   `DomainDefinition.BonusSpells`, e.g. "Air, level 9 — Elemental Swarm".
+3. Drop the 345-key backfill from the plan; the two spell-side additions made in Task 2 remain
+   correct and harmless either way, since `classLevels` is also what `GetSpellsForList` and the
+   `/api/content/spells?listId=` endpoint query.
