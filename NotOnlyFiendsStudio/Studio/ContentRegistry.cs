@@ -294,6 +294,19 @@ public class ContentRegistry : IContentLookup
                     $"Race '{race.Id}' references racial HD driver '{race.RacialHDDriverId}' which does not exist"));
         }
 
+        // Cross-reference: Domain → every bonus spell ID exists. A dangling entry here is
+        // invisible at runtime — the domain simply grants nothing at that level — so it has to be
+        // caught at load. Eleven core domains shipped broken for months for exactly this reason.
+        foreach (var domain in _domains.Values)
+        {
+            foreach (var (level, spellId) in domain.BonusSpells)
+            {
+                if (!_spells.ContainsKey(spellId))
+                    _errors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                        $"Domain '{domain.Id}' grants bonus spell '{spellId}' at level {level} which does not exist"));
+            }
+        }
+
         // Cross-reference: HasFeat prerequisites → feat ID exists
         foreach (var feat in _feats.Values)
             ValidatePrerequisites(feat.Prerequisites, $"Feat '{feat.Id}'");

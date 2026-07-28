@@ -129,7 +129,7 @@
     },
     {
       "$type": "LacksTemplate",
-      "templateId": "half_dragon"
+      "templateId": "template:half_dragon"
     }
   ],
   "maxLevel": 10

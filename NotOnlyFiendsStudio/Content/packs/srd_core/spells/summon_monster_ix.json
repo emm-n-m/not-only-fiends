@@ -6,7 +6,11 @@
   "classLevels": {
     "class:cleric": 9,
     "class:sorcerer": 9,
-    "class:wizard": 9
+    "class:wizard": 9,
+    "domain:chaos": 9,
+    "domain:evil": 9,
+    "domain:good": 9,
+    "domain:law": 9
   },
   "components": {
     "verbal": true,

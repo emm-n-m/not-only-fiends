@@ -634,16 +634,20 @@ public class RulesAccuracyTests
     public void DragonDisciple_RequiresDraconicAndExcludesHalfDragon()
     {
         // "Any nondragon (cannot already be a half-dragon)" and "Languages: Draconic."
-        // Both are correctly implemented and unit-tested here, but currently unsatisfiable
-        // by any real character build: no race/class content grants "draconic" as a fixed
-        // language, and no "half_dragon" template exists in content yet. Content gaps for
-        // future work, not code defects — see TODO.md §2.
+        // Both are correctly implemented and unit-tested here. The language is now reachable via
+        // PCG import (see PcgConverterTests); no "template:half_dragon" exists in content yet, so
+        // the exclusion still has nothing to test against. Content gap, not a code defect.
+        //
+        // The template id was authored unprefixed as "half_dragon" while every template in the
+        // registry is "template:<id>", so the exclusion would not have fired even once the
+        // template existed. Found by ContentIntegrityTests' cross-reference sweep and corrected;
+        // behaviour is unchanged today because neither id resolves.
         var driver = (HDDriver)Content.Value.GetDriver("class:dragon_disciple");
         var language = driver.Prerequisites.OfType<HasLanguage>().Single();
         var noDragon = driver.Prerequisites.OfType<LacksTemplate>().Single();
 
         Assert.Equal("draconic", language.LanguageId);
-        Assert.Equal("half_dragon", noDragon.TemplateId);
+        Assert.Equal("template:half_dragon", noDragon.TemplateId);
 
         var withLanguage = new CharacterState();
         withLanguage.Languages.Add("draconic");
@@ -651,7 +655,7 @@ public class RulesAccuracyTests
         Assert.False(language.IsMet(new CharacterState()));
 
         var withTemplate = new CharacterState();
-        withTemplate.TemplateIds.Add("half_dragon");
+        withTemplate.TemplateIds.Add("template:half_dragon");
         Assert.False(noDragon.IsMet(withTemplate));
         Assert.True(noDragon.IsMet(new CharacterState()));
     }

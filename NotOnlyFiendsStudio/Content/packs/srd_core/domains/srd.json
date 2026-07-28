@@ -9,7 +9,7 @@
         "ability": { "id": "domain_air_power", "name": "Air Domain Power", "description": "Turn/destroy earth creatures or rebuke/command air creatures." }
       }
     ],
-    "bonusSpells": { "1": "spell:obscuring_mist", "2": "spell:wind_wall", "3": "spell:gaseous_form", "4": "spell:air_walk", "5": "spell:control_winds", "6": "spell:chain_lightning", "7": "spell:control_weather", "8": "spell:whirlwind", "9": "spell:elemental_swarm_air" }
+    "bonusSpells": { "1": "spell:obscuring_mist", "2": "spell:wind_wall", "3": "spell:gaseous_form", "4": "spell:air_walk", "5": "spell:control_winds", "6": "spell:chain_lightning", "7": "spell:control_weather", "8": "spell:whirlwind", "9": "spell:elemental_swarm" }
   },
   {
     "id": "domain:animal",
@@ -45,7 +45,7 @@
         "ability": { "id": "domain_chaos_power", "name": "Chaos Domain Power", "description": "Cast chaos spells at +1 caster level." }
       }
     ],
-    "bonusSpells": { "1": "spell:protection_from_law", "2": "spell:shatter", "3": "spell:magic_circle_against_law", "4": "spell:chaos_hammer", "5": "spell:dispel_law", "6": "spell:animate_objects", "7": "spell:word_of_chaos", "8": "spell:cloak_of_chaos", "9": "spell:summon_monster_ix_chaos" }
+    "bonusSpells": { "1": "spell:protection_from_law", "2": "spell:shatter", "3": "spell:magic_circle_against_law", "4": "spell:chaos_hammer", "5": "spell:dispel_law", "6": "spell:animate_objects", "7": "spell:word_of_chaos", "8": "spell:cloak_of_chaos", "9": "spell:summon_monster_ix" }
   },
   {
     "id": "domain:death",
@@ -81,7 +81,7 @@
         "ability": { "id": "domain_earth_power", "name": "Earth Domain Power", "description": "Turn/destroy air creatures or rebuke/command earth creatures." }
       }
     ],
-    "bonusSpells": { "1": "spell:magic_stone", "2": "spell:soften_earth_and_stone", "3": "spell:stone_shape", "4": "spell:spike_stones", "5": "spell:wall_of_stone", "6": "spell:stoneskin", "7": "spell:earthquake", "8": "spell:iron_body", "9": "spell:elemental_swarm_earth" }
+    "bonusSpells": { "1": "spell:magic_stone", "2": "spell:soften_earth_and_stone", "3": "spell:stone_shape", "4": "spell:spike_stones", "5": "spell:wall_of_stone", "6": "spell:stoneskin", "7": "spell:earthquake", "8": "spell:iron_body", "9": "spell:elemental_swarm" }
   },
   {
     "id": "domain:evil",
@@ -93,7 +93,7 @@
         "ability": { "id": "domain_evil_power", "name": "Evil Domain Power", "description": "Cast evil spells at +1 caster level." }
       }
     ],
-    "bonusSpells": { "1": "spell:protection_from_good", "2": "spell:desecrate", "3": "spell:magic_circle_against_good", "4": "spell:unholy_blight", "5": "spell:dispel_good", "6": "spell:create_undead", "7": "spell:blasphemy", "8": "spell:unholy_aura", "9": "spell:summon_monster_ix_evil" }
+    "bonusSpells": { "1": "spell:protection_from_good", "2": "spell:desecrate", "3": "spell:magic_circle_against_good", "4": "spell:unholy_blight", "5": "spell:dispel_good", "6": "spell:create_undead", "7": "spell:blasphemy", "8": "spell:unholy_aura", "9": "spell:summon_monster_ix" }
   },
   {
     "id": "domain:fire",
@@ -105,7 +105,7 @@
         "ability": { "id": "domain_fire_power", "name": "Fire Domain Power", "description": "Turn/destroy water creatures or rebuke/command fire creatures." }
       }
     ],
-    "bonusSpells": { "1": "spell:burning_hands", "2": "spell:produce_flame", "3": "spell:resist_energy", "4": "spell:wall_of_fire", "5": "spell:fire_shield", "6": "spell:fire_seeds", "7": "spell:fire_storm", "8": "spell:incendiary_cloud", "9": "spell:elemental_swarm_fire" }
+    "bonusSpells": { "1": "spell:burning_hands", "2": "spell:produce_flame", "3": "spell:resist_energy", "4": "spell:wall_of_fire", "5": "spell:fire_shield", "6": "spell:fire_seeds", "7": "spell:fire_storm", "8": "spell:incendiary_cloud", "9": "spell:elemental_swarm" }
   },
   {
     "id": "domain:good",
@@ -117,7 +117,7 @@
         "ability": { "id": "domain_good_power", "name": "Good Domain Power", "description": "Cast good spells at +1 caster level." }
       }
     ],
-    "bonusSpells": { "1": "spell:protection_from_evil", "2": "spell:aid", "3": "spell:magic_circle_against_evil", "4": "spell:holy_smite", "5": "spell:dispel_evil", "6": "spell:blade_barrier", "7": "spell:holy_word", "8": "spell:holy_aura", "9": "spell:summon_monster_ix_good" }
+    "bonusSpells": { "1": "spell:protection_from_evil", "2": "spell:aid", "3": "spell:magic_circle_against_evil", "4": "spell:holy_smite", "5": "spell:dispel_evil", "6": "spell:blade_barrier", "7": "spell:holy_word", "8": "spell:holy_aura", "9": "spell:summon_monster_ix" }
   },
   {
     "id": "domain:healing",
@@ -153,7 +153,7 @@
         "ability": { "id": "domain_law_power", "name": "Law Domain Power", "description": "Cast law spells at +1 caster level." }
       }
     ],
-    "bonusSpells": { "1": "spell:protection_from_chaos", "2": "spell:calm_emotions", "3": "spell:magic_circle_against_chaos", "4": "spell:order_s_wrath", "5": "spell:dispel_chaos", "6": "spell:hold_monster", "7": "spell:dictum", "8": "spell:shield_of_law", "9": "spell:summon_monster_ix_law" }
+    "bonusSpells": { "1": "spell:protection_from_chaos", "2": "spell:calm_emotions", "3": "spell:magic_circle_against_chaos", "4": "spell:order_s_wrath", "5": "spell:dispel_chaos", "6": "spell:hold_monster", "7": "spell:dictum", "8": "spell:shield_of_law", "9": "spell:summon_monster_ix" }
   },
   {
     "id": "domain:luck",
@@ -177,7 +177,7 @@
         "ability": { "id": "domain_magic_power", "name": "Magic Domain Power", "description": "Use spell completion/trigger items as a wizard of half cleric level (min 1st)." }
       }
     ],
-    "bonusSpells": { "1": "spell:magic_aura", "2": "spell:identify", "3": "spell:dispel_magic", "4": "spell:imbue_with_spell_ability", "5": "spell:spell_resistance", "6": "spell:antimagic_field", "7": "spell:spell_turning", "8": "spell:protection_from_spells", "9": "spell:mordenkainen_s_disjunction" }
+    "bonusSpells": { "1": "spell:magic_aura", "2": "spell:identify", "3": "spell:dispel_magic", "4": "spell:imbue_with_spell_ability", "5": "spell:spell_resistance", "6": "spell:antimagic_field", "7": "spell:spell_turning", "8": "spell:protection_from_spells", "9": "spell:mages_disjunction" }
   },
   {
     "id": "domain:plant",
@@ -213,7 +213,7 @@
         "ability": { "id": "domain_strength_power", "name": "Feat of Strength", "description": "Once per day, +cleric level enhancement bonus to Strength for 1 round." }
       }
     ],
-    "bonusSpells": { "1": "spell:enlarge_person", "2": "spell:bull_s_strength", "3": "spell:magic_vestment", "4": "spell:spell_immunity", "5": "spell:righteous_might", "6": "spell:stoneskin", "7": "spell:bigby_s_grasping_hand", "8": "spell:bigby_s_clenched_fist", "9": "spell:bigby_s_crushing_hand" }
+    "bonusSpells": { "1": "spell:enlarge_person", "2": "spell:bulls_strength", "3": "spell:magic_vestment", "4": "spell:spell_immunity", "5": "spell:righteous_might", "6": "spell:stoneskin", "7": "spell:grasping_hand", "8": "spell:clenched_fist", "9": "spell:crushing_hand" }
   },
   {
     "id": "domain:sun",
@@ -237,7 +237,7 @@
         "ability": { "id": "domain_travel_power", "name": "Freedom of Movement", "description": "1 round/cleric level per day of automatic freedom of movement. Survival is a class skill." }
       }
     ],
-    "bonusSpells": { "1": "spell:longstrider", "2": "spell:locate_object", "3": "spell:fly", "4": "spell:dimension_door", "5": "spell:teleport", "6": "spell:find_the_path", "7": "spell:greater_teleport", "8": "spell:phase_door", "9": "spell:astral_projection" }
+    "bonusSpells": { "1": "spell:longstrider", "2": "spell:locate_object", "3": "spell:fly", "4": "spell:dimension_door", "5": "spell:teleport", "6": "spell:find_the_path", "7": "spell:teleport_greater", "8": "spell:phase_door", "9": "spell:astral_projection" }
   },
   {
     "id": "domain:trickery",
@@ -273,6 +273,6 @@
         "ability": { "id": "domain_water_power", "name": "Water Domain Power", "description": "Turn/destroy fire creatures or rebuke/command water creatures." }
       }
     ],
-    "bonusSpells": { "1": "spell:obscuring_mist", "2": "spell:fog_cloud", "3": "spell:water_breathing", "4": "spell:control_water", "5": "spell:ice_storm", "6": "spell:cone_of_cold", "7": "spell:acid_fog", "8": "spell:horrid_wilting", "9": "spell:elemental_swarm_water" }
+    "bonusSpells": { "1": "spell:obscuring_mist", "2": "spell:fog_cloud", "3": "spell:water_breathing", "4": "spell:control_water", "5": "spell:ice_storm", "6": "spell:cone_of_cold", "7": "spell:acid_fog", "8": "spell:horrid_wilting", "9": "spell:elemental_swarm" }
   }
 ]

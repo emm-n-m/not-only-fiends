@@ -301,23 +301,11 @@ public class PrivatePackRulesAccuracyTests
             StringComparison.OrdinalIgnoreCase);
     }
 
-    // Every domain bonus spell must resolve to a real spell. domain:fury 2 and 6 pointed at
-    // "spell:bull_s_strength(_mass)" and domain:ooze 2 at "spell:melf_s_acid_arrow", none of
-    // which exist — dangling references grant nothing and nothing else in the suite catches
-    // them. (The same class of breakage exists in the public packs; see TODO §1.)
-    [RequiresPrivatePacksFact]
-    public void FiendishCodexDomains_ReferenceOnlyRealSpells()
-    {
-        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
-        var dangling = registry.GetAllDomains()
-            .SelectMany(d => d.BonusSpells.Select(kv => (d.Id, Level: kv.Key, SpellId: kv.Value)))
-            .Where(x => x.Id is "domain:corruption" or "domain:demonic" or "domain:entropy"
-                            or "domain:fury" or "domain:ooze" or "domain:temptation" or "domain:diabolic")
-            .Where(x => !registry.TryGetSpell(x.SpellId, out _))
-            .Select(x => $"{x.Id}[{x.Level}] -> {x.SpellId}")
-            .ToList();
-        Assert.Empty(dangling);
-    }
+    // The seven-domain FiendishCodexDomains_ReferenceOnlyRealSpells that lived here was scoped to
+    // the Fiendish Codex domains only because the public packs would have failed it: 14 slots
+    // across 11 domains pointed at spell ids that do not exist. Those are fixed, so the check is
+    // now ungated and covers every domain in every loaded pack — see
+    // ContentIntegrityTests.EveryDomainBonusSpell_Resolves.
 
     // FC2 78: "Infernal Mien (Ex): … +2 racial bonus on Intimidate checks." Was prose
     // on a GrantAbility only, so it never reached computed skill totals (P3 pattern).

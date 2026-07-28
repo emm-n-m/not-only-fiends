@@ -4,7 +4,11 @@
   "name": "Elemental Swarm",
   "school": "conjuration",
   "classLevels": {
-    "class:druid": 9
+    "class:druid": 9,
+    "domain:air": 9,
+    "domain:earth": 9,
+    "domain:fire": 9,
+    "domain:water": 9
   },
   "components": {
     "verbal": true,

@@ -43,7 +43,7 @@ These are the only numbers anything below is compared against.
 | task | status | tests after | commit |
 |---|---|---|---|
 | 1 — skill totals, synergies, skill bonuses | **done** | 509 passed / 11 skipped / 0 failed | |
-| 2 — dangling domain spell refs + integrity guard | not started | | |
+| 2 — dangling domain spell refs + integrity guard | **done** | 512 passed / 11 skipped / 0 failed | |
 | 3 — builder offers non-playable races | not started | | |
 | 4 — surface write-only state on the sheet | not started | | |
 | 5 — languages | not started | | |
@@ -106,3 +106,101 @@ therefore states a total that is correct for an unarmoured, non-situational chec
 penalty is the most visible of the three: `SkillDefinition.ArmorCheckPenalty` is already populated
 per skill and `ArmorProfile` already carries the penalty value, so the data for it exists — it is a
 follow-up, not a research problem.
+
+---
+
+## Task 2 — dangling domain spell references + integrity guard — DONE
+
+### Count correction
+
+The brief says "**11** domain bonus-spell slots across **11** public-pack domains". It is 11
+**domains** but **14 slots** — the table in TODO §1 collapses `air`/`earth`/`fire`/`water` into one
+row and `chaos`/`evil`/`good`/`law` into another, so eight slots appear as two rows. All 14 were
+fixed; no other reading of the table changes which ids are wrong.
+
+### What changed
+
+- **`packs/srd_core/domains/srd.json`** — 14 bonus-spell ids repointed, exactly as TODO §1
+  specifies: `bull_s_strength`→`bulls_strength`; `bigby_s_{grasping_hand,clenched_fist,
+  crushing_hand}`→ the un-prefixed forms; `mordenkainen_s_disjunction`→`mages_disjunction`;
+  `greater_teleport`→`teleport_greater`; the four `elemental_swarm_<element>`→`elemental_swarm`;
+  the four `summon_monster_ix_<alignment>`→`summon_monster_ix`.
+- **`packs/srd_core/spells/elemental_swarm.json`** — added `domain:air/earth/fire/water: 9`.
+- **`packs/srd_core/spells/summon_monster_ix.json`** — added `domain:chaos/evil/good/law: 9`.
+- **`Studio/ContentRegistry.cs`** — `Validate()` now checks every domain bonus spell resolves, so
+  this class of breakage fails at load rather than being invisible.
+- **`ContentIntegrityTests.cs`** (new) — the general cross-reference sweep.
+- **`PrivatePackRulesAccuracyTests.cs`** — the seven-domain
+  `FiendishCodexDomains_ReferenceOnlyRealSpells` is gone, replaced by the ungated
+  `ContentIntegrityTests.EveryDomainBonusSpell_Resolves` over every domain in every loaded pack.
+
+Guard verified negatively: repointing `domain:air[9]` back at `spell:elemental_swarm_air` failed
+three tests (`SRDContent_PassesValidation`, `EveryReference_Resolves_OrIsAKnownGap`,
+`EveryDomainBonusSpell_Resolves`), each naming the domain, level and id. Reverted.
+
+### The sweep found one more real bug — fixed
+
+`class:dragon_disciple` carried `LacksTemplate { templateId: "half_dragon" }`, **unprefixed**, while
+every template in the registry is `template:<id>`. The SRD's "cannot already be a half-dragon"
+restriction would therefore not have fired even once a half-dragon template existed. Corrected to
+`template:half_dragon`; behaviour today is unchanged because neither id resolves (no half-dragon
+template has ever been extracted — that remains a content gap, recorded in `KnownGaps`).
+`RulesAccuracyTests.DragonDisciple_RequiresDraconicAndExcludesHalfDragon` pinned the old id and was
+updated with the reasoning.
+
+### Found and deliberately NOT fixed
+
+**1. The `domain:` key is missing from 345 of 387 domain bonus-spell slots — and it is the key that
+actually matters.**
+
+This is the biggest thing found in the run and it reframes Task 2. Tracing what reads what:
+
+- `DomainDefinition.BonusSpells` (the domain side, which the brief's 14 fixes are about) is read by
+  **no engine or UI code at all** — only by tests. It is inert.
+- The domain spell picker filters on the **spell** side: `BuilderView.razor:1285` keeps a spell for
+  a domain only if `spell.ClassLevels` contains that `domain:<id>` key. `ContentRegistry`'s
+  `GetSpellsForList` / the `/spells` API endpoint work the same way.
+
+So the user-visible behaviour — which spells a cleric can actually pick for a domain — depends
+entirely on the spell-side key, and only **42 of 387** slots have it (the 42 are the Fiendish Codex
+spells, which is why the convention was described as "established"). Adding the two the brief asked
+for takes that to 50. A cleric who takes, say, the Healing or Knowledge domain still gets an empty
+"Add domain spell..." list at every level.
+
+Not fixed here because: the brief names exactly two spells, ground rule 5 restricts content edits
+to what a task explicitly authorises, and its closing line says not to invent further content-pack
+work. The fix is mechanical and needs no source — each domain's own `bonusSpells` table already
+states the domain, the level and the spell, so the backfill is derivable from data in this
+repository — but it touches ~300 public spell files and deserves its own task and review.
+
+**Highest-value follow-up available.** Suggested shape: generate the 345 additions from the domain
+tables, then extend `EveryDomainBonusSpell_Resolves` to assert both directions of the link so it
+cannot drift apart again.
+
+**2. References that cannot be resolved without inventing a value or a primitive.** These are in
+`ContentIntegrityTests.KnownGaps`, listed individually so anything *new* still fails the sweep:
+
+| id | where | why it is not a rename |
+|---|---|---|
+| `skill:speak_language` | class-skill list on 9 classes (bard, loremaster, aristocrat, thaumaturgist, dragon disciple, …) | Speak Language is a real SRD skill that no pack defines and that has no sub-skills. Adding it means choosing a key ability, which nothing in the repo states. Adjacent to Task 5. |
+| `skill:type_perform` (11 refs) | `MinSkillRanks` on Disguise Spell and 10 epic feats | Means "12 ranks in **any** Perform skill". Expressing it needs a prerequisite that matches a skill *category*; `MinSkillRanksAcross` takes an explicit id list, not a category. Those feats are currently unenterable. |
+| `skill:type_{strength,dexterity,constitution,intelligence,wisdom,charisma}` (6 refs) | `MinSkillRanks` in `srd_epic` | Same shape: "any Strength-based skill". Same missing primitive. |
+| `skill:scry`, `skill:divination`, `skill:dispel_magic` | private `en_elements_of_magic` feats | Gate on skills from a different magic system this content set does not define. |
+| `template:half_dragon` | `class:dragon_disciple` | Missing content, not a naming mismatch — see above. |
+
+### Checked and concluded correct — recorded so nobody re-investigates
+
+- **Parent-skill ids** (`skill:craft`, `skill:knowledge`, `skill:perform`, `skill:profession`) appear
+  as class skills on ~87 drivers and match no skill definition. They are **correct**:
+  `ReplayStudio.ExpandParentSkillsInPlace` expands them to every sub-skill declaring them as
+  `ParentSkill`. The sweep recognises the convention rather than allowlisting them.
+- **Selectable feat variant ids** (`feat:spell_focus_conjuration`, `feat:skill_focus_spellcraft`,
+  `feat:energy_resistance`) match no feat definition and are **correct**: they resolve against a
+  repeatable feat with `selectionRequired`, the rule `ContentRegistry.IsSelectableFeatVariant`
+  already applies. The sweep applies the same rule plus the `HasFeatSelections` prefix match.
+- **`Capabilities` and language ids are free-form strings, not registry ids** (`wild_shape:animal:huge`,
+  `infernal`). There is no capability or language registry to check them against, so the sweep does
+  not treat them as references. Task 4 surfaces capabilities; a language registry is not proposed.
+- **`elemental_swarm` and `summon_monster_ix` are each genuinely one spell.** Re-confirmed rather
+  than assumed: the element/alignment is a casting-time choice, no per-element or per-alignment
+  spell exists in any pack, and none should.
