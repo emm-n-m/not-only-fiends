@@ -776,4 +776,16 @@ public class RulesAccuracyTests
         Assert.True(prereq.IsMet(Evaluate(Human(new Tick { DriverId = "class:sorcerer" }))));
         Assert.False(prereq.IsMet(Evaluate(Human(new Tick { DriverId = "class:wizard" }))));
     }
+
+    // UA variant paladins: "A paladin of tyranny must be lawful evil"
+    // (unearthedCoreClass.html). The content originally wrote the prerequisite as
+    // {"alignment": "LE"} — a property MinSkillRanks-style silent drop turned into an
+    // empty Allowed set, which made the class unbuildable for everyone.
+    [Fact]
+    public void PaladinOfTyranny_RequiresLawfulEvil()
+    {
+        var driver = Content.Value.GetDriver("class:paladin_of_tyranny");
+        var alignReq = Assert.Single(driver.Prerequisites.OfType<AlignmentReq>());
+        Assert.Equal(new HashSet<Alignment> { Alignment.LE }, alignReq.Allowed);
+    }
 }

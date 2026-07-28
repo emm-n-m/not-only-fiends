@@ -377,6 +377,9 @@ public class ReplayStudio
             state.AbilityScores.CHA += race.AbilityModifiers.CHA;
         }
 
+        foreach (var attack in race.NaturalAttacks)
+            state.NaturalAttacks.Add(attack);
+
         foreach (var buff in race.RacialPermabuffs)
             buff.Apply(ctx);
     }

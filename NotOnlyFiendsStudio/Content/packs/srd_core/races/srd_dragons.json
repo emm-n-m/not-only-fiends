@@ -24,7 +24,6 @@
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:red_dragon",
-    "racialHDCount": 40,
     "racialPermabuffs": [
       {
         "$type": "ModifyAttribute",
@@ -198,7 +197,6 @@
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:red_dragon",
-    "racialHDCount": 40,
     "racialPermabuffs": [
       {
         "$type": "ModifyAttribute",

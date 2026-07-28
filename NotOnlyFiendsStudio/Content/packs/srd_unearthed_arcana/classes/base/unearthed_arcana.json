@@ -167,7 +167,7 @@
     ]
   },
   "prerequisites": [
-    { "$type": "AlignmentReq", "alignment": "LE" }
+    { "$type": "AlignmentReq", "allowed": ["lE"] }
   ]
 },
 {

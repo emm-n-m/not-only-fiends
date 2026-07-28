@@ -63,6 +63,11 @@ data to disambiguate). Regressions: `AirElemental_HasGoodReflexSave`,
   saves) but permanently **unverifiable against source**: `cosmicDescryer.html` has no
   attack or save columns at all. Treat as best-effort; a future mismatch here is not
   necessarily a regression.
+- **Skill synergies unimplemented** (found 2026-07-28 by the strict-deserialization
+  test). `srd_core/skills/srd.json` carries structured synergy data on 9 skills
+  (5 ranks in X → +2 on Y), now preserved on `SkillDefinition.Synergies`, but no
+  engine code consumes it — computed skill totals omit synergy bonuses. Implementing
+  means applying them in the skill-total computation, conditional on ranks ≥ 5.
 
 ---
 

@@ -26,6 +26,8 @@ public class RaceDefinition
 
     // Formula-based abilities that scale with total HD
     public List<ScalingFormula> ScalingFormulas { get; set; } = new();
+
+    public List<NaturalAttack> NaturalAttacks { get; set; } = new();
 }
 
 public class ScalingFormula
