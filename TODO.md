@@ -108,8 +108,9 @@ feat, class or race cross-references resolve either.
 - **Skill synergies unimplemented** (found 2026-07-28 by the strict-deserialization
   test). `srd_core/skills/srd.json` carries structured synergy data on 9 skills
   (5 ranks in X → +2 on Y), now preserved on `SkillDefinition.Synergies`, but no
-  engine code consumes it — computed skill totals omit synergy bonuses. Implementing
-  means applying them in the skill-total computation, conditional on ranks ≥ 5.
+  engine code consumes it. **Moved to §8** — the original wording said this "means
+  applying them in the skill-total computation", but there is no skill-total
+  computation anywhere in the codebase to apply them to. See §8 for the real scope.
 
 ---
 
@@ -423,6 +424,42 @@ importer drops all of it. Parsing that line is small, immediately makes Dragon D
 prerequisite real for imported characters, and gives the sheet something to display — without
 needing the race-language schema or the Int-based selection UI first. Do that before the
 authoring side.
+
+### Skills — no total is computed anywhere, so the sheet shows bare ranks
+
+Three layered gaps, of which the synergy item in §1 is only the top one. Found 2026-07-28
+while checking that item:
+
+1. **Synergies are modelled and never consumed.** `SkillDefinition.Synergies` /
+   `SkillSynergy` exist and 9 skills carry 12 entries (`bluff` → sleight of hand, diplomacy,
+   intimidate; `tumble` → balance, jump; and so on). `Skill.cs:15` and `Skill.cs:18` are the
+   **only** references in the entire solution — no engine code reads them.
+2. **`SkillBonuses` is write-only.** `GrantSkillBonus` writes it, `CharacterSheet` carries it,
+   and *nothing reads it* — not the UI, not the API, not prerequisites (`MinSkillRanks`
+   correctly keys off ranks). So every racial and class skill bonus in every pack currently
+   affects nothing observable.
+3. **There is no skill total.** No `SkillTotal`, no summing of ranks + ability modifier +
+   bonuses, anywhere in engine, sheet, API or UI. `SheetView.razor:150-167` renders a two
+   column table of skill name and rank count. The number a player actually rolls — the total
+   modifier — does not exist in this codebase.
+
+(3) is the real defect and it subsumes the other two: implementing synergies alone would just
+add invisible numbers to an invisible dictionary. The fix is one tail pass plus a display
+change:
+
+- Compute totals after ranks are final — `ranks + abilityMod(skill.KeyAbility) + SkillBonuses`,
+  with armor check penalty and untrained-use rules as follow-ups.
+- Apply synergies in the same pass, keyed off **final whole ranks ≥ 5** (`SkillHalfRanks / 2`).
+  Must be a tail pass, not per-tick, for the same reason `FinalizeRacialSpellcasting` is:
+  a character crossing 5 ranks at 7th level would otherwise get an order-dependent answer.
+  Synergies key off *ranks*, not totals, so they do not chain; and multiple sources stack
+  (Diplomacy legitimately takes three separate +2s from bluff, sense motive and knowledge
+  nobility).
+- Surface it: add the total to `CharacterSheet`, render ranks / ability / misc / total in the
+  sheet table, and expose it on the API.
+
+This is squarely a going-public blocker: skill modifiers are among the most-used numbers on a
+character sheet, and the tool currently cannot state one.
 
 ### Level Adjustment — the builder offers every race, playable or not
 
