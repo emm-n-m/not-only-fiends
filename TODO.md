@@ -370,3 +370,62 @@ touching 617 files twice. Confirmed purely mechanical: the loader already recurs
 `*.json` file structure with no manifest, so zero loader/schema code changes were needed.
 `extract-class`/`extract-spell` skill docs updated to point at the per-file convention instead
 of a flat file to append to.
+
+---
+
+## 8. Engine and UI gaps surfaced by the audits
+
+Two half-built features that the Fiendish Codex audit (2026-07-28) pushed into view. Both are
+cases where the *data model* exists but nothing upstream or downstream connects to it, so the
+feature reads as present in the code and is absent in the product. The per-pack engine gaps
+from the LST and PDF audits are listed in their own reports; these two are big enough to track
+here.
+
+### Languages — modelled, never assignable, never displayed
+
+The whole chain exists except every end of it:
+
+| piece | state |
+|---|---|
+| `CharacterState.Languages` (`HashSet<string>`) | exists |
+| `GrantLanguage` permabuff | exists, writes to it |
+| `HasLanguage` prerequisite | exists, reads it |
+| content that grants a language | **exactly one** — `race:hellbred` → `infernal`, added 2026-07-28 |
+| race "Automatic / Bonus Languages" | **no schema field**; `extract-race` is told to treat it as "flavor only" |
+| Int-based bonus-language selection | **does not exist** |
+| `CharacterSheet`, API DTOs, Blazor UI | **absent entirely** — a character's languages are never shown or chosen |
+| PCG import | **`LANGUAGE:` lines are not parsed at all** |
+
+Consequences, in order of how much they bite:
+
+1. `class:dragon_disciple`'s `HasLanguage{draconic}` prerequisite is satisfiable by **nothing**.
+   It is correctly implemented and unit-tested (§2) and gates a class no character can enter.
+2. The three Fiendish Codex II prestige classes' "Language: Infernal" requirement stays
+   dropped, because restoring it would make them hellbred-only rather than merely gated.
+3. Languages never reach the sheet, so even the hellbred grant is invisible to a user.
+
+**The cheapest first move is the PCG importer.** Every `.pcg` in the corpus already carries a
+full pipe-delimited language list (`Archfiend Lilly.pcg` has
+`LANGUAGE:Abyssal|LANGUAGE:Auran|…|LANGUAGE:Draconic|LANGUAGE:Infernal|…`, 11 of them), and the
+importer drops all of it. Parsing that line is small, immediately makes Dragon Disciple's
+prerequisite real for imported characters, and gives the sheet something to display — without
+needing the race-language schema or the Int-based selection UI first. Do that before the
+authoring side.
+
+### Level Adjustment — the builder offers every race, playable or not
+
+`RaceDefinition.LevelAdjustment` became `int?` on 2026-07-28 so that "playable at no cost" (0)
+is distinguishable from "never priced as a PC race" (null). Nothing consumes the distinction
+yet:
+
+- `BuilderView.razor:1182` populates the race picker from `registry.GetAllRaces()`, **unfiltered**.
+  Every monster race, every companion race and every null-LA creature is offered as a PC choice,
+  with nothing marking them as unsupported. Null LA is now exactly the signal that could drive a
+  filter or an "unofficial as a PC race" badge — that was the point of making it nullable.
+- `SheetView.razor:40` shows `(LA +N)` only when `> 0`, so null and 0 render identically. Fine
+  arithmetically (null contributes 0 to ECL), but the sheet cannot say "this race has no
+  sanctioned LA", which is the one place a player would want to know.
+
+Neither is urgent — no corpus character uses a null-LA race — but the builder listing is a
+real discoverability trap, and it is the kind of thing the `audit-agent-api` skill exists to
+catch. Worth folding into that skill's next run.
