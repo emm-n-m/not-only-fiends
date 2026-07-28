@@ -230,6 +230,15 @@ public class SpellcastingState
     // Stored progression data for AdvanceSpellcasting to use
     public SpellcastingProgression? ProgressionData { get; set; }
 
+    /// <summary>
+    /// How this caster acquires spells. Falls back to the same inference
+    /// <see cref="SpellcastingProgression.ResolvedAcquisition"/> makes, for the racial-grant paths
+    /// that may not carry a progression reference.
+    /// </summary>
+    public SpellAcquisition Acquisition =>
+        ProgressionData?.ResolvedAcquisition
+        ?? (SpellsKnown != null ? SpellAcquisition.SpellsKnown : SpellAcquisition.FullList);
+
     public void ApplyProgression(int casterLevel)
     {
         if (ProgressionData == null) return;

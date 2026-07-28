@@ -519,3 +519,94 @@ the data already lives and where the 14 ids fixed in Task 2 already are.
 3. Drop the 345-key backfill from the plan; the two spell-side additions made in Task 2 remain
    correct and harmless either way, since `classLevels` is also what `GetSpellsForList` and the
    `/api/content/spells?listId=` endpoint query.
+
+---
+
+## Follow-up work — spell acquisition and specialist wizards
+
+Done after the five tasks, on the user's direction, following the correction above.
+
+### 1. Three kinds of caster, not one
+
+New `SpellAcquisition` enum (`Models/Enums.cs`) — `FullList` / `Spellbook` / `SpellsKnown` — with
+`SpellcastingProgression.ResolvedAcquisition` inferring it: a class with a `spellsKnown`
+progression knows a fixed number of spells, anything else has its whole list. That is the rule the
+engine already applied implicitly, so **only the wizard needed an explicit
+`"acquisition": "spellbook"`** in content; the other twelve casting classes are unchanged.
+`OnlyTheWizard_NeedsAnExplicitAcquisitionInContent` pins that.
+
+Builder behaviour by kind:
+
+| kind | classes | picker |
+|---|---|---|
+| `FullList` | cleric, cloistered cleric, druid, paladin (+tyranny), ranger (+planar), adept, blackguard | **none** — replaced by "Knows the entire *N*-spell list, prepared daily, nothing to choose here" |
+| `Spellbook` | wizard | budgeted picker, 0-level omitted (automatic), deduplicated |
+| `SpellsKnown` | sorcerer, bard, assassin | unchanged |
+
+Deduplication now applies to every kind. It used to be computed only when `SpellsKnown != null`, so
+a prepared caster could add the same spell repeatedly.
+
+### 2. Wizard spellbook budget
+
+`ReplayStudio.SpellbookSpellsAllowed(wizardLevel, intModifier)` = `3 + max(0, intMod) + 2 x (level - 1)`,
+checked by `CheckSpellbookLimits`, and shown live in the builder as "N / M spells of level 1+".
+
+Judgment calls: counted against **actual wizard class levels**, not caster level — a prestige class
+that advances spellcasting grants caster level and spells per day, not new spellbook spells. An
+Intelligence *penalty* does not reduce the starting three ("for each point of Intelligence bonus").
+Spells copied from scrolls or another wizard's book are not modelled and are not counted. Cantrips
+and domain picks never count.
+
+### 3. Domain bonus slots are no longer a dropdown
+
+Replaced by a read-only list per domain, sourced from `DomainDefinition.BonusSpells` — which until
+now no engine or UI code read at all. A domain grants one bonus slot per spell level and exactly one
+spell is legal in it, so this was never a choice. **This is the fix that replaces the 345-key
+backfill** this report originally ranked first: nothing needs backfilling, because the domain side
+of the link already holds the answer and is the side the 14 Task 2 fixes corrected.
+
+### 4. Specialist wizards
+
+New `class_feature:wizard_specialization` and `class_feature:wizard_prohibited_schools`, each
+offering the eight schools, granted once at 1st wizard level. Both ride the existing class-feature
+selection machinery, so they need no new state and reach the sheet and API through
+`ClassFeatureSelections` for free. `Studio/WizardSchools.cs` is the single place that knows the
+rule, shared by the builder's filtering and the engine's validation so they cannot drift.
+
+- **Spells of a given-up school are not offered** in the builder, at any level, and the engine warns
+  if one arrives through the API or a hand-edited file.
+- Specializing is optional — picking nothing makes a universalist who keeps every school.
+- **Universal spells are never prohibited.** They belong to no school, and `universal` is not among
+  the eight options. (Worth recording: the five bundled universal spells are `arcane_mark`,
+  `prestidigitation`, `permanency`, `wish`, `limited_wish`. `read_magic`, despite the name, is
+  divination — an assumption that failed a test during this work.)
+- Warns on: wrong number of schools given up, specializing in a school also given up, and giving up
+  schools with no specialty.
+
+The school check is a **tail pass**. Within a tick, spell selections are applied before class
+feature choices, so a per-tick check would let a 1st-level wizard write a barred spell into its book
+before its own specialty was recorded. `SchoolsChosenOnTheSameTickAsSpells_AreStillEnforced` covers
+it.
+
+### Rules values that could not be verified here
+
+The SRD mirror is absent on this machine, so two numbers rest on the user's instruction and the
+class's own text rather than a quoted source. Both are worth checking when the mirror is available:
+
+1. **A diviner gives up one school, every other specialist two.** Isolated in
+   `WizardSchools.RequiredProhibitedCount` with a comment. It affects only a warning message, never
+   which spells are available.
+2. **The spellbook formula** (3 + Int bonus at 1st, +2 per level). Stated by the user and matching
+   the wizard's own class-feature text, which was corrected in the same change — it previously said
+   "all 0-level spells and three 1st-level spells", omitting the Intelligence bonus and the
+   per-level additions entirely.
+
+### Deliberately not done
+
+- **The specialist's bonus spell slot per level** (one extra slot of each level, castable only from
+  the specialty school). Real, and not asked for. `SpellsPerDay` comes from progression tables, so
+  adding it means a permabuff that adjusts the computed slots — a separate change.
+- **Prohibited schools blocking item use or existing characters.** Selection is never blocked
+  anywhere in this engine; illegal input warns and the build continues. The builder simply stops
+  offering the spells.
+- **Specialist prestige classes / bonus specialist feats.** Out of scope.

@@ -23,6 +23,7 @@
   "spellcasting": {
     "castingType": "arcane",
     "castingStat": "int",
+    "acquisition": "spellbook",
     "spellsPerDay": {
       "1": {
         "0": 3,
@@ -213,6 +214,16 @@
         }
       },
       {
+        "$type": "GrantClassFeatureSelection",
+        "featureType": "class_feature:wizard_specialization",
+        "count": 1
+      },
+      {
+        "$type": "GrantClassFeatureSelection",
+        "featureType": "class_feature:wizard_prohibited_schools",
+        "count": 2
+      },
+      {
         "$type": "GrantAbility",
         "ability": {
           "id": "bonus_languages",
@@ -245,7 +256,7 @@
         "ability": {
           "id": "spellbooks",
           "name": "Spellbooks",
-          "description": "Must study spellbook each day to prepare spells. Starts with all 0-level spells and three 1st-level spells."
+          "description": "Must study spellbook each day to prepare spells. Starts with all 0-level spells plus three 1st-level spells, and one additional 1st-level spell per point of Intelligence bonus. Adds two new spells of any castable level at each new wizard level."
         }
       }
     ],

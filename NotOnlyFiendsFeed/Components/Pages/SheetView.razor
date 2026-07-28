@@ -345,6 +345,30 @@ else if (_state != null && _character != null)
                                 @string.Join(" / ", sc.SpellsKnown.OrderBy(kv => kv.Key).Select(kv => $"{kv.Key}th:{kv.Value}"))
                             </p>
                         }
+                        else if (sc.Acquisition == SpellAcquisition.FullList)
+                        {
+                            <p class="text-muted mb-1">
+                                <em>Prepares from the entire class list; no spells are chosen at level-up.</em>
+                            </p>
+                        }
+                        else if (sc.Acquisition == SpellAcquisition.Spellbook)
+                        {
+                            <p class="text-muted mb-1">
+                                <em>Prepares from a spellbook holding every 0-level spell plus the spells below.</em>
+                            </p>
+                            var specialty = WizardSchools.Specialty(_state);
+                            var givenUp = WizardSchools.ProhibitedSchools(_state);
+                            <p class="mb-1">
+                                <strong>School:</strong>
+                                @(specialty != null ? Titleise(specialty) : "Universalist (no specialty)")
+                                @if (givenUp.Count > 0)
+                                {
+                                    <span class="text-muted">
+                                        — gave up @string.Join(", ", givenUp.Select(Titleise).OrderBy(s => s, StringComparer.OrdinalIgnoreCase))
+                                    </span>
+                                }
+                            </p>
+                        }
                         @if (sc.SelectedSpells.Any())
                         {
                             <p class="mb-1"><strong>Selected Spells:</strong></p>

@@ -350,6 +350,46 @@ else
                         </div>
                     }
 
+                    @* Specialist wizard schools — offered on the tick that grants the picks (1st
+                       wizard level). Specializing is optional; a wizard who picks nothing is a
+                       universalist and keeps every school. *@
+                    var schoolPicks = _tickWizardSchoolPicks.GetValueOrDefault(index);
+                    @if (schoolPicks is { PendingSpecialization: true } or { PendingProhibited: > 0 })
+                    {
+                        <div class="mt-2 p-2 border rounded bg-light">
+                            <div><small class="text-muted"><strong>Arcane school</strong> — chosen once, at 1st wizard level.</small></div>
+                            <div class="d-flex flex-wrap gap-2 mt-1 align-items-center">
+                                <select class="form-select form-select-sm" style="max-width:260px"
+                                        value="@(SelectedSchool(tick, WizardSchools.SpecializationFeature, 0) ?? "")"
+                                        @onchange="(e) => SetWizardSchool(index, WizardSchools.SpecializationFeature, 0, e.Value?.ToString())">
+                                    <option value="">Universalist (no specialty)</option>
+                                    @foreach (var opt in SchoolOptions(WizardSchools.SpecializationFeature))
+                                    {
+                                        <option value="@opt.Id" title="@opt.Description">@opt.Name</option>
+                                    }
+                                </select>
+                                @for (int slot = 0; slot < schoolPicks!.PendingProhibited; slot++)
+                                {
+                                    var capturedSlot = slot;
+                                    <select class="form-select form-select-sm" style="max-width:260px"
+                                            value="@(SelectedSchool(tick, WizardSchools.ProhibitedFeature, capturedSlot) ?? "")"
+                                            @onchange="(e) => SetWizardSchool(index, WizardSchools.ProhibitedFeature, capturedSlot, e.Value?.ToString())">
+                                        <option value="">Give up a school...</option>
+                                        @foreach (var opt in SchoolOptions(WizardSchools.ProhibitedFeature))
+                                        {
+                                            <option value="@opt.Id" title="@opt.Description">@opt.Name</option>
+                                        }
+                                    </select>
+                                }
+                            </div>
+                            <div class="mt-1"><small class="text-muted">
+                                A specialist gives up two schools — a diviner only one. Spells of a
+                                given-up school can never be learned or cast, and are not offered below.
+                                Universal spells belong to no school and are never given up.
+                            </small></div>
+                        </div>
+                    }
+
                     @* Companion slots granted at this tick — pick species *@
                     var tickSlots = _tickNewCompanionSlots.GetValueOrDefault(index);
                     @if (tickSlots != null)
@@ -439,62 +479,62 @@ else
                                                     }
                                                 </div>
                                             }
-                                            @for (int lvl = 0; lvl <= sc.MaxSpellLevel; lvl++)
+                                            @if (sc.Acquisition == SpellAcquisition.FullList)
                                             {
-                                                var capturedLvl = lvl;
-                                                var alreadyKnown = sc.SpellsKnown != null
-                                                    ? _character.Ticks
-                                                        .SelectMany(t => t.Choices.SpellSelections ?? Enumerable.Empty<SpellSelection>())
-                                                        .Where(s => s.ClassId == capturedListId)
-                                                        .Select(s => s.SpellId)
-                                                        .ToHashSet()
-                                                    : null;
-                                                var spellsAtLevel = _spells
-                                                    .Where(s => s.ClassLevels.TryGetValue(capturedListId, out var l) && l == capturedLvl)
-                                                    .Where(s => alreadyKnown == null || !alreadyKnown.Contains(s.Id))
-                                                    .OrderBy(s => s.Name)
+                                                @* A cleric, druid, paladin or ranger has the entire class list available and
+                                                   prepares from it daily. There is no build-time choice to offer, so offering
+                                                   one invented a decision the rules do not have. *@
+                                                <div class="mt-1 small text-muted">
+                                                    Knows the entire @capturedListId.Replace("class:", "") list
+                                                    (@AvailableSpellCount(capturedListId, sc.MaxSpellLevel) spells up to level @sc.MaxSpellLevel)
+                                                    — prepared daily, nothing to choose here.
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                var isSpellbook = sc.Acquisition == SpellAcquisition.Spellbook;
+                                                var chosenForList = _character.Ticks
+                                                    .SelectMany(t => t.Choices.SpellSelections ?? Enumerable.Empty<SpellSelection>())
+                                                    .Where(s => s.ClassId == capturedListId)
                                                     .ToList();
-                                                if (spellsAtLevel.Any())
+                                                @* Deduplicate for every kind of chooser. This used to be computed only when
+                                                   SpellsKnown was non-null, so a spellbook caster could add the same spell twice. *@
+                                                var alreadyChosen = chosenForList.Select(s => s.SpellId).ToHashSet();
+
+                                                if (isSpellbook)
                                                 {
-                                                    <div class="mt-1">
-                                                        <small class="text-muted">Level @capturedLvl:</small>
-                                                        <div class="d-flex align-items-center gap-1">
-                                                            <select class="form-select form-select-sm" style="max-width:250px"
-                                                                    @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v)) AddSpellSelection(index, capturedListId, capturedLvl, v); }">
-                                                                <option value="">Add spell...</option>
-                                                                @foreach (var spell in spellsAtLevel)
-                                                                {
-                                                                    <option value="@spell.Id" title="@spell.Description">@spell.Name</option>
-                                                                }
-                                                            </select>
-                                                        </div>
+                                                    var inBook = chosenForList.Count(s => s.SpellLevel > 0);
+                                                    <div class="mt-1 small">
+                                                        <span class="text-muted">Spellbook:</span>
+                                                        <span class="@(inBook > sc.SpellbookLimit ? "text-danger fw-bold" : "text-muted")">
+                                                            @inBook / @sc.SpellbookLimit spells of level 1+
+                                                        </span>
+                                                        <span class="text-muted">— all 0-level spells are in the book automatically.</span>
                                                     </div>
                                                 }
-                                            }
-                                        </div>
-                                    }
-                                    @* Domain spell lists — max level and selection ClassId both come from the OWNING class. *@
-                                    @foreach (var domainId in (casterInfo.Domains ?? new()).OrderBy(d => d))
-                                    {
-                                        var capturedDomainId = domainId;
-                                        var ownerClassId = casterInfo.DomainOwners.GetValueOrDefault(capturedDomainId);
-                                        var domainMaxLevel = ownerClassId != null
-                                            && casterInfo.Spellcasting.TryGetValue(ownerClassId, out var ownerSc)
-                                            ? ownerSc.MaxSpellLevel : 0;
-                                        var domainSpells = _spells
-                                            .Where(s => s.ClassLevels.TryGetValue(capturedDomainId, out var l) && l <= domainMaxLevel)
-                                            .OrderBy(s => s.ClassLevels.GetValueOrDefault(capturedDomainId))
-                                            .ThenBy(s => s.Name)
-                                            .ToList();
-                                        if (domainSpells.Any())
-                                        {
-                                            <div class="mb-2">
-                                                <strong>@capturedDomainId.Replace("domain:", "") (domain)</strong>
-                                                @for (int lvl = 1; lvl <= domainMaxLevel; lvl++)
+
+                                                @* A specialist wizard can never learn, write down or cast a spell
+                                                   from a school it gave up, so those are not offered at all. *@
+                                                var barredSchools = _tickProhibitedSchools.GetValueOrDefault(index)
+                                                    ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                                                if (barredSchools.Count > 0)
+                                                {
+                                                    <div class="small text-muted mt-1">
+                                                        Given up: @string.Join(", ", barredSchools.OrderBy(s => s, StringComparer.OrdinalIgnoreCase))
+                                                        — those spells are not listed.
+                                                    </div>
+                                                }
+
+                                                @* Level 0 is skipped for a spellbook caster: every cantrip is in the book from
+                                                   1st level, so there is nothing to pick. *@
+                                                @for (int lvl = isSpellbook ? 1 : 0; lvl <= sc.MaxSpellLevel; lvl++)
                                                 {
                                                     var capturedLvl = lvl;
-                                                    var spellsAtLevel = domainSpells
-                                                        .Where(s => s.ClassLevels.GetValueOrDefault(capturedDomainId) == capturedLvl)
+                                                    var spellsAtLevel = _spells
+                                                        .Where(s => s.ClassLevels.TryGetValue(capturedListId, out var l) && l == capturedLvl)
+                                                        .Where(s => !alreadyChosen.Contains(s.Id))
+                                                        .Where(s => !barredSchools.Contains(s.School))
+                                                        .OrderBy(s => s.Name)
                                                         .ToList();
                                                     if (spellsAtLevel.Any())
                                                     {
@@ -502,8 +542,8 @@ else
                                                             <small class="text-muted">Level @capturedLvl:</small>
                                                             <div class="d-flex align-items-center gap-1">
                                                                 <select class="form-select form-select-sm" style="max-width:250px"
-                                                                        @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v)) AddSpellSelection(index, capturedDomainId, capturedLvl, v); }">
-                                                                    <option value="">Add domain spell...</option>
+                                                                        @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v)) AddSpellSelection(index, capturedListId, capturedLvl, v); }">
+                                                                    <option value="">@(isSpellbook ? "Add to spellbook..." : "Add spell...")</option>
                                                                     @foreach (var spell in spellsAtLevel)
                                                                     {
                                                                         <option value="@spell.Id" title="@spell.Description">@spell.Name</option>
@@ -513,6 +553,41 @@ else
                                                         </div>
                                                     }
                                                 }
+                                            }
+                                        </div>
+                                    }
+                                    @* Domain bonus slots. A domain grants one bonus slot per spell level and exactly one
+                                       spell is legal in it — whichever the domain lists at that level — so this is a
+                                       statement of fact, not a choice. Read straight from DomainDefinition.BonusSpells,
+                                       which is the authoritative side of the link. *@
+                                    @foreach (var domainId in (casterInfo.Domains ?? new()).OrderBy(d => d))
+                                    {
+                                        var capturedDomainId = domainId;
+                                        var ownerClassId = casterInfo.DomainOwners.GetValueOrDefault(capturedDomainId);
+                                        var domainMaxLevel = ownerClassId != null
+                                            && casterInfo.Spellcasting.TryGetValue(ownerClassId, out var ownerSc)
+                                            ? ownerSc.MaxSpellLevel : 0;
+                                        var domainDef = _domains.FirstOrDefault(d => d.Id == capturedDomainId);
+                                        var slots = domainDef == null
+                                            ? new List<KeyValuePair<int, string>>()
+                                            : domainDef.BonusSpells
+                                                .Where(kv => kv.Key <= domainMaxLevel)
+                                                .OrderBy(kv => kv.Key)
+                                                .ToList();
+                                        if (slots.Any())
+                                        {
+                                            <div class="mb-2">
+                                                <strong>@capturedDomainId.Replace("domain:", "") (domain)</strong>
+                                                <div class="small text-muted">Bonus slot spells — granted, not chosen:</div>
+                                                <ul class="list-unstyled mb-0 small">
+                                                    @foreach (var (lvl, spellId) in slots)
+                                                    {
+                                                        var domainSpell = _spells.FirstOrDefault(s => s.Id == spellId);
+                                                        <li title="@(domainSpell?.Description ?? "")">
+                                                            Level @lvl: <strong>@(domainSpell?.Name ?? spellId)</strong>
+                                                        </li>
+                                                    }
+                                                </ul>
                                             </div>
                                         }
                                     }
@@ -1164,6 +1239,9 @@ else
     private readonly Dictionary<int, List<FeatDefinition>> _tickAvailableFeats = new();
     private readonly Dictionary<int, TickCasterInfo> _tickCasterInfos = new();
     private readonly Dictionary<int, List<CompanionSlotState>> _tickNewCompanionSlots = new();
+    private readonly Dictionary<int, TickWizardSchoolPicks> _tickWizardSchoolPicks = new();
+    // Schools given up as of each tick, so the spell dropdowns can exclude them.
+    private readonly Dictionary<int, HashSet<string>> _tickProhibitedSchools = new();
     private List<DomainDefinition> _domains = new();
     private List<ClassFeatureDefinition> _classFeatures = new();
     private List<EquipmentDefinition> _equipmentCatalog = new();
@@ -1264,6 +1342,8 @@ else
         _tickAvailableFeats.Clear();
         _tickCasterInfos.Clear();
         _tickNewCompanionSlots.Clear();
+        _tickWizardSchoolPicks.Clear();
+        _tickProhibitedSchools.Clear();
 
         if (_engine == null || !_character.Ticks.Any())
             return;
@@ -1313,6 +1393,24 @@ else
             _tickAvailableFeats[i] = _engine.GetAvailableFeats(state)
                 .OrderBy(f => f.Name).ToList();
 
+            // Wizard school pickers belong on the tick that granted them. Once a school is chosen
+            // the pending count drops to zero, so the tick's own recorded choices have to be added
+            // back in or the dropdowns would vanish the moment they were used.
+            var chosenHere = _character.Ticks[i].Choices.ClassFeatureChoices;
+            var specialisationPending = state.PendingClassFeatureSelections
+                .GetValueOrDefault(WizardSchools.SpecializationFeature);
+            var prohibitedPending = state.PendingClassFeatureSelections
+                .GetValueOrDefault(WizardSchools.ProhibitedFeature);
+            var specialisationHere = chosenHere?.GetValueOrDefault(WizardSchools.SpecializationFeature)?.Count ?? 0;
+            var prohibitedHere = chosenHere?.GetValueOrDefault(WizardSchools.ProhibitedFeature)?.Count ?? 0;
+
+            if (specialisationPending + specialisationHere > 0 || prohibitedPending + prohibitedHere > 0)
+                _tickWizardSchoolPicks[i] = new TickWizardSchoolPicks(
+                    PendingSpecialization: specialisationPending + specialisationHere > 0,
+                    PendingProhibited: prohibitedPending + prohibitedHere);
+
+            _tickProhibitedSchools[i] = WizardSchools.ProhibitedSchools(state).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
             // Companion slots granted at this tick = slots present now that weren't
             // present in the previous tick's snapshot.
             var newSlots = state.CompanionSlots
@@ -1338,7 +1436,11 @@ else
                             kv.Value.MaxSpellLevel,
                             new Dictionary<int, int>(kv.Value.SpellsPerDay),
                             kv.Value.SpellsKnown != null ? new Dictionary<int, int>(kv.Value.SpellsKnown) : null,
-                            new Dictionary<int, int>(kv.Value.DomainBonusSlots))),
+                            new Dictionary<int, int>(kv.Value.DomainBonusSlots),
+                            kv.Value.Acquisition,
+                            ReplayStudio.SpellbookSpellsAllowed(
+                                state.ClassLevels.GetValueOrDefault(kv.Key),
+                                AbilityScoreSet.Modifier(state.AbilityScores.GetScore(kv.Value.CastingStat))))),
                     NeedsAdvanceSpellcastingChoice: advanceWarning != null);
             }
         }
@@ -1618,6 +1720,50 @@ else
         }
         return featId;
     }
+
+    // How many spells a full-list caster has available at its current maximum spell level. Shown
+    // instead of a picker, so the panel still says something useful about the class's reach.
+    private int AvailableSpellCount(string spellListId, int maxSpellLevel) =>
+        _spells.Count(s => s.ClassLevels.TryGetValue(spellListId, out var lvl) && lvl <= maxSpellLevel);
+
+    // --- Specialist wizard schools ---
+
+    private List<ClassFeatureOption> SchoolOptions(string featureType) =>
+        _classFeatures.FirstOrDefault(f => f.Id == featureType)?.Options ?? new List<ClassFeatureOption>();
+
+    private static string? SelectedSchool(Tick tick, string featureType, int slot)
+    {
+        var picks = tick.Choices.ClassFeatureChoices?.GetValueOrDefault(featureType);
+        return picks != null && slot < picks.Count ? picks[slot] : null;
+    }
+
+    /// <summary>
+    /// Writes one school slot. Slots are positional so the two prohibited-school dropdowns stay
+    /// independent; clearing one leaves the other in place. Empty entries are dropped, so an
+    /// unmade choice never reaches the engine as a selection.
+    /// </summary>
+    private void SetWizardSchool(int tickIndex, string featureType, int slot, string? optionId)
+    {
+        var tick = _character.Ticks[tickIndex];
+        tick.Choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
+        var picks = tick.Choices.ClassFeatureChoices.TryGetValue(featureType, out var existing)
+            ? new List<string>(existing)
+            : new List<string>();
+
+        while (picks.Count <= slot)
+            picks.Add(string.Empty);
+        picks[slot] = optionId ?? string.Empty;
+
+        var cleaned = picks.Where(p => !string.IsNullOrEmpty(p)).ToList();
+        if (cleaned.Count > 0)
+            tick.Choices.ClassFeatureChoices[featureType] = cleaned;
+        else
+            tick.Choices.ClassFeatureChoices.Remove(featureType);
+
+        OnCharacterChanged();
+    }
+
+    private sealed record TickWizardSchoolPicks(bool PendingSpecialization, int PendingProhibited);
 
     // Purely a display toggle — it widens the picker's list and does not touch the character,
     // so it deliberately does not call OnCharacterChanged.
@@ -2131,5 +2277,8 @@ else
         int MaxSpellLevel,
         Dictionary<int, int> SpellsPerDay,
         Dictionary<int, int>? SpellsKnown,
-        Dictionary<int, int> DomainBonusSlots);
+        Dictionary<int, int> DomainBonusSlots,
+        SpellAcquisition Acquisition,
+        // Spellbook casters only: how many spells of 1st level or higher the book may hold.
+        int SpellbookLimit);
 }

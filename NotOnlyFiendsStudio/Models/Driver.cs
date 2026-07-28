@@ -97,4 +97,19 @@ public class SpellcastingProgression
     public Ability CastingStat { get; set; }
     public Dictionary<int, Dictionary<int, int>> SpellsPerDay { get; set; } = new();
     public Dictionary<int, Dictionary<int, int>>? SpellsKnown { get; set; }
+
+    /// <summary>
+    /// Set only where the default inference is wrong — in practice only the wizard, which has no
+    /// <c>spellsKnown</c> progression but is not a full-list caster either.
+    /// </summary>
+    public SpellAcquisition? Acquisition { get; set; }
+
+    /// <summary>
+    /// <see cref="Acquisition"/> if content states one, otherwise inferred: a class with a
+    /// <c>spellsKnown</c> progression knows a fixed number of spells, and everything else has its
+    /// whole list available. That inference is the rule the engine already used implicitly —
+    /// <see cref="HasSpontaneousCasting"/> tests exactly this — so existing content needs no edit.
+    /// </summary>
+    public SpellAcquisition ResolvedAcquisition =>
+        Acquisition ?? (SpellsKnown != null ? SpellAcquisition.SpellsKnown : SpellAcquisition.FullList);
 }

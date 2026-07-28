@@ -1,0 +1,76 @@
+using NotOnlyFiendsStudio.Models;
+
+namespace NotOnlyFiendsStudio.Studio;
+
+/// <summary>
+/// Specialist wizard schools. A wizard may specialize in one school of magic and gives up others
+/// in exchange; spells of a given-up school can never be learned, written into the spellbook or
+/// cast.
+///
+/// Both choices are stored as ordinary <see cref="CharacterState.ClassFeatureSelections"/> entries,
+/// so they need no new state and reach the sheet and the API for free. This type is the single
+/// place that knows the feature-type ids and the rule, so the builder's filtering and the engine's
+/// validation cannot drift apart.
+/// </summary>
+public static class WizardSchools
+{
+    public const string SpecializationFeature = "class_feature:wizard_specialization";
+    public const string ProhibitedFeature = "class_feature:wizard_prohibited_schools";
+
+    /// <summary>Option ids are "school:&lt;name&gt;"; spell definitions carry the bare name.</summary>
+    public const string OptionPrefix = "school:";
+
+    /// <summary>
+    /// Universal spells belong to no school, so they are never prohibited and are always
+    /// available regardless of specialization.
+    /// </summary>
+    public const string Universal = "universal";
+
+    public static string ToSchoolName(string optionId) =>
+        optionId.StartsWith(OptionPrefix, StringComparison.Ordinal)
+            ? optionId[OptionPrefix.Length..]
+            : optionId;
+
+    public static string ToOptionId(string schoolName) => OptionPrefix + schoolName;
+
+    /// <summary>The school this character specializes in, or null for a universalist.</summary>
+    public static string? Specialty(CharacterState state) =>
+        state.ClassFeatureSelections.TryGetValue(SpecializationFeature, out var picks) && picks.Count > 0
+            ? ToSchoolName(picks[0])
+            : null;
+
+    /// <summary>Bare school names the character has given up. Empty for a universalist.</summary>
+    public static IReadOnlyCollection<string> ProhibitedSchools(CharacterState state) =>
+        state.ClassFeatureSelections.TryGetValue(ProhibitedFeature, out var picks)
+            ? picks.Select(ToSchoolName).ToHashSet(StringComparer.OrdinalIgnoreCase)
+            : Array.Empty<string>();
+
+    /// <summary>
+    /// True when this character may never learn or cast the given spell's school. Universal is
+    /// never prohibited; an unknown or empty school is treated as allowed rather than guessed at.
+    /// </summary>
+    public static bool IsProhibited(CharacterState state, string? school)
+    {
+        if (string.IsNullOrEmpty(school)
+            || string.Equals(school, Universal, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        return ProhibitedSchools(state).Contains(school);
+    }
+
+    /// <summary>
+    /// How many schools a wizard must give up for its chosen specialty. A universalist gives up
+    /// none; a diviner gives up one; every other specialist gives up two.
+    ///
+    /// NOTE: the diviner exception is the one number here not derivable from anything in this
+    /// repository — it comes from the SRD's wizard entry and could not be verified against the
+    /// mirror, which is not present on this machine. It affects only a warning message, never
+    /// which spells are available.
+    /// </summary>
+    public static int RequiredProhibitedCount(string? specialty) => specialty switch
+    {
+        null => 0,
+        "divination" => 1,
+        _ => 2,
+    };
+}

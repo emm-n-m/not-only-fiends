@@ -184,6 +184,11 @@ public class SpellcastingSummary
     public string ClassId { get; set; } = string.Empty;
     public CastingType CastingType { get; set; }
     public Ability CastingStat { get; set; }
+    /// <summary>
+    /// Whether this caster has its whole list available, works from a spellbook, or knows a fixed
+    /// number of spells. Consumers must not offer a spell *choice* for <c>FullList</c>.
+    /// </summary>
+    public SpellAcquisition Acquisition { get; set; }
     public int CasterLevel { get; set; }
     public int MaxSpellLevel { get; set; }
     public Dictionary<int, int> SpellsPerDay { get; set; } = new();
@@ -195,6 +200,7 @@ public class SpellcastingSummary
         ClassId = sc.ClassId,
         CastingType = sc.CastingType,
         CastingStat = sc.CastingStat,
+        Acquisition = sc.Acquisition,
         CasterLevel = sc.CasterLevel,
         MaxSpellLevel = sc.MaxSpellLevel,
         SpellsPerDay = new Dictionary<int, int>(sc.SpellsPerDay),

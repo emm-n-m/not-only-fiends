@@ -1,0 +1,96 @@
+[
+  {
+    "id": "class_feature:wizard_specialization",
+    "name": "Wizard Specialization",
+    "description": "A wizard may specialize in one school of magic, gaining focus in it at the cost of giving up others. Specializing is optional — a wizard who takes no specialty is a universalist, keeps every school, and prohibits none. Chosen at 1st wizard level and never changed. Universal spells belong to no school and can never be given up.",
+    "options": [
+      {
+        "id": "school:abjuration",
+        "name": "Abjuration",
+        "description": "Protective spells: wards, barriers and dispelling."
+      },
+      {
+        "id": "school:conjuration",
+        "name": "Conjuration",
+        "description": "Summoning, creation, healing and teleportation."
+      },
+      {
+        "id": "school:divination",
+        "name": "Divination",
+        "description": "Information: detection, scrying and foresight."
+      },
+      {
+        "id": "school:enchantment",
+        "name": "Enchantment",
+        "description": "Affecting minds: charms and compulsions."
+      },
+      {
+        "id": "school:evocation",
+        "name": "Evocation",
+        "description": "Manipulating energy to create damage or effects from nothing."
+      },
+      {
+        "id": "school:illusion",
+        "name": "Illusion",
+        "description": "Deceiving the senses or the mind."
+      },
+      {
+        "id": "school:necromancy",
+        "name": "Necromancy",
+        "description": "Manipulating life force and the undead."
+      },
+      {
+        "id": "school:transmutation",
+        "name": "Transmutation",
+        "description": "Changing the properties of a creature, object or condition."
+      }
+    ]
+  },
+  {
+    "id": "class_feature:wizard_prohibited_schools",
+    "name": "Prohibited Schools",
+    "description": "The schools a specialist wizard gives up. Spells of a prohibited school can never be learned, written into the spellbook or cast. A specialist gives up two schools, except a diviner, who gives up only one. A wizard with no specialty prohibits nothing.",
+    "options": [
+      {
+        "id": "school:abjuration",
+        "name": "Abjuration",
+        "description": "Protective spells: wards, barriers and dispelling."
+      },
+      {
+        "id": "school:conjuration",
+        "name": "Conjuration",
+        "description": "Summoning, creation, healing and teleportation."
+      },
+      {
+        "id": "school:divination",
+        "name": "Divination",
+        "description": "Information: detection, scrying and foresight."
+      },
+      {
+        "id": "school:enchantment",
+        "name": "Enchantment",
+        "description": "Affecting minds: charms and compulsions."
+      },
+      {
+        "id": "school:evocation",
+        "name": "Evocation",
+        "description": "Manipulating energy to create damage or effects from nothing."
+      },
+      {
+        "id": "school:illusion",
+        "name": "Illusion",
+        "description": "Deceiving the senses or the mind."
+      },
+      {
+        "id": "school:necromancy",
+        "name": "Necromancy",
+        "description": "Manipulating life force and the undead."
+      },
+      {
+        "id": "school:transmutation",
+        "name": "Transmutation",
+        "description": "Changing the properties of a creature, object or condition."
+      }
+    ]
+  }
+]

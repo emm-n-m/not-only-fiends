@@ -248,7 +248,63 @@ public class ReplayStudio
         // ability scores, which equipment (step 5) can still move.
         FinalizeSkills(state);
 
+        // 9. Tail pass — specialist wizard schools. Must be a tail pass, not per-tick: spell
+        // selections are applied before class feature choices within a tick, so a wizard choosing
+        // its specialty and its first spells at 1st level would otherwise be checked against
+        // schools it had not yet picked.
+        CheckWizardSchools(state);
+
         return state;
+    }
+
+    /// <summary>
+    /// Validates a specialist wizard's school choices and the spells chosen against them.
+    ///
+    /// Selection is never blocked — as everywhere else in this engine, illegal input produces a
+    /// warning and the build continues — but the builder does not offer prohibited-school spells
+    /// in the first place, so reaching these warnings means the character was assembled through
+    /// the API or by hand.
+    /// </summary>
+    private void CheckWizardSchools(CharacterState state)
+    {
+        var specialty = WizardSchools.Specialty(state);
+        var prohibited = WizardSchools.ProhibitedSchools(state);
+
+        if (specialty != null && prohibited.Contains(specialty))
+            state.Warnings.Add(new Warning
+            {
+                TickIndex = state.TotalHD,
+                Message = $"wizard specializes in {specialty} but also gives it up as a prohibited school",
+            });
+
+        var required = WizardSchools.RequiredProhibitedCount(specialty);
+        if (prohibited.Count != required)
+            state.Warnings.Add(new Warning
+            {
+                TickIndex = state.TotalHD,
+                Message = specialty == null
+                    ? $"wizard has no specialty school but gives up {prohibited.Count} school(s); a universalist gives up none"
+                    : $"wizard specializing in {specialty} gives up {prohibited.Count} school(s), but must give up {required}",
+            });
+
+        if (prohibited.Count == 0)
+            return;
+
+        foreach (var sc in state.Spellcasting.Values)
+        {
+            foreach (var selection in sc.SelectedSpells)
+            {
+                if (!_content.TryGetSpell(selection.SpellId, out var spellDef) || spellDef == null)
+                    continue;
+
+                if (WizardSchools.IsProhibited(state, spellDef.School))
+                    state.Warnings.Add(new Warning
+                    {
+                        TickIndex = state.TotalHD,
+                        Message = $"spell '{selection.SpellId}' is {spellDef.School}, a school this wizard has given up",
+                    });
+            }
+        }
     }
 
     /// <summary>
@@ -548,9 +604,57 @@ public class ReplayStudio
     }
 
     /// <summary>
-    /// Spontaneous casters (sorcerer, bard) know a fixed number of spells per level; prepared
-    /// casters have <c>SpellsKnown == null</c> because a wizard's spellbook is unbounded, so
-    /// they are skipped. Domain picks are granted rather than known and do not count.
+    /// How many spells a wizard of <paramref name="wizardLevel"/> may have written into a
+    /// spellbook, excluding 0-level spells (every one of those is in the book from 1st level).
+    ///
+    /// SRD: three 1st-level spells at 1st level, plus one more per point of Intelligence
+    /// <em>bonus</em> — so a penalty does not reduce the three — then two of any castable level at
+    /// each new wizard level.
+    ///
+    /// Counted against actual wizard class levels, not caster level: a prestige class that
+    /// advances spellcasting grants caster level and spells per day, not new spellbook spells.
+    /// Spells found on scrolls or copied from another wizard's book are not modelled and are not
+    /// counted against this.
+    /// </summary>
+    public static int SpellbookSpellsAllowed(int wizardLevel, int intelligenceModifier) =>
+        wizardLevel < 1 ? 0 : 3 + Math.Max(0, intelligenceModifier) + 2 * (wizardLevel - 1);
+
+    /// <summary>
+    /// A wizard's spellbook is bounded, unlike a cleric's or druid's list — it just isn't bounded
+    /// per spell level, so it needs its own check rather than a <see cref="CheckSpellsKnownLimits"/>
+    /// style per-level one.
+    /// </summary>
+    private static void CheckSpellbookLimits(CharacterState state)
+    {
+        foreach (var sc in state.Spellcasting.Values)
+        {
+            if (sc.Acquisition != SpellAcquisition.Spellbook) continue;
+
+            // 0-level spells are automatic, and domain picks are granted rather than chosen.
+            var chosen = sc.SelectedSpells
+                .Where(s => s.SpellLevel > 0
+                            && !s.ClassId.StartsWith("domain:", StringComparison.Ordinal))
+                .Count();
+
+            var classLevel = state.ClassLevels.GetValueOrDefault(sc.ClassId);
+            var limit = SpellbookSpellsAllowed(
+                classLevel, AbilityScoreSet.Modifier(state.AbilityScores.GetScore(sc.CastingStat)));
+
+            if (chosen > limit)
+                state.Warnings.Add(new Warning
+                {
+                    TickIndex = state.TotalHD,
+                    Message = $"{sc.ClassId} spellbook holds {chosen} spells of 1st level or higher, exceeding {limit}",
+                });
+        }
+    }
+
+    /// <summary>
+    /// Spontaneous casters (sorcerer, bard) know a fixed number of spells per level. Full-list
+    /// casters (cleric, druid, paladin, ranger) have their whole list available and are skipped;
+    /// the wizard's spellbook is bounded differently and is handled by
+    /// <see cref="CheckSpellbookLimits"/>. Domain picks are granted rather than known and do not
+    /// count.
     /// </summary>
     private static void CheckSpellsKnownLimits(CharacterState state)
     {
@@ -792,6 +896,7 @@ public class ReplayStudio
             }
 
             CheckSpellsKnownLimits(state);
+            CheckSpellbookLimits(state);
         }
 
         // Class feature selections (High Arcana, Loremaster Secrets, etc.)
