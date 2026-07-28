@@ -28,34 +28,53 @@ does not — or if `git status` shows either repo behind its remote — **stop a
 "fix" failing `[RequiresPrivatePacks*]` assertions by editing tests or content: they are
 telling you the two checkouts disagree.
 
-## Environment — detect, don't assume
+## Environment — what this machine has
 
-Capability varies by machine. **Run this first and record the output**, then read the table:
+The private packs are a git repo and are cloned here. The other three resources are **not
+repos** — a OneDrive character folder, a local PCGen install, and a gitignored HTML mirror —
+so they are **absent and cannot be obtained**. This is settled; do not try to locate or
+reconstruct them.
+
+| resource | status | consequence |
+|---|---|---|
+| `EXTRA_PACKS_PATH` — private packs (cloned repo) | **present** | ~23 `[RequiresPrivatePacks*]` methods run. Task 3 can assert against the real null-LA races. |
+| `PCGEN_CHARACTERS_PATH` — 54 `.pcg` characters | **absent** | `PcgImportRegression` + `PcgReconstructionTests` skip. **No golden-baseline safety net — see below.** |
+| `NotOnlyFiendsStudio/Content/srd_html/` — SRD mirror | **absent** | **Task 5b is impossible. Skip it.** |
+| `PCGEN_DATA_PATH`, `SOURCE_PDFS_PATH` | **absent** | no task here needs them; attempt no content audits |
+
+Confirm rather than trust this table — one line, and record the result:
 
 ```bash
-sed -n '1,20p' .env 2>/dev/null || echo "no .env"
-ls -d "$(grep -oP '(?<=^EXTRA_PACKS_PATH=).*' .env 2>/dev/null)" 2>/dev/null && echo "private packs: PRESENT"
-ls -d "$(grep -oP '(?<=^PCGEN_CHARACTERS_PATH=).*' .env 2>/dev/null)" 2>/dev/null && echo "pcg corpus: PRESENT"
-ls NotOnlyFiendsStudio/Content/srd_html/ 2>/dev/null | head -1 && echo "srd mirror: PRESENT"
+for v in EXTRA_PACKS_PATH PCGEN_CHARACTERS_PATH; do \
+  p=$(grep -oP "(?<=^$v=).*" .env 2>/dev/null); \
+  [ -n "$p" ] && [ -d "$p" ] && echo "$v: PRESENT" || echo "$v: absent"; done
+ls NotOnlyFiendsStudio/Content/srd_html/ >/dev/null 2>&1 && echo "srd mirror: PRESENT" || echo "srd mirror: absent"
 ```
 
-| resource | if present | if absent |
-|---|---|---|
-| `EXTRA_PACKS_PATH` (private packs) | ~23 `[RequiresPrivatePacks*]` methods **run**. Task 3 can use the real null-LA races instead of a fixture. | they **skip**; that is correct, not a fault |
-| `PCGEN_CHARACTERS_PATH` (54 `.pcg`) | `PcgImportRegression` + `PcgReconstructionTests` run. **Still never regenerate the baseline** — see ground rule 4. | they skip |
-| `NotOnlyFiendsStudio/Content/srd_html/` (gitignored) | Task 5b is possible | **skip Task 5b entirely** and say so |
-| `PCGEN_DATA_PATH` / `SOURCE_PDFS_PATH` | not needed by any task here | fine — attempt no content audits either way |
+### The missing safety net — read before Tasks 1 and 2
+
+`PcgImportRegression` replays 54 real characters against a stored baseline of computed values
+(hp / bab / saves / skillRanks / feats / classLevels / casterLevels). It is the project's main
+defence against silent content drift, and **it cannot run here.**
+
+Tasks 1 and 2 both change computed output. That means:
+
+- Your unit tests are the *only* verification available for them. Write them thoroughly —
+  assume nothing downstream will catch what you miss.
+- **Do not add new fields to the baseline record** (e.g. skill totals). Deciding what the
+  baseline captures is a change that must be made on the machine that can regenerate and
+  inspect it.
+- Flag Tasks 1 and 2 in your report as **requiring golden-baseline verification elsewhere**.
+  They are not finished until that runs.
 
 Rules that hold regardless:
 
 - **Skipped ≠ passed.** Never remove or weaken a `[RequiresPrivatePacks*]` /
-  `[RequiresPcgenCharacters*]` gate to make something run.
-- **The step-0 numbers are your only baseline.** Counts differ hugely depending on what is
-  present above, so do not compare against any number quoted elsewhere — including in this
-  file. If *passing* drops relative to your own step 0, you broke something.
-- If the private packs are present, `PcgImportRegression` becomes a genuine safety net for
-  Tasks 1 and 2, which change computed values. Treat a failure there as a real regression and
-  investigate it rather than working around it.
+  `[RequiresPcgenCharacters*]` gate to make something run. Roughly 60+ test cases will skip
+  here and that is the correct result.
+- **The step-0 numbers are your only baseline.** Do not compare against any count quoted
+  elsewhere, including in this file. If *passing* drops relative to your own step 0, you broke
+  something.
 
 ## Ground rules
 
@@ -186,11 +205,11 @@ currently cannot (it prints `(LA +N)` only when `> 0`).
 
 **Acceptance:** a test asserting null-LA races are excluded from the default list and included
 when the toggle is on. The five real null-LA races (`race:ekolid`, `race:juvenile_nabassu`,
-`race:armanite`, `race:yochlol`, `race:lilitu`) live in the **private** `fiendish_codex_1` pack:
-if it is present, assert against them behind `[RequiresPrivatePacks*]` **and** add an ungated
-test over a synthetic fixture so the filter stays covered on machines without it. If it is
-absent, the synthetic fixture alone is sufficient. Note in the report how many bundled-pack
-races are null-LA (expect 0 — every public race states a real LA).
+`race:armanite`, `race:yochlol`, `race:lilitu`) are in the private `fiendish_codex_1` pack,
+which **is** available here — assert against them behind `[RequiresPrivatePacks*]`, and also
+add an ungated test over a synthetic fixture so the filter stays covered on machines without
+the private packs. Note in the report how many bundled-pack races are null-LA (expect 0 —
+every public race states a real LA).
 
 ---
 
@@ -234,11 +253,11 @@ Parse it into `PcgCharacterData`, map names to lowercase ids via the conventions
 (`PcGen/PcgParser.cs:46`) takes inline content, and `PcgConverterTests` already runs ungated.
 Write fixtures inline.
 
-**5b — Race automatic languages (conditional).** Requires the SRD mirror at
-`NotOnlyFiendsStudio/Content/srd_html/`. **If that directory is absent or empty, skip this
-entirely and say so in the report** — do not populate languages from memory. If present: add a
-race schema field, backfill via `GrantLanguage`, and update `.claude/skills/extract-race/SKILL.md`,
-which currently says to treat "Automatic Languages / Bonus Languages" as flavor only.
+**5b — Race automatic languages: SKIP.** This needs the SRD mirror
+(`NotOnlyFiendsStudio/Content/srd_html/`), which is absent here and cannot be obtained. Each
+race's "Automatic Languages" line has to be transcribed from the source. **Do not populate it
+from memory of D&D** — that is exactly how the fabricated level adjustments got in. Note it as
+deferred and move on.
 
 **5c — Display.** Add languages to `CharacterSheet` and render them on the sheet.
 
