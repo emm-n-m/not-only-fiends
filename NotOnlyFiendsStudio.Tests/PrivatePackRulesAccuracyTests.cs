@@ -1,4 +1,5 @@
 using NotOnlyFiendsStudio.Models;
+using NotOnlyFiendsStudio.Studio;
 
 namespace NotOnlyFiendsStudio.Tests;
 
@@ -86,5 +87,137 @@ public class PrivatePackRulesAccuracyTests
             .ToList();
         Assert.Equal(3, slots.Count);
         Assert.All(slots, s => Assert.Equal("metamagic", s.Restriction));
+    }
+
+    // --- Fiendish Codex PDF audit, 2026-07-28 ---
+    // See {EXTRA_PACKS_PATH}/test-reports/fc_pdf_audit_2026-07-28.md. Ground truth for
+    // these is the owned PDF, quoted by page, rather than an LST.
+
+    private static Character Hellbred(string? aspect)
+    {
+        var character = new Character
+        {
+            Name = "Hellbred",
+            RaceId = "race:hellbred",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 12, DEX = 12, CON = 12, INT = 12, WIS = 12, CHA = 12
+            },
+            Ticks = new List<Tick> { new() { DriverId = "class:fighter" } }
+        };
+        if (aspect != null)
+        {
+            character.Ticks[0].Choices = new TickChoices
+            {
+                ClassFeatureChoices = new Dictionary<string, List<string>>
+                {
+                    ["class_feature:hellbred_infernal_aspect"] = new() { aspect }
+                }
+            };
+        }
+        return character;
+    }
+
+    // FC2 78: "Body (Ex): … he gains a +2 bonus to Constitution and takes a -2 penalty
+    // to Intelligence." The extraction left abilityModifiers null, so neither aspect
+    // applied and every hellbred was wrong by 2 points in two abilities.
+    [RequiresPrivatePacksFact]
+    public void Hellbred_BodyAspect_GrantsConAndIntModifiers()
+    {
+        var engine = new ReplayStudio(TestContentHelper.LoadBundledAndPrivatePacksIfAvailable());
+        var state = engine.Evaluate(Hellbred("body"));
+
+        Assert.Equal(14, state.AbilityScores.CON);
+        Assert.Equal(10, state.AbilityScores.INT);
+        Assert.Equal(12, state.AbilityScores.CHA);
+    }
+
+    // FC2 78: "Spirit (Su): … The hellbred gains a +2 bonus to Charisma and takes a -2
+    // penalty to Constitution", plus "a +2 racial bonus on Sense Motive checks".
+    [RequiresPrivatePacksFact]
+    public void Hellbred_SpiritAspect_GrantsChaConModifiersAndSenseMotive()
+    {
+        var engine = new ReplayStudio(TestContentHelper.LoadBundledAndPrivatePacksIfAvailable());
+        var state = engine.Evaluate(Hellbred("spirit"));
+
+        Assert.Equal(14, state.AbilityScores.CHA);
+        Assert.Equal(10, state.AbilityScores.CON);
+        Assert.Equal(12, state.AbilityScores.INT);
+        Assert.Equal(2, state.SkillBonuses["skill:sense_motive"]);
+    }
+
+    // The aspect is a mandatory one-time choice, so an unmade choice must stay pending
+    // rather than silently defaulting to one of the two.
+    [RequiresPrivatePacksFact]
+    public void Hellbred_WithoutAspectChoice_LeavesSelectionPending()
+    {
+        var engine = new ReplayStudio(TestContentHelper.LoadBundledAndPrivatePacksIfAvailable());
+        var state = engine.Evaluate(Hellbred(null));
+
+        Assert.Equal(1, state.PendingClassFeatureSelections["class_feature:hellbred_infernal_aspect"]);
+        Assert.Equal(12, state.AbilityScores.CON);
+        Assert.Equal(12, state.AbilityScores.CHA);
+    }
+
+    // FC2 78: "Automatic Languages: Infernal." First content anywhere to use
+    // GrantLanguage — CharacterState.Languages had no writer in any pack before this.
+    [RequiresPrivatePacksFact]
+    public void Hellbred_KnowsInfernal()
+    {
+        var engine = new ReplayStudio(TestContentHelper.LoadBundledAndPrivatePacksIfAvailable());
+        var state = engine.Evaluate(Hellbred("body"));
+
+        Assert.Contains("infernal", state.Languages);
+    }
+
+    // Fiendish Codex I prints no Level Adjustment for any creature — the string does not
+    // occur in the book, and there is no "demons as characters" section. Lilitu (p43) and
+    // Yochlol (p55) do read "Advancement by character class; Favored Class …", but that is
+    // an NPC-advancement field, not the 3.5 PC-legality marker. The extraction had invented
+    // LA 2–6 across these five. User ruling 2026-07-28: carry NO level adjustment — null,
+    // not 0, since 0 would claim "playable at no cost" (Human) rather than "never priced as
+    // a PC race". If one of these is ever played, house-rule that race alone.
+    [RequiresPrivatePacksTheory]
+    [InlineData("race:ekolid")]
+    [InlineData("race:juvenile_nabassu")]
+    [InlineData("race:armanite")]
+    [InlineData("race:yochlol")]
+    [InlineData("race:lilitu")]
+    public void FiendishCodex1Races_CarryNoUnsourcedLevelAdjustment(string raceId)
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        Assert.Null(registry.GetRace(raceId).LevelAdjustment);
+    }
+
+    // Null LA is a provenance statement, not a different number: it must still contribute
+    // 0 to ECL, exactly as an LA-0 race does.
+    [RequiresPrivatePacksFact]
+    public void NullLevelAdjustment_ContributesZeroToEcl()
+    {
+        var engine = new ReplayStudio(TestContentHelper.LoadBundledAndPrivatePacksIfAvailable());
+        var state = engine.Evaluate(new Character
+        {
+            Name = "Lilitu",
+            RaceId = "race:lilitu",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10
+            },
+            Ticks = new List<Tick> { new() { DriverId = "class:fighter" } }
+        });
+
+        Assert.Equal(0, state.LevelAdjustment);
+        Assert.Equal(state.TotalHD, state.ECL);
+    }
+
+    // FC2 78: "Infernal Mien (Ex): … +2 racial bonus on Intimidate checks." Was prose
+    // on a GrantAbility only, so it never reached computed skill totals (P3 pattern).
+    [RequiresPrivatePacksFact]
+    public void Hellbred_InfernalMienIsStructured()
+    {
+        var engine = new ReplayStudio(TestContentHelper.LoadBundledAndPrivatePacksIfAvailable());
+        var state = engine.Evaluate(Hellbred("body"));
+
+        Assert.Equal(2, state.SkillBonuses["skill:intimidate"]);
     }
 }

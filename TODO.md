@@ -144,8 +144,58 @@ Use the `verify-content` skill. Tier 1 (all 48 drivers in the public packs) is *
     school-gated casting, deity, PC-level.
   - **P4** — Eldritch Sorcery spells: 51 `DOMAINS:` and 10 Assassin/Blackguard
     `classLevels` assignments (representable with existing conventions).
-  - **Fiendish Codex 1/2** — no LSTs exist; audit against the PDFs at
-    `SOURCE_PDFS_PATH`, verify-content-style with page-quoted findings.
+  - **Fiendish Codex 1/2** — ~~no LSTs exist; audit against the PDFs~~ **audited 2026-07-28**
+    against the PDFs at `SOURCE_PDFS_PATH`. Report:
+    `{EXTRA_PACKS_PATH}/test-reports/fc_pdf_audit_2026-07-28.md`. All 114 items covered.
+    Spells (42/42) and racial HD (5/5) fully clean; FC1's five demon races clean on every
+    stated field. Nothing applied yet — the fixes, in suggested order:
+    - **All six FC1 domains are substantially wrong** — 5 of 6 granted powers are a different
+      power than the book's, and 23 of 54 bonus-spell slots name the wrong spell. Every
+      correct spell already exists in `srd_core`, so these are invented substitutions, not
+      fallbacks; every wrong slot is an SRD-spell slot, every FC1-native slot is right.
+      Re-extract pp. 88–90 rather than patching 28 entries. FC2's one domain is perfect.
+    - Three one-line fixes: `class:hellfire_warlock` BAB `poor`→`average` (Table 3–3 reads
+      +0/+1/+2); `class:soulguard`'s `CanCastSpellLevel` missing `castingType: Divine` (null
+      matches any caster, so a wizard qualifies); `feat:ordered_chaos` wrongly tagged
+      `abyssal_heritor` (it is a General feat — inflates heritor counts and unlocks four
+      gated feats on its own).
+    - Five FC2 divine feats dropped their "ability to turn or rebuke undead" prerequisite —
+      P1's pattern again, fixable now with `HasAbility{turn_undead}`.
+    - ~~`race:hellbred` has `abilityModifiers: null`, dropping the mandatory Infernal Aspect
+      choice.~~ **Fixed 2026-07-28.** Added `class_feature:hellbred_infernal_aspect` (body /
+      spirit) modelled on `loremaster_secret`, wired to the race via
+      `GrantClassFeatureSelection`; also added `GrantLanguage{infernal}` (the first content
+      anywhere to use it) and made Infernal Mien a structured `GrantSkillBonus` instead of
+      prose. Five assertions in `PrivatePackRulesAccuracyTests`; suite 744/744, PCG baseline
+      verifies clean and unchanged. Still gaps: the HD-gated parts of each aspect (bonus
+      devil-touched feats at 4/14 HD, the darkvision 30→60→120 ladder, see-in-darkness at 12
+      HD, telepathy at 15 HD) need HD-conditional racial grants, which don't exist.
+    - The three FC2 prestige classes' dropped "Language: Infernal" prereq stays dropped.
+      `GrantLanguage` is the **only** writer to `CharacterState.Languages` — there is no
+      Int-based bonus-language selection — so restoring it would make Hellbreaker, Hellfire
+      Warlock and Soulguard *hellbred-only*, which the book does not intend. The blocker is
+      now a general language-selection mechanism, not the missing grant. (Same underlying
+      gap as Dragon Disciple's `draconic` in §2.)
+    - ~~Needs a user ruling: FC1 states **no** Level Adjustment anywhere, yet all five demon
+      races carry one (2–6).~~ **Ruled and applied 2026-07-28: they now carry `null`.** FC1
+      prints no LA for any creature; Lilitu (p43) and Yochlol (p55) do read "Advancement by
+      character class", but that is the NPC-advancement field, not 3.5's PC-legality marker.
+      **Null, not 0** — 0 asserts "playable at no cost" (Human), a different and equally
+      unsourced claim. That distinction was previously inexpressible, so
+      `RaceDefinition.LevelAdjustment` became `int?` (`ReplayEngine.ApplyRace` reads
+      `?? 0`; null still contributes 0 to ECL) and `race.schema.json` now accepts
+      `["integer", "null"]` while keeping the field required. `extract-race`'s SKILL.md said
+      "**Estimate** level adjustment … absence means LA 0" — the source of the problem — and
+      now says to transcribe rather than estimate, write `null` when the source prints none,
+      and never infer an LA from "Advancement: by character class" or "Favored Class".
+      Asserted by `FiendishCodex1Races_CarryNoUnsourcedLevelAdjustment` and
+      `NullLevelAdjustment_ContributesZeroToEcl`.
+    - New engine gaps: no creature-type gate, no patron/allegiance gate (blocks the 9 Marks),
+      no any-of prerequisite wrapper, no prepared-only casting check, no choice-bearing racial
+      traits, no favored class.
+
+    No corpus exposure: none of the 54 `.pcg` characters uses any FC1/FC2 class or feat, so
+    these fixes are unusually low-risk to the golden baseline.
   - Engine gaps noted in the report: flat-HP grant, non-equipment typed AC bonuses,
     class/feat speed grants, feat selections (Elemental Resistance), Curse Repertoire
     spells-known feature, template prerequisites, HDDriver spell-list field.
@@ -239,10 +289,10 @@ Done this session:
 
 Blocking, and irreversible once cloned or forked:
 
-- **Squash git history.** 66 `.pcg` paths are still retrievable from history (deleted in
-  `544617c`) — personal campaign characters, which also name non-SRD sources. Also present:
-  `.dotnet-cli/` telemetry blobs including `MachineId` caches. Only 11 commits, so squashing
-  to a clean initial commit is far simpler than `filter-repo`.
+- ~~**Squash git history.**~~ **Already done** (verified 2026-07-28). History was rewritten in
+  `0917c0c "Squash local development history"` on 2026-05-11; `544617c` no longer exists and
+  `git rev-list --all --objects` finds zero `.pcg` and zero `.dotnet-cli` blobs. The entry
+  below was written against the pre-rewrite history and was stale.
 - **Scrub `.claude/settings.json`** — contains hardcoded `/mnt/c/Users/<user>/…` PCGen paths.
 
 Non-blocking:
