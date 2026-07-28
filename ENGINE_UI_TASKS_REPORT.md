@@ -45,7 +45,7 @@ These are the only numbers anything below is compared against.
 | 1 — skill totals, synergies, skill bonuses | **done** | 509 passed / 11 skipped / 0 failed | |
 | 2 — dangling domain spell refs + integrity guard | **done** | 512 passed / 11 skipped / 0 failed | |
 | 3 — builder offers non-playable races | **done** | 523 passed / 11 skipped / 0 failed | |
-| 4 — surface write-only state on the sheet | not started | | |
+| 4 — surface write-only state on the sheet | **done** | 530 passed / 11 skipped / 0 failed | |
 | 5 — languages | not started | | |
 
 ---
@@ -256,3 +256,47 @@ endpoint (`AgentApiService.GetRaces`) still lists every race unfiltered, so an a
 character through the API meets the original trap even though a human in the builder no longer does.
 `RaceCatalog` is deliberately placed where that endpoint can use it. Not done here because the
 brief scopes Task 3 to the builder and the sheet.
+
+---
+
+## Task 4 — write-only state now on the sheet — DONE
+
+No engine changes were needed, as the brief predicted. Both items were display-only.
+
+### 1. `Capabilities`
+
+`GrantCapability` wrote it, `CharacterState` and `CharacterSheet` carried it, and **nothing read it
+anywhere** — no engine logic, no prerequisite, no UI, no API, no test. Bundled content grants 17:
+the druid's 14-entry wild shape matrix plus three `blood_witch:*` entries in a private pack.
+
+A new Capabilities card on the sheet groups the `wild_shape:<kind>:<size>` family by kind with the
+sizes in size order, so a 20th-level druid reads:
+
+```
+Wild Shape — Animal      Tiny, Small, Medium, Large, Huge
+Wild Shape — Elemental   Small, Medium, Large, Huge
+Wild Shape — Plant       Tiny, Small, Medium, Large, Huge
+```
+
+rather than 14 raw colon-delimited strings. Anything outside that family falls back to a title-cased
+reading of its segments (`blood_witch:minor_sacrifice` → "Blood Witch — Minor Sacrifice"). Sizes are
+ordered smallest-first from an explicit list, because alphabetical would read "Huge, Large, Medium,
+Small, Tiny", which is not the order a druid gains them.
+
+This was the missing half of the feature: Wild Shape already appeared as a granted ability with a
+uses/day counter, so what a player could not find out was **which forms** they could assume.
+
+### 2. `SLA.SaveDC`
+
+The sheet rendered spell-like abilities as name plus uses/day only. Now appends `— DC N` when a save
+DC is stored. Eight SLAs across six bundled races carry one (`race:grig` ×3, `race:couatl` ×2,
+`race:svirfneblin`, `race:gynosphinx`, `race:nixie`).
+
+### Tests
+
+`CapabilityTests.cs` (new) — 7 tests. The grouping and formatting live in `SheetView.razor`, which
+has no unit-test harness in this project (no bUnit), so the tests pin the *data* the display depends
+on rather than the markup: a druid below 5th has no forms, a 5th-level druid has exactly Small and
+Medium animal, a 20th has all 14, capabilities reach `CharacterSheet` (and therefore the API), every
+bundled capability is colon-delimited as the grouping assumes, and the Grig/Couatl save DCs survive
+evaluation. The markup itself is verified by running the app.

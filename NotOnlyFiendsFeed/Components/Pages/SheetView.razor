@@ -240,7 +240,30 @@ else if (_state != null && _character != null)
                             <ul class="list-unstyled mb-0">
                                 @foreach (var sla in _state.SLAs)
                                 {
-                                    <li title="@(sla.Description ?? "")">@sla.Name @(sla.UsesPerDay != null ? $"({sla.UsesPerDay})" : "")</li>
+                                    <li title="@(sla.Description ?? "")">
+                                        @sla.Name @(sla.UsesPerDay != null ? $"({sla.UsesPerDay})" : "")
+                                        @if (sla.SaveDC.HasValue)
+                                        {
+                                            <span class="text-muted">— DC @sla.SaveDC</span>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (_state.Capabilities.Any())
+            {
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header">Capabilities</div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var (label, detail) in GroupCapabilities(_state.Capabilities))
+                                {
+                                    <li><strong>@label</strong>@(detail != null ? $" — {detail}" : "")</li>
                                 }
                             </ul>
                         </div>
@@ -367,6 +390,60 @@ else if (_state != null && _character != null)
         if (synergy != 0) parts.Add($"{FormatSigned(synergy)} synergy");
         return string.Join(", ", parts);
     }
+
+    // Size order for the wild shape matrix, smallest first — alphabetical would read
+    // "Huge, Large, Medium, Small, Tiny", which is not how a druid gains them.
+    private static readonly string[] _sizeOrder = { "fine", "diminutive", "tiny", "small", "medium", "large", "huge", "gargantuan", "colossal" };
+
+    /// <summary>
+    /// Renders <c>CharacterState.Capabilities</c>, which nothing read anywhere before this.
+    ///
+    /// The druid's wild shape matrix alone is 14 entries of the form
+    /// <c>wild_shape:&lt;kind&gt;:&lt;size&gt;</c>; listing them raw would be 14 lines of jargon for
+    /// what is really three lines of "which forms can I take". So that family is grouped by kind
+    /// with its sizes ordered, and anything else falls back to a title-cased reading of its
+    /// segments (<c>blood_witch:minor_sacrifice</c> → "Blood Witch — Minor Sacrifice").
+    /// </summary>
+    private static List<(string Label, string? Detail)> GroupCapabilities(IEnumerable<string> capabilities)
+    {
+        var rows = new List<(string, string?)>();
+        var wildShape = new List<string>();
+        var other = new List<string>();
+
+        foreach (var capability in capabilities)
+        {
+            if (capability.StartsWith("wild_shape:", StringComparison.Ordinal))
+                wildShape.Add(capability);
+            else
+                other.Add(capability);
+        }
+
+        foreach (var group in wildShape
+            .Select(c => c.Split(':'))
+            .Where(parts => parts.Length == 3)
+            .GroupBy(parts => parts[1], StringComparer.Ordinal)
+            .OrderBy(g => g.Key, StringComparer.Ordinal))
+        {
+            var sizes = group
+                .Select(parts => parts[2])
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(size => Array.IndexOf(_sizeOrder, size))
+                .Select(Titleise);
+            rows.Add(($"Wild Shape — {Titleise(group.Key)}", string.Join(", ", sizes)));
+        }
+
+        foreach (var capability in other.OrderBy(c => c, StringComparer.Ordinal))
+        {
+            var parts = capability.Split(':');
+            rows.Add((string.Join(" — ", parts.Select(Titleise)), null));
+        }
+
+        return rows;
+    }
+
+    private static string Titleise(string value) =>
+        string.Join(" ", value.Split('_', StringSplitOptions.RemoveEmptyEntries)
+            .Select(word => char.ToUpperInvariant(word[0]) + word[1..]));
 
     private string FormatCounter(string key, int value) => key switch
     {
