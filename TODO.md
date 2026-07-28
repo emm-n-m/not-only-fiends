@@ -332,6 +332,10 @@ Done this session:
 
 ## 6. Repo hygiene before going public
 
+See also **§8**, which is blocking for the same milestone for product rather than repo reasons:
+languages are absent from the character sheet entirely, and the builder offers monster and
+companion races as PC choices with nothing marking them.
+
 Blocking, and irreversible once cloned or forked:
 
 - ~~**Squash git history.**~~ **Already done** (verified 2026-07-28). History was rewritten in
@@ -373,13 +377,21 @@ of a flat file to append to.
 
 ---
 
-## 8. Engine and UI gaps surfaced by the audits
+## 8. Core features still half-built — **blocking for going public**
 
-Two half-built features that the Fiendish Codex audit (2026-07-28) pushed into view. Both are
-cases where the *data model* exists but nothing upstream or downstream connects to it, so the
-feature reads as present in the code and is absent in the product. The per-pack engine gaps
-from the LST and PDF audits are listed in their own reports; these two are big enough to track
-here.
+Two features the Fiendish Codex audit (2026-07-28) pushed into view. Both are cases where the
+*data model* exists but nothing upstream or downstream connects to it, so they read as present
+in the code and are absent in the product. The per-pack engine gaps from the LST and PDF
+audits are listed in their own reports; these two are big enough to track here.
+
+**Priority raised 2026-07-28 (user ruling): treat both as blocking alongside §6, not as
+backlog.** They were first written up as "neither is urgent — no corpus character uses a
+null-LA race", which was the wrong test. The corpus is 54 characters built by someone who
+knows the tool's edges. A public user meets both of these in the first five minutes: they open
+the race picker and are offered companion and monster races with nothing marking them, and
+they look for languages on a character sheet and find the field does not exist. Dragon
+Disciple — core SRD, not third-party — is simply unenterable. "No corpus character hits it" is
+an argument about *regression risk*, not about whether the feature is finished.
 
 ### Languages — modelled, never assignable, never displayed
 
@@ -426,6 +438,6 @@ yet:
   arithmetically (null contributes 0 to ECL), but the sheet cannot say "this race has no
   sanctioned LA", which is the one place a player would want to know.
 
-Neither is urgent — no corpus character uses a null-LA race — but the builder listing is a
-real discoverability trap, and it is the kind of thing the `audit-agent-api` skill exists to
-catch. Worth folding into that skill's next run.
+The builder listing is the user-visible half and the one that matters for going public: it is
+a discoverability trap on the very first step of character creation. It is also exactly what
+the `audit-agent-api` skill exists to catch, so re-run that once a filter or badge exists.
