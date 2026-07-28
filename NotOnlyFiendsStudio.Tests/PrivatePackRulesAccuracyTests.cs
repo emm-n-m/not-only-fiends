@@ -62,6 +62,17 @@ public class PrivatePackRulesAccuracyTests
         Assert.Superset(new HashSet<string> { "skill:listen", "skill:spot" }, listenSpot);
     }
 
+    // FACT:SpellType|Arcane (fairytale_advancedfiend_classes.lst). User ruling
+    // 2026-07-28: archfiends cast as arcane (sorcerer-style spontaneous); cleric/druid
+    // access comes from the spell-list selection templates, not divine casting.
+    [RequiresPrivatePacksFact]
+    public void Archfiend_CastsArcane()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        var driver = (HDDriver)registry.GetDriver("class:archfiend");
+        Assert.Equal(CastingType.Arcane, driver.Spellcasting!.CastingType);
+    }
+
     // BONUS:ABILITYPOOL|Blood Hexer Feat|1 at 3/7/10, restricted via
     // ABILITYCATEGORY:Blood Hexer Feat ... TYPE:Metamagic (curses_abilitycategories.lst)
     [RequiresPrivatePacksFact]
