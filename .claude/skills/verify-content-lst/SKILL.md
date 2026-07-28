@@ -105,6 +105,16 @@ types), `PRE*` tags as above, `MULT:YES`/`STACK:YES`, `DESC:`. `OUTPUTNAME:` is 
 **Templates** — `deceit/*_templates.lst` plus companion `*_abilities.lst` for the granted
 special abilities.
 
+## The character corpus is a second witness
+
+Every `.pcg` in the corpus passed PCGen's own prerequisite enforcement when it was
+built. So the builds themselves corroborate LST prerequisites (the vampire character
+carried 25 ranks of Knowledge (Necrology) years before our engine could even import
+the skill — PCGen demanded them for Spectral Loremaster). After restoring a dropped
+prerequisite, check the imported characters that use the gated content: a violation
+means the restoration is wrong, the LST is wrong, or the build used a house-rule
+override — ask the user which.
+
 ## Matching names to IDs
 
 `NotOnlyFiendsStudio/PcGen/PcgIdMapper.cs` is the canonical LST-name → content-ID transform
