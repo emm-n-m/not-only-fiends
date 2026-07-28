@@ -464,8 +464,10 @@ else
                                                 @foreach (var (lvl, count) in sc.SpellsPerDay.OrderBy(kv => kv.Key))
                                                 {
                                                     var domainBonus = sc.DomainBonusSlots.GetValueOrDefault(lvl);
-                                                    <span class="badge bg-light text-dark border">
-                                                        Lvl @lvl: @count@(domainBonus > 0 ? $"+{domainBonus}D" : "")
+                                                    var specialtyBonus = sc.SpecialtyBonusSlots.GetValueOrDefault(lvl);
+                                                    <span class="badge bg-light text-dark border"
+                                                          title="D = domain slot, S = specialty school slot">
+                                                        Lvl @lvl: @count@(domainBonus > 0 ? $"+{domainBonus}D" : "")@(specialtyBonus > 0 ? $"+{specialtyBonus}S" : "")
                                                     </span>
                                                 }
                                             </div>
@@ -1437,6 +1439,7 @@ else
                             new Dictionary<int, int>(kv.Value.SpellsPerDay),
                             kv.Value.SpellsKnown != null ? new Dictionary<int, int>(kv.Value.SpellsKnown) : null,
                             new Dictionary<int, int>(kv.Value.DomainBonusSlots),
+                            new Dictionary<int, int>(kv.Value.SpecialtyBonusSlots),
                             kv.Value.Acquisition,
                             ReplayStudio.SpellbookSpellsAllowed(
                                 state.ClassLevels.GetValueOrDefault(kv.Key),
@@ -2278,6 +2281,7 @@ else
         Dictionary<int, int> SpellsPerDay,
         Dictionary<int, int>? SpellsKnown,
         Dictionary<int, int> DomainBonusSlots,
+        Dictionary<int, int> SpecialtyBonusSlots,
         SpellAcquisition Acquisition,
         // Spellbook casters only: how many spells of 1st level or higher the book may hold.
         int SpellbookLimit);

@@ -21,10 +21,16 @@ public static class WizardSchools
     public const string OptionPrefix = "school:";
 
     /// <summary>
-    /// Universal spells belong to no school, so they are never prohibited and are always
-    /// available regardless of specialization.
+    /// SRD: "Spells that do not fall into any of these schools are called universal spells." They
+    /// belong to no school, so they are never prohibited and are always available.
     /// </summary>
     public const string Universal = "universal";
+
+    /// <summary>
+    /// SRD: "A wizard can never give up divination to fulfill this requirement." It can still be
+    /// specialized in — at the reduced cost of one prohibited school instead of two.
+    /// </summary>
+    public const string Divination = "divination";
 
     public static string ToSchoolName(string optionId) =>
         optionId.StartsWith(OptionPrefix, StringComparison.Ordinal)
@@ -59,18 +65,15 @@ public static class WizardSchools
     }
 
     /// <summary>
-    /// How many schools a wizard must give up for its chosen specialty. A universalist gives up
-    /// none; a diviner gives up one; every other specialist gives up two.
+    /// How many schools a wizard must give up for its chosen specialty.
     ///
-    /// NOTE: the diviner exception is the one number here not derivable from anything in this
-    /// repository — it comes from the SRD's wizard entry and could not be verified against the
-    /// mirror, which is not present on this machine. It affects only a warning message, never
-    /// which spells are available.
+    /// SRD: "she must also give up two other schools of magic (unless she chooses to specialize in
+    /// divination...)". A universalist gives up none.
     /// </summary>
     public static int RequiredProhibitedCount(string? specialty) => specialty switch
     {
         null => 0,
-        "divination" => 1,
+        Divination => 1,
         _ => 2,
     };
 }

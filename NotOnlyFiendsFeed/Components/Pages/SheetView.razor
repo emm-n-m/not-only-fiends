@@ -336,7 +336,19 @@ else if (_state != null && _character != null)
                         <h5>@classId.Replace("class:", "") (CL @sc.CasterLevel, @sc.CastingType, @sc.CastingStat)</h5>
                         <p>
                             <strong>Spells/Day:</strong>
-                            @string.Join(" / ", sc.SpellsPerDay.OrderBy(kv => kv.Key).Select(kv => $"{kv.Key}th:{kv.Value}"))
+                            @string.Join(" / ", sc.SpellsPerDay.OrderBy(kv => kv.Key).Select(kv =>
+                            {
+                                var domain = sc.DomainBonusSlots.GetValueOrDefault(kv.Key);
+                                var specialty = sc.SpecialtyBonusSlots.GetValueOrDefault(kv.Key);
+                                var extra = (domain > 0 ? $"+{domain}D" : "") + (specialty > 0 ? $"+{specialty}S" : "");
+                                return $"{kv.Key}th:{kv.Value}{extra}";
+                            }))
+                            @if (sc.DomainBonusSlots.Any() || sc.SpecialtyBonusSlots.Any())
+                            {
+                                <span class="text-muted small">
+                                    (@(sc.DomainBonusSlots.Any() ? "D = domain slot" : "")@(sc.DomainBonusSlots.Any() && sc.SpecialtyBonusSlots.Any() ? ", " : "")@(sc.SpecialtyBonusSlots.Any() ? "S = specialty school slot" : ""))
+                                </span>
+                            }
                         </p>
                         @if (sc.SpellsKnown != null)
                         {

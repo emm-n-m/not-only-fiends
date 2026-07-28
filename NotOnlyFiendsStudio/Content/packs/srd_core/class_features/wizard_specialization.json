@@ -2,94 +2,176 @@
   {
     "id": "class_feature:wizard_specialization",
     "name": "Wizard Specialization",
-    "description": "A wizard may specialize in one school of magic, gaining focus in it at the cost of giving up others. Specializing is optional — a wizard who takes no specialty is a universalist, keeps every school, and prohibits none. Chosen at 1st wizard level and never changed. Universal spells belong to no school and can never be given up.",
+    "description": "SRD: \"If desired, a wizard may specialize in one school of magic... The wizard must choose whether to specialize and, if she does so, choose her specialty at 1st level.\" Specializing is optional — a wizard who takes no specialty is a universalist, keeps every school and prohibits none. Universal spells fall into no school and are never affected.",
     "options": [
       {
         "id": "school:abjuration",
         "name": "Abjuration",
-        "description": "Protective spells: wards, barriers and dispelling."
+        "description": "Protective spells: wards, barriers and dispelling. Gives up two other schools.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "wizard_specialist_abjuration",
+              "name": "Specialist Wizard (Abjuration)",
+              "description": "Prepares one additional abjuration spell of each spell level per day. +2 on Spellcraft checks made to learn abjuration spells. Specialty and prohibited schools are chosen at 1st level and never change."
+            }
+          }
+        ]
       },
       {
         "id": "school:conjuration",
         "name": "Conjuration",
-        "description": "Summoning, creation, healing and teleportation."
+        "description": "Summoning, creation, healing and teleportation. Gives up two other schools.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "wizard_specialist_conjuration",
+              "name": "Specialist Wizard (Conjuration)",
+              "description": "Prepares one additional conjuration spell of each spell level per day. +2 on Spellcraft checks made to learn conjuration spells. Specialty and prohibited schools are chosen at 1st level and never change."
+            }
+          }
+        ]
       },
       {
         "id": "school:divination",
         "name": "Divination",
-        "description": "Information: detection, scrying and foresight."
+        "description": "Information: detection, scrying and foresight. Gives up one other school.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "wizard_specialist_divination",
+              "name": "Specialist Wizard (Divination)",
+              "description": "Prepares one additional divination spell of each spell level per day. +2 on Spellcraft checks made to learn divination spells. Specialty and prohibited schools are chosen at 1st level and never change."
+            }
+          }
+        ]
       },
       {
         "id": "school:enchantment",
         "name": "Enchantment",
-        "description": "Affecting minds: charms and compulsions."
+        "description": "Affecting minds: charms and compulsions. Gives up two other schools.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "wizard_specialist_enchantment",
+              "name": "Specialist Wizard (Enchantment)",
+              "description": "Prepares one additional enchantment spell of each spell level per day. +2 on Spellcraft checks made to learn enchantment spells. Specialty and prohibited schools are chosen at 1st level and never change."
+            }
+          }
+        ]
       },
       {
         "id": "school:evocation",
         "name": "Evocation",
-        "description": "Manipulating energy to create damage or effects from nothing."
+        "description": "Manipulating energy to create damage or effects from nothing. Gives up two other schools.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "wizard_specialist_evocation",
+              "name": "Specialist Wizard (Evocation)",
+              "description": "Prepares one additional evocation spell of each spell level per day. +2 on Spellcraft checks made to learn evocation spells. Specialty and prohibited schools are chosen at 1st level and never change."
+            }
+          }
+        ]
       },
       {
         "id": "school:illusion",
         "name": "Illusion",
-        "description": "Deceiving the senses or the mind."
+        "description": "Deceiving the senses or the mind. Gives up two other schools.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "wizard_specialist_illusion",
+              "name": "Specialist Wizard (Illusion)",
+              "description": "Prepares one additional illusion spell of each spell level per day. +2 on Spellcraft checks made to learn illusion spells. Specialty and prohibited schools are chosen at 1st level and never change."
+            }
+          }
+        ]
       },
       {
         "id": "school:necromancy",
         "name": "Necromancy",
-        "description": "Manipulating life force and the undead."
+        "description": "Manipulating life force and the undead. Gives up two other schools.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "wizard_specialist_necromancy",
+              "name": "Specialist Wizard (Necromancy)",
+              "description": "Prepares one additional necromancy spell of each spell level per day. +2 on Spellcraft checks made to learn necromancy spells. Specialty and prohibited schools are chosen at 1st level and never change."
+            }
+          }
+        ]
       },
       {
         "id": "school:transmutation",
         "name": "Transmutation",
-        "description": "Changing the properties of a creature, object or condition."
+        "description": "Changing the properties of a creature, object or condition. Gives up two other schools.",
+        "grantedPermabuffs": [
+          {
+            "$type": "GrantAbility",
+            "ability": {
+              "id": "wizard_specialist_transmutation",
+              "name": "Specialist Wizard (Transmutation)",
+              "description": "Prepares one additional transmutation spell of each spell level per day. +2 on Spellcraft checks made to learn transmutation spells. Specialty and prohibited schools are chosen at 1st level and never change."
+            }
+          }
+        ]
       }
     ]
   },
   {
     "id": "class_feature:wizard_prohibited_schools",
     "name": "Prohibited Schools",
-    "description": "The schools a specialist wizard gives up. Spells of a prohibited school can never be learned, written into the spellbook or cast. A specialist gives up two schools, except a diviner, who gives up only one. A wizard with no specialty prohibits nothing.",
+    "description": "SRD: \"she must also give up two other schools of magic (unless she chooses to specialize in divination)... A wizard can never give up divination to fulfill this requirement. Spells of the prohibited school or schools are not available to the wizard, and she can't even cast such spells from scrolls or fire them from wands.\" Divination is therefore not offered here. A wizard with no specialty prohibits nothing.",
     "options": [
       {
         "id": "school:abjuration",
         "name": "Abjuration",
-        "description": "Protective spells: wards, barriers and dispelling."
+        "description": "Protective spells: wards, barriers and dispelling. Gives up two other schools.",
+        "grantedPermabuffs": []
       },
       {
         "id": "school:conjuration",
         "name": "Conjuration",
-        "description": "Summoning, creation, healing and teleportation."
-      },
-      {
-        "id": "school:divination",
-        "name": "Divination",
-        "description": "Information: detection, scrying and foresight."
+        "description": "Summoning, creation, healing and teleportation. Gives up two other schools.",
+        "grantedPermabuffs": []
       },
       {
         "id": "school:enchantment",
         "name": "Enchantment",
-        "description": "Affecting minds: charms and compulsions."
+        "description": "Affecting minds: charms and compulsions. Gives up two other schools.",
+        "grantedPermabuffs": []
       },
       {
         "id": "school:evocation",
         "name": "Evocation",
-        "description": "Manipulating energy to create damage or effects from nothing."
+        "description": "Manipulating energy to create damage or effects from nothing. Gives up two other schools.",
+        "grantedPermabuffs": []
       },
       {
         "id": "school:illusion",
         "name": "Illusion",
-        "description": "Deceiving the senses or the mind."
+        "description": "Deceiving the senses or the mind. Gives up two other schools.",
+        "grantedPermabuffs": []
       },
       {
         "id": "school:necromancy",
         "name": "Necromancy",
-        "description": "Manipulating life force and the undead."
+        "description": "Manipulating life force and the undead. Gives up two other schools.",
+        "grantedPermabuffs": []
       },
       {
         "id": "school:transmutation",
         "name": "Transmutation",
-        "description": "Changing the properties of a creature, object or condition."
+        "description": "Changing the properties of a creature, object or condition. Gives up two other schools.",
+        "grantedPermabuffs": []
       }
     ]
   }

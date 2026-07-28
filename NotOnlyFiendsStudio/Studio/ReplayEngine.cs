@@ -251,24 +251,48 @@ public class ReplayStudio
         // 9. Tail pass — specialist wizard schools. Must be a tail pass, not per-tick: spell
         // selections are applied before class feature choices within a tick, so a wizard choosing
         // its specialty and its first spells at 1st level would otherwise be checked against
-        // schools it had not yet picked.
-        CheckWizardSchools(state);
+        // schools it had not yet picked. Spells per day are also final only now.
+        FinalizeWizardSchools(state);
 
         return state;
     }
 
     /// <summary>
-    /// Validates a specialist wizard's school choices and the spells chosen against them.
+    /// Grants a specialist wizard's bonus spell slots and validates its school choices against the
+    /// spells it has taken.
     ///
     /// Selection is never blocked — as everywhere else in this engine, illegal input produces a
     /// warning and the build continues — but the builder does not offer prohibited-school spells
     /// in the first place, so reaching these warnings means the character was assembled through
     /// the API or by hand.
     /// </summary>
-    private void CheckWizardSchools(CharacterState state)
+    private void FinalizeWizardSchools(CharacterState state)
     {
         var specialty = WizardSchools.Specialty(state);
         var prohibited = WizardSchools.ProhibitedSchools(state);
+
+        // SRD: "A specialist wizard can prepare one additional spell of her specialty school per
+        // spell level each day." Applied to every level she can cast.
+        if (specialty != null)
+        {
+            foreach (var sc in state.Spellcasting.Values)
+            {
+                if (sc.Acquisition != SpellAcquisition.Spellbook)
+                    continue;
+
+                sc.SpecialtyBonusSlots.Clear();
+                foreach (var level in sc.SpellsPerDay.Keys)
+                    sc.SpecialtyBonusSlots[level] = 1;
+            }
+        }
+
+        // SRD: "A wizard can never give up divination to fulfill this requirement."
+        if (prohibited.Contains(WizardSchools.Divination))
+            state.Warnings.Add(new Warning
+            {
+                TickIndex = state.TotalHD,
+                Message = "wizard gives up divination, which can never be a prohibited school",
+            });
 
         if (specialty != null && prohibited.Contains(specialty))
             state.Warnings.Add(new Warning

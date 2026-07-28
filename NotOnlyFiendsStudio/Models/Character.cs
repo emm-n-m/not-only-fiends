@@ -194,6 +194,8 @@ public class SpellcastingSummary
     public Dictionary<int, int> SpellsPerDay { get; set; } = new();
     public Dictionary<int, int>? SpellsKnown { get; set; }
     public Dictionary<int, int> DomainBonusSlots { get; set; } = new();
+    /// <summary>Specialist wizard bonus slots, castable only from the specialty school.</summary>
+    public Dictionary<int, int> SpecialtyBonusSlots { get; set; } = new();
 
     public static SpellcastingSummary FromState(SpellcastingState sc) => new()
     {
@@ -206,6 +208,7 @@ public class SpellcastingSummary
         SpellsPerDay = new Dictionary<int, int>(sc.SpellsPerDay),
         SpellsKnown = sc.SpellsKnown is null ? null : new Dictionary<int, int>(sc.SpellsKnown),
         DomainBonusSlots = new Dictionary<int, int>(sc.DomainBonusSlots),
+        SpecialtyBonusSlots = new Dictionary<int, int>(sc.SpecialtyBonusSlots),
     };
 }
 

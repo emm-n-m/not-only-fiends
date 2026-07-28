@@ -272,26 +272,145 @@ public class WizardSchoolTests
     }
 
     [Fact]
-    public void BothOptionPools_OfferTheEightSchools()
+    public void AnySchoolCanBeSpecializedIn()
     {
-        var registry = Content.Value;
+        // SRD: "The eight schools of arcane magic are abjuration, conjuration, divination,
+        // enchantment, evocation, illusion, necromancy, and transmutation."
+        Assert.True(Content.Value.TryGetClassFeature(WizardSchools.SpecializationFeature, out var feature));
+        var schools = feature!.Options.Select(o => WizardSchools.ToSchoolName(o.Id)).OrderBy(s => s).ToList();
 
-        foreach (var featureType in new[] { WizardSchools.SpecializationFeature, WizardSchools.ProhibitedFeature })
+        Assert.Equal(
+            new[]
+            {
+                "abjuration", "conjuration", "divination", "enchantment",
+                "evocation", "illusion", "necromancy", "transmutation",
+            },
+            schools);
+
+        // SRD: "Spells that do not fall into any of these schools are called universal spells."
+        Assert.DoesNotContain(WizardSchools.Universal, schools);
+    }
+
+    [Fact]
+    public void DivinationIsNotOfferedAsAProhibitedSchool()
+    {
+        // SRD: "A wizard can never give up divination to fulfill this requirement." Its absence
+        // from this pool is by rule, not oversight — every other school is present.
+        Assert.True(Content.Value.TryGetClassFeature(WizardSchools.ProhibitedFeature, out var feature));
+        var schools = feature!.Options.Select(o => WizardSchools.ToSchoolName(o.Id)).OrderBy(s => s).ToList();
+
+        Assert.Equal(
+            new[]
+            {
+                "abjuration", "conjuration", "enchantment",
+                "evocation", "illusion", "necromancy", "transmutation",
+            },
+            schools);
+
+        Assert.DoesNotContain(WizardSchools.Divination, schools);
+        Assert.DoesNotContain(WizardSchools.Universal, schools);
+    }
+
+    [Fact]
+    public void GivingUpDivinationIsRejected()
+    {
+        // Divination is not in the option pool, so the selection is refused before it is ever
+        // recorded — the guarantee that matters is that it never becomes a prohibited school,
+        // whichever layer catches it.
+        var state = Evaluate("evocation", new[] { "divination", "necromancy" });
+
+        Assert.DoesNotContain(WizardSchools.Divination, WizardSchools.ProhibitedSchools(state));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("unknown class feature option"));
+    }
+
+    [Fact]
+    public void EvenIfAPackReAddsDivination_TheEngineStillRefusesIt()
+    {
+        // Second layer. A homebrew pack could override the option pool — content is last-wins —
+        // so the rule is enforced in the engine too, not only by the absence of the option.
+        var registry = TestContentHelper.LoadBundledPacks();
+        registry.RegisterClassFeature(new ClassFeatureDefinition
         {
-            Assert.True(registry.TryGetClassFeature(featureType, out var feature));
-            var schools = feature!.Options.Select(o => WizardSchools.ToSchoolName(o.Id)).OrderBy(s => s).ToList();
+            Id = WizardSchools.ProhibitedFeature,
+            Name = "Prohibited Schools (homebrew, divination re-added)",
+            Options = new List<ClassFeatureOption>
+            {
+                new() { Id = WizardSchools.ToOptionId("divination"), Name = "Divination" },
+                new() { Id = WizardSchools.ToOptionId("necromancy"), Name = "Necromancy" },
+            },
+        });
 
-            Assert.Equal(
-                new[]
+        var character = new Character
+        {
+            Name = "Homebrew",
+            RaceId = "race:human",
+            Alignment = Alignment.N,
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 16, WIS = 10, CHA = 10 },
+        };
+        character.Ticks.Add(new Tick
+        {
+            DriverId = "class:wizard",
+            Choices = new TickChoices
+            {
+                ClassFeatureChoices = new Dictionary<string, List<string>>
                 {
-                    "abjuration", "conjuration", "divination", "enchantment",
-                    "evocation", "illusion", "necromancy", "transmutation",
+                    [WizardSchools.SpecializationFeature] = new() { WizardSchools.ToOptionId("evocation") },
+                    [WizardSchools.ProhibitedFeature] = new()
+                    {
+                        WizardSchools.ToOptionId("divination"),
+                        WizardSchools.ToOptionId("necromancy"),
+                    },
                 },
-                schools);
+            },
+        });
 
-            // Universal is not a school anyone can specialize in or give up.
-            Assert.DoesNotContain(WizardSchools.Universal, schools);
-        }
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        Assert.Contains(state.Warnings, w => w.Message.Contains("never be a prohibited school"));
+    }
+
+    [Fact]
+    public void ASpecialistPreparesOneExtraSpellOfItsSchoolPerLevel()
+    {
+        // SRD: "A specialist wizard can prepare one additional spell of her specialty school per
+        // spell level each day." Stated per spell level with no exception, so 0-level included.
+        var state = Evaluate("evocation", new[] { "enchantment", "necromancy" }, levels: 5);
+        var sc = state.Spellcasting["class:wizard"];
+
+        Assert.NotEmpty(sc.SpecialtyBonusSlots);
+        Assert.All(sc.SpellsPerDay.Keys, lvl => Assert.Equal(1, sc.SpecialtyBonusSlots[lvl]));
+        Assert.Equal(sc.SpellsPerDay.Count, sc.SpecialtyBonusSlots.Count);
+        Assert.Contains(0, sc.SpecialtyBonusSlots.Keys);
+    }
+
+    [Fact]
+    public void AUniversalistGetsNoBonusSlots()
+    {
+        var state = Evaluate(specialty: null, levels: 5);
+
+        Assert.Empty(state.Spellcasting["class:wizard"].SpecialtyBonusSlots);
+    }
+
+    [Fact]
+    public void SpecialtyBonusSlotsReachTheSheet()
+    {
+        var sheet = CharacterSheet.FromState(
+            Evaluate("evocation", new[] { "enchantment", "necromancy" }, levels: 5));
+
+        Assert.Equal(1, sheet.Spellcasting["class:wizard"].SpecialtyBonusSlots[1]);
+    }
+
+    [Fact]
+    public void EachSpecializationGrantsAnAbilityDescribingIt()
+    {
+        // The +2 Spellcraft bonus is prose on a granted ability rather than a GrantSkillBonus: it
+        // applies only to checks made to learn spells of that school, and a flat bonus would
+        // wrongly inflate the Spellcraft total the skill pass now computes.
+        var state = Evaluate("evocation", new[] { "enchantment", "necromancy" });
+
+        var ability = state.Abilities.Single(a => a.Id == "wizard_specialist_evocation");
+        Assert.Contains("Spellcraft", ability.Description);
+        Assert.DoesNotContain("skill:spellcraft", state.SkillBonuses.Keys);
     }
 
     [Fact]

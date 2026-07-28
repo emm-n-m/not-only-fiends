@@ -588,24 +588,52 @@ feature choices, so a per-tick check would let a 1st-level wizard write a barred
 before its own specialty was recorded. `SchoolsChosenOnTheSameTickAsSpells_AreStillEnforced` covers
 it.
 
-### Rules values that could not be verified here
+### Rules values — since verified against the SRD
 
-The SRD mirror is absent on this machine, so two numbers rest on the user's instruction and the
-class's own text rather than a quoted source. Both are worth checking when the mirror is available:
+The wizard specialization paragraph was supplied by the user after the first pass. It confirmed one
+assumption, corrected another, and supplied the rule for the item this report had listed as not
+done. Quoted where each is encoded, so nothing here rests on recall:
 
-1. **A diviner gives up one school, every other specialist two.** Isolated in
-   `WizardSchools.RequiredProhibitedCount` with a comment. It affects only a warning message, never
-   which spells are available.
-2. **The spellbook formula** (3 + Int bonus at 1st, +2 per level). Stated by the user and matching
-   the wizard's own class-feature text, which was corrected in the same change — it previously said
-   "all 0-level spells and three 1st-level spells", omitting the Intelligence bonus and the
-   per-level additions entirely.
+> "The wizard must choose whether to specialize and, if she does so, choose her specialty at 1st
+> level. At this time, she must also give up two other schools of magic (unless she chooses to
+> specialize in divination), which become her prohibited schools. **A wizard can never give up
+> divination to fulfill this requirement.** Spells of the prohibited school or schools are not
+> available to the wizard, and she can't even cast such spells from scrolls or fire them from
+> wands. She may not change either her specialization or her prohibited schools later."
+>
+> "A specialist wizard can prepare **one additional spell of her specialty school per spell level
+> each day**. She also gains a +2 bonus on Spellcraft checks to learn the spells of her chosen
+> school."
+
+1. **The diviner gives up one school — confirmed.** `WizardSchools.RequiredProhibitedCount` was
+   already right; the caveat is removed.
+2. **Divination can never be given up — this was WRONG and is fixed.** The first pass offered all
+   eight schools as prohibitable. Divination is now absent from
+   `class_feature:wizard_prohibited_schools` (seven options), and the engine refuses it
+   independently, so a homebrew pack that overrides the pool cannot reintroduce the bug —
+   `EvenIfAPackReAddsDivination_TheEngineStillRefusesIt` covers that second layer.
+3. **The specialist bonus slot is now implemented**, which this report previously listed as
+   deliberately not done. `SpellcastingState.SpecialtyBonusSlots`, one slot at every level the
+   wizard can cast, rendered as `+1S` beside the domain `+1D` in both the builder and the sheet.
+   Read as including 0-level: the rule says "per spell level" with no exception, unlike domain
+   slots, which the engine already restricts to 1st and above.
+
+Judgment call on the Spellcraft clause: it is **prose on a granted ability, deliberately not a
+`GrantSkillBonus`**. It applies only to checks made to learn spells of the specialty school, so a
+flat +2 would inflate the character's general Spellcraft total — exactly the situational-modifier
+case Task 1 put out of scope. `EachSpecializationGrantsAnAbilityDescribingIt` asserts the ability
+exists and that `SkillBonuses` stays clean.
+
+Still unverified, and unchanged by this: the **spellbook formula** (3 + Int bonus at 1st, +2 per
+wizard level) comes from the class's own text as stated by the user, not from a quoted SRD
+paragraph. Isolated in `ReplayStudio.SpellbookSpellsAllowed`.
 
 ### Deliberately not done
 
-- **The specialist's bonus spell slot per level** (one extra slot of each level, castable only from
-  the specialty school). Real, and not asked for. `SpellsPerDay` comes from progression tables, so
-  adding it means a permabuff that adjusts the computed slots — a separate change.
+- **Prohibited schools blocking scrolls and wands.** The SRD is explicit that a specialist "can't
+  even cast such spells from scrolls or fire them from wands", but the engine does not model
+  casting from an item at all, so there is nothing to gate. Worth revisiting if scroll/wand use is
+  ever modelled.
 - **Prohibited schools blocking item use or existing characters.** Selection is never blocked
   anywhere in this engine; illegal input warns and the build continues. The builder simply stops
   offering the spells.

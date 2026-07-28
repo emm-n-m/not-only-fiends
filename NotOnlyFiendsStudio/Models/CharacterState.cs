@@ -227,6 +227,14 @@ public class SpellcastingState
     // Domain bonus spell slots (spell level → bonus count)
     public Dictionary<int, int> DomainBonusSlots { get; set; } = new();
 
+    /// <summary>
+    /// Specialist wizard bonus slots (spell level → bonus count). SRD: "A specialist wizard can
+    /// prepare one additional spell of her specialty school per spell level each day." Unlike
+    /// domain slots, which start at 1st level, this applies at every level she can cast — 0-level
+    /// included, since the rule is stated per spell level with no exception.
+    /// </summary>
+    public Dictionary<int, int> SpecialtyBonusSlots { get; set; } = new();
+
     // Stored progression data for AdvanceSpellcasting to use
     public SpellcastingProgression? ProgressionData { get; set; }
 
