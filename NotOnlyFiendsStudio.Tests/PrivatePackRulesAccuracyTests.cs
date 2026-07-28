@@ -17,19 +17,21 @@ public class PrivatePackRulesAccuracyTests
         return Assert.Single(driver.Prerequisites.OfType<MinSkillRanks>(), p => p.SkillId == skillId);
     }
 
-    // PRESKILL:1,Knowledge (Necrology)=10 (necromancy_classes.lst; knowledge_arcana
-    // substituted for the engine-less Necrology skill)
+    // PRESKILL:1,Knowledge (Necrology)=10 (necromancy_classes.lst). User ruling
+    // 2026-07-28: Necrology is deliberately a costly niche skill — it exists as
+    // skill:knowledge_necrology rather than being mapped onto arcana/religion.
     [RequiresPrivatePacksFact]
-    public void Deathseeker_RequiresTenKnowledgeRanks()
+    public void Deathseeker_RequiresTenKnowledgeNecrologyRanks()
     {
-        Assert.Equal(10, SkillPrereq("class:deathseeker", "skill:knowledge_arcana").Value);
+        Assert.Equal(10, SkillPrereq("class:deathseeker", "skill:knowledge_necrology").Value);
     }
 
     // PRESKILL:2,Knowledge (Arcana)=7,Knowledge (Necrology)=7 (necromancy_classes.lst)
     [RequiresPrivatePacksFact]
-    public void SpectralLoremaster_RequiresSevenKnowledgeArcanaRanks()
+    public void SpectralLoremaster_RequiresSevenArcanaAndNecrologyRanks()
     {
         Assert.Equal(7, SkillPrereq("class:spectral_loremaster", "skill:knowledge_arcana").Value);
+        Assert.Equal(7, SkillPrereq("class:spectral_loremaster", "skill:knowledge_necrology").Value);
     }
 
     // PRESKILL:2,Knowledge (Arcana)=8,Knowledge (Nature)=8 (deceit LST — whole ranks,
