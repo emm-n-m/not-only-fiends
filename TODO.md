@@ -461,6 +461,31 @@ change:
 This is squarely a going-public blocker: skill modifiers are among the most-used numbers on a
 character sheet, and the tool currently cannot state one.
 
+### Smaller write-only state (same pattern, lower stakes)
+
+Found 2026-07-28 by sweeping every `Permabuff`/`Prerequisite` subclass for content usage,
+every `CharacterState` property for readers, and every `CharacterSheet` field for a UI or API
+consumer. Two real hits beyond the skills gap above:
+
+- **`Capabilities` is write-only.** `GrantCapability` writes it, `CharacterState` and
+  `CharacterSheet` carry it, and **nothing reads it anywhere** — no engine logic, no
+  prerequisite, no UI, no API, no test. Content grants 17: the druid's whole wild shape matrix
+  (`wild_shape:{animal,plant,elemental}:{tiny…huge}`, 14 entries) and three
+  `blood_witch:*` sacrifice capabilities. Mitigated in practice — Wild Shape is *also* a
+  granted ability with a `wild_shape_uses_per_day` counter, so the feature shows on the sheet;
+  what is missing is which **forms** a druid can actually assume. Either surface it or drop the
+  primitive; carrying it half-connected is the worst of both.
+- **`SLA.SaveDC` is never displayed.** `SheetView.razor:224` renders spell-like abilities as
+  name plus uses/day only, so a stored save DC never reaches the player. One-line display fix.
+
+Checked and **not** problems, recorded so the sweep is not repeated: `AddHitDie`, `AddBAB`,
+`AddSaves`, `GrantSkillPoints`, `AddClassSkills` are unauthored in content by design —
+`Driver.cs:51-59` constructs them from HDDriver progressions. `UpdateSpellcasting`,
+`GrantArmorProfile`, `GrantWeaponLine` are likewise engine-internal. `ModifyLeadershipScore`
+is unit-tested but unused by content, which is correct: 3.5 leadership modifiers are
+DM-assigned. `NaturalAttack.IsPrimary` is read by the sheet. Every `Prerequisite` subclass is
+now used by at least one pack.
+
 ### Level Adjustment — the builder offers every race, playable or not
 
 `RaceDefinition.LevelAdjustment` became `int?` on 2026-07-28 so that "playable at no cost" (0)
