@@ -200,13 +200,17 @@ Use the `verify-content` skill. Tier 1 (all 48 drivers in the public packs) is *
       already perfect. 13 assertions added. Also fixed three **dangling** references found in
       passing (`domain:fury` 2/6, `domain:ooze` 2); the same class of bug in the public packs
       is now its own §1 entry.
-    - Three one-line fixes: `class:hellfire_warlock` BAB `poor`→`average` (Table 3–3 reads
-      +0/+1/+2); `class:soulguard`'s `CanCastSpellLevel` missing `castingType: Divine` (null
-      matches any caster, so a wizard qualifies); `feat:ordered_chaos` wrongly tagged
-      `abyssal_heritor` (it is a General feat — inflates heritor counts and unlocks four
-      gated feats on its own).
-    - Five FC2 divine feats dropped their "ability to turn or rebuke undead" prerequisite —
-      P1's pattern again, fixable now with `HasAbility{turn_undead}`.
+    - ~~Three one-line fixes~~ **Fixed 2026-07-28**: `class:hellfire_warlock` BAB
+      `poor`→`average`; `class:soulguard`'s `CanCastSpellLevel` gained `castingType: Divine`;
+      `feat:ordered_chaos` lost its wrong `abyssal_heritor` tag.
+    - ~~Five FC2 divine feats dropped their "ability to turn or rebuke undead"
+      prerequisite~~ **Fixed 2026-07-28** with `HasAbility{turn_undead}` (content models
+      turning and rebuking as one ability, so that expresses it exactly).
+    - **Spells fully verified 2026-07-28** — the deferred second half (school, components,
+      casting time, range, target/area/effect, duration, save, SR for all 42, ~290
+      comparisons) found **zero** new content bugs, on top of the 42/42 clean level
+      assignments. The one discrepancy, `spell:morality_undone`'s `V, S, M/DF`, is the
+      known component-alternation gap, not an extraction error.
     - ~~`race:hellbred` has `abilityModifiers: null`, dropping the mandatory Infernal Aspect
       choice.~~ **Fixed 2026-07-28.** Added `class_feature:hellbred_infernal_aspect` (body /
       spirit) modelled on `loremaster_secret`, wired to the race via

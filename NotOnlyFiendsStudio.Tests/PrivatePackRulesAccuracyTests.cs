@@ -210,6 +210,60 @@ public class PrivatePackRulesAccuracyTests
         Assert.Equal(state.TotalHD, state.ECL);
     }
 
+    // FC2 p90 Table 3-3 reads 1st +0 / 2nd +1 / 3rd +2 — average, not poor (poor gives +1
+    // at 3rd). Extraction had "poor".
+    [RequiresPrivatePacksFact]
+    public void HellfireWarlock_HasAverageBab()
+    {
+        var driver = (HDDriver)TestContentHelper.LoadBundledAndPrivatePacksIfAvailable()
+            .GetDriver("class:hellfire_warlock");
+        Assert.Equal(BABProgression.Average, driver.BABProgression);
+    }
+
+    // FC2 p96: "Spellcasting: Ability to cast 1st-level divine spells." CanCastSpellLevel's
+    // CastingType is nullable and matches ANY caster when null, so the qualifier is what
+    // stops a wizard qualifying.
+    [RequiresPrivatePacksFact]
+    public void Soulguard_RequiresDivineCasting()
+    {
+        var driver = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable()
+            .GetDriver("class:soulguard");
+        var prereq = driver.Prerequisites.OfType<CanCastSpellLevel>().Single();
+        Assert.Equal(1, prereq.SpellLevel);
+        Assert.Equal(CastingType.Divine, prereq.CastingType);
+    }
+
+    // FC1 Table 4-1 (p84) lists Ordered Chaos under "General Feats", and its description
+    // heading (p86) carries no [ABYSSAL HERITOR] bracket while all 13 genuine ones do. The
+    // tag is load-bearing: four feats gate on HasFeatWithTag{abyssal_heritor}, so a tagged
+    // Ordered Chaos unlocked them on its own and inflated every "per heritor feat" count.
+    [RequiresPrivatePacksFact]
+    public void OrderedChaos_IsNotAnAbyssalHeritorFeat()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        Assert.DoesNotContain("abyssal_heritor", registry.GetFeat("feat:ordered_chaos").Tags);
+
+        // The 13 that genuinely carry the bracket still do.
+        Assert.Equal(13, registry.GetAllFeats()
+            .Count(f => f.Tags.Contains("abyssal_heritor")));
+    }
+
+    // FC2 p83 and Table 3-1: every divine feat requires the ability to turn or rebuke undead.
+    // All five had dropped it — the LST audit's P1 pattern. Content models turning and
+    // rebuking as the single ability "turn_undead" (cleric, paladin, archfiend all grant it),
+    // so HasAbility on that id is the whole requirement.
+    [RequiresPrivatePacksTheory]
+    [InlineData("feat:divine_censure")]
+    [InlineData("feat:divine_defiance")]
+    [InlineData("feat:divine_justice")]
+    [InlineData("feat:persistent_refusal")]
+    [InlineData("feat:pious_defiance")]
+    public void FiendishCodex2DivineFeats_RequireTurnOrRebukeUndead(string featId)
+    {
+        var feat = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable().GetFeat(featId);
+        Assert.Contains(feat.Prerequisites.OfType<HasAbility>(), p => p.AbilityId == "turn_undead");
+    }
+
     // Fiendish Codex I pp. 88-90. The extraction had invented 23 of these 54 slots,
     // substituting plausible SRD spells; every wrong slot was an SRD-spell slot while every
     // FC1-native one was right. Re-extracted 2026-07-28 from the domain blocks.
