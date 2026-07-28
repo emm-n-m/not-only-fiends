@@ -66,6 +66,13 @@ else if (_state != null && _character != null)
                         }
                     }
                 </p>
+                @if (_state.Languages.Any())
+                {
+                    <p class="mb-0">
+                        <strong>Languages:</strong>
+                        @string.Join(", ", _state.Languages.Select(Titleise).OrderBy(l => l, StringComparer.OrdinalIgnoreCase))
+                    </p>
+                }
             </div>
         </div>
 

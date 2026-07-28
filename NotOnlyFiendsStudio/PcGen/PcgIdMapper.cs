@@ -211,6 +211,15 @@ public class PcgIdMapper
     }
 
     /// <summary>
+    /// Language ids are bare and unprefixed, unlike every other id here — that is the existing
+    /// convention in content: <c>race:hellbred</c> grants <c>infernal</c> and
+    /// <c>class:dragon_disciple</c> requires <c>draconic</c>. There is no language registry to
+    /// validate against, so this is a pure name transform.
+    /// </summary>
+    public static string MapLanguage(string pcgenLanguageName) =>
+        DefaultIdTransform(pcgenLanguageName);
+
+    /// <summary>
     /// Resolves a PCGen item name (e.g. "Belt of Giant Strength +6") to a catalog ID.
     /// Strategy: explicit override → exact name match in registry → name with "+N" stripped.
     /// Returns null if nothing matches; caller is expected to warn and skip.

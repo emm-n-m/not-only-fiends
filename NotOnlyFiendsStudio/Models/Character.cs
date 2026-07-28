@@ -124,6 +124,7 @@ public class CharacterSheet
     public List<SLA> SLAs { get; set; } = new();
     public HashSet<string> Immunities { get; set; } = new();
     public HashSet<string> Capabilities { get; set; } = new();
+    public HashSet<string> Languages { get; set; } = new();
     public Dictionary<string, int> Resistances { get; set; } = new();
     public List<DREntry> DamageReduction { get; set; } = new();
     public int? SpellResistance { get; set; }
@@ -159,6 +160,7 @@ public class CharacterSheet
         SLAs = state.SLAs,
         Immunities = state.Immunities,
         Capabilities = state.Capabilities,
+        Languages = state.Languages,
         Resistances = state.Resistances,
         DamageReduction = state.DamageReduction,
         SpellResistance = state.SpellResistance,

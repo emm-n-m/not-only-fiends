@@ -1,5 +1,6 @@
 using NotOnlyFiendsStudio.Models;
 using NotOnlyFiendsStudio.PcGen;
+using NotOnlyFiendsStudio.Studio;
 
 namespace NotOnlyFiendsStudio.Tests.PcGen;
 
@@ -420,5 +421,123 @@ public class PcgConverterTests
         Assert.Equal("Fighter", data.Classes[0].Name);
         Assert.Single(data.Levels);
         Assert.Equal("test.pcg", data.FileName);
+    }
+
+    // --- Languages ---
+    //
+    // Every .pcg in the corpus carries a full pipe-delimited language list and the importer used
+    // to drop all of it, so CharacterState.Languages had exactly one writer in all of content
+    // (race:hellbred) and class:dragon_disciple's HasLanguage{draconic} prerequisite was
+    // satisfiable by nothing at all. These run ungated — ParseText takes inline content, so no
+    // .pcg corpus is needed.
+
+    private const string LanguageLine =
+        "LANGUAGE:Abyssal|LANGUAGE:Auran|LANGUAGE:Celestial|LANGUAGE:Common|LANGUAGE:Draconic|LANGUAGE:Infernal";
+
+    private static string PcgWithLanguages(string languageLine) => string.Join("\n", new[]
+    {
+        "CHARACTERNAME:Polyglot",
+        "RACE:Human",
+        "ALIGN:NG",
+        "STAT:STR|SCORE:10",
+        "STAT:DEX|SCORE:10",
+        "STAT:CON|SCORE:10",
+        "STAT:INT|SCORE:16",
+        "STAT:WIS|SCORE:10",
+        "STAT:CHA|SCORE:10",
+        languageLine,
+        "CLASS:Fighter|LEVEL:1|SKILLPOOL:0",
+        "CLASSABILITIESLEVEL:Fighter=1|HITPOINTS:10|SKILLSGAINED:2",
+    });
+
+    [Fact]
+    public void Parse_PipeDelimitedLanguageLine_YieldsEveryLanguage()
+    {
+        var data = PcgParser.ParseText(PcgWithLanguages(LanguageLine), "polyglot.pcg");
+
+        Assert.Equal(
+            new[] { "Abyssal", "Auran", "Celestial", "Common", "Draconic", "Infernal" },
+            data.Languages);
+    }
+
+    [Fact]
+    public void Parse_SingleLanguageLine_Works()
+    {
+        var data = PcgParser.ParseText(PcgWithLanguages("LANGUAGE:Common"), "one.pcg");
+
+        Assert.Equal(new[] { "Common" }, data.Languages);
+    }
+
+    [Fact]
+    public void Parse_RepeatedLanguages_AreNotDuplicated()
+    {
+        var data = PcgParser.ParseText(
+            PcgWithLanguages("LANGUAGE:Common|LANGUAGE:common|LANGUAGE:Draconic"), "dupes.pcg");
+
+        Assert.Equal(new[] { "Common", "Draconic" }, data.Languages);
+    }
+
+    [Fact]
+    public void Parse_NoLanguageLine_LeavesTheListEmpty()
+    {
+        var data = PcgParser.ParseText(PcgWithLanguages("# no languages here"), "none.pcg");
+
+        Assert.Empty(data.Languages);
+    }
+
+    [Theory]
+    [InlineData("Draconic", "draconic")]
+    [InlineData("Infernal", "infernal")]
+    // Bare and unprefixed, matching content: race:hellbred grants "infernal", not "language:infernal".
+    [InlineData("Sylvan", "sylvan")]
+    [InlineData("Undercommon", "undercommon")]
+    [InlineData("Gnome", "gnome")]
+    public void MapLanguage_ProducesTheBareContentId(string pcgenName, string expected)
+    {
+        Assert.Equal(expected, PcgIdMapper.MapLanguage(pcgenName));
+    }
+
+    [Fact]
+    public void Convert_Languages_BecomeGrantLanguagePermabuffsBeforeTheFirstTick()
+    {
+        var data = PcgParser.ParseText(PcgWithLanguages(LanguageLine), "polyglot.pcg");
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper());
+
+        var evt = Assert.Single(result.Character.PermanentEvents);
+        Assert.Equal(0, evt.BeforeTick);
+
+        var granted = evt.Permabuffs.OfType<GrantLanguage>().Select(g => g.LanguageId).ToList();
+        Assert.Equal(
+            new[] { "abyssal", "auran", "celestial", "common", "draconic", "infernal" },
+            granted);
+    }
+
+    [Fact]
+    public void Convert_NoLanguages_AddsNoPermanentEvent()
+    {
+        var result = PcgConverter.Convert(CreateClericData(), new PcgIdMapper());
+
+        Assert.Empty(result.Character.PermanentEvents);
+    }
+
+    [Fact]
+    public void Convert_LanguagesSurviveARoundTripThroughCharacterJson()
+    {
+        // GrantLanguage has to keep its $type discriminator through save/load, or an imported
+        // character loses its languages the first time it is written to disk.
+        var data = PcgParser.ParseText(PcgWithLanguages(LanguageLine), "polyglot.pcg");
+        var character = PcgConverter.Convert(data, new PcgIdMapper()).Character;
+
+        var json = System.Text.Json.JsonSerializer.Serialize(character, JsonOptions.Default);
+        var reloaded = System.Text.Json.JsonSerializer.Deserialize<Character>(json, JsonOptions.Default)!;
+
+        var granted = reloaded.PermanentEvents
+            .SelectMany(e => e.Permabuffs)
+            .OfType<GrantLanguage>()
+            .Select(g => g.LanguageId)
+            .ToList();
+        Assert.Contains("draconic", granted);
+        Assert.Equal(6, granted.Count);
     }
 }

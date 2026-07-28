@@ -162,6 +162,30 @@ public static class PcgConverter
             }
         }
 
+        // Languages arrive as a pipe-delimited LANGUAGE: line and have nowhere else to live on a
+        // Character: there is no language field and no Int-based selection mechanism, so the only
+        // writer to CharacterState.Languages is the GrantLanguage permabuff. A permanent event
+        // scheduled before the first tick is the existing extension point for exactly this — the
+        // tick loop applies BeforeTick == 0 events before anything else runs, so a class taken at
+        // 1st level can already see them (class:dragon_disciple's HasLanguage{draconic} being the
+        // case that matters).
+        if (data.Languages.Count > 0)
+        {
+            var languageGrants = data.Languages
+                .Select(PcgIdMapper.MapLanguage)
+                .Where(id => id.Length > 0)
+                .Distinct(StringComparer.Ordinal)
+                .Select(id => (Permabuff)new GrantLanguage { LanguageId = id })
+                .ToList();
+
+            if (languageGrants.Count > 0)
+                character.PermanentEvents.Add(new PermanentEvent
+                {
+                    BeforeTick = 0,
+                    Permabuffs = languageGrants,
+                });
+        }
+
         // Build domain selections
         var domainSelections = new List<string>();
         foreach (var domain in data.Domains)

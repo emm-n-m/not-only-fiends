@@ -46,7 +46,7 @@ These are the only numbers anything below is compared against.
 | 2 — dangling domain spell refs + integrity guard | **done** | 512 passed / 11 skipped / 0 failed | |
 | 3 — builder offers non-playable races | **done** | 523 passed / 11 skipped / 0 failed | |
 | 4 — surface write-only state on the sheet | **done** | 530 passed / 11 skipped / 0 failed | |
-| 5 — languages | not started | | |
+| 5 — languages (5a + 5c done, 5b skipped) | **partial by design** | 547 passed / 11 skipped / 0 failed | |
 
 ---
 
@@ -300,3 +300,73 @@ on rather than the markup: a druid below 5th has no forms, a 5th-level druid has
 Medium animal, a 20th has all 14, capabilities reach `CharacterSheet` (and therefore the API), every
 bundled capability is colon-delimited as the grouping assumes, and the Grig/Couatl save DCs survive
 evaluation. The markup itself is verified by running the app.
+
+---
+
+## Task 5 — languages — 5a and 5c DONE, 5b SKIPPED (no SRD mirror)
+
+### 5a — PCG importer — done
+
+`PcgParser` did not handle `LANGUAGE:` lines at all, though every `.pcg` carries one. Added:
+
+- **`PcgCharacterData.Languages`** and a `LANGUAGE:` branch in `PcgParser.ParseLines`. PCGen writes
+  the whole set on one line with the tag repeated
+  (`LANGUAGE:Abyssal|LANGUAGE:Auran|LANGUAGE:Common|…`), so the parser splits on the pipe and strips
+  each tag; that also handles the single-language form. Repeats are ignored case-insensitively.
+- **`PcgIdMapper.MapLanguage`** — `DefaultIdTransform` with **no prefix**. Language ids are bare in
+  content (`race:hellbred` grants `infernal`, `class:dragon_disciple` requires `draconic`), unlike
+  every other id the mapper produces. There is no language registry to validate against, so this is
+  a pure name transform and unknown languages are carried rather than dropped.
+- **`PcgConverter.Convert`** — attaches the grants as a
+  `PermanentEvent { BeforeTick = 0, Permabuffs = [GrantLanguage …] }`.
+
+**Judgment call — why a permanent event.** `GrantLanguage` is the only writer to
+`CharacterState.Languages`, and `Character` has no language field. The options were to add one (a
+model and serialization change, and a second way for languages to enter state) or to use the
+existing extension point. Permanent events are applied by the tick loop for `BeforeTick == 0` before
+anything else runs, so a class taken at 1st level already sees the languages — which is the case
+that matters, since Dragon Disciple's prerequisite is checked on the tick that enters the class.
+`GrantLanguage` is already a registered `[JsonDerivedType]`, so it round-trips through saved
+character JSON; there is a test for that, because a discriminator gap would lose an imported
+character's languages the first time it was written to disk.
+
+**What this unblocks.** `class:dragon_disciple`'s `HasLanguage{draconic}` was satisfiable by nothing
+at all — core SRD content gating a class no character could enter. Importing a `.pcg` is now a route
+that satisfies it, asserted against the prerequisite instance taken from real content rather than a
+constructed one.
+
+### 5c — display — done
+
+`CharacterSheet.Languages` (so the REST API carries them too) and a Languages line in the sheet
+header, title-cased and sorted.
+
+### 5b — race automatic languages — SKIPPED, and why
+
+`NotOnlyFiendsStudio/Content/srd_html/` **does not exist on this machine** (verified, not assumed).
+Ground rule 3 forbids inventing rules values, and a race's automatic and bonus language lists are
+exactly that — recalling "dwarves speak Common and Dwarven" from memory is the failure mode the rule
+exists to prevent, and there is a live example of it in this repo's history (five Fiendish Codex
+races carried invented level adjustments for months).
+
+So: **no race schema field was added, no languages were backfilled, and
+`.claude/skills/extract-race/SKILL.md:40` still says to treat "Automatic Languages / Bonus
+Languages" as flavor only.** That line is correct as long as there is no schema field; it should be
+updated in the same change that adds one, on a machine with the mirror.
+
+Consequence: authored characters still have no languages unless their race grants one
+(`race:hellbred` is still the only content that does). Only imported characters get them.
+
+### Explicitly not in scope, per the brief — not attempted
+
+- **Int-based bonus-language selection.** Needs a race bonus-language list, a `TickChoices`
+  mechanism and builder UI. Design work for a human.
+- **Restoring the three Fiendish Codex II prestige classes' "Language: Infernal" prerequisites.**
+  Deliberately left dropped: until a general language-selection mechanism exists, that prerequisite
+  would make those classes hellbred-only, which the book does not intend.
+
+### Related finding, from Task 2's sweep
+
+`skill:speak_language` is listed as a class skill by 9 classes and **no pack defines it**. That is
+the authoring-side counterpart to this task: even once a race language schema exists, the skill a
+character would spend ranks on to learn additional languages is missing. Not fixed here — adding it
+means choosing its key ability, which nothing in the repository states.

@@ -89,6 +89,8 @@ public static class PcgParser
                 ParseSpell(line, data);
             else if (line.StartsWith("DOMAIN:") && !line.StartsWith("DOMAIN:Air|DOMAIN:") /* skip DEITY domain list */)
                 ParseDomain(line, data);
+            else if (line.StartsWith("LANGUAGE:"))
+                ParseLanguages(line, data);
             else if (line.StartsWith("EQUIPNAME:"))
                 ParseEquipmentItem(line, data);
             else if (line.StartsWith("EQUIPSET:"))
@@ -107,6 +109,25 @@ public static class PcgParser
         var value = line["RACE:".Length..];
         var pipeIdx = value.IndexOf('|');
         data.Race = pipeIdx >= 0 ? value[..pipeIdx] : value;
+    }
+
+    /// <summary>
+    /// PCGen writes every language on one pipe-delimited line, repeating the tag:
+    /// <c>LANGUAGE:Abyssal|LANGUAGE:Auran|LANGUAGE:Common|…</c>. Splitting on the pipe and
+    /// stripping each tag handles both that and the degenerate single-language form.
+    /// </summary>
+    private static void ParseLanguages(string line, PcgCharacterData data)
+    {
+        foreach (var field in line.Split('|', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var trimmed = field.Trim();
+            if (!trimmed.StartsWith("LANGUAGE:", StringComparison.Ordinal))
+                continue;
+
+            var name = trimmed["LANGUAGE:".Length..].Trim();
+            if (name.Length > 0 && !data.Languages.Contains(name, StringComparer.OrdinalIgnoreCase))
+                data.Languages.Add(name);
+        }
     }
 
     private static void ParseStat(string line, PcgCharacterData data)
