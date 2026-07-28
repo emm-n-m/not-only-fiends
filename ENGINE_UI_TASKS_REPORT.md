@@ -370,3 +370,92 @@ Consequence: authored characters still have no languages unless their race grant
 the authoring-side counterpart to this task: even once a race language schema exists, the skill a
 character would spend ranks on to learn additional languages is missing. Not fixed here — adding it
 means choosing its key ability, which nothing in the repository states.
+
+---
+
+## End-to-end verification in the running app
+
+A second instance was run on port 5099 (never touching port 5000) and driven through the REST API,
+because the sheet loads its character from `sessionStorage` and so cannot be reached by `curl`. The
+API returns the same `CharacterSheet` the sheet renders, so this exercises the real code path, not
+just the unit tests.
+
+**16th-level druid** — `POST /api/characters/evaluate`:
+
+```
+languages: ["druidic", "sylvan"]
+skillTotals: { knowledge_nature: 22, survival: 23, spot: 14 }
+skillSynergyBonuses: { knowledge_nature: 2 }
+capabilities: 13 entries (wild_shape animal ×5, plant ×5, elemental ×3)
+```
+
+Survival 19 ranks + 4 (WIS 18) = 23. Knowledge (nature) 19 ranks + 1 (INT 12) + **2 synergy from
+Survival** = 22 — real shipped SRD synergy data reaching a real total for the first time. 13 forms,
+not 14, is correct at 16th: `wild_shape:elemental:huge` arrives at 20th.
+
+**Grig** (racial HD only, zero skill ranks) — the clearest demonstration of what was broken:
+
+```
+skills (ranks): {}
+skillBonuses:   { search: 2, spot: 2, listen: 2, jump: 8 }
+skillTotals:    { search: 2, spot: 4, listen: 4, jump: 3 }
+slAs: Entangle 3/day DC 13 | Pyrotechnics 3/day DC 14 | Ventriloquism 3/day DC 13
+      Disguise Self 3/day (no DC) | Invisibility (Self Only) 3/day (no DC)
+```
+
+Jump +3 is +8 racial −5 (STR 6). Before this run those four racial bonuses affected nothing a user
+could see, and the three save DCs were stored and never shown.
+
+**Builder prerender** — `Show non-PC races (5)`, correctly counting the five private-pack null-LA
+races, and no initialization errors in the page or the app log. (The `blazor-error-ui` div in the
+HTML is the framework's always-present hidden error slot, not an error.)
+
+### What could not be verified this way
+
+The sheet's own markup — the five-column skill table, the grouped Capabilities card, the `— DC N`
+suffix, the Languages line and the "no sanctioned LA" badge — is behind the interactive Blazor
+circuit. The **data** behind every one of them is asserted by unit tests and confirmed through the
+API above, and the components compile, but the rendered markup itself is untested. Worth one manual
+click-through: build a druid, view the sheet, and toggle "show non-PC races" in the builder.
+
+---
+
+## Summary
+
+| task | status | commit |
+|---|---|---|
+| 1 — skill totals, synergies, skill bonuses | done | `e9a8a99` |
+| 2 — dangling domain spell refs + integrity guard | done | `a8b200a` |
+| 3 — builder offers non-playable races | done | `dde7a86` |
+| 4 — surface write-only state on the sheet | done | `6fd16aa` |
+| 5 — languages (5a + 5c) | done | `12a7412` |
+| 5b — race automatic languages | **skipped** — SRD mirror absent | — |
+
+```
+step 0:  Failed: 0, Passed: 495, Skipped: 11, Total: 506
+final:   Failed: 0, Passed: 547, Skipped: 11, Total: 558
+```
+
+52 tests added, none removed, nothing weakened, no gate loosened. Skipped count is unchanged at 11 —
+the same `PcgImportRegression` / `PcgReconstructionTests` methods that skip for want of
+`PCGEN_CHARACTERS_PATH`. `UPDATE_PCG_BASELINE=1` was never run; `test-reports/` was never touched.
+
+### Ranked follow-ups this run found and did not do
+
+1. **Backfill the 345 missing `domain:` keys on the spell side** (Task 2). The domain spell picker
+   reads the spell-side key, so most domains offer an empty spell list. Mechanical and derivable
+   from data already in the repo; needs its own task because it touches ~300 public spell files.
+2. **A prerequisite that can match a skill category** — `skill:type_perform`,
+   `skill:type_<ability>`. Disguise Spell and ten epic feats are unenterable without it.
+3. **Define `skill:speak_language`** — 9 classes list it as a class skill; nothing defines it. Needs
+   its key ability from a source.
+4. **Re-run `audit-agent-api`** (Task 3). `/api/content/races` still lists every race unfiltered and
+   returns only `id`/`name`/`description`, so it cannot express the PC/non-PC distinction at all —
+   an agent building through the API meets the original trap. `RaceCatalog` is placed where that
+   endpoint can adopt it.
+5. **Armor check penalty on skill totals** (Task 1). `SkillDefinition.ArmorCheckPenalty` and
+   `ArmorProfile`'s penalty value both already exist; only the wiring is missing.
+6. **Extract the SRD half-dragon template** (Task 2). Dragon Disciple's "cannot already be a
+   half-dragon" restriction has nothing to test against.
+7. **5b, on a machine with the SRD mirror** — race language schema field, backfill, and the
+   `extract-race` skill update.
