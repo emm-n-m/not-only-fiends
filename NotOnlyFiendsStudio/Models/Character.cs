@@ -113,8 +113,12 @@ public class CharacterSheet
     public int BAB { get; set; }
     public SaveSet Saves { get; set; } = new();
     public List<string> Feats { get; set; } = new();
+    /// <summary>Whole ranks per skill. See <see cref="SkillTotals"/> for the number rolled.</summary>
     public Dictionary<string, int> Skills { get; set; } = new();
     public Dictionary<string, int> SkillBonuses { get; set; } = new();
+    public Dictionary<string, int> SkillSynergyBonuses { get; set; } = new();
+    /// <summary>Ranks + key ability modifier + granted bonuses + synergies, per skill.</summary>
+    public Dictionary<string, int> SkillTotals { get; set; } = new();
     public List<GrantedAbility> Abilities { get; set; } = new();
     public Dictionary<string, int> Counters { get; set; } = new();
     public List<SLA> SLAs { get; set; } = new();
@@ -148,6 +152,8 @@ public class CharacterSheet
         Feats = state.Feats,
         Skills = state.SkillHalfRanks.ToDictionary(kv => kv.Key, kv => kv.Value / 2),
         SkillBonuses = state.SkillBonuses,
+        SkillSynergyBonuses = state.SkillSynergyBonuses,
+        SkillTotals = state.SkillTotals,
         Abilities = state.Abilities,
         Counters = state.Counters,
         SLAs = state.SLAs,

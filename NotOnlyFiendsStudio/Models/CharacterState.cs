@@ -51,6 +51,17 @@ public class CharacterState
     public int MaxHalfRanks { get; set; }
     /// <summary>Racial/misc skill bonuses (separate from ranks). Keyed by skill ID.</summary>
     public Dictionary<string, int> SkillBonuses { get; set; } = new();
+    /// <summary>
+    /// Synergy bonuses (5 ranks in X → +2 on Y), computed by the skill tail pass. Kept apart from
+    /// <see cref="SkillBonuses"/> so that dictionary keeps meaning "what content granted".
+    /// </summary>
+    public Dictionary<string, int> SkillSynergyBonuses { get; set; } = new();
+    /// <summary>
+    /// The number a player actually rolls: whole ranks + key ability modifier + SkillBonuses +
+    /// SkillSynergyBonuses. Computed by the tail pass, so valid only after evaluation finishes.
+    /// Armor check penalty, untrained-use restrictions and situational modifiers are not applied.
+    /// </summary>
+    public Dictionary<string, int> SkillTotals { get; set; } = new();
 
     // Feats
     public List<string> Feats { get; set; } = new();

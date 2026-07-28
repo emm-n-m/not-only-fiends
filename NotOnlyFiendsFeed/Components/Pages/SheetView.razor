@@ -149,17 +149,24 @@ else if (_state != null && _character != null)
                 <div class="card mb-3">
                     <div class="card-header">Skills (@_state.UnspentSkillPoints unspent pts)</div>
                     <div class="card-body">
-                        @if (_state.SkillHalfRanks.Any())
+                        @if (_state.SkillTotals.Any())
                         {
                             <table class="table table-sm">
-                                <thead><tr><th>Skill</th><th>Ranks</th></tr></thead>
+                                <thead><tr><th>Skill</th><th>Ranks</th><th>Ability</th><th>Misc</th><th>Total</th></tr></thead>
                                 <tbody>
-                                    @foreach (var (skill, halfRanks) in _state.SkillHalfRanks.OrderBy(kv => kv.Key))
+                                    @foreach (var skill in _state.SkillTotals.Keys.OrderBy(id => SkillName(id), StringComparer.OrdinalIgnoreCase))
                                     {
                                         var skillDef = _registry.GetAllSkills().FirstOrDefault(s => s.Id == skill);
+                                        var misc = _state.SkillBonuses.GetValueOrDefault(skill)
+                                                   + _state.SkillSynergyBonuses.GetValueOrDefault(skill);
+                                        var total = _state.SkillTotals[skill];
+                                        var abilityMod = total - (_state.SkillHalfRanks.GetValueOrDefault(skill) / 2) - misc;
                                         <tr>
                                             <td title="@(skillDef?.Description ?? "")">@(skillDef?.Name ?? skill) @(_state.ClassSkills.Contains(skill) ? "(class)" : "")</td>
-                                            <td>@(halfRanks / 2.0)</td>
+                                            <td>@(_state.SkillHalfRanks.GetValueOrDefault(skill) / 2.0)</td>
+                                            <td>@FormatSigned(abilityMod)</td>
+                                            <td title="@MiscBreakdown(skill)">@FormatSigned(misc)</td>
+                                            <td><strong>@FormatSigned(total)</strong></td>
                                         </tr>
                                     }
                                 </tbody>
@@ -332,6 +339,23 @@ else if (_state != null && _character != null)
 }
 
 @code {
+    private static string FormatSigned(int value) => value >= 0 ? $"+{value}" : value.ToString();
+
+    private string SkillName(string skillId) =>
+        _registry.GetAllSkills().FirstOrDefault(s => s.Id == skillId)?.Name ?? skillId;
+
+    // Tooltip on the Misc column: separates what content granted from what synergies added,
+    // so a player can see why a skill is higher than their ranks explain.
+    private string MiscBreakdown(string skillId)
+    {
+        var parts = new List<string>();
+        var granted = _state!.SkillBonuses.GetValueOrDefault(skillId);
+        var synergy = _state.SkillSynergyBonuses.GetValueOrDefault(skillId);
+        if (granted != 0) parts.Add($"{FormatSigned(granted)} racial/class");
+        if (synergy != 0) parts.Add($"{FormatSigned(synergy)} synergy");
+        return string.Join(", ", parts);
+    }
+
     private string FormatCounter(string key, int value) => key switch
     {
         "sneak_attack_dice" => $"Sneak Attack +{value}d6",

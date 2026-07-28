@@ -244,8 +244,68 @@ public class ReplayStudio
         // creation), so this step skips the class and leaves the stacked value in place.
         FinalizeRacialSpellcasting(ctx, race);
 
+        // 8. Tail pass — skill synergies and skill totals. Must run last: it reads the final
+        // ability scores, which equipment (step 5) can still move.
+        FinalizeSkills(state);
+
         return state;
     }
+
+    /// <summary>
+    /// Computes skill synergies and skill totals once ranks, bonuses and ability scores are final.
+    ///
+    /// A tail pass rather than per-tick for the same reason <see cref="FinalizeRacialSpellcasting"/>
+    /// is one: a character who crosses 5 ranks at 7th level would otherwise get an order-dependent
+    /// answer depending on when the synergy happened to be evaluated.
+    ///
+    /// Synergies key off <em>ranks</em>, not totals, so they cannot chain — one pass is exact and
+    /// no iteration to a fixed point is needed. Multiple synergies into the same skill do stack:
+    /// Diplomacy legitimately receives three separate +2s (Bluff, Sense Motive, Knowledge
+    /// (nobility)), so they are summed rather than deduplicated.
+    /// </summary>
+    private void FinalizeSkills(CharacterState state)
+    {
+        state.SkillSynergyBonuses.Clear();
+        state.SkillTotals.Clear();
+
+        // Whole ranks: half-ranks halved, truncating. The half-rank representation is how
+        // cross-class ranks are stored (CharacterState.SkillHalfRanks).
+        int WholeRanks(string skillId) => state.SkillHalfRanks.GetValueOrDefault(skillId) / 2;
+
+        foreach (var skill in _content.GetAllSkills())
+        {
+            if (skill.Synergies.Count == 0 || WholeRanks(skill.Id) < SynergyRankThreshold)
+                continue;
+
+            foreach (var synergy in skill.Synergies)
+            {
+                state.SkillSynergyBonuses.TryAdd(synergy.TargetSkillId, 0);
+                state.SkillSynergyBonuses[synergy.TargetSkillId] += synergy.Bonus;
+            }
+        }
+
+        // Total every skill the character has any reason to show: ranks, a granted bonus, or a
+        // synergy. Skills with none of the three are left out, matching what the sheet lists today.
+        var skillIds = new HashSet<string>(state.SkillHalfRanks.Keys);
+        skillIds.UnionWith(state.SkillBonuses.Keys);
+        skillIds.UnionWith(state.SkillSynergyBonuses.Keys);
+
+        foreach (var skillId in skillIds)
+        {
+            var abilityMod = 0;
+            if (_content.TryGetSkill(skillId, out var def) && def != null
+                && Enum.TryParse<Ability>(def.KeyAbility, ignoreCase: true, out var keyAbility))
+                abilityMod = AbilityScoreSet.Modifier(state.AbilityScores.GetScore(keyAbility));
+
+            state.SkillTotals[skillId] = WholeRanks(skillId)
+                                         + abilityMod
+                                         + state.SkillBonuses.GetValueOrDefault(skillId)
+                                         + state.SkillSynergyBonuses.GetValueOrDefault(skillId);
+        }
+    }
+
+    /// <summary>Whole ranks in the source skill needed before a synergy applies (SRD: 5).</summary>
+    private const int SynergyRankThreshold = 5;
 
     /// <summary>
     /// Seeds state.Spellcasting entries for any GrantRacialSpellcasting on the race whose
