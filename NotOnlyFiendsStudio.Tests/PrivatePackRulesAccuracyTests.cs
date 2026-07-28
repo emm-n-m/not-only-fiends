@@ -210,6 +210,61 @@ public class PrivatePackRulesAccuracyTests
         Assert.Equal(state.TotalHD, state.ECL);
     }
 
+    // Fiendish Codex I pp. 88-90. The extraction had invented 23 of these 54 slots,
+    // substituting plausible SRD spells; every wrong slot was an SRD-spell slot while every
+    // FC1-native one was right. Re-extracted 2026-07-28 from the domain blocks.
+    [RequiresPrivatePacksTheory]
+    [InlineData("domain:corruption", "doom,blindness_deafness,contagion,morality_undone,feeblemind,pox,insanity,befoul,despoil")]
+    [InlineData("domain:demonic", "demonflesh,demoncall,demon_wings,dimensional_anchor,planar_binding_lesser,planar_binding,fiendish_clarity,planar_binding_greater,gate")]
+    [InlineData("domain:entropy", "cause_fear,vision_of_entropy,ray_of_exhaustion,fear,waves_of_fatigue,disintegrate,insanity,scintillating_pattern,abyssal_rift")]
+    [InlineData("domain:fury", "true_strike,bulls_strength,rage,divine_power,shout,song_of_discord,abyssal_frenzy,shout_greater,abyssal_frenzy_mass")]
+    [InlineData("domain:ooze", "grease,web,poison,rusting_grasp,oozepuppet,transmute_rock_to_mud,slime_wave,befoul,implosion")]
+    [InlineData("domain:temptation", "charm_person,beckoning_call,suggestion,charm_monster,dominate_person,suggestion_mass,soul_link,sympathy,dominate_monster")]
+    public void FiendishCodex1Domains_HaveTheBookSpellList(string domainId, string expected)
+    {
+        var domain = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable().GetDomain(domainId);
+        var actual = string.Join(",", Enumerable.Range(1, 9)
+            .Select(lv => domain.BonusSpells[lv].Replace("spell:", "")));
+        Assert.Equal(expected, actual);
+    }
+
+    // Five of the six granted powers were a different power than the book's — Corruption
+    // carried the SRD Destruction domain's smite, Fury carried barbarian rage. Asserting a
+    // distinguishing phrase rather than the full prose: enough to fail if the wrong power
+    // returns, without pinning wording.
+    [RequiresPrivatePacksTheory]
+    [InlineData("domain:corruption", "hardness")]      // attack an object and ignore its hardness
+    [InlineData("domain:demonic", "natural weapons")]  // +1 profane on unarmed/natural attacks
+    [InlineData("domain:entropy", "sonic")]            // bolt of Abyssal entropy, half sonic
+    [InlineData("domain:fury", "target of your fury")]
+    [InlineData("domain:ooze", "rebuke")]
+    [InlineData("domain:temptation", "gender")]
+    public void FiendishCodex1Domains_GrantTheBookPower(string domainId, string phrase)
+    {
+        var domain = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable().GetDomain(domainId);
+        var granted = domain.GrantedPermabuffs.OfType<GrantAbility>().Single().Ability;
+        Assert.Contains(phrase, $"{domain.Description} {granted.Description}",
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    // Every domain bonus spell must resolve to a real spell. domain:fury 2 and 6 pointed at
+    // "spell:bull_s_strength(_mass)" and domain:ooze 2 at "spell:melf_s_acid_arrow", none of
+    // which exist — dangling references grant nothing and nothing else in the suite catches
+    // them. (The same class of breakage exists in the public packs; see TODO §1.)
+    [RequiresPrivatePacksFact]
+    public void FiendishCodexDomains_ReferenceOnlyRealSpells()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        var dangling = registry.GetAllDomains()
+            .SelectMany(d => d.BonusSpells.Select(kv => (d.Id, Level: kv.Key, SpellId: kv.Value)))
+            .Where(x => x.Id is "domain:corruption" or "domain:demonic" or "domain:entropy"
+                            or "domain:fury" or "domain:ooze" or "domain:temptation" or "domain:diabolic")
+            .Where(x => !registry.TryGetSpell(x.SpellId, out _))
+            .Select(x => $"{x.Id}[{x.Level}] -> {x.SpellId}")
+            .ToList();
+        Assert.Empty(dangling);
+    }
+
     // FC2 78: "Infernal Mien (Ex): … +2 racial bonus on Intimidate checks." Was prose
     // on a GrantAbility only, so it never reached computed skill totals (P3 pattern).
     [RequiresPrivatePacksFact]

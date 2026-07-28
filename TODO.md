@@ -63,6 +63,36 @@ data to disambiguate). Regressions: `AirElemental_HasGoodReflexSave`,
   saves) but permanently **unverifiable against source**: `cosmicDescryer.html` has no
   attack or save columns at all. Treat as best-effort; a future mismatch here is not
   necessarily a regression.
+### Dangling domain spell references in the public packs — HIGH
+
+Found 2026-07-28 while re-extracting the Fiendish Codex domains. **11 domain bonus-spell slots
+across 11 public-pack domains point at spell ids that do not exist**, so those domains silently
+grant no bonus spell at that level. Nothing in the test suite catches a dangling reference.
+Every one is an id-naming mismatch with a spell that *is* present — almost certainly fallout
+from §5's id unification or §7's spell split renaming the spells without updating the domains:
+
+| domain | slot | broken reference | real id |
+|---|---|---|---|
+| `domain:strength` | 2 | `spell:bull_s_strength` | `spell:bulls_strength` |
+| `domain:strength` | 7 | `spell:bigby_s_grasping_hand` | `spell:grasping_hand` |
+| `domain:strength` | 8 | `spell:bigby_s_clenched_fist` | `spell:clenched_fist` |
+| `domain:strength` | 9 | `spell:bigby_s_crushing_hand` | `spell:crushing_hand` |
+| `domain:magic` | 9 | `spell:mordenkainen_s_disjunction` | `spell:mages_disjunction` |
+| `domain:travel` | 7 | `spell:greater_teleport` | `spell:teleport_greater` |
+| `domain:air` / `earth` / `fire` / `water` | 9 | `spell:elemental_swarm_<element>` | `spell:elemental_swarm` |
+| `domain:chaos` / `evil` / `good` / `law` | 9 | `spell:summon_monster_ix_<alignment>` | `spell:summon_monster_ix` |
+
+Eight of these are core SRD domains, so the blast radius is any cleric using them. The first
+six are mechanical renames. The element/alignment variants need a decision first: is
+`elemental_swarm` one spell whose element is chosen at casting (current content says yes), or
+should there be four entries? Same question for `summon_monster_ix`. **Add a loader-level or
+test-level guard for dangling content references at the same time** — this class of breakage
+is invisible today, and the equivalent private-pack bug (`domain:fury` 2 →
+`spell:bull_s_strength`) was correct-per-the-book and still broken, so a content audit alone
+would not have found it. A guard now exists for the Fiendish Codex domains only
+(`FiendishCodexDomains_ReferenceOnlyRealSpells`); generalising it is blocked on fixing the 11
+above, since it would fail immediately.
+
 - **Skill synergies unimplemented** (found 2026-07-28 by the strict-deserialization
   test). `srd_core/skills/srd.json` carries structured synergy data on 9 skills
   (5 ranks in X → +2 on Y), now preserved on `SkillDefinition.Synergies`, but no
@@ -149,11 +179,14 @@ Use the `verify-content` skill. Tier 1 (all 48 drivers in the public packs) is *
     `{EXTRA_PACKS_PATH}/test-reports/fc_pdf_audit_2026-07-28.md`. All 114 items covered.
     Spells (42/42) and racial HD (5/5) fully clean; FC1's five demon races clean on every
     stated field. Nothing applied yet — the fixes, in suggested order:
-    - **All six FC1 domains are substantially wrong** — 5 of 6 granted powers are a different
-      power than the book's, and 23 of 54 bonus-spell slots name the wrong spell. Every
-      correct spell already exists in `srd_core`, so these are invented substitutions, not
-      fallbacks; every wrong slot is an SRD-spell slot, every FC1-native slot is right.
-      Re-extract pp. 88–90 rather than patching 28 entries. FC2's one domain is perfect.
+    - ~~**All six FC1 domains are substantially wrong** — 5 of 6 granted powers are a
+      different power than the book's, and 23 of 54 bonus-spell slots name the wrong spell.~~
+      **Re-extracted 2026-07-28** from pp. 88–90: 5 powers replaced, 23 slots corrected, all
+      54 verified to resolve. Every wrong slot had been an SRD-spell slot while every
+      FC1-native one was right — invented substitutions, not fallbacks. FC2's one domain was
+      already perfect. 13 assertions added. Also fixed three **dangling** references found in
+      passing (`domain:fury` 2/6, `domain:ooze` 2); the same class of bug in the public packs
+      is now its own §1 entry.
     - Three one-line fixes: `class:hellfire_warlock` BAB `poor`→`average` (Table 3–3 reads
       +0/+1/+2); `class:soulguard`'s `CanCastSpellLevel` missing `castingType: Divine` (null
       matches any caster, so a wizard qualifies); `feat:ordered_chaos` wrongly tagged
