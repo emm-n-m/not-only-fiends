@@ -359,7 +359,8 @@ public class ReplayStudio
         state.RaceId = race.Id;
         state.Type = race.Type;
         state.Size = race.Size;
-        state.LevelAdjustment = race.LevelAdjustment;
+        // Null LA (source never priced this as a PC race) contributes 0 to ECL.
+        state.LevelAdjustment = race.LevelAdjustment ?? 0;
 
         foreach (var subtype in race.Subtypes)
             state.Subtypes.Add(subtype);

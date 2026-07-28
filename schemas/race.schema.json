@@ -269,9 +269,9 @@
           ]
         },
         "levelAdjustment": {
-          "type": "integer",
+          "type": ["integer", "null"],
           "minimum": 0,
-          "description": "Level adjustment (LA). 0 for standard races."
+          "description": "Level adjustment (LA). 0 for standard playable races (Human, Elf). Use null when the source never prices the creature as a PC race — 3.5 signals PC-legality by printing a Level Adjustment at all, so its absence is meaningful and is not the same claim as 0. Null contributes 0 to ECL. Still required: state the intent explicitly rather than omitting the field."
         },
         "bonusFeats": {
           "type": "integer",

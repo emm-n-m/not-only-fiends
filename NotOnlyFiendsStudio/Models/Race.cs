@@ -10,7 +10,11 @@ public class RaceDefinition
     public Size Size { get; set; }
     public Dictionary<MovementMode, int> Speeds { get; set; } = new();
     public AbilityScoreSet? AbilityModifiers { get; set; }
-    public int LevelAdjustment { get; set; }
+    // Nullable so that "playable at no cost" (0, e.g. Human) is distinguishable from
+    // "the source never priced this as a PC race" (null, e.g. the Fiendish Codex demons —
+    // 3.5 signals PC-legality by printing a Level Adjustment at all). Null contributes 0
+    // to ECL; it is a provenance statement, not a different number.
+    public int? LevelAdjustment { get; set; }
     public int BonusFeats { get; set; }
     public int BonusSkillPointsPerHD { get; set; }
 

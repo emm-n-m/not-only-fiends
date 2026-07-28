@@ -39,7 +39,15 @@ Dispatch on the argument:
    - Hyperlinked skills (`<a href="skillsAll.html#search">Search</a>`) give canonical skill IDs — the anchor fragment matches our snake_case skill IDs (prefix with `skill:` for the content field).
    - "Automatic Languages / Bonus Languages" → flavor only (no engine field yet).
    - "Favored Class" → flavor only (favored-class mechanic isn't modeled).
-5. **Estimate level adjustment** — not in the SRD HTML for core races (LA 0). For monster-as-races, use the explicit `Level Adjustment` line; absence means LA 0.
+5. **Transcribe level adjustment — never estimate it.** Core SRD races are LA 0. For
+   monster-as-races, copy the explicit `Level Adjustment` line. **If the source prints no
+   Level Adjustment, write `null`, not 0.** In 3.5 a printed LA is what marks a creature as
+   PC-legal, so its absence is a real statement ("this was never priced as a PC race") and is
+   a different claim from 0 ("playable at no cost", like a Human). Null contributes 0 to ECL,
+   so this costs nothing mechanically and keeps the provenance honest. Do not infer an LA from
+   an "Advancement: by character class" or "Favored Class" line — those are NPC-advancement
+   fields that appear on plenty of unplayable monsters. If a value is wanted for play, that is
+   a house rule for the user to make per race, not an extraction output.
 6. **Racial HD** — only for monster/psionic races that list Hit Dice. Derive as in step 7 below.
 7. **Extract racial HD driver** (if any) — for each race with racial HD:
    - Class skills from the race's Skills line or inferred from type (outsider/dragon/etc.).
