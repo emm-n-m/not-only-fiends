@@ -1072,6 +1072,7 @@ public class ReplayStudio
     {
         "fighter_bonus" => feat != null
             && (feat.Type == FeatType.FighterBonus || feat.Tags.Contains(FighterBonusTag)),
+        "metamagic" => feat?.Type == FeatType.Metamagic,
         _ => false
     };
 

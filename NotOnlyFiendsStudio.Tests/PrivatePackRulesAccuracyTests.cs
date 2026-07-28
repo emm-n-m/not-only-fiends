@@ -40,4 +40,38 @@ public class PrivatePackRulesAccuracyTests
         Assert.Equal(8, SkillPrereq("class:arcane_hierophant", "skill:knowledge_arcana").Value);
         Assert.Equal(8, SkillPrereq("class:arcane_hierophant", "skill:knowledge_nature").Value);
     }
+
+    // Class line 10: DR:10/Cold Iron or Good (enchantment_classes_35e.lst); template
+    // line: BONUS:SKILL|Listen,Spot|8|TYPE=Racial (enchantment_templates.lst:8) —
+    // these were prose-only before the P3 fix pass.
+    [RequiresPrivatePacksFact]
+    public void DarkTemptress_LevelTenGrantsStructuredDrAndTemplateGrantsListenSpot()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+
+        var dr = ((HDDriver)registry.GetDriver("class:dark_temptress")).LevelPermabuffs[10]
+            .OfType<GrantDR>().Single();
+        Assert.Equal(10, dr.Value);
+        Assert.Equal("cold iron or good", dr.BypassedBy);
+
+        var listenSpot = registry.GetTemplate("template:dark_temptress_succubized")
+            .CreationPermabuffs.OfType<GrantSkillBonus>()
+            .Where(b => b.Value == 8)
+            .Select(b => b.SkillId)
+            .ToHashSet();
+        Assert.Superset(new HashSet<string> { "skill:listen", "skill:spot" }, listenSpot);
+    }
+
+    // BONUS:ABILITYPOOL|Blood Hexer Feat|1 at 3/7/10, restricted via
+    // ABILITYCATEGORY:Blood Hexer Feat ... TYPE:Metamagic (curses_abilitycategories.lst)
+    [RequiresPrivatePacksFact]
+    public void BloodHexer_BonusFeatSlotsAreMetamagicOnly()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        var slots = ((HDDriver)registry.GetDriver("class:blood_hexer")).LevelPermabuffs
+            .SelectMany(kv => kv.Value.OfType<GrantFeatSlot>())
+            .ToList();
+        Assert.Equal(3, slots.Count);
+        Assert.All(slots, s => Assert.Equal("metamagic", s.Restriction));
+    }
 }
