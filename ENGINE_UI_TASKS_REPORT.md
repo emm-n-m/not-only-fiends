@@ -44,7 +44,7 @@ These are the only numbers anything below is compared against.
 |---|---|---|---|
 | 1 — skill totals, synergies, skill bonuses | **done** | 509 passed / 11 skipped / 0 failed | |
 | 2 — dangling domain spell refs + integrity guard | **done** | 512 passed / 11 skipped / 0 failed | |
-| 3 — builder offers non-playable races | not started | | |
+| 3 — builder offers non-playable races | **done** | 523 passed / 11 skipped / 0 failed | |
 | 4 — surface write-only state on the sheet | not started | | |
 | 5 — languages | not started | | |
 
@@ -204,3 +204,55 @@ cannot drift apart again.
 - **`elemental_swarm` and `summon_monster_ix` are each genuinely one spell.** Re-confirmed rather
   than assumed: the element/alignment is a casting-time choice, no per-element or per-alignment
   spell exists in any pack, and none should.
+
+---
+
+## Task 3 — the builder offered every race, playable or not — DONE
+
+### What changed
+
+- **`Studio/RaceCatalog.cs`** (new) — `IsSanctionedPcRace`, `ForPicker`, `NonPcMarker`,
+  `DescribeLevelAdjustment`. Put in the Studio project, not the Blazor layer, so the rule is
+  unit-testable (the test project has no bUnit, so nothing in a `.razor` file can be asserted) and
+  so the API can apply the same rule later.
+- **`BuilderView.razor`** — the picker now feeds through `ForPicker`; non-PC races are hidden by
+  default behind a "Show non-PC races (N)" checkbox, are suffixed "— non-PC" when shown, and carry a
+  tooltip explaining that the source printed no Level Adjustment for them.
+- **`SheetView.razor`** — a null-LA race now shows a "no sanctioned LA" badge. Previously the sheet
+  printed `(LA +N)` only when `N > 0`, so null and `LA +0` rendered identically.
+- **`RaceCatalogTests.cs`** (new) — 9 tests.
+
+### Judgment calls
+
+- **Badge plus toggle, not a hard filter**, as the brief prefers — the builder is also used to build
+  companions and monsters, and removing those races outright would break that workflow.
+- **`ForPicker` takes an `alwaysIncludeId`.** Not in the brief, but necessary: `SearchSelect`
+  reverts its text to a matching item on blur (`SearchSelect.razor:115-128`), so opening an existing
+  companion character whose own race was filtered out would have silently changed that character's
+  race. The currently-selected race is always in the list.
+- **The sheet reads the `RaceDefinition`, not `state.LevelAdjustment`.** The latter coalesces null
+  to 0 at `ReplayEngine.ApplyRace` (correctly — null contributes 0 to ECL), so by the time it
+  reaches the sheet the distinction is gone. No engine change was needed; the sheet already holds
+  the registry.
+- **The toggle does not mark the character dirty.** It changes what the list shows, not the
+  character, so it deliberately does not call `OnCharacterChanged`.
+
+### Counts, as asked
+
+**0 of 214 bundled-pack races are null-LA** — every public race states a real Level Adjustment, as
+the brief expected. So on a machine with no private packs the filter is a visible no-op and the
+checkbox reads "Show non-PC races (0)". `EveryBundledRace_StatesALevelAdjustment` pins that, so a
+future public pack that adds an unpriced race is noticed rather than silently hidden.
+
+The five real null-LA races (`race:ekolid`, `race:juvenile_nabassu`, `race:armanite`,
+`race:yochlol`, `race:lilitu`) are all in the private `fiendish_codex_1` pack, which is present on
+this machine, so they are asserted directly behind `[RequiresPrivatePacksFact]` **and** the
+synthetic-fixture tests cover the filter on machines without it.
+
+### Not done — worth knowing
+
+`audit-agent-api` should be re-run now that a filter exists, as TODO §8 says: the API's `/races`
+endpoint (`AgentApiService.GetRaces`) still lists every race unfiltered, so an agent building a
+character through the API meets the original trap even though a human in the builder no longer does.
+`RaceCatalog` is deliberately placed where that endpoint can use it. Not done here because the
+brief scopes Task 3 to the builder and the sheet.

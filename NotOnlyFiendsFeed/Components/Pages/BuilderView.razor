@@ -88,13 +88,20 @@ else
                 <div class="col-md-3">
                     <label class="form-label">Race</label>
                     <SearchSelect TItem="RaceDefinition"
-                                  Items="_races"
+                                  Items="@RaceCatalog.ForPicker(_races, _showNonPcRaces, _character.RaceId)"
                                   Value="@_character.RaceId"
                                   ValueChanged="(v) => { _character.RaceId = v ?? _character.RaceId; OnCharacterChanged(); }"
-                                  DisplaySelector="@(r => r.Name)"
+                                  DisplaySelector="@(r => r.Name + RaceCatalog.NonPcMarker(r))"
                                   ValueSelector="@(r => r.Id)"
-                                  TitleSelector="@(r => r.Description)"
+                                  TitleSelector="@(r => RaceCatalog.IsSanctionedPcRace(r) ? r.Description : $"Not sanctioned as a player-character race by its source — no Level Adjustment is printed for it. {r.Description}")"
                                   Placeholder="Search races..." />
+                    <div class="form-check form-check-inline mt-1">
+                        <input class="form-check-input" type="checkbox" id="show-non-pc-races"
+                               checked="@_showNonPcRaces" @onchange="OnShowNonPcRacesChanged" />
+                        <label class="form-check-label small text-muted" for="show-non-pc-races">
+                            Show non-PC races (@_nonPcRaceCount)
+                        </label>
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Templates</label>
@@ -1141,6 +1148,12 @@ else
     private List<CompanionBuild>? _companionBuilds;
     private ReplayStudio _engine = null!;
     private List<RaceDefinition> _races = new();
+    // Monster, companion and creature races the source never priced as PC options are hidden by
+    // default — they were previously offered as character choices with nothing marking them, which
+    // is a discoverability trap on the first step of character creation. Not removed outright:
+    // the builder is also used to construct companions and monsters.
+    private bool _showNonPcRaces;
+    private int _nonPcRaceCount;
     private List<TemplateDriver> _templates = new();
     private List<Driver> _drivers = new();
     private List<FeatDefinition> _feats = new();
@@ -1180,6 +1193,7 @@ else
             var registry = Content.Registry;
             _engine = Content.ReplayStudio;
             _races = registry.GetAllRaces().ToList();
+            _nonPcRaceCount = _races.Count(r => !RaceCatalog.IsSanctionedPcRace(r));
             _templates = registry.GetAllTemplates().ToList();
             _drivers = registry.GetAllDrivers().ToList();
             _addHdDriverId = _drivers.FirstOrDefault()?.Id ?? "class:fighter";
@@ -1604,6 +1618,11 @@ else
         }
         return featId;
     }
+
+    // Purely a display toggle — it widens the picker's list and does not touch the character,
+    // so it deliberately does not call OnCharacterChanged.
+    private void OnShowNonPcRacesChanged(ChangeEventArgs e) =>
+        _showNonPcRaces = e.Value is true;
 
     private void OnAlignmentChanged(ChangeEventArgs e)
     {

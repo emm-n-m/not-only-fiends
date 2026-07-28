@@ -37,7 +37,19 @@ else if (_state != null && _character != null)
                     <strong>Size:</strong> @_state.Size |
                     <strong>HD:</strong> @_state.TotalHD |
                     <strong>ECL:</strong> @_state.ECL
-                    @if (_state.LevelAdjustment > 0) { <span> (LA +@_state.LevelAdjustment)</span> }
+                    @{
+                        // Reads the race rather than state.LevelAdjustment, which coalesces null to
+                        // 0 and so cannot tell "no sanctioned LA" from "LA +0".
+                        var laText = RaceCatalog.DescribeLevelAdjustment(_raceDefinition);
+                    }
+                    @if (_raceDefinition is { LevelAdjustment: null })
+                    {
+                        <span class="badge bg-warning text-dark ms-1" title="Its source never printed a Level Adjustment for this race, so it was not sanctioned as a player-character option. Contributes 0 to ECL.">@laText</span>
+                    }
+                    else if (_state.LevelAdjustment > 0)
+                    {
+                        <span> (@laText)</span>
+                    }
                 </p>
                 <p>
                     <strong>Classes:</strong>
@@ -378,6 +390,7 @@ else if (_state != null && _character != null)
     private ReplayStudio _engine = null!;
     private ContentRegistry _registry = null!;
     private int _viewHD = 1;
+    private RaceDefinition? _raceDefinition;
 
     protected override async Task OnInitializedAsync()
     {
@@ -400,6 +413,7 @@ else if (_state != null && _character != null)
 
             _viewHD = _character.Ticks.Count;
             _state = _engine.Evaluate(_character, upToHD: _viewHD);
+            _raceDefinition = _registry.GetAllRaces().FirstOrDefault(r => r.Id == _character.RaceId);
         }
         catch (Exception ex)
         {
