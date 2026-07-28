@@ -1,8 +1,8 @@
 # Engine & UI work order — unattended dev-machine run
 
 A self-contained brief for an agent running on the **dev machine** without interactive
-approval. Every task here is scoped so it can be completed and verified with **only what is in
-this repository** — no private packs, no PCGen corpus, no source PDFs, no SRD mirror.
+approval. Every task here is scoped so it can be completed and verified from the repositories
+alone — none of it requires the PCGen LSTs or the source PDFs.
 
 Source of the findings: TODO §8 and TODO §1, produced by the 2026-07-27 LST audit and the
 2026-07-28 Fiendish Codex PDF audit. Read TODO §8 before starting; it has the reasoning behind
@@ -10,25 +10,52 @@ each item. This file is the executable version of it.
 
 ---
 
-## Environment — read first
+## PREREQUISITE — both repositories must be current
 
-This machine is **missing** the following, and that is expected, not a fault to repair:
+The tests in this repo assert against content in the **private packs repo**
+(`not-only-fiends-deceit`). The two move together, and a mismatch produces a large number of
+confusing failures that are **not** yours to fix.
 
-| absent | consequence |
-|---|---|
-| `EXTRA_PACKS_PATH` (private packs) | ~23 `[RequiresPrivatePacks*]` test methods **skip**. That is correct. |
-| `PCGEN_CHARACTERS_PATH` (54 `.pcg` corpus) | `PcgImportRegression` and `PcgReconstructionTests` **skip**. |
-| `PCGEN_DATA_PATH` (PCGen LSTs) | content audits are impossible here. Do not attempt any. |
-| `SOURCE_PDFS_PATH` (Fiendish Codex PDFs) | as above. |
-| `NotOnlyFiendsStudio/Content/srd_html/` (SRD mirror) | may or may not be present; it is gitignored. **Check before Task 5b**, and skip that sub-task if absent. |
+Before starting:
 
-Therefore:
+```bash
+git -C <this repo>        log --oneline -1
+git -C <private packs>    log --oneline -1     # if present
+```
 
-- **A green suite here does not mean the private packs are fine.** Skipped ≠ passed. Do not
-  treat a skip as a problem, and **never** remove or weaken a `[RequiresPrivatePacks*]` gate to
-  make something run.
-- Expect roughly **40 skipped** tests and ~730 passing. If the *passing* count drops relative
-  to the baseline you record in step 0, you broke something.
+The private packs clone must include the Fiendish Codex audit work (`2e1329e` or later). If it
+does not — or if `git status` shows either repo behind its remote — **stop and report**. Do not
+"fix" failing `[RequiresPrivatePacks*]` assertions by editing tests or content: they are
+telling you the two checkouts disagree.
+
+## Environment — detect, don't assume
+
+Capability varies by machine. **Run this first and record the output**, then read the table:
+
+```bash
+sed -n '1,20p' .env 2>/dev/null || echo "no .env"
+ls -d "$(grep -oP '(?<=^EXTRA_PACKS_PATH=).*' .env 2>/dev/null)" 2>/dev/null && echo "private packs: PRESENT"
+ls -d "$(grep -oP '(?<=^PCGEN_CHARACTERS_PATH=).*' .env 2>/dev/null)" 2>/dev/null && echo "pcg corpus: PRESENT"
+ls NotOnlyFiendsStudio/Content/srd_html/ 2>/dev/null | head -1 && echo "srd mirror: PRESENT"
+```
+
+| resource | if present | if absent |
+|---|---|---|
+| `EXTRA_PACKS_PATH` (private packs) | ~23 `[RequiresPrivatePacks*]` methods **run**. Task 3 can use the real null-LA races instead of a fixture. | they **skip**; that is correct, not a fault |
+| `PCGEN_CHARACTERS_PATH` (54 `.pcg`) | `PcgImportRegression` + `PcgReconstructionTests` run. **Still never regenerate the baseline** — see ground rule 4. | they skip |
+| `NotOnlyFiendsStudio/Content/srd_html/` (gitignored) | Task 5b is possible | **skip Task 5b entirely** and say so |
+| `PCGEN_DATA_PATH` / `SOURCE_PDFS_PATH` | not needed by any task here | fine — attempt no content audits either way |
+
+Rules that hold regardless:
+
+- **Skipped ≠ passed.** Never remove or weaken a `[RequiresPrivatePacks*]` /
+  `[RequiresPcgenCharacters*]` gate to make something run.
+- **The step-0 numbers are your only baseline.** Counts differ hugely depending on what is
+  present above, so do not compare against any number quoted elsewhere — including in this
+  file. If *passing* drops relative to your own step 0, you broke something.
+- If the private packs are present, `PcgImportRegression` becomes a genuine safety net for
+  Tasks 1 and 2, which change computed values. Treat a failure there as a real regression and
+  investigate it rather than working around it.
 
 ## Ground rules
 
@@ -157,11 +184,13 @@ also used to construct companions and monsters, and removing them outright may b
 workflow. Also make `SheetView.razor:40` distinguish "no sanctioned LA" from "LA +0", which it
 currently cannot (it prints `(LA +N)` only when `> 0`).
 
-**Acceptance:** a component or unit test asserting null-LA races are excluded from the default
-list and included when the toggle is on. Note in the report how many races in the bundled packs
-are null-LA (expected: 0 in public packs — the null ones live in the private Fiendish Codex
-pack, so this may only be testable with a synthetic fixture; construct one rather than skipping
-the test).
+**Acceptance:** a test asserting null-LA races are excluded from the default list and included
+when the toggle is on. The five real null-LA races (`race:ekolid`, `race:juvenile_nabassu`,
+`race:armanite`, `race:yochlol`, `race:lilitu`) live in the **private** `fiendish_codex_1` pack:
+if it is present, assert against them behind `[RequiresPrivatePacks*]` **and** add an ungated
+test over a synthetic fixture so the filter stays covered on machines without it. If it is
+absent, the synthetic fixture alone is sufficient. Note in the report how many bundled-pack
+races are null-LA (expect 0 — every public race states a real LA).
 
 ---
 
