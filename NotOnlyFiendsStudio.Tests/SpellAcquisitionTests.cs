@@ -88,8 +88,16 @@ public class SpellAcquisitionTests
 
     // --- Wizard spellbook budget ---
     //
-    // SRD: a wizard begins with every 0-level spell plus three 1st-level spells, one more per
-    // point of Intelligence bonus, and adds two of any castable level at each new wizard level.
+    // SRD: "A wizard begins play with a spellbook containing all 0-level wizard spells (except
+    // those from her prohibited school or schools, if any) plus three 1st-level spells of your
+    // choice. For each point of Intelligence bonus the wizard has, the spellbook holds one
+    // additional 1st-level spell of your choice. At each new wizard level, she gains two new
+    // spells of any spell level or levels that she can cast (based on her new wizard level) for
+    // her spellbook."
+    //
+    // The starting spells are specifically 1st level, which needs no separate rule here: at 1st
+    // level that is the only level a wizard can cast, and the existing max-spell-level check
+    // already rejects anything above it. So a flat pool of "spells of level 1+" is equivalent.
 
     [Theory]
     [InlineData(1, 0, 3)]    // 1st level, INT 10: the base three
@@ -537,6 +545,57 @@ public class WizardSchoolTests
 
         Assert.Contains(state.Warnings, w =>
             w.Message.Contains("specializes in evocation") && w.Message.Contains("prohibited"));
+    }
+
+    [Fact]
+    public void AUniversalistHoldsEveryCantrip()
+    {
+        // SRD: "a spellbook containing all 0-level wizard spells (except those from her prohibited
+        // school or schools, if any)". With no prohibited schools there is no exception to apply.
+        var state = Evaluate(specialty: null);
+        var spells = Content.Value.GetAllSpells().ToList();
+
+        var held = WizardSchools.AutomaticCantrips(spells, "class:wizard", state).ToList();
+        var allCantrips = spells.Where(s => s.ClassLevels.TryGetValue("class:wizard", out var l) && l == 0).ToList();
+
+        Assert.NotEmpty(allCantrips);
+        Assert.Equal(allCantrips.Count, held.Count);
+    }
+
+    [Fact]
+    public void ASpecialistLosesTheCantripsOfItsGivenUpSchools()
+    {
+        // The part "all 0-level spells are automatic" glossed over: a specialist's free cantrips
+        // are reduced by exactly the ones from the schools it gave up.
+        var state = Evaluate("evocation", new[] { "enchantment", "necromancy" });
+        var spells = Content.Value.GetAllSpells().ToList();
+
+        var held = WizardSchools.AutomaticCantrips(spells, "class:wizard", state).ToList();
+
+        Assert.DoesNotContain(held, s => s.School is "enchantment" or "necromancy");
+        Assert.Contains(held, s => s.School == "evocation");
+
+        var lost = spells.Count(s => s.ClassLevels.TryGetValue("class:wizard", out var l) && l == 0
+                                     && s.School is "enchantment" or "necromancy");
+        Assert.True(lost > 0, "expected at least one 0-level wizard spell in the given-up schools");
+
+        var universalist = Evaluate(specialty: null);
+        var all = WizardSchools.AutomaticCantrips(spells, "class:wizard", universalist).Count();
+        Assert.Equal(all - lost, held.Count);
+    }
+
+    [Fact]
+    public void UniversalCantripsSurviveAnySpecialization()
+    {
+        // arcane_mark and prestidigitation are 0-level universal spells, so no specialist loses them.
+        var state = Evaluate("evocation", new[] { "enchantment", "necromancy" });
+
+        var held = WizardSchools.AutomaticCantrips(Content.Value.GetAllSpells(), "class:wizard", state)
+            .Select(s => s.Id)
+            .ToList();
+
+        Assert.Contains("spell:arcane_mark", held);
+        Assert.Contains("spell:prestidigitation", held);
     }
 
     [Fact]

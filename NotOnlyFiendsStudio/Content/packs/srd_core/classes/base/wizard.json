@@ -256,7 +256,7 @@
         "ability": {
           "id": "spellbooks",
           "name": "Spellbooks",
-          "description": "Must study spellbook each day to prepare spells. Starts with all 0-level spells plus three 1st-level spells, and one additional 1st-level spell per point of Intelligence bonus. Adds two new spells of any castable level at each new wizard level."
+          "description": "Must study spellbook each day to prepare spells. Begins with all 0-level wizard spells except those of any prohibited school, plus three 1st-level spells and one additional 1st-level spell per point of Intelligence bonus. Gains two new spells of any castable spell level at each new wizard level."
         }
       }
     ],

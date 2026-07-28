@@ -503,22 +503,26 @@ else
                                                    SpellsKnown was non-null, so a spellbook caster could add the same spell twice. *@
                                                 var alreadyChosen = chosenForList.Select(s => s.SpellId).ToHashSet();
 
+                                                @* A specialist wizard can never learn, write down or cast a spell
+                                                   from a school it gave up, so those are not offered at all. *@
+                                                var barredSchools = _tickProhibitedSchools.GetValueOrDefault(index)
+                                                    ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
                                                 if (isSpellbook)
                                                 {
                                                     var inBook = chosenForList.Count(s => s.SpellLevel > 0);
+                                                    var freeCantrips = _tickAutomaticCantrips.GetValueOrDefault(index);
                                                     <div class="mt-1 small">
                                                         <span class="text-muted">Spellbook:</span>
                                                         <span class="@(inBook > sc.SpellbookLimit ? "text-danger fw-bold" : "text-muted")">
                                                             @inBook / @sc.SpellbookLimit spells of level 1+
                                                         </span>
-                                                        <span class="text-muted">— all 0-level spells are in the book automatically.</span>
+                                                        <span class="text-muted">
+                                                            — plus @freeCantrips 0-level spells, held automatically@(barredSchools.Count > 0 ? " (those of given-up schools excluded)" : "").
+                                                        </span>
                                                     </div>
                                                 }
 
-                                                @* A specialist wizard can never learn, write down or cast a spell
-                                                   from a school it gave up, so those are not offered at all. *@
-                                                var barredSchools = _tickProhibitedSchools.GetValueOrDefault(index)
-                                                    ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                                                 if (barredSchools.Count > 0)
                                                 {
                                                     <div class="small text-muted mt-1">
@@ -1244,6 +1248,9 @@ else
     private readonly Dictionary<int, TickWizardSchoolPicks> _tickWizardSchoolPicks = new();
     // Schools given up as of each tick, so the spell dropdowns can exclude them.
     private readonly Dictionary<int, HashSet<string>> _tickProhibitedSchools = new();
+    // 0-level spells a spellbook caster holds for free at each tick — "all of them" only for a
+    // universalist; a specialist loses the cantrips of its given-up schools too.
+    private readonly Dictionary<int, int> _tickAutomaticCantrips = new();
     private List<DomainDefinition> _domains = new();
     private List<ClassFeatureDefinition> _classFeatures = new();
     private List<EquipmentDefinition> _equipmentCatalog = new();
@@ -1346,6 +1353,7 @@ else
         _tickNewCompanionSlots.Clear();
         _tickWizardSchoolPicks.Clear();
         _tickProhibitedSchools.Clear();
+        _tickAutomaticCantrips.Clear();
 
         if (_engine == null || !_character.Ticks.Any())
             return;
@@ -1412,6 +1420,9 @@ else
                     PendingProhibited: prohibitedPending + prohibitedHere);
 
             _tickProhibitedSchools[i] = WizardSchools.ProhibitedSchools(state).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            _tickAutomaticCantrips[i] = state.Spellcasting
+                .Where(kv => kv.Value.Acquisition == SpellAcquisition.Spellbook)
+                .Sum(kv => WizardSchools.AutomaticCantrips(_spells, kv.Key, state).Count());
 
             // Companion slots granted at this tick = slots present now that weren't
             // present in the previous tick's snapshot.

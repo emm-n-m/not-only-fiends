@@ -624,9 +624,27 @@ flat +2 would inflate the character's general Spellcraft total — exactly the s
 case Task 1 put out of scope. `EachSpecializationGrantsAnAbilityDescribingIt` asserts the ability
 exists and that `SkillBonuses` stays clean.
 
-Still unverified, and unchanged by this: the **spellbook formula** (3 + Int bonus at 1st, +2 per
-wizard level) comes from the class's own text as stated by the user, not from a quoted SRD
-paragraph. Isolated in `ReplayStudio.SpellbookSpellsAllowed`.
+4. **The spellbook formula is confirmed, and its one exception was being glossed over.** The SRD
+   wizard "Spells" paragraph was supplied afterwards:
+
+   > "A wizard begins play with a spellbook containing **all 0-level wizard spells (except those
+   > from her prohibited school or schools, if any)** plus three 1st-level spells of your choice.
+   > For each point of Intelligence bonus the wizard has, the spellbook holds one additional
+   > 1st-level spell of your choice. At each new wizard level, she gains two new spells of any
+   > spell level or levels that she can cast (based on her new wizard level) for her spellbook."
+
+   `3 + max(0, IntMod) + 2 x (level - 1)` matches exactly, so `SpellbookSpellsAllowed` needed no
+   change and nothing here is unverified any more. The starting spells being specifically *1st
+   level* needs no separate rule: at 1st level that is the only level a wizard can cast, and the
+   existing max-spell-level check already rejects anything above it.
+
+   The correction is the cantrips. The first pass said "all 0-level spells are in the book
+   automatically" in three places — the builder, the sheet and the wizard's own class-feature text
+   — which is wrong for a specialist: it loses the cantrips of its given-up schools like at any
+   other level. `WizardSchools.AutomaticCantrips` now computes the real set, both views show the
+   actual count and say when schools are excluded, and the class-feature text was corrected.
+
+No rules values in this work are now unverified.
 
 ### Deliberately not done
 

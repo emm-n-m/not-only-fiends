@@ -65,6 +65,19 @@ public static class WizardSchools
     }
 
     /// <summary>
+    /// The 0-level spells a wizard's spellbook holds without spending any of its budget.
+    ///
+    /// SRD: "A wizard begins play with a spellbook containing all 0-level wizard spells (except
+    /// those from her prohibited school or schools, if any)". So "all cantrips" is not quite the
+    /// rule — a specialist loses the ones from the schools it gave up, exactly as at every other
+    /// spell level.
+    /// </summary>
+    public static IEnumerable<SpellDefinition> AutomaticCantrips(
+        IEnumerable<SpellDefinition> spells, string classId, CharacterState state) =>
+        spells.Where(s => s.ClassLevels.TryGetValue(classId, out var level) && level == 0)
+              .Where(s => !IsProhibited(state, s.School));
+
+    /// <summary>
     /// How many schools a wizard must give up for its chosen specialty.
     ///
     /// SRD: "she must also give up two other schools of magic (unless she chooses to specialize in
