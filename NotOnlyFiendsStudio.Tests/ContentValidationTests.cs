@@ -1,5 +1,6 @@
 using NotOnlyFiendsStudio.Studio;
 using NotOnlyFiendsStudio.Models;
+using NotOnlyFiendsStudio.PcGen;
 
 namespace NotOnlyFiendsStudio.Tests;
 
@@ -75,8 +76,10 @@ public class ContentValidationTests
         // all, so no bow was usable), the net, and the three armor "Extras" rows.
         var registry = TestContentHelper.LoadAllPacks();
 
+        // The four mundane ammunition rows off the weapon table. Magic ammunition (screaming
+        // bolt, slaying/sleep arrows) also lands in this category, so count only the mundane set.
         var ammo = registry.GetAllEquipment()
-            .Where(e => e.Category == EquipmentCategory.Ammunition)
+            .Where(e => e.Category == EquipmentCategory.Ammunition && !e.Tags.Contains("magic"))
             .ToList();
         Assert.Equal(4, ammo.Count);
 
@@ -193,6 +196,116 @@ public class ContentValidationTests
         Assert.True(registry.TryGetEquipment("wondrous:necklace_of_fireballs_type_vii", out var necklace));
         Assert.Equal(8_700 * 100, necklace!.PriceCp);
         Assert.Equal("neck", necklace.Slot);
+    }
+
+    [Fact]
+    public void SrdArmsAndArmor_ReplaceTheRetiredPcgenPack()
+    {
+        // weapons.html, magicItemsAW.html, epicMagicItems.html and epicArtifacts.html, extracted
+        // 2026-07-29 to retire pcgen_srd. That pack's 178 weapon/armor/shield entries carried base
+        // stats only — no enhancement bonuses, no prices for the magic items, no descriptions.
+        var registry = TestContentHelper.LoadAllPacks();
+
+        // The pack is gone: nothing in the catalog may come from a PCGen LST conversion.
+        Assert.DoesNotContain(registry.GetAllEquipment(), e => e.Id == "weapon:flurry_of_blows");
+
+        // --- mundane weapons off Table: Weapons ---
+        Assert.True(registry.TryGetEquipment("weapon:falchion", out var falchion));
+        Assert.Equal(75 * 100, falchion!.PriceCp);
+        Assert.Equal("2d4", falchion.Weapon!.Damage);
+        Assert.Equal(18, falchion.Weapon.CritRangeLow);
+
+        // A double weapon stores its primary head only; the off-head lives in the description.
+        Assert.True(registry.TryGetEquipment("weapon:hammer_gnome_hooked", out var hooked));
+        Assert.Equal("1d8", hooked!.Weapon!.Damage);
+        Assert.True(hooked.Weapon.DoubleWeapon);
+        Assert.Contains("1d4", hooked.Description);
+
+        // The composite bows collapse to one item each — pcgen_srd carried a garbled "+0" twin.
+        Assert.True(registry.TryGetEquipment("weapon:longbow_composite", out var comp));
+        Assert.Equal(110, comp!.Weapon!.RangeFt);
+        Assert.False(registry.TryGetEquipment("weapon:longbow_composite_0", out _));
+
+        // --- special materials are named SRD entries, priced with the material surcharge ---
+        // pcgen_srd priced this at the bare breastplate's 200 gp and never applied the DR.
+        Assert.True(registry.TryGetEquipment("armor:adamantine_breastplate", out var adam));
+        Assert.Equal(10_200 * 100, adam!.PriceCp);
+        Assert.Equal(-3, adam.Armor!.CheckPenalty);   // adamantine is masterwork: -4 lessened by 1
+        Assert.Contains(adam.GrantedPermabuffs, p => p is GrantDR { Value: 2 });
+
+        Assert.True(registry.TryGetEquipment("armor:mithral_shirt", out var mithral));
+        Assert.Equal(1_100 * 100, mithral!.PriceCp);
+        Assert.Equal(6, mithral.Armor!.MaxDex);
+        Assert.Equal(0, mithral.Armor.CheckPenalty);
+        Assert.Equal(10, mithral.Armor.ArcaneFailurePct);
+
+        // --- specific magic armor folds the enhancement into the armor bonus ---
+        Assert.True(registry.TryGetEquipment("armor:celestial_armor", out var celestial));
+        Assert.Equal(22_400 * 100, celestial!.PriceCp);
+        Assert.Equal(8, celestial.Armor!.ArmorBonus);      // +3 on chainmail's +5
+        Assert.Equal(ArmorKind.Light, celestial.Armor.Kind);
+
+        // A tiered price clause becomes one item per tier.
+        foreach (var (id, gp) in new[] { ("weapon:luck_blade_0_wishes", 22_060),
+                                         ("weapon:luck_blade_1_wish", 62_360),
+                                         ("weapon:luck_blade_2_wishes", 102_660),
+                                         ("weapon:luck_blade_3_wishes", 142_960) })
+        {
+            Assert.True(registry.TryGetEquipment(id, out var blade), id);
+            Assert.Equal(gp * 100, blade!.PriceCp);
+        }
+
+        // --- epic items ---
+        // Dragonskin armor is +5 full plate (heavy), not the medium armor pcgen_srd recorded.
+        Assert.True(registry.TryGetEquipment("armor:dragonskin_armor_red", out var dragonskin));
+        Assert.Equal(564_550 * 100, dragonskin!.PriceCp);
+        Assert.Equal(ArmorKind.Heavy, dragonskin.Armor!.Kind);
+        Assert.Equal(13, dragonskin.Armor.ArmorBonus);
+        Assert.Contains(dragonskin.GrantedPermabuffs, p => p is GrantImmunity { Immunity: "fire" });
+
+        // All ten colour variants of both dragon items are present.
+        foreach (var colour in new[] { "black", "blue", "brass", "bronze", "copper",
+                                       "gold", "green", "red", "silver", "white" })
+        {
+            Assert.True(registry.TryGetEquipment($"armor:dragonskin_armor_{colour}", out _), colour);
+            Assert.True(registry.TryGetEquipment($"shield:bulwark_of_the_great_dragon_{colour}", out _), colour);
+        }
+
+        // Artifacts have no market price in the SRD, so they store 0 rather than a guess.
+        Assert.True(registry.TryGetEquipment("weapon:axe_of_the_dwarvish_lords", out var axe));
+        Assert.Equal(0, axe!.PriceCp);
+
+        // PCGen modelled a rod's melee attack as a separate weapon; the catalog has one rod.
+        Assert.False(registry.TryGetEquipment("weapon:rod_besiegement", out _));
+        Assert.True(registry.TryGetEquipment("rod:besiegement", out _));
+    }
+
+    [Fact]
+    public void RetiredPcgenEquipmentNames_StillResolveForPcgImport()
+    {
+        // PcgIdMapper resolves equipment by display name, so retiring pcgen_srd could silently
+        // start dropping items on import. Every LST-style name that pack used to answer must
+        // still resolve, either by name in srd_core or through an explicit override.
+        var registry = TestContentHelper.LoadAllPacks();
+        var mapper = new PcgIdMapper();
+
+        string[] names =
+        {
+            "Shield, Light Wood", "Shield, Light Metal", "Shield, Heavy Wood",
+            "Shield, Heavy Metal", "Shield, Tower Wood", "Shieldbash (Light)",
+            "Shieldbash (Heavy)", "Sword, Short", "Shuriken", "Longbow (Composite)",
+            "Shortbow (Composite)", "Cold Iron Longsword", "Silver Dagger",
+            "Rod (Besiegement)", "Rod of the Black Wyrm", "Staff (Fiery Power)",
+            "Demon Armor Claw Attack", "Flurry of Blows",
+            "Armor Spikes", "Gauntlet, Locked", "Sun Blade", "Elven Chain", "Oathbow",
+        };
+
+        foreach (var name in names)
+        {
+            var id = mapper.MapEquipment(name, registry);
+            Assert.False(string.IsNullOrEmpty(id), $"'{name}' no longer resolves to any item");
+            Assert.True(registry.TryGetEquipment(id!, out _), $"'{name}' resolves to missing id '{id}'");
+        }
     }
 
     [Fact]

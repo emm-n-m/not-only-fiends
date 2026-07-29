@@ -1,0 +1,970 @@
+[
+  {
+    "id": "weapon:gauntlet",
+    "name": "Gauntlet",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 1,
+    "priceCp": 200,
+    "description": "This metal glove lets you deal lethal damage rather than nonlethal damage with unarmed strikes. A strike with a gauntlet is otherwise considered an unarmed attack. The cost and weight given are for a single gauntlet. Medium and heavy armors (except breastplate) come with gauntlets.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d3",
+      "critMultiplier": 2,
+      "damageType": "bludgeoning",
+      "light": true,
+      "proficiency": "simple"
+    },
+    "tags": ["simple", "unarmed"]
+  },
+  {
+    "id": "weapon:dagger_punching",
+    "name": "Dagger, Punching",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 1,
+    "priceCp": 200,
+    "description": "A dagger with a blade set perpendicular to a crosswise grip, driven forward with the fist.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d4",
+      "critMultiplier": 3,
+      "damageType": "piercing",
+      "light": true,
+      "proficiency": "simple"
+    },
+    "tags": ["simple", "light"]
+  },
+  {
+    "id": "weapon:gauntlet_spiked",
+    "name": "Gauntlet, Spiked",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 1,
+    "priceCp": 500,
+    "description": "Your opponent cannot use a disarm action to disarm you of spiked gauntlets. The cost and weight given are for a single gauntlet. An attack with a spiked gauntlet is considered an armed attack.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d4",
+      "critMultiplier": 2,
+      "damageType": "piercing",
+      "light": true,
+      "proficiency": "simple"
+    },
+    "tags": ["simple", "light"]
+  },
+  {
+    "id": "weapon:mace_light",
+    "name": "Mace, Light",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 500,
+    "description": "A light mace.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 2,
+      "damageType": "bludgeoning",
+      "light": true,
+      "proficiency": "simple"
+    },
+    "tags": ["simple", "light"]
+  },
+  {
+    "id": "weapon:sickle",
+    "name": "Sickle",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 600,
+    "description": "A sickle can be used to make trip attacks. If you are tripped during your own trip attempt, you can drop the sickle to avoid being tripped.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 2,
+      "damageType": "slashing",
+      "light": true,
+      "proficiency": "simple"
+    },
+    "tags": ["simple", "light", "trip"]
+  },
+  {
+    "id": "weapon:morningstar",
+    "name": "Morningstar",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 6,
+    "priceCp": 800,
+    "description": "A one-handed spiked club. Deals bludgeoning and piercing damage together.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 2,
+      "damageType": "bludgeoning+piercing",
+      "proficiency": "simple"
+    },
+    "tags": ["simple"]
+  },
+  {
+    "id": "weapon:shortspear",
+    "name": "Shortspear",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 3,
+    "priceCp": 100,
+    "description": "A shortspear is small enough to wield one-handed. It may also be thrown.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 2,
+      "rangeFt": 20,
+      "damageType": "piercing",
+      "thrown": true,
+      "proficiency": "simple"
+    },
+    "tags": ["simple", "thrown"]
+  },
+  {
+    "id": "weapon:spear",
+    "name": "Spear",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 6,
+    "priceCp": 200,
+    "description": "A spear can be thrown. If you use a ready action to set a spear against a charge, you deal double damage on a successful hit against a charging character.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 3,
+      "rangeFt": 20,
+      "damageType": "piercing",
+      "twoHanded": true,
+      "thrown": true,
+      "proficiency": "simple"
+    },
+    "tags": ["simple", "thrown", "set_vs_charge"]
+  },
+  {
+    "id": "weapon:dart",
+    "name": "Dart",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 0,
+    "priceCp": 50,
+    "description": "A small thrown piercing weapon. Weighs 1/2 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d4",
+      "critMultiplier": 2,
+      "rangeFt": 20,
+      "damageType": "piercing",
+      "ranged": true,
+      "thrown": true,
+      "proficiency": "simple"
+    },
+    "tags": ["simple", "thrown"]
+  },
+  {
+    "id": "weapon:axe_throwing",
+    "name": "Axe, Throwing",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 800,
+    "description": "A light axe balanced for throwing.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 2,
+      "rangeFt": 10,
+      "damageType": "slashing",
+      "light": true,
+      "thrown": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "light", "thrown"]
+  },
+  {
+    "id": "weapon:hammer_light",
+    "name": "Hammer, Light",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 100,
+    "description": "A light hammer, usable in melee or thrown.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d4",
+      "critMultiplier": 2,
+      "rangeFt": 20,
+      "damageType": "bludgeoning",
+      "light": true,
+      "thrown": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "light", "thrown"]
+  },
+  {
+    "id": "weapon:handaxe",
+    "name": "Handaxe",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 3,
+    "priceCp": 600,
+    "description": "A one-handed axe light enough for off-hand use.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 3,
+      "damageType": "slashing",
+      "light": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "light"]
+  },
+  {
+    "id": "weapon:kukri",
+    "name": "Kukri",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 800,
+    "description": "A heavy, curved, inward-angled blade.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d4",
+      "critRangeLow": 18,
+      "critMultiplier": 2,
+      "damageType": "slashing",
+      "light": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "light"]
+  },
+  {
+    "id": "weapon:pick_light",
+    "name": "Pick, Light",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 3,
+    "priceCp": 400,
+    "description": "A light war pick.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d4",
+      "critMultiplier": 4,
+      "damageType": "piercing",
+      "light": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "light"]
+  },
+  {
+    "id": "weapon:sap",
+    "name": "Sap",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 100,
+    "description": "A weighted cosh. Deals nonlethal damage rather than lethal damage.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 2,
+      "damageType": "bludgeoning",
+      "light": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "light", "nonlethal"]
+  },
+  {
+    "id": "weapon:shieldbash_light",
+    "name": "Shield, Light",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "Bashing with a light shield instead of using it for defense. Cost and weight are 'special' in the SRD weapon table because both are those of the shield itself (shield:light_wooden or shield:light_steel). If you use your shield to bash, you lose its AC bonus until your next turn.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d3",
+      "critMultiplier": 2,
+      "damageType": "bludgeoning",
+      "light": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "light", "shield"]
+  },
+  {
+    "id": "weapon:spiked_armor",
+    "name": "Spiked Armor",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "Armor outfitted with spikes, which can deal damage in a grapple or as a separate off-hand attack. Cost and weight are 'special' in the SRD weapon table because both are those of the armor plus its spikes; the spikes themselves are gear:armor_spikes.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 2,
+      "damageType": "piercing",
+      "light": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "light", "armor_accessory"]
+  },
+  {
+    "id": "weapon:flail",
+    "name": "Flail",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 5,
+    "priceCp": 800,
+    "description": "With a flail, you get a +2 bonus on opposed attack rolls made to disarm an enemy (including the roll to avoid being disarmed if such an attempt fails). You can also use this weapon to make trip attacks. If you are tripped during your own trip attempt, you can drop the flail to avoid being tripped.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 2,
+      "damageType": "bludgeoning",
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "disarm", "trip"]
+  },
+  {
+    "id": "weapon:pick_heavy",
+    "name": "Pick, Heavy",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 6,
+    "priceCp": 800,
+    "description": "A heavy war pick.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 4,
+      "damageType": "piercing",
+      "proficiency": "martial"
+    },
+    "tags": ["martial"]
+  },
+  {
+    "id": "weapon:shieldbash_heavy",
+    "name": "Shield, Heavy",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "Bashing with a heavy shield instead of using it for defense. Cost and weight are 'special' in the SRD weapon table because both are those of the shield itself (shield:heavy_wooden or shield:heavy_steel). If you use your shield to bash, you lose its AC bonus until your next turn.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d4",
+      "critMultiplier": 2,
+      "damageType": "bludgeoning",
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "shield"]
+  },
+  {
+    "id": "weapon:trident",
+    "name": "Trident",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 1500,
+    "description": "This weapon can be thrown. If you use a ready action to set a trident against a charge, you deal double damage on a successful hit against a charging character.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 2,
+      "rangeFt": 10,
+      "damageType": "piercing",
+      "thrown": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "thrown", "set_vs_charge"]
+  },
+  {
+    "id": "weapon:falchion",
+    "name": "Falchion",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 8,
+    "priceCp": 7500,
+    "description": "A heavy, single-edged two-handed sword.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "2d4",
+      "critRangeLow": 18,
+      "critMultiplier": 2,
+      "damageType": "slashing",
+      "twoHanded": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "two_handed"]
+  },
+  {
+    "id": "weapon:glaive",
+    "name": "Glaive",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 10,
+    "priceCp": 800,
+    "description": "A glaive has reach. You can strike opponents 10 feet away with it, but you can't use it against an adjacent foe.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d10",
+      "critMultiplier": 3,
+      "damageType": "slashing",
+      "twoHanded": true,
+      "reach": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "two_handed", "reach"]
+  },
+  {
+    "id": "weapon:greatclub",
+    "name": "Greatclub",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 8,
+    "priceCp": 500,
+    "description": "A massive two-handed club.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d10",
+      "critMultiplier": 2,
+      "damageType": "bludgeoning",
+      "twoHanded": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "two_handed"]
+  },
+  {
+    "id": "weapon:flail_heavy",
+    "name": "Flail, Heavy",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 10,
+    "priceCp": 1500,
+    "description": "With a heavy flail, you get a +2 bonus on opposed attack rolls made to disarm an enemy (including the roll to avoid being disarmed if such an attempt fails). You can also use this weapon to make trip attacks. If you are tripped during your own trip attempt, you can drop the flail to avoid being tripped.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d10",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "damageType": "bludgeoning",
+      "twoHanded": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "two_handed", "disarm", "trip"]
+  },
+  {
+    "id": "weapon:guisarme",
+    "name": "Guisarme",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 12,
+    "priceCp": 900,
+    "description": "A guisarme has reach. You can strike opponents 10 feet away with it, but you can't use it against an adjacent foe. You can also use it to make trip attacks. If you are tripped during your own trip attempt, you can drop the guisarme to avoid being tripped.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "2d4",
+      "critMultiplier": 3,
+      "damageType": "slashing",
+      "twoHanded": true,
+      "reach": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "two_handed", "reach", "trip"]
+  },
+  {
+    "id": "weapon:lance",
+    "name": "Lance",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 10,
+    "priceCp": 1000,
+    "description": "A lance deals double damage when used from the back of a charging mount. It has reach, so you can strike opponents 10 feet away with it, but you can't use it against an adjacent foe. While mounted, you can wield a lance with one hand.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 3,
+      "damageType": "piercing",
+      "twoHanded": true,
+      "reach": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "two_handed", "reach", "mounted"]
+  },
+  {
+    "id": "weapon:ranseur",
+    "name": "Ranseur",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 12,
+    "priceCp": 1000,
+    "description": "A ranseur has reach. You can strike opponents 10 feet away with it, but you can't use it against an adjacent foe. With a ranseur, you get a +2 bonus on opposed attack rolls made to disarm an opponent (including the roll to avoid being disarmed if such an attempt fails).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "2d4",
+      "critMultiplier": 3,
+      "damageType": "piercing",
+      "twoHanded": true,
+      "reach": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "two_handed", "reach", "disarm"]
+  },
+  {
+    "id": "weapon:scythe",
+    "name": "Scythe",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 10,
+    "priceCp": 1800,
+    "description": "A scythe can be used to make trip attacks. If you are tripped during your own trip attempt, you can drop the scythe to avoid being tripped.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "2d4",
+      "critMultiplier": 4,
+      "damageType": "piercing+slashing",
+      "twoHanded": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "two_handed", "trip"]
+  },
+  {
+    "id": "weapon:longbow_composite",
+    "name": "Longbow, Composite",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 3,
+    "priceCp": 10000,
+    "description": "You need at least two hands to use a bow, regardless of its size. You can use a composite longbow while mounted. All composite bows are made with a particular strength rating; if your Strength bonus is less than the strength rating of the bow, you take a -2 penalty on attacks with it. The default composite longbow requires a Strength modifier of +0 or higher to use with proficiency. A composite longbow can be made with a high strength rating, letting you add your Strength bonus to damage up to the maximum bonus indicated for the bow; each point of Strength bonus granted by the bow adds 100 gp to its cost. For purposes of weapon proficiency and similar feats, a composite longbow is treated as if it were a longbow.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 3,
+      "rangeFt": 110,
+      "damageType": "piercing",
+      "ranged": true,
+      "twoHanded": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "bow", "composite"]
+  },
+  {
+    "id": "weapon:shortbow_composite",
+    "name": "Shortbow, Composite",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 7500,
+    "description": "You need at least two hands to use a bow, regardless of its size. You can use a composite shortbow while mounted. All composite bows are made with a particular strength rating; if your Strength bonus is lower than the strength rating of the bow, you take a -2 penalty on attacks with it. The default composite shortbow requires a Strength modifier of +0 or higher to use with proficiency. A composite shortbow can be made with a high strength rating, letting you add your Strength bonus to damage up to the maximum bonus indicated for the bow; each point of Strength bonus granted by the bow adds 75 gp to its cost. For purposes of weapon proficiency and similar feats, a composite shortbow is treated as if it were a shortbow.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 3,
+      "rangeFt": 70,
+      "damageType": "piercing",
+      "ranged": true,
+      "twoHanded": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "bow", "composite"]
+  },
+  {
+    "id": "weapon:kama",
+    "name": "Kama",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 200,
+    "description": "The kama is a special monk weapon. This designation gives a monk wielding a kama special options. You can use a kama to make trip attacks. If you are tripped during your own trip attempt, you can drop the kama to avoid being tripped.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 2,
+      "damageType": "slashing",
+      "light": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "light", "monk", "trip"]
+  },
+  {
+    "id": "weapon:nunchaku",
+    "name": "Nunchaku",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 200,
+    "description": "The nunchaku is a special monk weapon. This designation gives a monk wielding a nunchaku special options. With a nunchaku, you get a +2 bonus on opposed attack rolls made to disarm an enemy (including the roll to avoid being disarmed if such an attempt fails).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 2,
+      "damageType": "bludgeoning",
+      "light": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "light", "monk", "disarm"]
+  },
+  {
+    "id": "weapon:sai",
+    "name": "Sai",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 1,
+    "priceCp": 100,
+    "description": "With a sai, you get a +4 bonus on opposed attack rolls made to disarm an enemy (including the roll to avoid being disarmed if such an attempt fails). The sai is a special monk weapon. This designation gives a monk wielding a sai special options.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d4",
+      "critMultiplier": 2,
+      "rangeFt": 10,
+      "damageType": "bludgeoning",
+      "light": true,
+      "thrown": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "light", "monk", "thrown", "disarm"]
+  },
+  {
+    "id": "weapon:siangham",
+    "name": "Siangham",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 1,
+    "priceCp": 300,
+    "description": "The siangham is a special monk weapon. This designation gives a monk wielding a siangham special options.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 2,
+      "damageType": "piercing",
+      "light": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "light", "monk"]
+  },
+  {
+    "id": "weapon:sword_bastard",
+    "name": "Sword, Bastard",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 6,
+    "priceCp": 3500,
+    "description": "A bastard sword is too large to use in one hand without special training; thus, it is an exotic weapon. A character can use a bastard sword two-handed as a martial weapon.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d10",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "damageType": "slashing",
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic"]
+  },
+  {
+    "id": "weapon:waraxe_dwarven",
+    "name": "Waraxe, Dwarven",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 8,
+    "priceCp": 3000,
+    "description": "A dwarven waraxe is too large to use in one hand without special training; thus, it is an exotic weapon. A Medium character can use a dwarven waraxe two-handed as a martial weapon, or a Large creature can use it one-handed in the same way. A dwarf treats a dwarven waraxe as a martial weapon even when using it in one hand.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d10",
+      "critMultiplier": 3,
+      "damageType": "slashing",
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic"]
+  },
+  {
+    "id": "weapon:whip",
+    "name": "Whip",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 100,
+    "description": "A whip deals nonlethal damage. It deals no damage to any creature with an armor bonus of +1 or higher or a natural armor bonus of +3 or higher. The whip is treated as a melee weapon with 15-foot reach, though you don't threaten the area into which you can make an attack; unlike most other weapons with reach, you can use it against foes anywhere within your reach (including adjacent foes). Using a whip provokes an attack of opportunity, just as if you had used a ranged weapon. You can make trip attacks with a whip, and you get a +2 bonus on opposed attack rolls made to disarm an opponent. You can use the Weapon Finesse feat with a whip sized for you, even though it isn't a light weapon for you.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d3",
+      "critMultiplier": 2,
+      "damageType": "slashing",
+      "reach": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "reach", "trip", "disarm", "nonlethal", "finesse"]
+  },
+  {
+    "id": "weapon:axe_orc_double",
+    "name": "Axe, Orc Double",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 15,
+    "priceCp": 6000,
+    "description": "An orc double axe is a double weapon dealing 1d8/1d8. You can fight with it as if fighting with two weapons, but if you do, you incur all the normal attack penalties associated with fighting with two weapons, just as if you were using a one-handed weapon and a light weapon. A creature wielding an orc double axe in one hand can't use it as a double weapon - only one end of the weapon can be used in any given round.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 3,
+      "damageType": "slashing",
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "two_handed", "double"]
+  },
+  {
+    "id": "weapon:chain_spiked",
+    "name": "Chain, Spiked",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 10,
+    "priceCp": 2500,
+    "description": "A spiked chain has reach, so you can strike opponents 10 feet away with it. In addition, unlike most other weapons with reach, it can be used against an adjacent foe. You can make trip attacks with the chain, and you get a +2 bonus on opposed attack rolls made to disarm an opponent. You can use the Weapon Finesse feat with a spiked chain sized for you, even though it isn't a light weapon for you.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "2d4",
+      "critMultiplier": 2,
+      "damageType": "piercing",
+      "twoHanded": true,
+      "reach": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "two_handed", "reach", "trip", "disarm", "finesse"]
+  },
+  {
+    "id": "weapon:flail_dire",
+    "name": "Flail, Dire",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 10,
+    "priceCp": 9000,
+    "description": "A dire flail is a double weapon dealing 1d8/1d8. You can fight with it as if fighting with two weapons, but if you do, you incur all the normal attack penalties associated with fighting with two weapons. A creature wielding a dire flail in one hand can't use it as a double weapon. You get a +2 bonus on opposed attack rolls made to disarm an enemy, and can use the weapon to make trip attacks.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 2,
+      "damageType": "bludgeoning",
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "two_handed", "double", "disarm", "trip"]
+  },
+  {
+    "id": "weapon:hammer_gnome_hooked",
+    "name": "Hammer, Gnome Hooked",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 6,
+    "priceCp": 2000,
+    "description": "A gnome hooked hammer is a double weapon. The hammer's blunt head is a bludgeoning weapon that deals 1d6 points of damage (crit x3). Its hook is a piercing weapon that deals 1d4 points of damage (crit x4). You can use either head as the primary weapon; the other head is the offhand weapon. A creature wielding a gnome hooked hammer in one hand can't use it as a double weapon. You can use it to make trip attacks. Gnomes treat gnome hooked hammers as martial weapons.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 3,
+      "damageType": "bludgeoning+piercing",
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "two_handed", "double", "trip"]
+  },
+  {
+    "id": "weapon:sword_two_bladed",
+    "name": "Sword, Two-Bladed",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 10,
+    "priceCp": 10000,
+    "description": "A two-bladed sword is a double weapon dealing 1d8/1d8. You can fight with it as if fighting with two weapons, but if you do, you incur all the normal attack penalties associated with fighting with two weapons, just as if you were using a one-handed weapon and a light weapon. A creature wielding a two-bladed sword in one hand can't use it as a double weapon - only one end of the weapon can be used in any given round.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "damageType": "slashing",
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "two_handed", "double"]
+  },
+  {
+    "id": "weapon:urgrosh_dwarven",
+    "name": "Urgrosh, Dwarven",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 12,
+    "priceCp": 5000,
+    "description": "A dwarven urgrosh is a double weapon. The urgrosh's axe head is a slashing weapon that deals 1d8 points of damage. Its spear head is a piercing weapon that deals 1d6 points of damage. You can use either head as the primary weapon; the other is the off-hand weapon. A creature wielding a dwarven urgrosh in one hand can't use it as a double weapon. If you set an urgrosh against a charge you deal double damage on a hit; the spear head is the part that deals damage. Dwarves treat dwarven urgroshes as martial weapons.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d8",
+      "critMultiplier": 3,
+      "damageType": "piercing+slashing",
+      "twoHanded": true,
+      "doubleWeapon": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "two_handed", "double", "set_vs_charge"]
+  },
+  {
+    "id": "weapon:bolas",
+    "name": "Bolas",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 500,
+    "description": "You can use this weapon to make a ranged trip attack against an opponent. You can't be tripped during your own trip attempt when using a set of bolas. Deals nonlethal damage rather than lethal damage.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d4",
+      "critMultiplier": 2,
+      "rangeFt": 10,
+      "damageType": "bludgeoning",
+      "ranged": true,
+      "thrown": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "thrown", "trip", "nonlethal"]
+  },
+  {
+    "id": "weapon:crossbow_hand",
+    "name": "Crossbow, Hand",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 2,
+    "priceCp": 10000,
+    "description": "You can draw a hand crossbow back by hand. Loading a hand crossbow is a move action that provokes attacks of opportunity. You can shoot, but not load, a hand crossbow with one hand at no penalty. You can shoot a hand crossbow with each hand, but you take a penalty on attack rolls as if attacking with two light weapons.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d4",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "rangeFt": 30,
+      "damageType": "piercing",
+      "ranged": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "crossbow"]
+  },
+  {
+    "id": "weapon:crossbow_repeating_heavy",
+    "name": "Crossbow, Repeating Heavy",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 12,
+    "priceCp": 40000,
+    "description": "The repeating crossbow holds 5 crossbow bolts. As long as it holds bolts, you can reload it by pulling the reloading lever (a free action). Loading a new case of 5 bolts is a full-round action that provokes attacks of opportunity. You must fire the weapon with two hands in order to use the reloading lever, and you must use two hands to load a new case of bolts.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d10",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "rangeFt": 120,
+      "damageType": "piercing",
+      "ranged": true,
+      "twoHanded": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "crossbow"]
+  },
+  {
+    "id": "weapon:crossbow_repeating_light",
+    "name": "Crossbow, Repeating Light",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 6,
+    "priceCp": 25000,
+    "description": "The repeating crossbow holds 5 crossbow bolts. As long as it holds bolts, you can reload it by pulling the reloading lever (a free action). Loading a new case of 5 bolts is a full-round action that provokes attacks of opportunity. You must fire the weapon with two hands in order to use the reloading lever, and you must use two hands to load a new case of bolts.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d8",
+      "critRangeLow": 19,
+      "critMultiplier": 2,
+      "rangeFt": 80,
+      "damageType": "piercing",
+      "ranged": true,
+      "twoHanded": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "crossbow"]
+  },
+  {
+    "id": "weapon:shuriken",
+    "name": "Shuriken (5)",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 0,
+    "priceCp": 100,
+    "description": "A shuriken is a special monk weapon. This designation gives a monk wielding shuriken special options. A shuriken can't be used as a melee weapon. Although they are thrown weapons, shuriken are treated as ammunition for the purposes of drawing them, crafting masterwork or otherwise special versions of them, and what happens to them after they are thrown. Price and weight (1/2 lb.) are for a set of 5.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d2",
+      "critMultiplier": 2,
+      "rangeFt": 10,
+      "damageType": "piercing",
+      "ranged": true,
+      "thrown": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "thrown", "monk", "ammunition"]
+  }
+]

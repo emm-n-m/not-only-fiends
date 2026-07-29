@@ -140,7 +140,7 @@ public class PcgIdMapper
         // exactly (e.g. abbreviations, parenthetical color suffixes). Catalog ID on the right.
         // Material/enhancement/size-variant names PCGen generates via its item customizer —
         // the catalog only carries the base item, so masterwork/material/+N/size are lost on import.
-        ["Masterwork Cold Iron Longsword +2"] = "weapon:longsword",
+        ["Masterwork Cold Iron Longsword +2"] = "weapon:masterwork_cold_iron_longsword",
         ["Sylvan Scimitar +2 (Silver/Wounding)"] = "weapon:sylvan_scimitar",
         ["Oathbow (Small)"] = "weapon:oathbow",
         ["Flail +2 (Heavy/Cold Iron)"] = "weapon:flail",
@@ -168,6 +168,47 @@ public class PcgIdMapper
         ["Staff (Cosmos)"] = "staff:cosmos",
         ["Staff (Domination)"] = "staff:domination",
         ["Rod (Epic Spellcaster)"] = "rod:epic_spellcasting",
+        // LST-style names the retired pcgen_srd pack used to answer. srd_core carries the same
+        // items under their SRD names, so these spellings need an explicit bridge.
+        ["Shield, Light Wood"] = "shield:light_wooden",
+        ["Shield, Light Metal"] = "shield:light_steel",
+        ["Shield, Heavy Wood"] = "shield:heavy_wooden",
+        ["Shield, Heavy Metal"] = "shield:heavy_steel",
+        ["Shield, Tower Wood"] = "shield:tower",
+        ["Shieldbash (Light)"] = "weapon:shieldbash_light",
+        ["Shieldbash (Heavy)"] = "weapon:shieldbash_heavy",
+        ["Sword, Short"] = "weapon:shortsword",
+        ["Shuriken"] = "weapon:shuriken",
+        ["Longbow (Composite)"] = "weapon:longbow_composite",
+        ["Shortbow (Composite)"] = "weapon:shortbow_composite",
+        ["Cold Iron Longsword"] = "weapon:masterwork_cold_iron_longsword",
+        ["Silver Dagger"] = "weapon:masterwork_silver_dagger",
+        // PCGen models a rod's or staff's melee attack as a separate weapon entry; the catalog
+        // carries one item per rod/staff, so both spellings resolve to it.
+        ["Rod (Besiegement)"] = "rod:besiegement",
+        ["Rod (Epic Might)"] = "rod:epic_might",
+        ["Rod (Fortification)"] = "rod:fortification",
+        ["Rod of the Black Wyrm"] = "rod:wyrm_black_copper",
+        ["Rod of the Copper Wyrm"] = "rod:wyrm_black_copper",
+        ["Rod of the White Wyrm"] = "rod:wyrm_white_brass",
+        ["Rod of the Brass Wyrm"] = "rod:wyrm_white_brass",
+        ["Rod of the Green Wyrm"] = "rod:wyrm_green_bronze",
+        ["Rod of the Bronze Wyrm"] = "rod:wyrm_green_bronze",
+        ["Rod of the Blue Wyrm"] = "rod:wyrm_blue_silver",
+        ["Rod of the Silver Wyrm"] = "rod:wyrm_blue_silver",
+        ["Rod of the Red Wyrm"] = "rod:wyrm_red_gold",
+        ["Rod of the Gold Wyrm"] = "rod:wyrm_red_gold",
+        ["Staff (Fiery Power)"] = "staff:fiery_power",
+        ["Staff (Nature's Fury)"] = "staff:natures_fury",
+        ["Staff of Planar Might (Chaotic Outsider Bane)"] = "staff:planar_might",
+        ["Staff of Planar Might (Evil Outsider Bane)"] = "staff:planar_might",
+        ["Staff of Planar Might (Good Outsider Bane)"] = "staff:planar_might",
+        ["Staff of Planar Might (Lawful Outsider Bane)"] = "staff:planar_might",
+        // PCGen splits an item's granted attack into its own equipment row. The catalog folds
+        // each of these into the parent item (as a GrantWeaponLine), so point them at the parent.
+        ["Demon Armor Claw Attack"] = "armor:demon_armor",
+        ["Armor of the Abyssal Horde Claw Attack"] = "armor:armor_of_the_abyssal_horde",
+        ["Flurry of Blows"] = "weapon:unarmed_strike",
     };
 
     // Body-slot labels that PCGen uses in EQUIPSET — translated to the engine's slot vocabulary

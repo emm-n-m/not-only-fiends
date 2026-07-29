@@ -410,8 +410,10 @@ Non-blocking:
   prestige class. One paragraph turns a liability into an invitation to report discrepancies.
 - **Decide the contribution policy** — accepting issues/PRs, or source-available only.
   Worth choosing up front rather than disappointing someone later.
-- **Check whether `pcgen_srd` warrants a PCGen attribution** in the OGL Section 15 list.
-  That pack derives from PCGen's LST files rather than the SRD directly. The existing notices
+- ~~**Check whether `pcgen_srd` warrants a PCGen attribution** in the OGL Section 15 list.~~
+  **Moot as of 2026-07-29 — the pack is deleted.** See the "fully retired" note at the end of
+  this entry. The history below is kept because it records what each pass established.
+  That pack derived from PCGen's LST files rather than the SRD directly. The existing notices
   (SRD, Unearthed Arcana, OGL 1.0a) match the other four packs.
   **Confirmed load-bearing 2026-07-28, so this is a live licensing question, not a formality.**
   The pack is not vestigial gap-filler: 222 of its items exist in no other pack (all the magic
@@ -438,6 +440,75 @@ Non-blocking:
   remaining slice hand-extracted the same way; once it's empty the licensing question disappears
   rather than needing an answer. PCG baseline verifies unchanged (all removed entries were
   already shadowed by priority, so no computed value moved).
+  **2026-07-29 (later): `pcgen_srd` is fully retired — directory deleted, dropped from
+  `content-public.json`.** The remaining 178 `weapon`/`armor`/`shield` entries were hand-extracted
+  from the SRD mirror into three new `srd_core/equipment/` files: `weapons_srd.json` (49 — every
+  mundane row of Table: Weapons that `srd_core` lacked), `magic_armor_weapons.json` (54 — the
+  Specific Armors / Specific Shields / Specific Weapons sections of `magicItemsAW.html`) and
+  `epic_armor_weapons.json` (40 — `epicMagicItems.html` plus three arms-and-armor artifacts from
+  `epicArtifacts.html`). 844 equipment items in `srd_core`, 0 schema errors, no duplicate ids.
+  No PCGen-derived content remains anywhere in the repo. See
+  "Retiring pcgen_srd: what the SRD changed" below for what the swap corrected and what it dropped.
+
+---
+
+### Retiring `pcgen_srd`: what the SRD changed
+
+**The pcgen entries were base stats only.** Every special-material and magic item carried the
+*unmodified base item*: `armor:adamantine_breastplate` was priced at the bare breastplate's 200 gp
+with the full −4 check penalty and no damage reduction (SRD: 10,200 gp, −3, DR 2/−);
+`weapon:stormbrand` was priced at 50 gp (SRD: 235,350 gp); `armor:golem_armor` at 0 gp. None had a
+description, and no armor folded in its enhancement bonus. `armor:dragonskin_armor_*` was recorded
+as *medium* armor when the SRD makes it +5 full plate. The swap is a fidelity gain, not just a
+licensing one.
+
+**Conventions followed (matching the earlier rings/wondrous pass):**
+
+- **Magic armor and shields fold the enhancement bonus into `armor.armorBonus`** — Celestial Armor
+  is `+3 chainmail`, so 8. 3.5e enhancement-to-armor always stacks with the armor bonus and
+  `ArmorProfile` is the only vehicle, so summing is safe.
+- **Magic weapons do *not* model their enhancement bonus.** The engine can carry one only via a
+  `GrantWeaponLine` permabuff, and `ReplayEngine.EvaluateEquipment` auto-derives a second weapon
+  line from `def.Weapon`, so setting both double-counts. Setting only the permabuff would drop the
+  damage badge `BuilderView` renders off `contentDef.Weapon`. Base profile + prose was chosen;
+  **the enhancement bonus is therefore documentation, not mechanics.** Worth revisiting if
+  `EquipmentDefinition` ever grows an `enhancementBonus` field next to `Weapon`.
+- **Magic armor is masterwork**, so its check penalty is the base armor's lessened by 1. Adamantine
+  and mithral include masterwork in their own modifiers rather than stacking a second −1.
+- **An item's granted attack folds into the parent** as a `GrantWeaponLine` — Demon Armor's claws
+  and the Armor of the Abyssal Horde's clawed gauntlets, which pcgen carried as free-standing
+  weapon rows.
+- **Artifacts store `priceCp: 0`** (Golem Armor, Invulnerable Coat, Axe of the Dwarvish Lords); the
+  SRD gives them no market price and a guess would read as transcribed.
+
+**Deliberately not carried forward** (PCGen-generated pseudo-items, not SRD equipment):
+`weapon:flurry_of_blows`, `weapon:boulder` (a giant's thrown rock), `weapon:leshay_weapon` (a
+leShay's innate swords, from the monster entry), the four `*_epic_might` weapon rows (`+8 Battleaxe`
+and friends — what Rod of Epic Might *becomes*), the two claw-attack rows, and the 16
+`weapon:rod_*` / `weapon:staff_*` rows duplicating `srd_core`'s `rod:` / `staff:` items. The two
+composite-bow "+0" twins collapse into one item each. `weapon:sun_blade_bastard` and
+`weapon:sun_blade_short` collapse into `weapon:sun_blade`.
+
+**Also gained** (same SRD sections, absent from pcgen): the four specific magic ammunition entries —
+screaming bolt, slaying arrow, greater slaying arrow, sleep arrow.
+
+**Two judgement calls worth re-checking against a book:**
+
+- Armor of the Celestial Battalion has **no weight in the SRD**. 20 lb. is carried over from
+  Celestial Armor, the non-epic item described in the same "fine and light" terms.
+- Bulwark of the Great Dragon is priced **1,612,970 gp in its description and 1,612,980 gp in the
+  random-item table**. The description's figure is used; both are noted in the item text.
+
+**Not verified on this machine: the PCG import baseline.** `PcgImportRegression` and
+`PcgReconstructionTests` skip here because no `.pcg` corpus is present (`PCGEN_CHARACTERS_PATH`
+unset). `PcgIdMapper` resolves equipment **by display name**, so retiring a pack can silently turn
+a mapped item into a dropped one. Mitigations: the golden report shows **zero** corpus references to
+any `pcgen_srd` equipment id; every LST-style name the pack used to answer now resolves either by
+name in `srd_core` or through a new `EquipmentOverrides` entry; and
+`RetiredPcgenEquipmentNames_StillResolveForPcgImport` pins that. `["Masterwork Cold Iron Longsword
++2"]` was also repointed from `weapon:longsword` to the real
+`weapon:masterwork_cold_iron_longsword`, which **will** move that character's weapon line — expected,
+but it means the baseline needs a re-run and review on a machine that has the corpus.
 
 ---
 
@@ -668,6 +739,14 @@ The residual "missing" on the three mundane pages is almost entirely rules-secti
 (`armor-check-penalty`, `weapon-qualities`), not items — every base weapon, armor and shield
 is present.
 
+**The table above is the morning measurement and now understates three rows.** The later
+`pcgen_srd` retirement pass added 143 items off `weapons.html`, `magicItemsAW.html`,
+`epicMagicItems.html` and `epicArtifacts.html` — in particular it closed the whole
+"magic armor & weapons" row's Specific Armors / Shields / Weapons sections, which were the
+bulk of that page's **86** missing entries. Exact totals: `srd_core` now holds **844**
+equipment items (was 701). The anchor-diff has not been re-run, so the percentages are stale
+rather than wrong; re-run it before quoting a new headline number.
+
 ### Done 2026-07-29
 
 - **Mundane goods & services** — 152 items from tables 2–8 of `goodsAndServices.html` into
@@ -683,6 +762,12 @@ is present.
   Regression: `SrdRingsRodsAndStaffs_Load`.
 - **Wondrous items** — 257 items from `magicItemsWI.html`, the largest batch.
   Regression: `SrdWondrousItems_Load`.
+- **Arms and armor, retiring `pcgen_srd`** — 143 items across `weapons_srd.json` (49),
+  `magic_armor_weapons.json` (54) and `epic_armor_weapons.json` (40), from `weapons.html`,
+  `magicItemsAW.html`, `epicMagicItems.html` and `epicArtifacts.html`. Replaces the last
+  PCGen-derived pack, which is now deleted. Regressions:
+  `SrdArmsAndArmor_ReplaceTheRetiredPcgenPack` and
+  `RetiredPcgenEquipmentNames_StillResolveForPcgImport`.
 
 ### Conventions settled while doing it — the remaining batches should follow these
 
@@ -720,14 +805,20 @@ is present.
 - Wondrous descriptions retain the trailing `School; CL Nth; Craft ...` clause. It is SRD text
   and harmless, but a display layer may want it split into fields.
 
-**Pre-existing content bugs found in passing, not fixed:**
-`pcgen_srd/equipment/srd_equipment_epic.json` has doubled-prefix names —
+**Pre-existing content bugs found in passing — ~~not fixed~~ resolved by deleting the pack:**
+`pcgen_srd/equipment/srd_equipment_epic.json` had doubled-prefix names —
 `"Rod of Rod (Besiegement)"`, `"Rod of Rod (Fortification)"`, `"Staff of Staff (Fiery Power)"`,
-`"Staff of Staff (Nature's Fury)"`. `srd_equipment.json` has garbled composite-bow names —
+`"Staff of Staff (Nature's Fury)"`. `srd_equipment.json` had garbled composite-bow names —
 `"Longbow (Composite) Longbow STR"`, `"Shortbow (Composite +0) Shortbow STR0"`. Same class of
-defect as the garbled LST names fixed in `34a0f3a`. The ids resolve, so these are cosmetic
-rather than dangling.
+defect as the garbled LST names fixed in `34a0f3a`. All eight are gone with the pack; the
+clean PCGen spellings (`"Rod (Besiegement)"`, `"Longbow (Composite)"`, …) are now
+`EquipmentOverrides` entries pointing at the `srd_core` items.
 
-**Remaining order**, by how often a real character touches them: magic armour & weapons (86 —
-the enchantment lines, `+1` through `+5` and the named properties) → intelligent/cursed items
-and artifacts (89) → epic items and artifacts (114) last.
+**Remaining order**, by how often a real character touches them: ~~magic armour & weapons (86 —
+the enchantment lines, `+1` through `+5` and the named properties)~~ *(the specific-item half was
+done in the `pcgen_srd` retirement pass; what is left on that page is the **generic enhancement
+and special-ability lines** — `+1` … `+5` armor/shield/weapon and named properties like `flaming`,
+`keen`, `holy`. Those are modifiers applied to a base item, not enumerable items, so they need a
+schema decision first — the same open question as potions/scrolls/wands above)* →
+intelligent/cursed items and artifacts (89) → the remaining epic items (`epicMagicItemsOther.html`,
+and the non-arms artifacts in `epicArtifacts.html`) last.
