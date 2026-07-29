@@ -92,6 +92,15 @@ public class PcgImportRegression
                     CasterLevels = state == null
                         ? new()
                         : state.Spellcasting.ToDictionary(kv => kv.Key, kv => kv.Value.CasterLevel),
+                    // Sorted: HashSet order is not stable, and an unstable field would diff on
+                    // every run and train us to ignore this report.
+                    Languages = state == null
+                        ? new()
+                        : state.Languages.OrderBy(l => l, StringComparer.Ordinal).ToList(),
+                    SkillTotals = state == null ? new() : new Dictionary<string, int>(state.SkillTotals),
+                    SpellAcquisition = state == null
+                        ? new()
+                        : state.Spellcasting.ToDictionary(kv => kv.Key, kv => kv.Value.Acquisition.ToString()),
                 });
             }
             catch (Exception ex)
@@ -431,6 +440,10 @@ public class PcgImportRegression
         var casterLevelsChanged = DictChanged(b.CasterLevels, f.CasterLevels);
         var allFeatsAdded = f.Feats.Except(b.Feats, StringComparer.OrdinalIgnoreCase).ToList();
         var allFeatsResolved = b.Feats.Except(f.Feats, StringComparer.OrdinalIgnoreCase).ToList();
+        var skillTotalsChanged = DictChanged(b.SkillTotals, f.SkillTotals);
+        var acquisitionChanged = DictChanged(b.SpellAcquisition, f.SpellAcquisition);
+        var languagesAdded = f.Languages.Except(b.Languages, StringComparer.OrdinalIgnoreCase).ToList();
+        var languagesResolved = b.Languages.Except(f.Languages, StringComparer.OrdinalIgnoreCase).ToList();
 
         var anyChange = oldStatus != newStatus
             || warnAdded.Count > 0 || warnResolved.Count > 0
@@ -443,7 +456,9 @@ public class PcgImportRegression
             || raceIdChanged
             || hpChanged || babChanged || savesChanged
             || skillRanksChanged || classLevelsChanged || casterLevelsChanged
-            || allFeatsAdded.Count > 0 || allFeatsResolved.Count > 0;
+            || allFeatsAdded.Count > 0 || allFeatsResolved.Count > 0
+            || skillTotalsChanged || acquisitionChanged
+            || languagesAdded.Count > 0 || languagesResolved.Count > 0;
 
         if (!anyChange) return null;
 
@@ -490,6 +505,14 @@ public class PcgImportRegression
             NewCasterLevels = f.CasterLevels,
             AllFeatsAdded = allFeatsAdded,
             AllFeatsResolved = allFeatsResolved,
+            SkillTotalsChanged = skillTotalsChanged,
+            OldSkillTotals = b.SkillTotals,
+            NewSkillTotals = f.SkillTotals,
+            AcquisitionChanged = acquisitionChanged,
+            OldAcquisition = b.SpellAcquisition,
+            NewAcquisition = f.SpellAcquisition,
+            LanguagesAdded = languagesAdded,
+            LanguagesResolved = languagesResolved,
         };
     }
 
@@ -500,12 +523,13 @@ public class PcgImportRegression
         return a.Fort == b.Fort && a.Ref == b.Ref && a.Will == b.Will;
     }
 
-    private static bool DictChanged(Dictionary<string, int> a, Dictionary<string, int> b)
+    private static bool DictChanged<TValue>(Dictionary<string, TValue> a, Dictionary<string, TValue> b)
+        where TValue : IEquatable<TValue>
     {
         if (a.Count != b.Count) return true;
         foreach (var (key, value) in a)
         {
-            if (!b.TryGetValue(key, out var other) || other != value) return true;
+            if (!b.TryGetValue(key, out var other) || !value.Equals(other)) return true;
         }
         return false;
     }
@@ -574,6 +598,10 @@ public class PcgImportRegression
                 if (c.SkillRanksChanged) WriteDictChange(sb, "Skill ranks", c.OldSkillRanks, c.NewSkillRanks);
                 if (c.ClassLevelsChanged) WriteDictChange(sb, "Class levels", c.OldClassLevels, c.NewClassLevels);
                 if (c.CasterLevelsChanged) WriteDictChange(sb, "Caster levels", c.OldCasterLevels, c.NewCasterLevels);
+                if (c.SkillTotalsChanged) WriteDictChange(sb, "Skill totals", c.OldSkillTotals, c.NewSkillTotals);
+                if (c.AcquisitionChanged) WriteDictChange(sb, "Spell acquisition", c.OldAcquisition, c.NewAcquisition);
+                WriteListChange(sb, "Languages added", c.LanguagesAdded);
+                WriteListChange(sb, "Languages resolved", c.LanguagesResolved);
                 WriteListChange(sb, "Feats added", c.AllFeatsAdded);
                 WriteListChange(sb, "Feats resolved", c.AllFeatsResolved);
                 WriteListChange(sb, "Warnings added", c.WarningsAdded);
@@ -671,7 +699,8 @@ public class PcgImportRegression
         sb.AppendLine($"- **{label}:** `{oldValue}` → `{newValue}`");
     }
 
-    private static void WriteDictChange(StringBuilder sb, string label, Dictionary<string, int> oldDict, Dictionary<string, int> newDict)
+    private static void WriteDictChange<TValue>(StringBuilder sb, string label, Dictionary<string, TValue> oldDict, Dictionary<string, TValue> newDict)
+        where TValue : IEquatable<TValue>
     {
         var keys = oldDict.Keys.Union(newDict.Keys, StringComparer.OrdinalIgnoreCase)
             .OrderBy(k => k, StringComparer.OrdinalIgnoreCase);
@@ -680,7 +709,7 @@ public class PcgImportRegression
         {
             var hasOld = oldDict.TryGetValue(key, out var oldVal);
             var hasNew = newDict.TryGetValue(key, out var newVal);
-            if (hasOld && hasNew && oldVal == newVal) continue;
+            if (hasOld && hasNew && EqualityComparer<TValue>.Default.Equals(oldVal, newVal)) continue;
             parts.Add(!hasOld ? $"{key}: added ({newVal})"
                 : !hasNew ? $"{key}: removed (was {oldVal})"
                 : $"{key}: {oldVal} → {newVal}");
@@ -756,6 +785,13 @@ public class PcgImportRegression
         public List<string> Feats { get; set; } = new();
         public Dictionary<string, int> ClassLevels { get; set; } = new();
         public Dictionary<string, int> CasterLevels { get; set; } = new();
+
+        // Ranks alone never told us what a player rolls, and a caster level never said how the
+        // caster gets its spells — so synergy/ability drift and an acquisition-mode regression
+        // both used to survive this harness. These are the numbers the sheet actually prints.
+        public List<string> Languages { get; set; } = new();
+        public Dictionary<string, int> SkillTotals { get; set; } = new();
+        public Dictionary<string, string> SpellAcquisition { get; set; } = new();
     }
 
     private sealed class ParseFailure
@@ -830,6 +866,14 @@ public class PcgImportRegression
         public Dictionary<string, int> NewCasterLevels { get; set; } = new();
         public List<string> AllFeatsAdded { get; set; } = new();
         public List<string> AllFeatsResolved { get; set; } = new();
+        public bool SkillTotalsChanged { get; set; }
+        public Dictionary<string, int> OldSkillTotals { get; set; } = new();
+        public Dictionary<string, int> NewSkillTotals { get; set; } = new();
+        public bool AcquisitionChanged { get; set; }
+        public Dictionary<string, string> OldAcquisition { get; set; } = new();
+        public Dictionary<string, string> NewAcquisition { get; set; } = new();
+        public List<string> LanguagesAdded { get; set; } = new();
+        public List<string> LanguagesResolved { get; set; } = new();
     }
 
     private sealed class TallyDelta
