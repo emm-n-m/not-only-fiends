@@ -15,21 +15,6 @@
     }
   },
   {
-    "id": "armor:banded_mail",
-    "name": "Banded Mail",
-    "category": "armor",
-    "slot": "body",
-    "weightLbs": 35,
-    "priceCp": 25000,
-    "armor": {
-      "kind": "heavy",
-      "armorBonus": 6,
-      "checkPenalty": -6,
-      "maxDex": 1,
-      "arcaneFailurePct": 35
-    }
-  },
-  {
     "id": "armor:banded_mail_of_luck",
     "name": "Banded Mail of Luck",
     "category": "armor",
@@ -42,21 +27,6 @@
       "checkPenalty": -6,
       "maxDex": 1,
       "arcaneFailurePct": 35
-    }
-  },
-  {
-    "id": "armor:breastplate",
-    "name": "Breastplate",
-    "category": "armor",
-    "slot": "body",
-    "weightLbs": 30,
-    "priceCp": 20000,
-    "armor": {
-      "kind": "medium",
-      "armorBonus": 5,
-      "checkPenalty": -4,
-      "maxDex": 3,
-      "arcaneFailurePct": 25
     }
   },
   {
@@ -87,36 +57,6 @@
       "checkPenalty": -3,
       "maxDex": 8,
       "arcaneFailurePct": 15
-    }
-  },
-  {
-    "id": "armor:chain_shirt",
-    "name": "Chain Shirt",
-    "category": "armor",
-    "slot": "body",
-    "weightLbs": 25,
-    "priceCp": 10000,
-    "armor": {
-      "kind": "light",
-      "armorBonus": 4,
-      "checkPenalty": -2,
-      "maxDex": 4,
-      "arcaneFailurePct": 20
-    }
-  },
-  {
-    "id": "armor:chainmail",
-    "name": "Chainmail",
-    "category": "armor",
-    "slot": "body",
-    "weightLbs": 40,
-    "priceCp": 15000,
-    "armor": {
-      "kind": "medium",
-      "armorBonus": 5,
-      "checkPenalty": -5,
-      "maxDex": 2,
-      "arcaneFailurePct": 30
     }
   },
   {
@@ -180,66 +120,6 @@
     }
   },
   {
-    "id": "armor:full_plate",
-    "name": "Full Plate",
-    "category": "armor",
-    "slot": "body",
-    "weightLbs": 50,
-    "priceCp": 150000,
-    "armor": {
-      "kind": "heavy",
-      "armorBonus": 8,
-      "checkPenalty": -6,
-      "maxDex": 1,
-      "arcaneFailurePct": 35
-    }
-  },
-  {
-    "id": "armor:half_plate",
-    "name": "Half-Plate",
-    "category": "armor",
-    "slot": "body",
-    "weightLbs": 50,
-    "priceCp": 60000,
-    "armor": {
-      "kind": "heavy",
-      "armorBonus": 7,
-      "checkPenalty": -7,
-      "maxDex": 0,
-      "arcaneFailurePct": 40
-    }
-  },
-  {
-    "id": "armor:hide",
-    "name": "Hide",
-    "category": "armor",
-    "slot": "body",
-    "weightLbs": 25,
-    "priceCp": 1500,
-    "armor": {
-      "kind": "medium",
-      "armorBonus": 3,
-      "checkPenalty": -3,
-      "maxDex": 4,
-      "arcaneFailurePct": 20
-    }
-  },
-  {
-    "id": "armor:leather",
-    "name": "Leather",
-    "category": "armor",
-    "slot": "body",
-    "weightLbs": 15,
-    "priceCp": 1000,
-    "armor": {
-      "kind": "light",
-      "armorBonus": 2,
-      "checkPenalty": 0,
-      "maxDex": 6,
-      "arcaneFailurePct": 10
-    }
-  },
-  {
     "id": "armor:mithral_full_plate_of_speed",
     "name": "Mithral Full Plate of Speed",
     "category": "armor",
@@ -267,21 +147,6 @@
       "checkPenalty": -2,
       "maxDex": 4,
       "arcaneFailurePct": 20
-    }
-  },
-  {
-    "id": "armor:padded",
-    "name": "Padded",
-    "category": "armor",
-    "slot": "body",
-    "weightLbs": 10,
-    "priceCp": 500,
-    "armor": {
-      "kind": "light",
-      "armorBonus": 1,
-      "checkPenalty": 0,
-      "maxDex": 8,
-      "arcaneFailurePct": 5
     }
   },
   {
@@ -315,51 +180,6 @@
     }
   },
   {
-    "id": "armor:scale_mail",
-    "name": "Scale Mail",
-    "category": "armor",
-    "slot": "body",
-    "weightLbs": 30,
-    "priceCp": 5000,
-    "armor": {
-      "kind": "medium",
-      "armorBonus": 4,
-      "checkPenalty": -4,
-      "maxDex": 3,
-      "arcaneFailurePct": 25
-    }
-  },
-  {
-    "id": "armor:splint_mail",
-    "name": "Splint Mail",
-    "category": "armor",
-    "slot": "body",
-    "weightLbs": 45,
-    "priceCp": 20000,
-    "armor": {
-      "kind": "heavy",
-      "armorBonus": 6,
-      "checkPenalty": -7,
-      "maxDex": 0,
-      "arcaneFailurePct": 40
-    }
-  },
-  {
-    "id": "armor:studded_leather",
-    "name": "Studded Leather",
-    "category": "armor",
-    "slot": "body",
-    "weightLbs": 20,
-    "priceCp": 2500,
-    "armor": {
-      "kind": "light",
-      "armorBonus": 3,
-      "checkPenalty": -1,
-      "maxDex": 5,
-      "arcaneFailurePct": 15
-    }
-  },
-  {
     "id": "shield:absorbing_shield",
     "name": "Absorbing Shield",
     "category": "shield",
@@ -371,20 +191,6 @@
       "armorBonus": 2,
       "checkPenalty": -2,
       "arcaneFailurePct": 15
-    }
-  },
-  {
-    "id": "shield:buckler",
-    "name": "Buckler",
-    "category": "shield",
-    "slot": "shield",
-    "weightLbs": 5,
-    "priceCp": 1500,
-    "armor": {
-      "kind": "shield",
-      "armorBonus": 1,
-      "checkPenalty": -1,
-      "arcaneFailurePct": 5
     }
   },
   {
@@ -662,21 +468,6 @@
     }
   },
   {
-    "id": "weapon:battleaxe",
-    "name": "Battleaxe",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 6,
-    "priceCp": 1000,
-    "weapon": {
-      "damage": "1d8",
-      "critRangeLow": 20,
-      "critMultiplier": 3,
-      "proficiency": "martial",
-      "damageType": "slashing"
-    }
-  },
-  {
     "id": "weapon:bolas",
     "name": "Bolas",
     "category": "weapon",
@@ -712,26 +503,8 @@
     }
   },
   {
-    "id": "weapon:club",
-    "name": "Club",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 3,
-    "priceCp": 0,
-    "weapon": {
-      "damage": "1d6",
-      "critRangeLow": 20,
-      "critMultiplier": 2,
-      "rangeFt": 10,
-      "ranged": true,
-      "thrown": true,
-      "proficiency": "simple",
-      "damageType": "bludgeoning"
-    }
-  },
-  {
     "id": "weapon:crossbow_hand",
-    "name": "Crossbow, Crossbow (Hand)",
+    "name": "Crossbow, Hand",
     "category": "weapon",
     "slot": "weapon",
     "weightLbs": 2,
@@ -748,42 +521,8 @@
     }
   },
   {
-    "id": "weapon:crossbow_heavy",
-    "name": "Crossbow, Crossbow (Heavy)",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 8,
-    "priceCp": 5000,
-    "weapon": {
-      "damage": "1d10",
-      "critRangeLow": 19,
-      "critMultiplier": 2,
-      "rangeFt": 120,
-      "ranged": true,
-      "proficiency": "simple",
-      "damageType": "piercing"
-    }
-  },
-  {
-    "id": "weapon:crossbow_light",
-    "name": "Crossbow, Crossbow (Light)",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 4,
-    "priceCp": 3500,
-    "weapon": {
-      "damage": "1d8",
-      "critRangeLow": 19,
-      "critMultiplier": 2,
-      "rangeFt": 80,
-      "ranged": true,
-      "proficiency": "simple",
-      "damageType": "piercing"
-    }
-  },
-  {
     "id": "weapon:crossbow_repeating_heavy",
-    "name": "Crossbow, Crossbow (Repeating Heavy)",
+    "name": "Crossbow, Repeating Heavy",
     "category": "weapon",
     "slot": "weapon",
     "weightLbs": 12,
@@ -800,7 +539,7 @@
   },
   {
     "id": "weapon:crossbow_repeating_light",
-    "name": "Crossbow, Crossbow (Repeating Light)",
+    "name": "Crossbow, Repeating Light",
     "category": "weapon",
     "slot": "weapon",
     "weightLbs": 6,
@@ -813,25 +552,6 @@
       "ranged": true,
       "proficiency": "exotic",
       "damageType": "piercing"
-    }
-  },
-  {
-    "id": "weapon:dagger",
-    "name": "Dagger",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 1,
-    "priceCp": 200,
-    "weapon": {
-      "damage": "1d4",
-      "critRangeLow": 19,
-      "critMultiplier": 2,
-      "rangeFt": 10,
-      "light": true,
-      "ranged": true,
-      "thrown": true,
-      "proficiency": "simple",
-      "damageType": "piercing+slashing"
     }
   },
   {
@@ -855,7 +575,7 @@
   },
   {
     "id": "weapon:dagger_punching",
-    "name": "Dagger, Dagger (Punching)",
+    "name": "Dagger, Punching",
     "category": "weapon",
     "slot": "weapon",
     "weightLbs": 1,
@@ -955,7 +675,7 @@
   },
   {
     "id": "weapon:flail_dire",
-    "name": "Flail, Flail (Dire)",
+    "name": "Flail, Dire",
     "category": "weapon",
     "slot": "weapon",
     "weightLbs": 10,
@@ -972,7 +692,7 @@
   },
   {
     "id": "weapon:flail_heavy",
-    "name": "Flail, Flail (Heavy)",
+    "name": "Flail, Heavy",
     "category": "weapon",
     "slot": "weapon",
     "weightLbs": 10,
@@ -1051,7 +771,7 @@
   },
   {
     "id": "weapon:gauntlet_locked",
-    "name": "Gauntlet, Gauntlet (Locked)",
+    "name": "Gauntlet, Locked",
     "category": "weapon",
     "slot": "weapon",
     "weightLbs": 5,
@@ -1067,7 +787,7 @@
   },
   {
     "id": "weapon:gauntlet_spiked",
-    "name": "Gauntlet, Gauntlet (Spiked)",
+    "name": "Gauntlet, Spiked",
     "category": "weapon",
     "slot": "weapon",
     "weightLbs": 1,
@@ -1099,22 +819,6 @@
     }
   },
   {
-    "id": "weapon:greataxe",
-    "name": "Greataxe",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 12,
-    "priceCp": 2000,
-    "weapon": {
-      "damage": "1d12",
-      "critRangeLow": 20,
-      "critMultiplier": 3,
-      "twoHanded": true,
-      "proficiency": "martial",
-      "damageType": "slashing"
-    }
-  },
-  {
     "id": "weapon:greatclub",
     "name": "Greatclub",
     "category": "weapon",
@@ -1128,22 +832,6 @@
       "twoHanded": true,
       "proficiency": "martial",
       "damageType": "bludgeoning"
-    }
-  },
-  {
-    "id": "weapon:greatsword",
-    "name": "Greatsword",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 8,
-    "priceCp": 5000,
-    "weapon": {
-      "damage": "2d6",
-      "critRangeLow": 19,
-      "critMultiplier": 2,
-      "twoHanded": true,
-      "proficiency": "martial",
-      "damageType": "slashing"
     }
   },
   {
@@ -1161,22 +849,6 @@
       "reach": true,
       "proficiency": "martial",
       "damageType": "slashing"
-    }
-  },
-  {
-    "id": "weapon:halberd",
-    "name": "Halberd",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 12,
-    "priceCp": 1000,
-    "weapon": {
-      "damage": "1d10",
-      "critRangeLow": 20,
-      "critMultiplier": 3,
-      "twoHanded": true,
-      "proficiency": "martial",
-      "damageType": "piercing+slashing"
     }
   },
   {
@@ -1244,24 +916,6 @@
       "critMultiplier": 2,
       "proficiency": "martial",
       "damageType": "slashing"
-    }
-  },
-  {
-    "id": "weapon:javelin",
-    "name": "Javelin",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 2,
-    "priceCp": 100,
-    "weapon": {
-      "damage": "1d6",
-      "critRangeLow": 20,
-      "critMultiplier": 2,
-      "rangeFt": 30,
-      "ranged": true,
-      "thrown": true,
-      "proficiency": "simple",
-      "damageType": "piercing"
     }
   },
   {
@@ -1347,24 +1001,6 @@
     }
   },
   {
-    "id": "weapon:longbow",
-    "name": "Longbow",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 3,
-    "priceCp": 7500,
-    "weapon": {
-      "damage": "1d8",
-      "critRangeLow": 20,
-      "critMultiplier": 3,
-      "rangeFt": 100,
-      "twoHanded": true,
-      "ranged": true,
-      "proficiency": "martial",
-      "damageType": "piercing"
-    }
-  },
-  {
     "id": "weapon:longbow_composite",
     "name": "Longbow (Composite) Longbow STR",
     "category": "weapon",
@@ -1398,38 +1034,6 @@
       "ranged": true,
       "proficiency": "martial",
       "damageType": "piercing"
-    }
-  },
-  {
-    "id": "weapon:longspear",
-    "name": "Longspear",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 9,
-    "priceCp": 500,
-    "weapon": {
-      "damage": "1d8",
-      "critRangeLow": 20,
-      "critMultiplier": 3,
-      "twoHanded": true,
-      "reach": true,
-      "proficiency": "simple",
-      "damageType": "piercing"
-    }
-  },
-  {
-    "id": "weapon:longsword",
-    "name": "Longsword",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 4,
-    "priceCp": 1500,
-    "weapon": {
-      "damage": "1d8",
-      "critRangeLow": 19,
-      "critMultiplier": 2,
-      "proficiency": "martial",
-      "damageType": "slashing"
     }
   },
   {
@@ -1494,21 +1098,6 @@
       "light": true,
       "proficiency": "martial",
       "damageType": "piercing"
-    }
-  },
-  {
-    "id": "weapon:mace_heavy",
-    "name": "Mace, Mace (Heavy)",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 8,
-    "priceCp": 1200,
-    "weapon": {
-      "damage": "1d8",
-      "critRangeLow": 20,
-      "critMultiplier": 2,
-      "proficiency": "simple",
-      "damageType": "bludgeoning"
     }
   },
   {
@@ -1686,23 +1275,6 @@
     }
   },
   {
-    "id": "weapon:quarterstaff",
-    "name": "Quarterstaff",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 4,
-    "priceCp": 0,
-    "weapon": {
-      "damage": "1d6",
-      "critRangeLow": 20,
-      "critMultiplier": 2,
-      "twoHanded": true,
-      "doubleWeapon": true,
-      "proficiency": "simple",
-      "damageType": "bludgeoning"
-    }
-  },
-  {
     "id": "weapon:ranseur",
     "name": "Ranseur",
     "category": "weapon",
@@ -1715,21 +1287,6 @@
       "critMultiplier": 3,
       "twoHanded": true,
       "reach": true,
-      "proficiency": "martial",
-      "damageType": "piercing"
-    }
-  },
-  {
-    "id": "weapon:rapier",
-    "name": "Rapier",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 2,
-    "priceCp": 2000,
-    "weapon": {
-      "damage": "1d6",
-      "critRangeLow": 18,
-      "critMultiplier": 2,
       "proficiency": "martial",
       "damageType": "piercing"
     }
@@ -1782,21 +1339,6 @@
       "light": true,
       "proficiency": "martial",
       "damageType": "bludgeoning"
-    }
-  },
-  {
-    "id": "weapon:scimitar",
-    "name": "Scimitar",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 4,
-    "priceCp": 1500,
-    "weapon": {
-      "damage": "1d6",
-      "critRangeLow": 18,
-      "critMultiplier": 2,
-      "proficiency": "martial",
-      "damageType": "slashing"
     }
   },
   {
@@ -1876,24 +1418,6 @@
       "doubleWeapon": true,
       "proficiency": "exotic",
       "damageType": "slashing"
-    }
-  },
-  {
-    "id": "weapon:shortbow",
-    "name": "Shortbow",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 2,
-    "priceCp": 3000,
-    "weapon": {
-      "damage": "1d6",
-      "critRangeLow": 20,
-      "critMultiplier": 3,
-      "rangeFt": 60,
-      "twoHanded": true,
-      "ranged": true,
-      "proficiency": "martial",
-      "damageType": "piercing"
     }
   },
   {
@@ -1999,23 +1523,6 @@
       "light": true,
       "proficiency": "simple",
       "damageType": "slashing"
-    }
-  },
-  {
-    "id": "weapon:sling",
-    "name": "Sling",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 0,
-    "priceCp": 0,
-    "weapon": {
-      "damage": "1d4",
-      "critRangeLow": 20,
-      "critMultiplier": 2,
-      "rangeFt": 50,
-      "ranged": true,
-      "proficiency": "simple",
-      "damageType": "bludgeoning"
     }
   },
   {
@@ -2250,22 +1757,6 @@
     }
   },
   {
-    "id": "weapon:unarmed_strike",
-    "name": "Unarmed Strike",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 0,
-    "priceCp": 0,
-    "weapon": {
-      "damage": "1d3",
-      "critRangeLow": 20,
-      "critMultiplier": 2,
-      "light": true,
-      "proficiency": "simple",
-      "damageType": "bludgeoning"
-    }
-  },
-  {
     "id": "weapon:urgrosh_dwarven",
     "name": "Urgrosh, Dwarven",
     "category": "weapon",
@@ -2296,21 +1787,6 @@
       "twoHanded": true,
       "proficiency": "martial",
       "damageType": "slashing"
-    }
-  },
-  {
-    "id": "weapon:warhammer",
-    "name": "Warhammer",
-    "category": "weapon",
-    "slot": "weapon",
-    "weightLbs": 5,
-    "priceCp": 1200,
-    "weapon": {
-      "damage": "1d8",
-      "critRangeLow": 20,
-      "critMultiplier": 3,
-      "proficiency": "martial",
-      "damageType": "bludgeoning"
     }
   },
   {
