@@ -151,6 +151,69 @@ else
         </div>
     </div>
 
+    <!-- Step 2b: Languages -->
+    var raceForLanguages = SelectedRace();
+    var offeredLanguages = OfferedBonusLanguages();
+    var languageAllowance = LanguageCatalog.Allowance(GetStartingIntelligence());
+    var languagePicksUsed = _character.BonusLanguageIds.Count;
+
+    @if (raceForLanguages is not null && (raceForLanguages.AutomaticLanguages.Count > 0 || offeredLanguages.Count > 0))
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                Languages
+                <span class="float-end small text-muted">
+                    @languagePicksUsed / @languageAllowance bonus picks used
+                </span>
+            </div>
+            <div class="card-body">
+                @if (raceForLanguages.AutomaticLanguages.Count > 0)
+                {
+                    <div class="mb-2">
+                        <strong class="small">Automatic:</strong>
+                        @foreach (var id in raceForLanguages.AutomaticLanguages)
+                        {
+                            <span class="badge bg-secondary me-1">@LanguageName(id)</span>
+                        }
+                    </div>
+                }
+                @if (languageAllowance == 0)
+                {
+                    <div class="form-text">
+                        Bonus languages are granted one per point of starting Intelligence modifier.
+                        This character's starting Intelligence is @GetStartingIntelligence(), so there are none to spend.
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex flex-wrap gap-3">
+                        @foreach (var language in offeredLanguages)
+                        {
+                            var chosen = _character.BonusLanguageIds.Contains(language.Id);
+                            var atLimit = !chosen && languagePicksUsed >= languageAllowance;
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       id="@($"lang-{language.Id}")"
+                                       checked="@chosen" disabled="@atLimit"
+                                       @onchange="() => ToggleBonusLanguage(language.Id)" />
+                                <label class="form-check-label @(atLimit ? "text-muted" : "")"
+                                       for="@($"lang-{language.Id}")" title="@language.Description">
+                                    @language.Name
+                                </label>
+                            </div>
+                        }
+                    </div>
+                    @if (raceForLanguages.BonusLanguagesAny)
+                    {
+                        <div class="form-text mt-2">
+                            @raceForLanguages.Name may take any language except secret ones such as Druidic.
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+
     <!-- Step 3: HD Timeline -->
     <div class="card mb-3">
         <div class="card-header">
@@ -354,13 +417,21 @@ else
                        wizard level). Specializing is optional; a wizard who picks nothing is a
                        universalist and keeps every school. *@
                     var schoolPicks = _tickWizardSchoolPicks.GetValueOrDefault(index);
+                    // How many schools must be given up is a function of the specialty, not of the
+                    // grant: the class grants a flat count of 2, but a diviner owes only one and a
+                    // universalist none. Driving the picker off the grant offered a diviner a
+                    // second slot it could fill illegally, and offered a universalist two.
+                    var specialtyPick = SelectedSchool(tick, WizardSchools.SpecializationFeature, 0);
+                    var specialtyName = specialtyPick is null ? null : WizardSchools.ToSchoolName(specialtyPick);
+                    var requiredProhibited = WizardSchools.RequiredProhibitedCount(specialtyName);
+                    var prohibitedChosen = ChosenProhibitedCount(tick, requiredProhibited);
                     @if (schoolPicks is { PendingSpecialization: true } or { PendingProhibited: > 0 })
                     {
                         <div class="mt-2 p-2 border rounded bg-light">
                             <div><small class="text-muted"><strong>Arcane school</strong> — chosen once, at 1st wizard level.</small></div>
                             <div class="d-flex flex-wrap gap-2 mt-1 align-items-center">
                                 <select class="form-select form-select-sm" style="max-width:260px"
-                                        value="@(SelectedSchool(tick, WizardSchools.SpecializationFeature, 0) ?? "")"
+                                        value="@(specialtyPick ?? "")"
                                         @onchange="(e) => SetWizardSchool(index, WizardSchools.SpecializationFeature, 0, e.Value?.ToString())">
                                     <option value="">Universalist (no specialty)</option>
                                     @foreach (var opt in SchoolOptions(WizardSchools.SpecializationFeature))
@@ -368,24 +439,45 @@ else
                                         <option value="@opt.Id" title="@opt.Description">@opt.Name</option>
                                     }
                                 </select>
-                                @for (int slot = 0; slot < schoolPicks!.PendingProhibited; slot++)
+                                @for (int slot = 0; slot < requiredProhibited; slot++)
                                 {
                                     var capturedSlot = slot;
-                                    <select class="form-select form-select-sm" style="max-width:260px"
-                                            value="@(SelectedSchool(tick, WizardSchools.ProhibitedFeature, capturedSlot) ?? "")"
+                                    var thisPick = SelectedSchool(tick, WizardSchools.ProhibitedFeature, capturedSlot);
+                                    <select class="form-select form-select-sm @(string.IsNullOrEmpty(thisPick) ? "border-warning" : "")"
+                                            style="max-width:260px"
+                                            value="@(thisPick ?? "")"
                                             @onchange="(e) => SetWizardSchool(index, WizardSchools.ProhibitedFeature, capturedSlot, e.Value?.ToString())">
                                         <option value="">Give up a school...</option>
-                                        @foreach (var opt in SchoolOptions(WizardSchools.ProhibitedFeature))
+                                        @foreach (var opt in ProhibitedSchoolOptions(tick, specialtyPick, capturedSlot))
                                         {
                                             <option value="@opt.Id" title="@opt.Description">@opt.Name</option>
                                         }
                                     </select>
                                 }
+                                @if (prohibitedChosen < requiredProhibited)
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        @(requiredProhibited - prohibitedChosen) school@((requiredProhibited - prohibitedChosen) == 1 ? "" : "s") still to give up
+                                    </span>
+                                }
                             </div>
                             <div class="mt-1"><small class="text-muted">
-                                A specialist gives up two schools — a diviner only one. Spells of a
-                                given-up school can never be learned or cast, and are not offered below.
-                                Universal spells belong to no school and are never given up.
+                                @if (specialtyName == null)
+                                {
+                                    <text>A universalist keeps every school and gives up none.</text>
+                                }
+                                else if (requiredProhibited == 1)
+                                {
+                                    <text>A diviner gives up only one school.</text>
+                                }
+                                else
+                                {
+                                    <text>A specialist gives up two schools.</text>
+                                }
+                                Divination can never be given up, and a wizard cannot give up its own
+                                specialty, so neither is offered. Spells of a given-up school can never
+                                be learned or cast, and are not offered below. Universal spells belong
+                                to no school and are never given up.
                             </small></div>
                         </div>
                     }
@@ -998,6 +1090,51 @@ else
                         }
                     </div>
                 }
+                @* Defenses: the sheet has shown these since it was written, the builder never did,
+                   so racial and template resistances were invisible while actually building. *@
+                @if (_state.Resistances.Any() || _state.Immunities.Any()
+                     || _state.DamageReduction.Any() || _state.SpellResistance.HasValue)
+                {
+                    <div class="row mt-2">
+                        @if (_state.Resistances.Any())
+                        {
+                            <div class="col-md-3">
+                                <h5>Resistances</h5>
+                                @foreach (var r in _state.Resistances.OrderBy(r => r.Key))
+                                {
+                                    <span class="badge bg-success me-1">@r.Key @r.Value</span>
+                                }
+                            </div>
+                        }
+                        @if (_state.Immunities.Any())
+                        {
+                            <div class="col-md-3">
+                                <h5>Immunities</h5>
+                                @foreach (var i in _state.Immunities.OrderBy(i => i))
+                                {
+                                    <span class="badge bg-success me-1">@i</span>
+                                }
+                            </div>
+                        }
+                        @if (_state.DamageReduction.Any())
+                        {
+                            <div class="col-md-3">
+                                <h5>Damage Reduction</h5>
+                                @foreach (var dr in _state.DamageReduction)
+                                {
+                                    <span class="badge bg-dark me-1">@dr.Value/@dr.BypassedBy</span>
+                                }
+                            </div>
+                        }
+                        @if (_state.SpellResistance.HasValue)
+                        {
+                            <div class="col-md-3">
+                                <h5>Spell Resistance</h5>
+                                <span class="badge bg-dark">SR @_state.SpellResistance</span>
+                            </div>
+                        }
+                    </div>
+                }
                 @if (_state.AC.Components.Any() || _state.AttackLines.Any() || _state.Encumbrance.TotalWeightLbs > 0)
                 {
                     <div class="row mt-3">
@@ -1051,7 +1188,19 @@ else
                 @if (_state.Warnings.Any())
                 {
                     <div class="alert alert-warning mt-2">
-                        @foreach (var w in _state.Warnings) { <div>@w</div> }
+                        @foreach (var w in _state.Warnings)
+                        {
+                            @* Render the message, not the object. CharacterState.Warnings became
+                               List<Warning> and this read site kept interpolating the instance, so
+                               every warning printed as its type name. *@
+                            <div>
+                                @if (w.TickIndex.HasValue)
+                                {
+                                    <span class="badge bg-warning text-dark me-1">HD @w.TickIndex</span>
+                                }
+                                @w.Message
+                            </div>
+                        }
                     </div>
                 }
             </div>
@@ -1229,6 +1378,7 @@ else
     private List<CompanionBuild>? _companionBuilds;
     private ReplayStudio _engine = null!;
     private List<RaceDefinition> _races = new();
+    private List<LanguageDefinition> _languages = new();
     // Monster, companion and creature races the source never priced as PC options are hidden by
     // default — they were previously offered as character choices with nothing marking them, which
     // is a discoverability trap on the first step of character creation. Not removed outright:
@@ -1280,6 +1430,7 @@ else
             var registry = Content.Registry;
             _engine = Content.ReplayStudio;
             _races = registry.GetAllRaces().ToList();
+            _languages = registry.GetAllLanguages().ToList();
             _nonPcRaceCount = _races.Count(r => !RaceCatalog.IsSanctionedPcRace(r));
             _templates = registry.GetAllTemplates().ToList();
             _drivers = registry.GetAllDrivers().ToList();
@@ -1710,6 +1861,36 @@ else
         return race?.AbilityModifiers?.GetScore(ability) ?? 0;
     }
 
+    /// <summary>
+    /// Intelligence at creation — base plus racial and template modifiers, deliberately excluding
+    /// level-up increases, because 3.5 prices bonus languages once from starting Int. Mirrors what
+    /// <c>ReplayStudio</c> sees when it spends the picks.
+    /// </summary>
+    private int GetStartingIntelligence() =>
+        _character.BaseAbilityScores.INT
+        + GetRaceAbilityModifier(Ability.INT)
+        + GetTemplateAbilityModifier(Ability.INT);
+
+    private string LanguageName(string id) =>
+        _languages.FirstOrDefault(l => l.Id == id)?.Name ?? id;
+
+    private RaceDefinition? SelectedRace() =>
+        _races.FirstOrDefault(r => r.Id == _character.RaceId);
+
+    private List<LanguageDefinition> OfferedBonusLanguages() =>
+        LanguageCatalog.OfferedBonusLanguages(SelectedRace(), _languages).ToList();
+
+    private void ToggleBonusLanguage(string languageId)
+    {
+        if (!_character.BonusLanguageIds.Remove(languageId))
+        {
+            if (_character.BonusLanguageIds.Count >= LanguageCatalog.Allowance(GetStartingIntelligence()))
+                return;
+            _character.BonusLanguageIds.Add(languageId);
+        }
+        OnCharacterChanged();
+    }
+
     private int GetTemplateAbilityModifier(Ability ability) =>
         _character.TemplateIds
             .Select(id => _templates.FirstOrDefault(t => t.Id == id))
@@ -1752,6 +1933,32 @@ else
     }
 
     /// <summary>
+    /// The schools a given prohibited-school slot may offer: never the wizard's own specialty, and
+    /// never one already given up in another slot. (Divination is absent from the option pool in
+    /// content, since it can never be given up at all.)
+    /// </summary>
+    private List<ClassFeatureOption> ProhibitedSchoolOptions(Tick tick, string? specialtyPick, int slot)
+    {
+        var picks = tick.Choices.ClassFeatureChoices?.GetValueOrDefault(WizardSchools.ProhibitedFeature);
+        var takenElsewhere = picks is null
+            ? new HashSet<string>(StringComparer.Ordinal)
+            : picks.Where((_, i) => i != slot).Where(p => !string.IsNullOrEmpty(p))
+                   .ToHashSet(StringComparer.Ordinal);
+
+        return SchoolOptions(WizardSchools.ProhibitedFeature)
+            .Where(o => o.Id != specialtyPick && !takenElsewhere.Contains(o.Id))
+            .ToList();
+    }
+
+    /// <summary>How many of the required prohibited slots actually hold a school.</summary>
+    private static int ChosenProhibitedCount(Tick tick, int required)
+    {
+        var picks = tick.Choices.ClassFeatureChoices?.GetValueOrDefault(WizardSchools.ProhibitedFeature);
+        if (picks is null) return 0;
+        return picks.Take(required).Count(p => !string.IsNullOrEmpty(p));
+    }
+
+    /// <summary>
     /// Writes one school slot. Slots are positional so the two prohibited-school dropdowns stay
     /// independent; clearing one leaves the other in place. Empty entries are dropped, so an
     /// unmade choice never reaches the engine as a selection.
@@ -1774,7 +1981,34 @@ else
         else
             tick.Choices.ClassFeatureChoices.Remove(featureType);
 
+        // Changing the specialty changes how many schools are owed, and which are legal. Switching
+        // to divination (2 → 1) or to universalist (→ 0) would otherwise strand picks that the
+        // picker no longer shows, leaving an illegal character that looked correct on screen.
+        if (featureType == WizardSchools.SpecializationFeature)
+            TrimProhibitedSchools(tick, optionId);
+
         OnCharacterChanged();
+    }
+
+    private static void TrimProhibitedSchools(Tick tick, string? specialtyPick)
+    {
+        var choices = tick.Choices.ClassFeatureChoices;
+        if (choices is null || !choices.TryGetValue(WizardSchools.ProhibitedFeature, out var picks))
+            return;
+
+        var specialtyName = string.IsNullOrEmpty(specialtyPick)
+            ? null
+            : WizardSchools.ToSchoolName(specialtyPick);
+
+        var kept = picks
+            .Where(p => !string.IsNullOrEmpty(p) && p != specialtyPick)
+            .Take(WizardSchools.RequiredProhibitedCount(specialtyName))
+            .ToList();
+
+        if (kept.Count > 0)
+            choices[WizardSchools.ProhibitedFeature] = kept;
+        else
+            choices.Remove(WizardSchools.ProhibitedFeature);
     }
 
     private sealed record TickWizardSchoolPicks(bool PendingSpecialization, int PendingProhibited);

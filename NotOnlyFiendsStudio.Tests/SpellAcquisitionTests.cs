@@ -531,6 +531,18 @@ public class WizardSchoolTests
     }
 
     [Fact]
+    public void ASpecialistWhoGivesUpNothingWarns()
+    {
+        // The builder let this through: it rendered the prohibited-school dropdowns but never
+        // required them, so a specialist could take the bonus slot and keep every school.
+        var state = Evaluate("evocation");
+
+        Assert.Equal("evocation", WizardSchools.Specialty(state));
+        Assert.Empty(WizardSchools.ProhibitedSchools(state));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("gives up 0 school(s), but must give up 2"));
+    }
+
+    [Fact]
     public void ProhibitingSchoolsWithoutASpecialty_Warns()
     {
         var state = Evaluate(specialty: null, prohibited: new[] { "necromancy", "enchantment" });

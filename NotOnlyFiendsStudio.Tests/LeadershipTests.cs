@@ -115,6 +115,17 @@ public class LeadershipTests
         Assert.Empty(state.CompanionSlots);
     }
 
+    [Fact]
+    public void WarningStringifiesToItsMessage()
+    {
+        // Both the builder and the sheet interpolated the Warning instance rather than .Message
+        // after it stopped being a plain string, so users were shown the type name and the cohort
+        // ECL warning looked like it was never raised. Keep the default readable.
+        Assert.Equal("over cap", new Warning { Message = "over cap" }.ToString());
+        Assert.Equal("HD 7: over cap", new Warning { TickIndex = 7, Message = "over cap" }.ToString());
+        Assert.DoesNotContain("Warning", new Warning { Message = "over cap" }.ToString());
+    }
+
     // ---------- Cohort validation via CompanionResolver ----------
 
     [Fact]

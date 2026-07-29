@@ -412,7 +412,7 @@ else if (_state != null && _character != null)
                 <ul>
                     @foreach (var w in _state.Warnings)
                     {
-                        <li>@w</li>
+                        <li>@(w.TickIndex.HasValue ? $"HD {w.TickIndex}: " : "")@w.Message</li>
                     }
                 </ul>
             </div>
