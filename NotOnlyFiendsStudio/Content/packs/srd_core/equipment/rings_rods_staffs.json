@@ -1498,5 +1498,132 @@
       "rod",
       "cl10"
     ]
+  },
+  {
+    "id": "ring:elemental_command_water",
+    "name": "Ring of Elemental Command (Water)",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 20000000,
+    "description": "All four kinds of elemental command rings are very powerful. Each appears to be nothing more than a lesser magic ring until fully activated (by meeting a special condition, such as single-handedly slaying an elemental of the appropriate type or exposure to a sacred material of the appropriate element), but each has certain other powers as well as the following common properties. Elementals of the plane to which the ring is attuned can’t attack the wearer, or even approach within 5 feet of him. If the wearer desires, he may forego this protection and instead attempt to charm the elemental (as charm monster, Will DC 17 negates). If the charm attempt fails, however, absolute protection is lost and no further attempt at charming can be made. Creatures from the plane to which the ring is attuned who attack the wearer take a –1 penalty on their attack rolls. The ring wearer makes applicable saving throws from the extraplanar creature’s attacks with a +2 resistance bonus. He gains a +4 morale bonus on all attack rolls against such creatures. Any weapon he uses bypasses the damage reduction of such creatures, regardless of any qualities the weapon may or may not have. The wearer of the ring is able to converse with creatures from the plane to which his ring is attuned. The possessor of a ring of elemental command (water) takes a –2 penalty on saving throws against fire-based effects. Ring of Elemental Command (Water): Water walk (unlimited use), create water (unlimited use), water breathing (unlimited use), wall of ice (once per day), ice storm (twice per week), control water (twice per week). The ring appears to be a ring of water walking until the established condition is met. Strong conjuration; CL 15th; Forge Ring, summon monster VI, all appropriate spells",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "cl15"
+    ]
+  },
+  {
+    "id": "ring:universal_energy_immunity",
+    "name": "Ring of Universal Energy Immunity",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 216000000,
+    "description": "This ring functions as a ring of energy immunity for all types of energy—fire, cold, electricity, acid, and sonic. The wearer takes no damage from energy of any of these types. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, protection from energy; Market Price 2,160,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "cl20",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:wizardry_ix",
+    "name": "Epic Ring of Wizardry (IX)",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 81000000,
+    "description": "Interpretation note: the true SRD only publishes rings of wizardry grades I–IV (Dungeon Master's Guide); grades V–IX are epic-level items introduced by the Epic Level Handbook as the 'epic ring of wizardry' line. This entry represents the epic ring of wizardry (IX), the item referenced by character data as 'Ring of Wizardry IX'. Like the ring of wizardry, this ring comes in a variety of types useful only to arcane spellcasters. The wearer's arcane spells per day are doubled for one particular spell level. An epic ring of wizardry IX doubles 9th-level spells. Bonus spells from high ability scores, school specialization, or any other source are not doubled. Caster Level 35th; Prerequisites: Forge Ring, Forge Epic Ring, wish; Market Price 810,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "cl35",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:rapid_healing",
+    "name": "Ring of Rapid Healing",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 30000000,
+    "description": "This ring grants a living wearer fast healing 3. It must be worn for 24 hours before its powers activate, and if removed it will not function again until it has been worn for 24 hours by the same individual. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, regenerate; Market Price 300,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "cl20",
+      "epic"
+    ]
+  },
+  {
+    "id": "staff:magi",
+    "name": "Staff of the Magi",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 0,
+    "description": "A long wooden staff, shod in iron and inscribed with sigils and runes of all types, this potent artifact contains many spell powers and other functions. Some of its powers use charges, while others don't. The following powers do not use charges: detect magic, enlarge person (Fortitude DC 15 negates), hold portal, light, mage armor, mage hand. The following powers drain 1 charge per usage: dispel magic, fireball (10d6 damage, Reflex DC 17 half), ice storm, invisibility, knock, lightning bolt (10d6 damage, Reflex DC 17 half), passwall, pyrotechnics (Will or Fortitude DC 16 negates), wall of fire, web. These powers drain 2 charges per usage: monster summoning IX, plane shift (Will DC 21 negates), telekinesis (400 lb. maximum weight; Will DC 19 negates). A staff of the magi gives the wielder spell resistance 23. If this is willingly lowered, the staff can also be used to absorb arcane spell energy directed at its wielder, as a rod of absorption does, converting spell levels into charges (up to a limit of 50) rather than retaining them as usable spell energy; exceeding the limit causes the staff to explode as if a retributive strike had been performed. Retributive Strike: a staff of the magi can be broken for a retributive strike, releasing all its charges in a 30-foot spread (8x charges to those within 10 ft., 6x to those 11–20 ft. away, 4x to those 21–30 ft. away, DC 17 Reflex half). The character breaking the staff has a 50% chance of traveling to another plane; otherwise the explosive release destroys her. Strong (all schools); CL 20th. Priced as an artifact: not normally bought or sold and has no fixed market price per the SRD; priceCp is set to 0 to reflect this.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl20",
+      "artifact"
+    ]
+  },
+  {
+    "id": "staff:cosmos",
+    "name": "Staff of Cosmos",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 68343700,
+    "description": "This staff allows use of the following spells: chain lightning (intensified, 1 charge, DC 29), meteor swarm (intensified, 1 charge, DC 34), sunburst (intensified, 1 charge, DC 32). Caster Level 27th; Prerequisites: Craft Staff, Craft Epic Staff, Intensify Spell, chain lightning, meteor swarm, sunburst; Market Price 683,437 gp (the SRD's random epic-staff generation table lists 683,487 gp for this entry, an apparent transcription discrepancy from the item's own stated Market Price; the item description's figure is used here).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl27",
+      "epic"
+    ]
+  },
+  {
+    "id": "staff:domination",
+    "name": "Staff of Domination",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 46440000,
+    "description": "This staff allows use of the following heightened spells: dominate monster (1 charge, DC 33), demand (1 charge, DC 32), mass charm monster (1 charge, DC 32), geas (heightened, 1 charge, DC 33). Caster Level 21st; Prerequisites: Craft Staff, Craft Epic Staff, Heighten Spell, demand, dominate monster, geas, mass charm monster; Market Price 464,400 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl21",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:epic_spellcasting",
+    "name": "Rod of Epic Spellcasting",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 24540000,
+    "description": "This magnificent adamantine rod grants its wielder a +10 insight bonus on Spellcraft checks made to cast epic spells for as long as he or she holds or carries the rod. Caster Level 21st; Prerequisites: Craft Rod, Craft Epic Rod; Market Price 245,400 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl21",
+      "epic"
+    ]
   }
 ]

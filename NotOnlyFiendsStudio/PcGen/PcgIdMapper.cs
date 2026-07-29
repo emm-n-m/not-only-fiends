@@ -138,6 +138,36 @@ public class PcgIdMapper
     {
         // Populated as PcgImportRegression surfaces names that don't match the catalog
         // exactly (e.g. abbreviations, parenthetical color suffixes). Catalog ID on the right.
+        // Material/enhancement/size-variant names PCGen generates via its item customizer —
+        // the catalog only carries the base item, so masterwork/material/+N/size are lost on import.
+        ["Masterwork Cold Iron Longsword +2"] = "weapon:longsword",
+        ["Sylvan Scimitar +2 (Silver/Wounding)"] = "weapon:sylvan_scimitar",
+        ["Oathbow (Small)"] = "weapon:oathbow",
+        ["Flail +2 (Heavy/Cold Iron)"] = "weapon:flail",
+        ["Elven Chain (Small)"] = "armor:elven_chain",
+        ["Longbow +1 (Small)"] = "weapon:longbow",
+        // PCGen names that reorder/reformat an existing catalog item's display name rather than
+        // varying it — the catalog entry already covers all color/size variants in its description.
+        ["Robe of the Archmagi (White)"] = "wondrous:robe_of_the_archmagi",
+        ["Robe of the Archmagi (Black)"] = "wondrous:robe_of_the_archmagi",
+        ["Boots (Winged)"] = "wondrous:boots_winged",
+        ["Vestments (Druid)"] = "wondrous:vestment_druid_s",
+        ["Outfit (Entertainer's)"] = "gear:entertainers_outfit",
+        ["Outfit (Scholar's)"] = "gear:scholars_outfit",
+        ["Outfit (Scholar's/Small)"] = "gear:scholars_outfit",
+        ["Outfit (Traveler's)"] = "gear:travelers_outfit",
+        ["Pouch (Belt)"] = "gear:pouch_belt_empty",
+        ["Spellbook (Wizard's/Blank)"] = "gear:spellbook_wizards_blank",
+        ["Thieves' Tools (Tiny)"] = "gear:thieves_tools",
+        ["Vestments (Cleric's)"] = "gear:clerics_vestments",
+        ["Ring of Wizardry IV"] = "ring:wizardry_iv",
+        ["Ring of Wizardry IX"] = "ring:wizardry_ix",
+        ["Staff (Abjuration)"] = "staff:abjuration",
+        ["Staff (Divination)"] = "staff:divination",
+        ["Staff (Woodlands)"] = "staff:woodlands",
+        ["Staff (Cosmos)"] = "staff:cosmos",
+        ["Staff (Domination)"] = "staff:domination",
+        ["Rod (Epic Spellcaster)"] = "rod:epic_spellcasting",
     };
 
     // Body-slot labels that PCGen uses in EQUIPSET — translated to the engine's slot vocabulary

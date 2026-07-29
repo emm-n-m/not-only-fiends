@@ -1,0 +1,178 @@
+[
+  {
+    "id": "staff:fiery_power",
+    "name": "Staff of Fiery Power",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 50000000,
+    "description": "This +5 flaming quarterstaff grants its wielder fire resistance 30 whenever held. In addition, it has the following powers: wall of fire (extended, 1 charge, DC 18), delayed blast fireball (intensified to 240 points of damage, 2 charges, DC 22), meteor swarm (heightened to 12th, 2 charges, DC 30), summon monster IX (extended, 2 charges, elder fire elemental only). A staff of fiery power can be broken in a retributive strike; the breaking must be purposeful and declared by the wielder. All charges currently in the staff are instantly released in a 30-foot-radius globe: those within 10 feet of the broken staff take damage equal to eight times the number of charges in the staff, those 11-20 feet away take six times the number of charges in damage, and those 21-30 feet distant take four times the number of charges in damage (Reflex DC 17 half). The character breaking the staff has a 50% chance of traveling to another plane of existence; if not, the explosive release of spell energy destroys him or her. After all charges are used up, it remains a +5 quarterstaff with no special abilities (and once empty, it cannot be broken in a retributive strike). Caster Level 25th; Prerequisites: Craft Staff, Craft Epic Staff, Extend Spell, Heighten Spell, Improved Heighten Spell, Intensify Spell, Spell Focus (Evocation), continual flame, delayed blast fireball, meteor swarm, protection from energy, summon monster IX, wall of fire; Market Price 500,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl25",
+      "epic"
+    ]
+  },
+  {
+    "id": "staff:hierophants",
+    "name": "Staff of the Hierophants",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 50118700,
+    "description": "This staff allows use of the following spells: creeping doom (enlarged, extended, 1 charge, DC 23), command plants (enlarged, extended, 1 charge, DC 25), elemental swarm (intensified, 2 charges, DC 34), shambler (intensified, 2 charges, DC 34). Caster Level 27th; Prerequisites: Craft Staff, Craft Epic Staff, Enlarge Spell, Extend Spell, Intensify Spell, creeping doom, command plants, elemental swarm, shambler; Market Price 501,187 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl27",
+      "epic"
+    ]
+  },
+  {
+    "id": "staff:mighty_force",
+    "name": "Staff of Mighty Force",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 26500000,
+    "description": "This staff has three powers: shield (quickened, 1 charge, may be activated once per round), forcecage (1 charge), crushing hand (1 charge). Caster Level 21st; Prerequisites: Craft Staff, Craft Epic Staff, Quicken Spell, crushing hand, forcecage, shield; Market Price 265,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl21",
+      "epic"
+    ]
+  },
+  {
+    "id": "staff:natures_fury",
+    "name": "Staff of Nature's Fury",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 50000000,
+    "description": "This +5 aberration bane quarterstaff allows use of the following spells: earthquake (1 charge), whirlwind (heightened to 10th level, 1 charge, DC 25), fire storm (heightened to 10th level, 1 charge, DC 25). After all charges are used up from a staff of nature's fury, it remains a +5 quarterstaff with no special abilities. Caster Level 21st; Prerequisites: Craft Staff, Craft Epic Staff, Heighten Spell, Improved Heighten Spell, earthquake, fire storm, summon monster I (or summon nature's ally I), whirlwind; Market Price 500,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl21",
+      "epic"
+    ]
+  },
+  {
+    "id": "staff:epic_necromancy",
+    "name": "Staff of Necromancy",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 150531200,
+    "description": "Id disambiguated from the non-epic staff:necromancy (DMG Staff of Necromancy) already in this catalog; the two items share the display name 'Staff of Necromancy' per the SRD. This epic staff allows use of the following spells: circle of death (intensified, 2 charges, DC 29), create greater undead (1 charge), finger of death (improved heightened to 16th, 2 charges, DC 34), soul bind (improved heightened to 16th, 2 charges, DC 34). The soul trapped through use of the soul bind spell is trapped in the staff rather than a gem; only by breaking the staff can the souls be freed. Caster Level 27th; Prerequisites: Craft Staff, Craft Epic Staff, Intensify Spell, Heighten Spell, Improved Heighten Spell, circle of death, create greater undead, finger of death, soul bind; Market Price 1,505,312 gp; Cost to Create 1,290,156 gp + 14,303 XP.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl27",
+      "epic"
+    ]
+  },
+  {
+    "id": "staff:planar_might",
+    "name": "Staff of Planar Might",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 46000000,
+    "description": "The wielder of this staff is immune to the effects of any planar alignment traits, as well as the positive-dominant and negative-dominant traits of a plane. It also allows use of the following spells: greater planar ally (1 charge), greater planar binding (1 charge), gate (1 charge). When using the greater planar ally power, the character must still bargain with the called creature. In addition to its other powers, a staff of planar might is a +5 outsider bane quarterstaff (roll 1d4 to determine which alignment of outsiders the staff's bane power works against: 1=chaotic, 2=evil, 3=good, 4=lawful). After all charges are used up from a staff of planar might, it remains a +5 quarterstaff with no special abilities. Caster Level 21st; Prerequisites: Craft Staff, Craft Epic Staff, gate, greater planar ally, greater planar binding, protection from energy; Market Price 460,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl21",
+      "epic"
+    ]
+  },
+  {
+    "id": "staff:prism",
+    "name": "Staff of Prism",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 32681200,
+    "description": "This staff allows use of the following spells: prismatic sphere (extended, 1 charge, DC 25), prismatic spray (extended, 1 charge, DC 22), prismatic wall (extended, 1 charge, DC 23). Caster Level 21st; Prerequisites: Craft Staff, Craft Epic Staff, Extend Spell, prismatic sphere, prismatic spray, prismatic wall; Market Price 326,812 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl21",
+      "epic"
+    ]
+  },
+  {
+    "id": "staff:rapid_barrage",
+    "name": "Staff of Rapid Barrage",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 41775000,
+    "description": "Either of this staff's two powers can be activated as a free action (though the staff may only be activated once per round): magic missile (intensified, quickened, 1 charge, 5 missiles dealing 10 points of damage each), fireball (heightened to 6th, enhanced, quickened, 1 charge, 20d6 damage, DC 19). Caster Level 25th; Prerequisites: Craft Staff, Craft Epic Staff, Enhance Spell, Heighten Spell, Intensify Spell, Quicken Spell, fireball, magic missile; Market Price 417,750 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl25",
+      "epic"
+    ]
+  },
+  {
+    "id": "staff:spheres",
+    "name": "Staff of Spheres",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 22837500,
+    "description": "This staff allows use of the following spells: freezing sphere (1 charge, DC 19), resilient sphere (1 charge, DC 16), telekinetic sphere (1 charge, DC 22). Caster Level 21st; Prerequisites: Craft Staff, Craft Epic Staff, freezing sphere, resilient sphere, telekinetic sphere; Market Price 228,375 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl21",
+      "epic"
+    ]
+  },
+  {
+    "id": "staff:walls",
+    "name": "Staff of Walls",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 27562500,
+    "description": "This staff allows use of the following spells: wall of iron (1 charge), wall of stone (1 charge), wall of force (1 charge). Caster Level 30th; Prerequisites: Craft Staff, Craft Epic Staff, Extend Spell, extended wall of force, wall of iron, wall of stone; Market Price 275,625 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl30",
+      "epic"
+    ]
+  },
+  {
+    "id": "staff:winter",
+    "name": "Staff of Winter",
+    "category": "staff",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 29250000,
+    "description": "This staff allows use of the following spells: cone of cold (intensified, 2 charges, DC 28), ice storm (intensified, 2 charges, DC 26), freezing sphere (intensified, 2 charges, DC 29), wall of ice (1 charge). Caster Level 24th; Prerequisites: Craft Staff, Craft Epic Staff, Extend Spell, Intensify Spell, cone of cold, ice storm, freezing sphere, wall of ice; Market Price 292,500 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "staff",
+      "cl24",
+      "epic"
+    ]
+  }
+]

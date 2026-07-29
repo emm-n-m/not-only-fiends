@@ -255,84 +255,6 @@
     }
   },
   {
-    "id": "ring:ring_of_adamant_law",
-    "name": "Ring of Adamant Law",
-    "category": "ring",
-    "weightLbs": 0,
-    "priceCp": 25000000,
-    "grantedPermabuffs": [
-      {
-        "$type": "GrantTypedBonus",
-        "target": "ac",
-        "bonusType": "deflection",
-        "value": {
-          "expression": "4"
-        }
-      },
-      {
-        "$type": "GrantTypedBonus",
-        "target": "allSaves",
-        "bonusType": "resistance",
-        "value": {
-          "expression": "4"
-        }
-      }
-    ],
-    "slot": "ring"
-  },
-  {
-    "id": "ring:ring_of_chaotic_fury",
-    "name": "Ring of Chaotic Fury",
-    "category": "ring",
-    "weightLbs": 0,
-    "priceCp": 25000000,
-    "grantedPermabuffs": [
-      {
-        "$type": "GrantTypedBonus",
-        "target": "ac",
-        "bonusType": "deflection",
-        "value": {
-          "expression": "4"
-        }
-      },
-      {
-        "$type": "GrantTypedBonus",
-        "target": "allSaves",
-        "bonusType": "resistance",
-        "value": {
-          "expression": "4"
-        }
-      }
-    ],
-    "slot": "ring"
-  },
-  {
-    "id": "ring:ring_of_ineffable_evil",
-    "name": "Ring of Ineffable Evil",
-    "category": "ring",
-    "weightLbs": 0,
-    "priceCp": 25000000,
-    "grantedPermabuffs": [
-      {
-        "$type": "GrantTypedBonus",
-        "target": "ac",
-        "bonusType": "deflection",
-        "value": {
-          "expression": "4"
-        }
-      },
-      {
-        "$type": "GrantTypedBonus",
-        "target": "allSaves",
-        "bonusType": "resistance",
-        "value": {
-          "expression": "4"
-        }
-      }
-    ],
-    "slot": "ring"
-  },
-  {
     "id": "ring:ring_of_protection_10",
     "name": "Ring of Protection +10",
     "category": "ring",
@@ -417,32 +339,6 @@
         "bonusType": "deflection",
         "value": {
           "expression": "9"
-        }
-      }
-    ],
-    "slot": "ring"
-  },
-  {
-    "id": "ring:ring_of_virtuous_good",
-    "name": "Ring of Virtuous Good",
-    "category": "ring",
-    "weightLbs": 0,
-    "priceCp": 25000000,
-    "grantedPermabuffs": [
-      {
-        "$type": "GrantTypedBonus",
-        "target": "ac",
-        "bonusType": "deflection",
-        "value": {
-          "expression": "4"
-        }
-      },
-      {
-        "$type": "GrantTypedBonus",
-        "target": "allSaves",
-        "bonusType": "resistance",
-        "value": {
-          "expression": "4"
         }
       }
     ],

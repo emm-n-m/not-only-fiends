@@ -1,0 +1,949 @@
+[
+  {
+    "id": "wondrous:amulet_of_epic_natural_armor_6",
+    "name": "Amulet of Epic Natural Armor +6",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 72000000,
+    "description": "This amulet toughens the wearer's body and flesh, giving him or her a +6 enhancement bonus to natural armor. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, barkskin, creator's caster level must be three times the amulet's bonus; Market Price 720,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "naturalEnhancement",
+        "value": {
+          "expression": "6"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:amulet_of_epic_natural_armor_7",
+    "name": "Amulet of Epic Natural Armor +7",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 98000000,
+    "description": "This amulet toughens the wearer's body and flesh, giving him or her a +7 enhancement bonus to natural armor. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, barkskin, creator's caster level must be three times the amulet's bonus; Market Price 980,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "naturalEnhancement",
+        "value": {
+          "expression": "7"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:amulet_of_epic_natural_armor_8",
+    "name": "Amulet of Epic Natural Armor +8",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 128000000,
+    "description": "This amulet toughens the wearer's body and flesh, giving him or her a +8 enhancement bonus to natural armor. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, barkskin, creator's caster level must be three times the amulet's bonus; Market Price 1,280,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "naturalEnhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:amulet_of_epic_natural_armor_9",
+    "name": "Amulet of Epic Natural Armor +9",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 162000000,
+    "description": "This amulet toughens the wearer's body and flesh, giving him or her a +9 enhancement bonus to natural armor. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, barkskin, creator's caster level must be three times the amulet's bonus; Market Price 1,620,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "naturalEnhancement",
+        "value": {
+          "expression": "9"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:amulet_of_epic_natural_armor_10",
+    "name": "Amulet of Epic Natural Armor +10",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 200000000,
+    "description": "This amulet toughens the wearer's body and flesh, giving him or her a +10 enhancement bonus to natural armor. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, barkskin, creator's caster level must be three times the amulet's bonus; Market Price 2,000,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "naturalEnhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:belt_of_epic_strength_8",
+    "name": "Belt of Epic Strength +8",
+    "category": "wondrous",
+    "slot": "waist",
+    "weightLbs": 1,
+    "priceCp": 64000000,
+    "description": "This belt adds a +8 enhancement bonus to the wearer's Strength score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, bull's strength; Market Price 640,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityStr",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:belt_of_epic_strength_10",
+    "name": "Belt of Epic Strength +10",
+    "category": "wondrous",
+    "slot": "waist",
+    "weightLbs": 1,
+    "priceCp": 100000000,
+    "description": "This belt adds a +10 enhancement bonus to the wearer's Strength score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, bull's strength; Market Price 1,000,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityStr",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:belt_of_epic_strength_12",
+    "name": "Belt of Epic Strength +12",
+    "category": "wondrous",
+    "slot": "waist",
+    "weightLbs": 1,
+    "priceCp": 144000000,
+    "description": "This belt adds a +12 enhancement bonus to the wearer's Strength score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, bull's strength; Market Price 1,440,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityStr",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:boots_of_swiftness",
+    "name": "Boots of Swiftness",
+    "category": "wondrous",
+    "slot": "feet",
+    "weightLbs": 1,
+    "priceCp": 25600000,
+    "description": "These shoes grant their wearer a +6 enhancement bonus to Dexterity. The wearer's speed doubles (this does not stack with any magical or supernatural enhancement to speed), he or she gains the evasion ability (as the rogue class feature), and the wearer's jumping distance is not limited by his or her height. The wearer gains a +20 competence bonus on Balance, Climb, Jump, and Tumble checks. Three times per day, the wearer can utter a command word to activate the boots' haste power (as the haste spell, lasts 20 rounds). Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, cat's grace, expeditious retreat, haste, jump; Market Price 256,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityDex",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "6"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:bracers_of_epic_armor_11",
+    "name": "Bracers of Epic Armor +11",
+    "category": "wondrous",
+    "slot": "wrists",
+    "weightLbs": 1,
+    "priceCp": 121000000,
+    "description": "These items surround the wearer with an invisible but tangible field of force, granting him or her a +11 armor bonus, just as though he or she were wearing armor. Both bracers must be worn for the magic to be effective. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, mage armor, creator's caster level must be twice the bracers' bonus; Market Price 1,210,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "armor",
+        "value": {
+          "expression": "11"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:bracers_of_epic_armor_12",
+    "name": "Bracers of Epic Armor +12",
+    "category": "wondrous",
+    "slot": "wrists",
+    "weightLbs": 1,
+    "priceCp": 144000000,
+    "description": "These items surround the wearer with an invisible but tangible field of force, granting him or her a +12 armor bonus, just as though he or she were wearing armor. Both bracers must be worn for the magic to be effective. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, mage armor, creator's caster level must be twice the bracers' bonus; Market Price 1,440,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "armor",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:bracers_of_epic_armor_13",
+    "name": "Bracers of Epic Armor +13",
+    "category": "wondrous",
+    "slot": "wrists",
+    "weightLbs": 1,
+    "priceCp": 169000000,
+    "description": "These items surround the wearer with an invisible but tangible field of force, granting him or her a +13 armor bonus, just as though he or she were wearing armor. Both bracers must be worn for the magic to be effective. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, mage armor, creator's caster level must be twice the bracers' bonus; Market Price 1,690,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "armor",
+        "value": {
+          "expression": "13"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:bracers_of_epic_armor_14",
+    "name": "Bracers of Epic Armor +14",
+    "category": "wondrous",
+    "slot": "wrists",
+    "weightLbs": 1,
+    "priceCp": 196000000,
+    "description": "These items surround the wearer with an invisible but tangible field of force, granting him or her a +14 armor bonus, just as though he or she were wearing armor. Both bracers must be worn for the magic to be effective. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, mage armor, creator's caster level must be twice the bracers' bonus; Market Price 1,960,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "armor",
+        "value": {
+          "expression": "14"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:bracers_of_epic_armor_15",
+    "name": "Bracers of Epic Armor +15",
+    "category": "wondrous",
+    "slot": "wrists",
+    "weightLbs": 1,
+    "priceCp": 225000000,
+    "description": "These items surround the wearer with an invisible but tangible field of force, granting him or her a +15 armor bonus, just as though he or she were wearing armor. Both bracers must be worn for the magic to be effective. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, mage armor, creator's caster level must be twice the bracers' bonus; Market Price 2,250,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "armor",
+        "value": {
+          "expression": "15"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:bracers_of_epic_health_8",
+    "name": "Bracers of Epic Health +8",
+    "category": "wondrous",
+    "slot": "wrists",
+    "weightLbs": 1,
+    "priceCp": 64000000,
+    "description": "These grant the wearer a +8 enhancement bonus to Constitution. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, endurance; Market Price 640,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCon",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:bracers_of_epic_health_10",
+    "name": "Bracers of Epic Health +10",
+    "category": "wondrous",
+    "slot": "wrists",
+    "weightLbs": 1,
+    "priceCp": 100000000,
+    "description": "These grant the wearer a +10 enhancement bonus to Constitution. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, endurance; Market Price 1,000,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCon",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:bracers_of_epic_health_12",
+    "name": "Bracers of Epic Health +12",
+    "category": "wondrous",
+    "slot": "wrists",
+    "weightLbs": 1,
+    "priceCp": 144000000,
+    "description": "These grant the wearer a +12 enhancement bonus to Constitution. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, endurance; Market Price 1,440,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCon",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:bracers_of_relentless_might",
+    "name": "Bracers of Relentless Might",
+    "category": "wondrous",
+    "slot": "wrists",
+    "weightLbs": 1,
+    "priceCp": 438400000,
+    "description": "These bracers grant a +12 enhancement bonus to the wearer's Strength and Constitution. The wearer is treated as two size categories larger than normal (to a maximum of Colossal) for purposes of combat-related opposed checks that apply a modifier based on size, such as bull rush, grapple, and trip. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, bull's strength, endurance, enlarge; Market Price 4,384,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityStr",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      },
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCon",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:cabinet_of_feasting",
+    "name": "Cabinet of Feasting",
+    "category": "wondrous",
+    "slot": null,
+    "weightLbs": 20,
+    "priceCp": 28800000,
+    "description": "This cabinet has the ability to produce a feast for up to forty people, three times per day. Merely opening the doors of the cabinet reveals platters of food of all types and flavors of the very freshest sort. The meal has all the qualities and benefits of that produced by a heroes' feast spell. Caster Level 40th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, heroes' feast; Market Price 288,000 gp; Weight 20 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl40"
+    ]
+  },
+  {
+    "id": "wondrous:cloak_of_epic_charisma_8",
+    "name": "Cloak of Epic Charisma +8",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 64000000,
+    "description": "When worn, this cloak grants a +8 enhancement bonus to a character's Charisma score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, charm monster; Market Price 640,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCha",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:cloak_of_epic_charisma_10",
+    "name": "Cloak of Epic Charisma +10",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 100000000,
+    "description": "When worn, this cloak grants a +10 enhancement bonus to a character's Charisma score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, charm monster; Market Price 1,000,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCha",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:cloak_of_epic_charisma_12",
+    "name": "Cloak of Epic Charisma +12",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 144000000,
+    "description": "When worn, this cloak grants a +12 enhancement bonus to a character's Charisma score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, charm monster; Market Price 1,440,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityCha",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:cloak_of_epic_resistance_6",
+    "name": "Cloak of Epic Resistance +6",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 36000000,
+    "description": "These garments offer magic protection in the form of a +6 resistance bonus on all saving throws (Fortitude, Reflex, and Will). Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, resistance, creator's caster level must be three times the cloak's bonus; Market Price 360,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "6"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:cloak_of_epic_resistance_7",
+    "name": "Cloak of Epic Resistance +7",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 49000000,
+    "description": "These garments offer magic protection in the form of a +7 resistance bonus on all saving throws (Fortitude, Reflex, and Will). Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, resistance, creator's caster level must be three times the cloak's bonus; Market Price 490,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "7"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:cloak_of_epic_resistance_8",
+    "name": "Cloak of Epic Resistance +8",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 64000000,
+    "description": "These garments offer magic protection in the form of a +8 resistance bonus on all saving throws (Fortitude, Reflex, and Will). Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, resistance, creator's caster level must be three times the cloak's bonus; Market Price 640,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:cloak_of_epic_resistance_9",
+    "name": "Cloak of Epic Resistance +9",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 81000000,
+    "description": "These garments offer magic protection in the form of a +9 resistance bonus on all saving throws (Fortitude, Reflex, and Will). Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, resistance, creator's caster level must be three times the cloak's bonus; Market Price 810,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "9"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:cloak_of_epic_resistance_10",
+    "name": "Cloak of Epic Resistance +10",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 100000000,
+    "description": "These garments offer magic protection in the form of a +10 resistance bonus on all saving throws (Fortitude, Reflex, and Will). Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, resistance, creator's caster level must be three times the cloak's bonus; Market Price 1,000,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "allSaves",
+        "bonusType": "resistance",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:gate_key",
+    "name": "Gate Key",
+    "category": "wondrous",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 37800000,
+    "description": "When properly operated, the gate key can be used to attune any bounded space, such as a doorway or a cave opening, to another bounded space on another plane of existence previously visited by the wielder. When two bounded spaces are attuned, an interdimensional portal springs up at each location, and the two portals are connected. When the wielder creates a pair of portals, he or she also establishes the necessary key that travelers must have to access the portal. Possible keys include nothing, a pearl, a particular hair color, or even the gate key itself. Up to sixty different pairs of portals can be attuned in this manner. Once all sixty pairs of portals are created, the key cannot create additional gates, though it may still be the necessary key to access some or all of the portals. To any creature without the proper key, the interdimensional portals are not visible (though true seeing or similar magic reveals their presence). Caster Level 21st; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, gate; Market Price 378,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl21"
+    ]
+  },
+  {
+    "id": "wondrous:gloves_of_epic_dexterity_8",
+    "name": "Gloves of Epic Dexterity +8",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 0,
+    "priceCp": 64000000,
+    "description": "These gloves add a +8 enhancement bonus to the wearer's Dexterity score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, cat's grace; Market Price 640,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityDex",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:gloves_of_epic_dexterity_10",
+    "name": "Gloves of Epic Dexterity +10",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 0,
+    "priceCp": 100000000,
+    "description": "These gloves add a +10 enhancement bonus to the wearer's Dexterity score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, cat's grace; Market Price 1,000,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityDex",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:gloves_of_epic_dexterity_12",
+    "name": "Gloves of Epic Dexterity +12",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 0,
+    "priceCp": 144000000,
+    "description": "These gloves add a +12 enhancement bonus to the wearer's Dexterity score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, cat's grace; Market Price 1,440,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityDex",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:headband_of_epic_intellect_8",
+    "name": "Headband of Epic Intellect +8",
+    "category": "wondrous",
+    "slot": "head",
+    "weightLbs": 0,
+    "priceCp": 64000000,
+    "description": "This headband adds a +8 enhancement bonus to the wearer's Intelligence score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, commune or legend lore; Market Price 640,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityInt",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:headband_of_epic_intellect_10",
+    "name": "Headband of Epic Intellect +10",
+    "category": "wondrous",
+    "slot": "head",
+    "weightLbs": 0,
+    "priceCp": 100000000,
+    "description": "This headband adds a +10 enhancement bonus to the wearer's Intelligence score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, commune or legend lore; Market Price 1,000,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityInt",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:headband_of_epic_intellect_12",
+    "name": "Headband of Epic Intellect +12",
+    "category": "wondrous",
+    "slot": "head",
+    "weightLbs": 0,
+    "priceCp": 144000000,
+    "description": "This headband adds a +12 enhancement bonus to the wearer's Intelligence score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, commune or legend lore; Market Price 1,440,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityInt",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:horseshoes_of_the_peerless_steed",
+    "name": "Horseshoes of the Peerless Steed",
+    "category": "wondrous",
+    "slot": "feet",
+    "weightLbs": 1,
+    "priceCp": 21700000,
+    "description": "These horseshoes magically adhere to the feet of any hoofed creature. Anyone riding the creature gains a +10 competence bonus on Ride checks and is treated as having ranks in the appropriate Ride skill (and thus does not take the -5 penalty for riding an unfamiliar mount). The horseshoes grant the creature (or its rider, as appropriate) the effects of the Trample, Ride-By Attack, and Spirited Charge feats. The wearer of the horseshoes gains spell resistance 32 against enchantment effects. In addition, the ground speed of the creature wearing the horseshoes doubles. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, Ride skill, haste, spell resistance; Market Price 217,000 gp; Weight 1 lb. each.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:mantle_of_great_stealth",
+    "name": "Mantle of Great Stealth",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 1,
+    "priceCp": 24200000,
+    "description": "The wearer of this cloak gains a +30 bonus on Hide and Move Silently checks. The wearer's outline is blurry and indistinct, granting concealment (20% miss chance) at all times (as the blur spell). The mantle also grants nondetection to its wearer (as the spell). Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, blur, invisibility, nondetection, silence; Market Price 242,000 gp; Weight 1 lb.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:periapt_of_epic_wisdom_8",
+    "name": "Periapt of Epic Wisdom +8",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 64000000,
+    "description": "This large pearl set on a chain grants a +8 enhancement bonus to the wearer's Wisdom score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, commune or legend lore; Market Price 640,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityWis",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "8"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:periapt_of_epic_wisdom_10",
+    "name": "Periapt of Epic Wisdom +10",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 100000000,
+    "description": "This large pearl set on a chain grants a +10 enhancement bonus to the wearer's Wisdom score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, commune or legend lore; Market Price 1,000,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityWis",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "10"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  },
+  {
+    "id": "wondrous:periapt_of_epic_wisdom_12",
+    "name": "Periapt of Epic Wisdom +12",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 144000000,
+    "description": "This large pearl set on a chain grants a +12 enhancement bonus to the wearer's Wisdom score. Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, commune or legend lore; Market Price 1,440,000 gp; Weight -.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "abilityWis",
+        "bonusType": "enhancement",
+        "value": {
+          "expression": "12"
+        }
+      }
+    ],
+    "tags": [
+      "wondrous",
+      "epic",
+      "cl20"
+    ]
+  }
+]

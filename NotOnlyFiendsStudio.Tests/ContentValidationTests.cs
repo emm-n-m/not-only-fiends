@@ -118,7 +118,7 @@ public class ContentValidationTests
 
         var rods = registry.GetAllEquipment().Where(e => e.Category == EquipmentCategory.Rod).ToList();
         var staffs = registry.GetAllEquipment().Where(e => e.Category == EquipmentCategory.Staff).ToList();
-        Assert.Equal(21, staffs.Count);
+        Assert.Equal(35, staffs.Count);
         Assert.True(rods.Count >= 30, $"expected the metamagic tiers too, found {rods.Count}");
 
         Assert.True(registry.TryGetEquipment("staff:power", out var power));

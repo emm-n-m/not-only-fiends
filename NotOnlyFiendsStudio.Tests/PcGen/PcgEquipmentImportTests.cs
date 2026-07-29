@@ -194,7 +194,7 @@ public class PcgEquipmentImportTests
     {
         var data = MinimalCharacter(new PcgEquipmentRaw
         {
-            Name = "Robe of the Archmagi (Black)",
+            Name = "Bag of Holding (Nonexistent Type)",
             SlotName = "Body",
             InActiveSet = true,
         });
@@ -204,8 +204,8 @@ public class PcgEquipmentImportTests
         var result = PcgConverter.Convert(data, mapper, registry);
 
         Assert.Empty(result.Character.Equipment);
-        Assert.Contains("Robe of the Archmagi (Black)", result.DroppedEquipment);
-        Assert.Contains(result.Warnings, w => w.Contains("Robe of the Archmagi"));
+        Assert.Contains("Bag of Holding (Nonexistent Type)", result.DroppedEquipment);
+        Assert.Contains(result.Warnings, w => w.Contains("Bag of Holding"));
     }
 
     [Fact]

@@ -1,0 +1,319 @@
+[
+  {
+    "id": "ring:adamant_law",
+    "name": "Ring of Adamant Law",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 25000000,
+    "description": "The wearer of this ring is constantly sheathed in a shield of law effect: a +4 deflection bonus to AC and a +4 resistance bonus on saves (applies against all attacks, not just attacks by chaotic creatures), SR 25 against chaotic spells and spells cast by chaotic creatures, and protection from possession/mental influence by chaotic creatures. It also bestows one negative level on any chaotic creature that puts it on. The negative level remains as long as the ring is worn and disappears when the ring is removed. This negative level never results in actual level loss, but it cannot be overcome in any way (including restoration spells) while the ring is worn. Caster Level 15th; Prerequisites: Forge Ring, Forge Epic Ring, shield of law, creator must be lawful; Market Price 250,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "4" } },
+      { "$type": "GrantTypedBonus", "target": "allSaves", "bonusType": "resistance", "value": { "expression": "4" } }
+    ],
+    "tags": [
+      "ring",
+      "cl15",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:chaotic_fury",
+    "name": "Ring of Chaotic Fury",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 25000000,
+    "description": "The wearer of this ring is constantly sheathed in a cloak of chaos effect: a +4 deflection bonus to AC and a +4 resistance bonus on saves (applies against all attacks, not just attacks by lawful creatures), SR 25 against lawful spells and spells cast by lawful creatures, and protection from possession/mental influence by lawful creatures. It also bestows one negative level on any lawful creature that puts it on. The negative level remains as long as the ring is worn and disappears when the ring is removed. This negative level never results in actual level loss, but it cannot be overcome in any way (including restoration spells) while the ring is worn. Caster Level 15th; Prerequisites: Forge Ring, Forge Epic Ring, cloak of chaos, creator must be chaotic; Market Price 250,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "4" } },
+      { "$type": "GrantTypedBonus", "target": "allSaves", "bonusType": "resistance", "value": { "expression": "4" } }
+    ],
+    "tags": [
+      "ring",
+      "cl15",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:energy_immunity",
+    "name": "Ring of Energy Immunity",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 24000000,
+    "description": "This band continually provides the wearer with immunity to a single type of energy: fire, cold, electricity, acid, or sonic (chosen by the creator of the item). The wearer takes no damage from the energy of the specific type. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, protection from energy; Market Price 240,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "cl20",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:epic_wizardry_v",
+    "name": "Epic Ring of Wizardry (V)",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 25000000,
+    "description": "Like the ring of wizardry, this ring comes in a variety of types useful only to arcane spellcasters. The wearer's arcane spells per day are doubled for one particular spell level. An epic ring of wizardry V doubles 5th-level spells. Bonus spells from high ability scores, school specialization, or any other source are not doubled. Caster Level 23rd; Prerequisites: Forge Ring, Forge Epic Ring, wish; Market Price 250,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "cl23",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:epic_wizardry_vi",
+    "name": "Epic Ring of Wizardry (VI)",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 36000000,
+    "description": "Like the ring of wizardry, this ring comes in a variety of types useful only to arcane spellcasters. The wearer's arcane spells per day are doubled for one particular spell level. An epic ring of wizardry VI doubles 6th-level spells. Bonus spells from high ability scores, school specialization, or any other source are not doubled. Caster Level 26th; Prerequisites: Forge Ring, Forge Epic Ring, wish; Market Price 360,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "cl26",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:epic_wizardry_vii",
+    "name": "Epic Ring of Wizardry (VII)",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 49000000,
+    "description": "Like the ring of wizardry, this ring comes in a variety of types useful only to arcane spellcasters. The wearer's arcane spells per day are doubled for one particular spell level. An epic ring of wizardry VII doubles 7th-level spells. Bonus spells from high ability scores, school specialization, or any other source are not doubled. Caster Level 29th; Prerequisites: Forge Ring, Forge Epic Ring, wish; Market Price 490,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "cl29",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:epic_wizardry_viii",
+    "name": "Epic Ring of Wizardry (VIII)",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 64000000,
+    "description": "Like the ring of wizardry, this ring comes in a variety of types useful only to arcane spellcasters. The wearer's arcane spells per day are doubled for one particular spell level. An epic ring of wizardry VIII doubles 8th-level spells. Bonus spells from high ability scores, school specialization, or any other source are not doubled. Caster Level 32nd; Prerequisites: Forge Ring, Forge Epic Ring, wish; Market Price 640,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "cl32",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:ineffable_evil",
+    "name": "Ring of Ineffable Evil",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 25000000,
+    "description": "The wearer of this ring is constantly sheathed in an unholy aura effect: a +4 deflection bonus to AC and a +4 resistance bonus on saves (applies against all attacks, not just attacks by good creatures), SR 25 against good spells and spells cast by good creatures, and protection from possession/mental influence by good creatures. It also bestows one negative level on any good creature that puts it on. The negative level remains as long as the ring is worn and disappears when the ring is removed. This negative level never results in actual level loss, but it cannot be overcome in any way (including restoration spells) while the ring is worn. Caster Level 15th; Prerequisites: Forge Ring, Forge Epic Ring, unholy aura, creator must be evil; Market Price 250,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "4" } },
+      { "$type": "GrantTypedBonus", "target": "allSaves", "bonusType": "resistance", "value": { "expression": "4" } }
+    ],
+    "tags": [
+      "ring",
+      "cl15",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:ironskin",
+    "name": "Ring of Ironskin",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 40000000,
+    "description": "This ring grants its wearer damage reduction 15/adamantine. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, iron body; Market Price 400,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantDR",
+        "value": 15,
+        "bypassedBy": "adamantine"
+      }
+    ],
+    "tags": [
+      "ring",
+      "cl20",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:sequestering",
+    "name": "Ring of Sequestering",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 30000000,
+    "description": "This ring becomes invisible when worn. Upon command, the wearer gains the benefits of a sequester spell (though he or she does not become comatose as normal for the spell). Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, sequester; Market Price 300,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "cl20",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:universal_energy_resistance_greater",
+    "name": "Ring of Universal Energy Resistance, Greater",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 30800000,
+    "description": "This ring functions as a ring of greater energy resistance for all types of energy—fire, cold, electricity, acid, and sonic. When the wearer would normally take such damage, subtract 30 points of damage per round from the amount before applying. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, protection from energy; Market Price 308,000 gp; Cost to Create: 154,000 gp + 13,080 XP.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "cl20",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:virtuous_good",
+    "name": "Ring of Virtuous Good",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 25000000,
+    "description": "The wearer of this ring is constantly sheathed in a holy aura effect: a +4 deflection bonus to AC and a +4 resistance bonus on saves (applies against all attacks, not just attacks by evil creatures), SR 25 against evil spells and spells cast by evil creatures, and protection from possession/mental influence by evil creatures. It also bestows one negative level on any evil creature that puts it on. The negative level remains as long as the ring is worn and disappears when the ring is removed. This negative level never results in actual level loss, but it cannot be overcome in any way (including restoration spells) while the ring is worn. Caster Level 15th; Prerequisites: Forge Ring, Forge Epic Ring, holy aura, creator must be good; Market Price 250,000 gp; Cost to Create: 125,000 gp + 12,500 XP.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "4" } },
+      { "$type": "GrantTypedBonus", "target": "allSaves", "bonusType": "resistance", "value": { "expression": "4" } }
+    ],
+    "tags": [
+      "ring",
+      "cl15",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:weaponbreaking",
+    "name": "Ring of Weaponbreaking",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 60000000,
+    "description": "A ring of weaponbreaking is identical to a ring of ironskin (granting damage reduction 15/adamantine), and has one additional power: any weapon that successfully strikes the wearer must also make a Fortitude saving throw (DC 20) or be shattered into pieces. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, iron body, shatter; Market Price 600,000 gp; Cost to Create: 300,000 gp + 16,000 XP.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantDR",
+        "value": 15,
+        "bypassedBy": "adamantine"
+      }
+    ],
+    "tags": [
+      "ring",
+      "cl20",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:epic_psionics_v",
+    "name": "Ring of Epic Psionics (V)",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 25000000,
+    "description": "This special crystal ring comes in a variety of types useful only to psionic characters (characters who have power points per day). The wearer's total power points per day are increased, depending on the ring. The points granted are not bonus points—while the ring is worn, it actually increases the wearer's points per day, but a night's rest is required before gaining access to the increased total. A ring of epic psionics V increases the wearer's daily power points by 43. Manifester Level 23rd; Prerequisites: Craft Universal Item, Craft Epic Universal Item, great emulation; Market Price 250,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "ml23",
+      "epic",
+      "psionic"
+    ]
+  },
+  {
+    "id": "ring:epic_psionics_vi",
+    "name": "Ring of Epic Psionics (VI)",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 36000000,
+    "description": "This special crystal ring comes in a variety of types useful only to psionic characters (characters who have power points per day). The wearer's total power points per day are increased, depending on the ring. The points granted are not bonus points—while the ring is worn, it actually increases the wearer's points per day, but a night's rest is required before gaining access to the increased total. A ring of epic psionics VI grants 63 power points. Manifester Level 26th; Prerequisites: Craft Universal Item, Craft Epic Universal Item, great emulation; Market Price 360,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "ml26",
+      "epic",
+      "psionic"
+    ]
+  },
+  {
+    "id": "ring:epic_psionics_vii",
+    "name": "Ring of Epic Psionics (VII)",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 49000000,
+    "description": "This special crystal ring comes in a variety of types useful only to psionic characters (characters who have power points per day). The wearer's total power points per day are increased, depending on the ring. The points granted are not bonus points—while the ring is worn, it actually increases the wearer's points per day, but a night's rest is required before gaining access to the increased total. A ring of epic psionics VII grants 87 power points. Manifester Level 29th; Prerequisites: Craft Universal Item, Craft Epic Universal Item, great emulation; Market Price 490,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "ml29",
+      "epic",
+      "psionic"
+    ]
+  },
+  {
+    "id": "ring:epic_psionics_viii",
+    "name": "Ring of Epic Psionics (VIII)",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 64000000,
+    "description": "This special crystal ring comes in a variety of types useful only to psionic characters (characters who have power points per day). The wearer's total power points per day are increased, depending on the ring. The points granted are not bonus points—while the ring is worn, it actually increases the wearer's points per day, but a night's rest is required before gaining access to the increased total. A ring of epic psionics VIII grants 115 power points. Manifester Level 32nd; Prerequisites: Craft Universal Item, Craft Epic Universal Item, great emulation; Market Price 640,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "ml32",
+      "epic",
+      "psionic"
+    ]
+  },
+  {
+    "id": "ring:epic_psionics_ix",
+    "name": "Ring of Epic Psionics (IX)",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 81000000,
+    "description": "This special crystal ring comes in a variety of types useful only to psionic characters (characters who have power points per day). The wearer's total power points per day are increased, depending on the ring. The points granted are not bonus points—while the ring is worn, it actually increases the wearer's points per day, but a night's rest is required before gaining access to the increased total. A ring of epic psionics IX grants 147 power points. Manifester Level 35th; Prerequisites: Craft Universal Item, Craft Epic Universal Item, great emulation; Market Price 810,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "ring",
+      "ml35",
+      "epic",
+      "psionic"
+    ]
+  }
+]

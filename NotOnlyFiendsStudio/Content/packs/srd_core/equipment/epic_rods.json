@@ -1,0 +1,314 @@
+[
+  {
+    "id": "rod:besiegement",
+    "name": "Rod of Besiegement",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 44774500,
+    "description": "This rod functions as a +3 light mace. In addition, it is useful for besieging fortifications. Whenever the wielder makes a charge attack, the rod improves to a +6 weapon. Twice per day, the rod can create a battering ram that lasts for 24 rounds, dealing 20 points of damage per hit; it can only target fortifications, and can be damaged by normal means (65 hp, AC 22) or destroyed by disintegrate or dispel magic. Siege Engine: three times per day, the rod generates one heavy catapult, two light catapults, or three siege towers (each lasting 12 hours, with ammunition for 20 shots included). Transmute Rock to Mud: usable three times per day (caster level 24th, save DC 17). Caster Level 24th; Prerequisites: Craft Rod, Craft Epic Rod, Craft Magic Arms and Armor, clenched fist, passwall, telepathic bond, transmute rock to mud; Market Price 447,745 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl24",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:epic_absorption",
+    "name": "Rod of Epic Absorption",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 150000000,
+    "description": "Like a rod of absorption, this rod draws single-target or ray spells and spell-like abilities into itself, nullifying the effect and storing the potential spell levels until the wielder releases the energy in the form of spells of his or her own. Spells of any level, including those boosted beyond 9th level by metamagic, can be absorbed, although epic spells cannot. The rod absorbs a maximum of 150 spell levels and can thereafter only discharge any remaining potential it might have; it cannot be recharged. Caster Level 23rd; Prerequisites: Craft Rod, Craft Epic Rod, Empower Spell, Maximize Spell, empowered maximized spell turning; Market Price 1,500,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl23",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:epic_cancellation",
+    "name": "Rod of Epic Cancellation",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 33000000,
+    "description": "This rod's touch drains an item of all magical properties, including the magical energy in epic magic items (but not most artifacts). The item touched gets a Will save (DC 26); if a creature is holding it, the item can use the holder's Will save bonus in place of its own, and contact is made with a melee touch attack. Upon draining three items the rod becomes brittle and useless. Drained items can only be restored by wish, miracle, or epic spells specifically designed to restore lost power. A rod of epic cancellation can neutralize a normal sphere of annihilation without itself being cancelled. Caster Level 25th; Prerequisites: Craft Rod, Craft Epic Rod, dispel magic; Market Price 330,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl25",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:epic_might",
+    "name": "Rod of Epic Might",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 429343200,
+    "description": "This rod is similar to a rod of lordly might but far more powerful, constructed of adamantine, with six buttons, several spell-like functions, and several mundane uses; it can also be used as a magic weapon of various sorts. Spell-like functions (each usable once per day): Dominate Person — a touched foe is affected as by dominate person if the wielder so commands (Will DC 24); the wielder must choose to use this power and succeed on a melee touch attack, or the effect is lost. Stun — on command, all enemies viewing the rod are stunned as by power word, stun (10-ft. range, Will DC 24), a standard action to invoke. Damage — on command, the rod deals 10d8 points of damage to a touched opponent and cures the wielder of a like amount of damage (Will DC 26); the wielder must choose to use this power before attacking. Weapon forms (unlimited use): in its normal form the rod is a +6 heavy mace; button 1 makes it a +3 longsword of fiery blasting; button 2 makes it a +8 battleaxe; button 3 makes it a +10 shortspear or +10 longspear. Mundane uses (unlimited use): button 4 extrudes a climbing spike/ladder that lengthens the rod from 5 to 150 feet, anchoring in granite and bearing up to 10,000 pounds (retracted with button 5); the ladder function can also force open doors, planted within 30 feet of a portal and pushed, exerting a Strength bonus of +24; button 6 indicates magnetic north and the wielder's approximate depth or height relative to the surface. Caster Level 30th; Prerequisites: Craft Rod, Craft Epic Rod, Craft Magic Arms and Armor, Craft Epic Magic Arms and Armor, cure critical wounds, inflict critical wounds, bull's strength, fireball, dominate person, power word stun; Market Price 4,293,432 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl30",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:epic_negation",
+    "name": "Rod of Epic Negation",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 44600000,
+    "description": "This rod negates the spell or spell-like functions of magic items, including epic magic items (but not artifacts). The wielder points the rod at the target device; a beam shoots forth as a ray (ranged touch attack) that negates any currently active item function and has a 75% chance to negate any other spell or spell-like function of that device, regardless of level or power, for 2d4 rounds. To negate instantaneous effects the wielder must have readied an action. The target item gets no saving throw or other means to resist. Usable three times per day. Caster Level 24th; Prerequisites: Craft Rod, Craft Epic Rod, dispel magic, limited wish or miracle; Market Price 446,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl24",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:epic_rulership",
+    "name": "Rod of Epic Rulership",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 57500000,
+    "description": "This rod appears to be a royal scepter worth at least 25,000 gp in materials and workmanship alone. When activated (a standard action), the wielder can command the obedience and fealty of creatures within 360 feet, totaling up to 900 Hit Dice; creatures with Intelligence 17 or higher get a Will save (DC 29) to negate the effect. Ruled creatures obey the wielder as their absolute sovereign, though a command contrary to a creature's nature breaks the magic. The rod can be used for 1,500 total minutes (need not be continuous) before crumbling to dust. Caster Level 25th; Prerequisites: Craft Rod, Craft Epic Rod, Improved Heighten Spell, improved heightened mass charm; Market Price 575,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl25",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:epic_splendor",
+    "name": "Rod of Epic Splendor",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 29740000,
+    "description": "This rod grants its wielder a +8 enhancement bonus to Charisma for as long as he or she holds or carries the item. Three times per day, the rod garbs its wielder in clothing of the finest fabrics plus adornments of fur and jewels (worth 70,000-100,000 gp, lasting up to 24 hours). Once per week, the rod can create a palatial mansion in any floor plan the user desires, able to accommodate up to 250 people with private chambers and fine banquets; the mansion and everything in it (including items removed from it) lasts three days before vanishing. Caster Level 21st; Prerequisites: Craft Rod, Craft Epic Rod, fabricate, mage's magnificent mansion; Market Price 297,400 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityCha", "bonusType": "enhancement", "value": { "expression": "8" } }
+    ],
+    "tags": [
+      "rod",
+      "cl21",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:excellent_magic",
+    "name": "Rod of Excellent Magic",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 65000000,
+    "description": "Once per day when casting a nonepic or epic spell that has an experience point component, the rod supplies up to 2,000 XP so the caster need not pay them (if more XP is required, the caster provides the remainder). As a special use, the caster can instead substitute the rod's inherent power for the entire experience point development cost of an epic spell; doing so drains all the power from the rod, rendering it useless. Caster Level 21st; Prerequisites: Craft Rod, Craft Epic Rod; Market Price 650,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl21",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:fortification",
+    "name": "Rod of Fortification",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 46566500,
+    "description": "This rod functions as a +3 light mace and is useful for the construction and defense of fortifications. Whenever the wielder benefits from cover, the rod improves that to nine-tenths cover (+10 cover AC bonus and +4 cover Reflex save bonus; a failed save results in half damage and success in no damage). Three times per day the rod creates food and water (as the cleric spell) for twenty-four people. Fortify: four times per day the rod creates a stone wall 12 inches thick, 10 feet high, and 30 feet long, with a parapet and battlements (or mends a broken wall of up to 300 square feet); once per day it can also create a 4-inch-thick iron door (double door, drawbridge, or portcullis) set into a newly created wall. Siege Engine: four times per day the rod generates one heavy catapult, two light catapults, or three ballistae, each with ammunition for 20 shots. Caster Level 24th; Prerequisites: Craft Rod, Craft Epic Rod, Craft Magic Arms and Armor, interposing hand, create food and water, major creation, wall of iron, wall of stone; Market Price 465,665 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl24",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:invulnerability",
+    "name": "Rod of Invulnerability",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 60000000,
+    "description": "When held, this rod grants its wielder a +5 enhancement bonus to natural armor, a +5 resistance bonus on saving throws, damage reduction 15/adamantine, immunity to critical hits, and spell resistance 32. Caster Level 20th; Prerequisites: Craft Rod, Craft Epic Rod, iron body, resistance, spell resistance; Market Price 600,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "naturalEnhancement", "value": { "expression": "5" } },
+      { "$type": "GrantTypedBonus", "target": "allSaves", "bonusType": "resistance", "value": { "expression": "5" } },
+      { "$type": "GrantDR", "value": 15, "bypassedBy": "adamantine" },
+      { "$type": "GrantImmunity", "immunity": "critical hits" },
+      { "$type": "ModifyAttribute", "target": "spellResistance", "value": 32 }
+    ],
+    "tags": [
+      "rod",
+      "cl20",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:nightmares",
+    "name": "Rod of Nightmares",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 28400000,
+    "description": "Anyone who comes within 20 feet of the wielder of this rod feels a grave sense of unease; each must make a Will save (DC 17) or suffer the effects of a nightmare spell the next time he or she falls asleep. The wielder is immune to this effect. Three times per day the wielder can utter a command word causing the rod to emit a horrid, inhuman scream; up to twenty of the closest creatures within a 30-foot radius who hear it suffer the effects of a wail of the banshee spell (DC 23) as their worst nightmares seem to become reality. Caster Level 21st; Prerequisites: Craft Rod, Craft Epic Rod, nightmare, permanency, wail of the banshee; Market Price 284,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl21",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:paradise",
+    "name": "Rod of Paradise",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 61000000,
+    "description": "This item creates a nondimensional space similar to a rod of security, except the possessor and up to 999 other creatures can stay in complete safety for up to 1,000 days divided by the number of creatures affected, with natural healing occurring at five times the normal rate. The rod otherwise functions like its nonepic counterpart. Caster Level 24th; Prerequisites: Craft Rod, Craft Epic Rod, Improved Heighten Spell, improved heightened gate; Market Price 610,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl24",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:the_path",
+    "name": "Rod of the Path",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 30687000,
+    "description": "This rod serves as an aid to trailblazing and travel, granting the wielder a +30 enhancement bonus on Wilderness Lore checks for tracking and on Intuit Direction checks. Its hollow handle functions as a telescope, tripling the limits of vision (and spotting distances) and allowing the wielder to view things as though affected by a true seeing spell. Map: three times per day a section of the rod unrolls like a scroll, revealing a map of the surrounding area (centered on the rod) that shows natural topography and all structures, hidden or not, from a 50-foot to a 24-mile radius. Passage: three times per day the rod lets the wielder and up to five others in a 20-foot radius move unhindered through natural plant growth or bodies of water, as freedom of movement. Bridge: once per day the rod creates a 5-foot-wide, 40-foot-long stone causeway across chasms and canyons, lasting 1 hour. Pass without Trace: once per day the rod affects the wielder and twenty others for 21 minutes, as the spell of the same name (caster level 24th). Caster Level 21st; Prerequisites: Craft Rod, Craft Epic Rod, find the path, freedom of movement, pass without trace, wall of stone; Market Price 306,870 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl21",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:restless_death",
+    "name": "Rod of Restless Death",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 62500000,
+    "description": "The holder of this rod can rebuke or control undead as if four levels higher (it grants no rebuking ability to a holder who lacks one already). The wielder may speak a command word to cast animate dead; skeletons or zombies animated this way are automatically controlled by the rod, up to a limit of 42 HD, and don't count toward the wielder's normal limit of controlled undead. The wielder can also speak a second command word to cast slay living (heightened to 10th level; DC 25). Caster Level 21st; Prerequisites: Craft Rod, Craft Epic Rod, animate dead, control undead, slay living; Market Price 625,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl21",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:wyrm_white_brass",
+    "name": "Rod of the Wyrm (White/Brass)",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 145820000,
+    "description": "Any of the various rods in this series functions as a +5 quarterstaff. Upon casting the rod to the ground (a standard action) and uttering a command word, the rod grows by the end of the round into a specific type of dragon (a wyrm), obeying the commands of its owner. The dragon returns to rod form (a full-round action) whenever the wielder desires, or whenever it moves farther than 500 feet from the owner; if slain in dragon form it returns to rod form and cannot be activated again for three days. A wyrm rod only functions if the possessor is of the same alignment as the dragon type. This rod transforms into a white or brass wyrm. Caster Level 34th; Prerequisites: Craft Rod, Craft Epic Rod, Craft Magic Arms and Armor, Craft Epic Magic Arms and Armor, Improved Heighten Spell, improved heightened polymorph, creator must be same alignment as dragon type; Market Price 1,458,200 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl34",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:wyrm_black_copper",
+    "name": "Rod of the Wyrm (Black/Copper)",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 156260000,
+    "description": "Any of the various rods in this series functions as a +5 quarterstaff. Upon casting the rod to the ground (a standard action) and uttering a command word, the rod grows by the end of the round into a specific type of dragon (a wyrm), obeying the commands of its owner. The dragon returns to rod form (a full-round action) whenever the wielder desires, or whenever it moves farther than 500 feet from the owner; if slain in dragon form it returns to rod form and cannot be activated again for three days. A wyrm rod only functions if the possessor is of the same alignment as the dragon type. This rod transforms into a black or copper wyrm. Caster Level 35th; Prerequisites: Craft Rod, Craft Epic Rod, Craft Magic Arms and Armor, Craft Epic Magic Arms and Armor, Improved Heighten Spell, improved heightened polymorph, creator must be same alignment as dragon type; Market Price 1,562,600 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl35",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:wyrm_green_bronze",
+    "name": "Rod of the Wyrm (Green/Bronze)",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 167060000,
+    "description": "Any of the various rods in this series functions as a +5 quarterstaff. Upon casting the rod to the ground (a standard action) and uttering a command word, the rod grows by the end of the round into a specific type of dragon (a wyrm), obeying the commands of its owner. The dragon returns to rod form (a full-round action) whenever the wielder desires, or whenever it moves farther than 500 feet from the owner; if slain in dragon form it returns to rod form and cannot be activated again for three days. A wyrm rod only functions if the possessor is of the same alignment as the dragon type. This rod transforms into a green or bronze wyrm. Caster Level 36th; Prerequisites: Craft Rod, Craft Epic Rod, Craft Magic Arms and Armor, Craft Epic Magic Arms and Armor, Improved Heighten Spell, improved heightened polymorph, creator must be same alignment as dragon type; Market Price 1,670,600 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl36",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:wyrm_blue_silver",
+    "name": "Rod of the Wyrm (Blue/Silver)",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 178220000,
+    "description": "Any of the various rods in this series functions as a +5 quarterstaff. Upon casting the rod to the ground (a standard action) and uttering a command word, the rod grows by the end of the round into a specific type of dragon (a wyrm), obeying the commands of its owner. The dragon returns to rod form (a full-round action) whenever the wielder desires, or whenever it moves farther than 500 feet from the owner; if slain in dragon form it returns to rod form and cannot be activated again for three days. A wyrm rod only functions if the possessor is of the same alignment as the dragon type. This rod transforms into a blue or silver wyrm. Caster Level 37th; Prerequisites: Craft Rod, Craft Epic Rod, Craft Magic Arms and Armor, Craft Epic Magic Arms and Armor, Improved Heighten Spell, improved heightened polymorph, creator must be same alignment as dragon type; Market Price 1,782,200 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl37",
+      "epic"
+    ]
+  },
+  {
+    "id": "rod:wyrm_red_gold",
+    "name": "Rod of the Wyrm (Red/Gold)",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 189740000,
+    "description": "Any of the various rods in this series functions as a +5 quarterstaff. Upon casting the rod to the ground (a standard action) and uttering a command word, the rod grows by the end of the round into a specific type of dragon (a wyrm), obeying the commands of its owner. The dragon returns to rod form (a full-round action) whenever the wielder desires, or whenever it moves farther than 500 feet from the owner; if slain in dragon form it returns to rod form and cannot be activated again for three days. A wyrm rod only functions if the possessor is of the same alignment as the dragon type. This rod transforms into a red or gold wyrm. Caster Level 38th; Prerequisites: Craft Rod, Craft Epic Rod, Craft Magic Arms and Armor, Craft Epic Magic Arms and Armor, Improved Heighten Spell, improved heightened polymorph, creator must be same alignment as dragon type; Market Price 1,897,400 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "rod",
+      "cl38",
+      "epic"
+    ]
+  }
+]
