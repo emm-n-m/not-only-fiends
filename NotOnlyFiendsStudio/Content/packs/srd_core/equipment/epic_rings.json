@@ -54,6 +54,96 @@
     ]
   },
   {
+    "id": "ring:protection_6",
+    "name": "Ring of Protection +6",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 72000000,
+    "description": "This ring offers continual magical protection in the form of a deflection bonus to Armor Class of +6. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, shield of faith, creator's caster level must be three times the ring's bonus; Market Price 720,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "6" } }
+    ],
+    "tags": [
+      "ring",
+      "cl20",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:protection_7",
+    "name": "Ring of Protection +7",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 98000000,
+    "description": "This ring offers continual magical protection in the form of a deflection bonus to Armor Class of +7. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, shield of faith, creator's caster level must be three times the ring's bonus; Market Price 980,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "7" } }
+    ],
+    "tags": [
+      "ring",
+      "cl20",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:protection_8",
+    "name": "Ring of Protection +8",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 128000000,
+    "description": "This ring offers continual magical protection in the form of a deflection bonus to Armor Class of +8. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, shield of faith, creator's caster level must be three times the ring's bonus; Market Price 1,280,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "8" } }
+    ],
+    "tags": [
+      "ring",
+      "cl20",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:protection_9",
+    "name": "Ring of Protection +9",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 162000000,
+    "description": "This ring offers continual magical protection in the form of a deflection bonus to Armor Class of +9. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, shield of faith, creator's caster level must be three times the ring's bonus; Market Price 1,620,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "9" } }
+    ],
+    "tags": [
+      "ring",
+      "cl20",
+      "epic"
+    ]
+  },
+  {
+    "id": "ring:protection_10",
+    "name": "Ring of Protection +10",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 200000000,
+    "description": "This ring offers continual magical protection in the form of a deflection bonus to Armor Class of +10. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, shield of faith, creator's caster level must be three times the ring's bonus; Market Price 2,000,000 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "deflection", "value": { "expression": "10" } }
+    ],
+    "tags": [
+      "ring",
+      "cl20",
+      "epic"
+    ]
+  },
+  {
     "id": "ring:epic_wizardry_v",
     "name": "Epic Ring of Wizardry (V)",
     "category": "ring",

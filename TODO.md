@@ -423,6 +423,21 @@ Non-blocking:
   `srd_core` strictly richer for armor speeds), and 8 live items carried a garbled
   LST-conversion name of the form `"Flail, Flail (Heavy)"`, now `"Flail, Heavy"` to match
   `srd_core`'s convention. 255 items → 222; PCG baseline verifies unchanged.
+  **2026-07-29: the entire ring/rod/staff/wondrous slice is now retired from `pcgen_srd`.**
+  Hand-extracting the missing SRD/epic rings, rods, staffs, and wondrous items (from the local
+  SRD mirror, not PCGen LST) let all of `srd_equipment_epic.json`'s `ring`/`wondrous` entries
+  (40 items — 5 Ring of Protection grades + 35 wondrous, including
+  `wondrous:headband_of_epic_intellect_12`) get deleted outright rather than merely shadowed;
+  `srd_core` now carries the sole, richer copy of each (fuller prose plus, where the earlier
+  pcgen conversion had it right, matching `grantedPermabuffs` — one bug found and fixed in the
+  process: the four alignment-ward epic rings' shield-of-law/cloak-of-chaos/holy-aura/unholy-aura
+  auras really do carry a +4 deflection/+4 resistance bonus per the SRD spell text, so that
+  mechanic was ported forward, not dropped). 222 → 178, and **zero** `ring`/`rod`/`staff`/
+  `wondrous` categories remain in `pcgen_srd` — what's left is entirely `weapon`/`armor`/`shield`
+  (66 in the epic file, 112 in the base file). Full retirement of the pack now only needs that
+  remaining slice hand-extracted the same way; once it's empty the licensing question disappears
+  rather than needing an answer. PCG baseline verifies unchanged (all removed entries were
+  already shadowed by priority, so no computed value moved).
 
 ---
 
