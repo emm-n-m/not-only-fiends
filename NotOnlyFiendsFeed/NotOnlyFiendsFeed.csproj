@@ -8,6 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.*" />
+    <!--
+      Direct reference purely to override the Microsoft.OpenApi 2.0.0 that
+      Microsoft.AspNetCore.OpenApi pulls in transitively: 2.0.0 carries GHSA-v5pm-xwqc-g5wc
+      (uncontrolled recursion on circular schema refs), first patched in 2.7.5. Stays on the
+      2.x line deliberately — 3.x is a major bump the pinned ASP.NET Core package was not
+      built against. Remove once Microsoft.AspNetCore.OpenApi resolves a patched version itself.
+    -->
+    <PackageReference Include="Microsoft.OpenApi" Version="2.7.5" />
   </ItemGroup>
 
   <ItemGroup>
