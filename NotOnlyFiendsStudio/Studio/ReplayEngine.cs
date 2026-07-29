@@ -44,6 +44,10 @@ public class ReplayStudio
         // 3. Apply base ability scores (added to racial/template modifiers)
         ApplyBaseAbilities(state, character.BaseAbilityScores);
 
+        // 3a. Spend bonus-language picks — needs starting Int from step 3, and must land before
+        //     the tick loop so a 1st-level class can gate on the result.
+        ApplyBonusLanguages(ctx, character, race);
+
         // 4. Process each tick
         var driverLevelCounters = new Dictionary<string, int>();
         var effectiveHighWater = new Dictionary<string, int>();
@@ -254,7 +258,64 @@ public class ReplayStudio
         // schools it had not yet picked. Spells per day are also final only now.
         FinalizeWizardSchools(state);
 
+        // 10. Tail pass — domain-derived spell-like abilities. Must be a tail pass: the granting
+        // template applies at creation, but the domains it reads are chosen during the tick loop.
+        FinalizeDomainSpellLikeAbilities(ctx);
+
         return state;
+    }
+
+    /// <summary>
+    /// Fulfils <see cref="GrantDomainSpellLikeAbilities"/> requests, turning each chosen domain's
+    /// bonus spells into SLAs at the tier its spell level earns.
+    /// </summary>
+    private void FinalizeDomainSpellLikeAbilities(PermabuffContext ctx)
+    {
+        var state = ctx.State;
+        if (state.PendingDomainSLAGrants.Count == 0) return;
+
+        var saveMod = AbilityScoreSet.Modifier(state.AbilityScores.GetScore(
+            state.PendingDomainSLAGrants[0].SaveAbility));
+
+        // A spell can sit in two of the character's domains; grant it once, at its best tier.
+        var granted = new Dictionary<string, (int SpellLevel, string Uses, string DomainName)>();
+
+        foreach (var grant in state.PendingDomainSLAGrants)
+        {
+            foreach (var domainId in state.Domains)
+            {
+                if (!_content.TryGetDomain(domainId, out var domain) || domain is null) continue;
+
+                foreach (var (spellLevel, spellId) in domain.BonusSpells)
+                {
+                    var uses = grant.UsesFor(spellLevel);
+                    if (uses is null) continue;
+                    if (granted.TryGetValue(spellId, out var existing) && existing.SpellLevel <= spellLevel)
+                        continue;
+                    granted[spellId] = (spellLevel, uses, domain.Name);
+                }
+            }
+        }
+
+        foreach (var (spellId, (spellLevel, uses, domainName)) in granted.OrderBy(g => g.Value.SpellLevel)
+                     .ThenBy(g => g.Key, StringComparer.Ordinal))
+        {
+            var name = _content.TryGetSpell(spellId, out var spell) && spell is not null
+                ? spell.Name
+                : spellId;
+
+            state.SLAs.Add(new SLA
+            {
+                Id = $"domain_sla_{spellId}",
+                Name = name,
+                Description = $"{domainName} domain spell-like ability (level {spellLevel}).",
+                UsesPerDay = uses,
+                CasterLevel = state.TotalHD,
+                SaveDC = 10 + spellLevel + saveMod
+            });
+        }
+
+        state.PendingDomainSLAGrants.Clear();
     }
 
     /// <summary>
@@ -521,8 +582,63 @@ public class ReplayStudio
         foreach (var attack in race.NaturalAttacks)
             state.NaturalAttacks.Add(attack);
 
+        foreach (var language in race.AutomaticLanguages)
+            state.Languages.Add(language);
+
         foreach (var buff in race.RacialPermabuffs)
             buff.Apply(ctx);
+    }
+
+    /// <summary>
+    /// Spends the character's stored bonus-language picks. Runs after base ability scores are in
+    /// so the allowance reflects starting Intelligence, and before the tick loop so a class taken
+    /// at 1st level can see the result (<c>class:dragon_disciple</c>'s Draconic requirement).
+    /// </summary>
+    private void ApplyBonusLanguages(PermabuffContext ctx, Character character, RaceDefinition? race)
+    {
+        var state = ctx.State;
+        if (character.BonusLanguageIds.Count == 0) return;
+
+        var allowance = LanguageCatalog.Allowance(state.AbilityScores.INT);
+        var offered = LanguageCatalog.OfferedBonusLanguages(race, _content.GetAllLanguages())
+            .Select(l => l.Id)
+            .ToHashSet(StringComparer.Ordinal);
+
+        var spent = 0;
+        foreach (var languageId in character.BonusLanguageIds.Distinct(StringComparer.Ordinal))
+        {
+            if (state.Languages.Contains(languageId))
+            {
+                state.Warnings.Add(new Warning
+                {
+                    Message = $"Bonus language '{languageId}' is already known — pick not spent"
+                });
+                continue;
+            }
+
+            if (offered.Count > 0 && !offered.Contains(languageId))
+            {
+                state.Warnings.Add(new Warning
+                {
+                    Message = $"Bonus language '{languageId}' is not offered by "
+                        + $"{race?.Name ?? "this race"} — skipped"
+                });
+                continue;
+            }
+
+            if (spent >= allowance)
+            {
+                state.Warnings.Add(new Warning
+                {
+                    Message = $"Bonus language '{languageId}' exceeds the {allowance} allowed by "
+                        + $"starting Intelligence {state.AbilityScores.INT} — skipped"
+                });
+                continue;
+            }
+
+            state.Languages.Add(languageId);
+            spent++;
+        }
     }
 
     private void ApplyTemplateCreation(PermabuffContext ctx, TemplateDriver template)

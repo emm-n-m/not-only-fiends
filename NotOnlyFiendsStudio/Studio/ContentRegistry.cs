@@ -14,6 +14,7 @@ public class ContentRegistry : IContentLookup
     private readonly Dictionary<string, SpellDefinition> _spells = new();
     private readonly Dictionary<string, SkillDefinition> _skills = new();
     private readonly Dictionary<string, ClassFeatureDefinition> _classFeatures = new();
+    private readonly Dictionary<string, LanguageDefinition> _languages = new();
     private readonly Dictionary<string, EquipmentDefinition> _equipment = new();
     private Dictionary<string, EquipmentDefinition>? _equipmentByName;
 
@@ -39,6 +40,8 @@ public class ContentRegistry : IContentLookup
             "skills", skill => Register(_skills, skill, sk => sk.Id)));
         RegisterContentType(new ContentTypeHandler<ClassFeatureDefinition>(
             "class_features", cf => Register(_classFeatures, cf, c => c.Id)));
+        RegisterContentType(new ContentTypeHandler<LanguageDefinition>(
+            "languages", language => Register(_languages, language, l => l.Id)));
         RegisterContentType(new ContentTypeHandler<EquipmentDefinition>(
             "equipment", RegisterEquipment));
     }
@@ -150,6 +153,9 @@ public class ContentRegistry : IContentLookup
     public bool TryGetSkill(string id, out SkillDefinition? skill) =>
         _skills.TryGetValue(id, out skill);
 
+    public bool TryGetLanguage(string id, out LanguageDefinition? language) =>
+        _languages.TryGetValue(id, out language);
+
     public EquipmentDefinition GetEquipment(string id) =>
         _equipment.TryGetValue(id, out var equipment)
             ? equipment
@@ -185,6 +191,7 @@ public class ContentRegistry : IContentLookup
     public IEnumerable<DomainDefinition> GetAllDomains() => _domains.Values;
     public IEnumerable<SpellDefinition> GetAllSpells() => _spells.Values;
     public IEnumerable<SkillDefinition> GetAllSkills() => _skills.Values;
+    public IEnumerable<LanguageDefinition> GetAllLanguages() => _languages.Values;
     public IEnumerable<EquipmentDefinition> GetAllEquipment() => _equipment.Values;
     public IEnumerable<SpellDefinition> GetSpellsForList(string spellListId, int? maxSpellLevel = null) =>
         _spells.Values

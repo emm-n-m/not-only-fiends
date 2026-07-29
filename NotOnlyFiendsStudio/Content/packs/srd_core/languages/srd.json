@@ -1,0 +1,123 @@
+[
+  {
+    "id": "common",
+    "name": "Common",
+    "description": "The trade tongue shared by most civilised humanoids.",
+    "script": "Common"
+  },
+  {
+    "id": "abyssal",
+    "name": "Abyssal",
+    "description": "The speech of demons and the chaotic evil planes.",
+    "script": "Infernal"
+  },
+  {
+    "id": "aquan",
+    "name": "Aquan",
+    "description": "The tongue of water-based creatures and the Plane of Water.",
+    "script": "Elven"
+  },
+  {
+    "id": "auran",
+    "name": "Auran",
+    "description": "The tongue of air-based creatures and the Plane of Air.",
+    "script": "Draconic"
+  },
+  {
+    "id": "celestial",
+    "name": "Celestial",
+    "description": "The speech of good outsiders and the upper planes.",
+    "script": "Celestial"
+  },
+  {
+    "id": "draconic",
+    "name": "Draconic",
+    "description": "The language of dragons, kobolds and troglodytes, and of much arcane writing.",
+    "script": "Draconic"
+  },
+  {
+    "id": "druidic",
+    "name": "Druidic",
+    "description": "The secret language of druids, who are forbidden to teach it to nondruids.",
+    "isSecret": true,
+    "script": "Druidic"
+  },
+  {
+    "id": "dwarven",
+    "name": "Dwarven",
+    "description": "The language of dwarves.",
+    "script": "Dwarven"
+  },
+  {
+    "id": "elven",
+    "name": "Elven",
+    "description": "The language of elves.",
+    "script": "Elven"
+  },
+  {
+    "id": "giant",
+    "name": "Giant",
+    "description": "The language of giants, ogres and trolls.",
+    "script": "Dwarven"
+  },
+  {
+    "id": "gnome",
+    "name": "Gnome",
+    "description": "The language of gnomes.",
+    "script": "Dwarven"
+  },
+  {
+    "id": "gnoll",
+    "name": "Gnoll",
+    "description": "The language of gnolls.",
+    "script": "Common"
+  },
+  {
+    "id": "goblin",
+    "name": "Goblin",
+    "description": "The language of goblins, hobgoblins and bugbears.",
+    "script": "Dwarven"
+  },
+  {
+    "id": "halfling",
+    "name": "Halfling",
+    "description": "The language of halflings.",
+    "script": "Common"
+  },
+  {
+    "id": "ignan",
+    "name": "Ignan",
+    "description": "The tongue of fire-based creatures and the Plane of Fire.",
+    "script": "Draconic"
+  },
+  {
+    "id": "infernal",
+    "name": "Infernal",
+    "description": "The speech of devils and the lawful evil planes.",
+    "script": "Infernal"
+  },
+  {
+    "id": "orc",
+    "name": "Orc",
+    "description": "The language of orcs.",
+    "script": "Dwarven"
+  },
+  {
+    "id": "sylvan",
+    "name": "Sylvan",
+    "description": "The language of dryads, nymphs and other fey.",
+    "script": "Elven"
+  },
+  {
+    "id": "terran",
+    "name": "Terran",
+    "description": "The tongue of earth-based creatures and the Plane of Earth.",
+    "script": "Dwarven"
+  },
+  {
+    "id": "undercommon",
+    "name": "Undercommon",
+    "description": "The trade tongue of the Underdark, spoken by drow and their neighbours.",
+    "script": "Elven"
+  }
+]

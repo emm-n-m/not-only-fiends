@@ -344,6 +344,19 @@
           "expression": "11 + TotalHD"
         }
       }
+    ],
+    "automaticLanguages": [
+      "common",
+      "elven",
+      "undercommon"
+    ],
+    "bonusLanguages": [
+      "abyssal",
+      "aquan",
+      "draconic",
+      "gnome",
+      "goblin",
+      "sylvan"
     ]
   }
 ]

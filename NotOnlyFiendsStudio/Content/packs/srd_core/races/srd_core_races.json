@@ -104,7 +104,19 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "automaticLanguages": [
+      "common",
+      "dwarven"
+    ],
+    "bonusLanguages": [
+      "giant",
+      "gnome",
+      "goblin",
+      "orc",
+      "terran",
+      "undercommon"
+    ]
   },
   {
     "id": "race:elf",
@@ -182,7 +194,19 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "automaticLanguages": [
+      "common",
+      "elven"
+    ],
+    "bonusLanguages": [
+      "draconic",
+      "gnoll",
+      "gnome",
+      "goblin",
+      "orc",
+      "sylvan"
+    ]
   },
   {
     "id": "race:gnome",
@@ -306,7 +330,19 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "automaticLanguages": [
+      "common",
+      "gnome"
+    ],
+    "bonusLanguages": [
+      "draconic",
+      "dwarven",
+      "elven",
+      "giant",
+      "goblin",
+      "orc"
+    ]
   },
   {
     "id": "race:half_elf",
@@ -379,7 +415,12 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "automaticLanguages": [
+      "common",
+      "elven"
+    ],
+    "bonusLanguagesAny": true
   },
   {
     "id": "race:half_orc",
@@ -422,7 +463,18 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "automaticLanguages": [
+      "common",
+      "orc"
+    ],
+    "bonusLanguages": [
+      "abyssal",
+      "draconic",
+      "giant",
+      "gnoll",
+      "goblin"
+    ]
   },
   {
     "id": "race:halfling",
@@ -493,6 +545,17 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "automaticLanguages": [
+      "common",
+      "halfling"
+    ],
+    "bonusLanguages": [
+      "dwarven",
+      "elven",
+      "gnome",
+      "goblin",
+      "orc"
+    ]
   }
 ]

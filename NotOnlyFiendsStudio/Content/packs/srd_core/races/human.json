@@ -13,6 +13,10 @@
     "bonusFeats": 1,
     "bonusSkillPointsPerHD": 1,
     "racialPermabuffs": [],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "automaticLanguages": [
+      "common"
+    ],
+    "bonusLanguagesAny": true
   }
 ]

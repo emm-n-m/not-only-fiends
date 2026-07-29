@@ -10,6 +10,14 @@ public class Character
     public List<string> TemplateIds { get; set; } = new();
     public AbilityScoreSet BaseAbilityScores { get; set; } = new();
 
+    /// <summary>
+    /// Bonus languages chosen at creation, one per point of starting Intelligence modifier.
+    /// A creation-time input like <see cref="BaseAbilityScores"/>, not a per-tick choice: 3.5
+    /// prices these off starting Int, so a later ability increase does not buy another language
+    /// (and losing Int does not take one away).
+    /// </summary>
+    public List<string> BonusLanguageIds { get; set; } = new();
+
     // HD Timeline — the build
     public List<Tick> Ticks { get; set; } = new();
 
@@ -46,6 +54,7 @@ public class Character
             WIS = BaseAbilityScores.WIS,
             CHA = BaseAbilityScores.CHA
         },
+        BonusLanguageIds = new List<string>(BonusLanguageIds),
         Ticks = Ticks.Select(t => new Tick
         {
             DriverId = t.DriverId,

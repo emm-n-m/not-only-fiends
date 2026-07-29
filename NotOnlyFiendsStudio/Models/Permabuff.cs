@@ -10,6 +10,7 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(GrantAbility), "GrantAbility")]
 [JsonDerivedType(typeof(RevokeAbility), "RevokeAbility")]
 [JsonDerivedType(typeof(GrantSLA), "GrantSLA")]
+[JsonDerivedType(typeof(GrantDomainSpellLikeAbilities), "GrantDomainSpellLikeAbilities")]
 [JsonDerivedType(typeof(RevokeSLA), "RevokeSLA")]
 [JsonDerivedType(typeof(GrantBonusFeat), "GrantBonusFeat")]
 [JsonDerivedType(typeof(ModifyAttribute), "ModifyAttribute")]
@@ -194,6 +195,36 @@ public class GrantSLA : Permabuff
     {
         ctx.State.SLAs.Add(SLA);
     }
+}
+
+/// <summary>
+/// Turns the character's chosen domains into spell-like abilities, at a usage tier set by each
+/// bonus spell's level. Content that wants "gains SLAs based on its domains" (the ascended
+/// archfiend) previously stated that only as prose, so nothing ever reached the sheet.
+///
+/// Deferred rather than applied here: domains are picked during the tick loop, and this is
+/// authored on a template's creation permabuffs, which run before any tick. It records the request
+/// and <c>ReplayStudio</c>'s tail pass fulfils it once the domain list is final.
+/// </summary>
+public class GrantDomainSpellLikeAbilities : Permabuff
+{
+    /// <summary>Domain spells up to this level are usable at will.</summary>
+    public int AtWillMaxSpellLevel { get; set; } = 3;
+    /// <summary>Up to this level, three times per day.</summary>
+    public int ThreePerDayMaxSpellLevel { get; set; } = 6;
+    /// <summary>Up to this level, once per day. Above it, nothing is granted.</summary>
+    public int OncePerDayMaxSpellLevel { get; set; } = 9;
+    /// <summary>Ability that sets the save DC (10 + spell level + modifier).</summary>
+    public Ability SaveAbility { get; set; } = Ability.CHA;
+
+    public string? UsesFor(int spellLevel) =>
+        spellLevel <= AtWillMaxSpellLevel ? "at will"
+        : spellLevel <= ThreePerDayMaxSpellLevel ? "3/day"
+        : spellLevel <= OncePerDayMaxSpellLevel ? "1/day"
+        : null;
+
+    public override void Apply(PermabuffContext ctx) =>
+        ctx.State.PendingDomainSLAGrants.Add(this);
 }
 
 public class RevokeSLA : Permabuff

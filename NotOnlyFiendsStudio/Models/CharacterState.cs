@@ -80,6 +80,13 @@ public class CharacterState
     // Pending domain picks, keyed by granting classId (cleric, prestige class, etc.)
     public Dictionary<string, int> PendingDomainSelections { get; set; } = new();
 
+    /// <summary>
+    /// Requests from <see cref="GrantDomainSpellLikeAbilities"/>, fulfilled by a tail pass once the
+    /// domain list is final. Transient scaffolding, not a computed result.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public List<GrantDomainSpellLikeAbilities> PendingDomainSLAGrants { get; set; } = new();
+
     // Class Feature Selections (High Arcana, Loremaster Secrets, etc.)
     public Dictionary<string, List<string>> ClassFeatureSelections { get; set; } = new();
     public Dictionary<string, int> PendingClassFeatureSelections { get; set; } = new();
@@ -138,6 +145,14 @@ public class Warning
 {
     public int? TickIndex { get; set; }
     public string Message { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Readable by default. Two Razor views interpolated the instance rather than
+    /// <see cref="Message"/> after this stopped being a plain string, and printed the type name to
+    /// users instead of the warning — so the fallback is the message, not the class name.
+    /// </summary>
+    public override string ToString() =>
+        TickIndex.HasValue ? $"HD {TickIndex}: {Message}" : Message;
 }
 
 public class CompanionSlotState
