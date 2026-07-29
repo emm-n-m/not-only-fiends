@@ -3,6 +3,23 @@
 Outstanding work, captured 2026-07-27 after an agent-driven audit of the REST API and an
 SRD verification pass over all 48 drivers in the public packs.
 
+**Reconciled against the code 2026-07-28** after the engine/UI run landed. Several entries
+described as open had in fact been fixed, and were verified here by inspection rather than
+taken from commit messages: §1's dangling domain references (0 remain), and §8's skill totals,
+`Capabilities`, `SLA.SaveDC` and Level Adjustment. Still genuinely open, in rough priority
+order: the P1 dropped-prerequisites sweep and Tier 2/3 SRD verification (§3), content
+fingerprints (§4.2), ETag on content endpoints (§5), and the README / contribution-policy /
+OGL-attribution decisions (§6). The authoring half of languages (§8) closed 2026-07-29.
+
+**Known blocker for the P1 sweep, found 2026-07-29 while sizing it:** of the four missing
+prerequisite primitives, `KnowsSpell` cannot be written against the current interface.
+`Prerequisite.IsMet(CharacterState)` takes no content lookup, so "knows spell X" can only be
+tested against `SpellcastingState.SelectedSpells` — which spontaneous and spellbook casters
+populate but full-list casters (cleric, druid) never do, since they select nothing. Answering
+it for them needs the class spell list, i.e. content. So P1 starts with a decision about
+widening the prerequisite interface (an `IsMet` overload taking `IContentLookup`, mirroring
+`PermabuffContext`), not with content edits.
+
 Two documents already cover adjacent ground: [TEST_COVERAGE_BACKLOG.md](TEST_COVERAGE_BACKLOG.md)
 for test gaps, [CONTENT_POLICY.md](CONTENT_POLICY.md) for the public/private pack split.
 
@@ -63,7 +80,16 @@ data to disambiguate). Regressions: `AirElemental_HasGoodReflexSave`,
   saves) but permanently **unverifiable against source**: `cosmicDescryer.html` has no
   attack or save columns at all. Treat as best-effort; a future mismatch here is not
   necessarily a regression.
-### Dangling domain spell references in the public packs — HIGH
+### Dangling domain spell references in the public packs — HIGH — **Fixed**
+
+**Fixed 2026-07-28** (`a8b200a`). All the references below were repointed, both halves of the
+two-way links closed (`spell:elemental_swarm` gained `domain:air/earth/fire/water: 9` and
+`spell:summon_monster_ix` gained `domain:chaos/evil/good/law: 9`), and the guard was
+generalised out of the Fiendish-Codex-only test into `ContentIntegrityTests`, which now walks
+cross-references across the packs rather than one book. Re-verified 2026-07-28: a sweep of
+every domain bonus-spell slot in every public pack resolves — **0 dangling references**.
+Original analysis retained below.
+
 
 Found 2026-07-28 while re-extracting the Fiendish Codex domains. **11 domain bonus-spell slots
 across 11 public-pack domains point at spell ids that do not exist**, so those domains silently
@@ -274,6 +300,14 @@ Do these **in order** — the first is cheap and catches the most:
    via `UPDATE_PCG_BASELINE=1` after a VERIFY-mode inspection of the all-fields-added diff;
    all 54 characters now carry hp/bab/saves/skillRanks/feats/classLevels/casterLevels, and a
    follow-up VERIFY run passes clean.
+   **Extended 2026-07-28** with `languages`, `skillTotals` and `spellAcquisition`. The §8 work
+   had added three computed surfaces the record did not capture, so the baseline could pass
+   clean while saying nothing about them — the same blind spot this item was written to close,
+   one layer up. Languages are sorted on capture (`HashSet` order is unstable, and a field that
+   diffs every run trains you to ignore the report), and all three are wired into the
+   comparison *and* the markdown diff, not just stored. Accepted after a VERIFY run confirmed
+   the diff was additions-only: 0 regressions, 0 aggregate tally changes, and no
+   hp/bab/saves/skillRanks/classLevels/casterLevels line anywhere in it.
 2. **Derived per-character content fingerprints.** Not started. For saves outside the corpus:
    hash only the definitions a character actually references (replay already walks exactly
    that set), store on the character, compare at load. Gives "class:eldritch_knight changed
@@ -347,7 +381,16 @@ Blocking, and irreversible once cloned or forked:
   `0917c0c "Squash local development history"` on 2026-05-11; `544617c` no longer exists and
   `git rev-list --all --objects` finds zero `.pcg` and zero `.dotnet-cli` blobs. The entry
   below was written against the pre-rewrite history and was stale.
-- **Scrub `.claude/settings.json`** — contains hardcoded `/mnt/c/Users/<user>/…` PCGen paths.
+- ~~**Scrub `.claude/settings.json`**~~ — **Fixed 2026-07-28.** It leaked two identities, not
+  one: the `USER` Windows username in the PCGen paths *and* `/home/USER/source/repos/…`, a
+  different machine's checkout, plus a `/mnt/c/pandoc-3.9` install. Nine of those entries were
+  dead on this machine (`/home/USER`, the pandoc binary and the `Content/srd/*.rtf` sources all
+  no longer exist) and were deleted outright; the two live PCGen ones moved to
+  `.claude/settings.local.json`, which is gitignored, so the working setup is preserved without
+  publishing a path. The tracked file is now portable — `dotnet build/test`, the package
+  searches, `gap-analysis` and `/tmp`. A sweep of every tracked file for
+  `USER|/home/USER|/home/USER|OneDrive|AppData` now returns only generic README examples
+  (`~/OneDrive/characters` as illustration) with no username in them.
 
 Non-blocking:
 
@@ -359,6 +402,16 @@ Non-blocking:
 - **Check whether `pcgen_srd` warrants a PCGen attribution** in the OGL Section 15 list.
   That pack derives from PCGen's LST files rather than the SRD directly. The existing notices
   (SRD, Unearthed Arcana, OGL 1.0a) match the other four packs.
+  **Confirmed load-bearing 2026-07-28, so this is a live licensing question, not a formality.**
+  The pack is not vestigial gap-filler: 222 of its items exist in no other pack (all the magic
+  and epic gear — `srd_core` carries only 78 mostly-mundane items), and 19 of those are
+  equipped on 20 of the 54 corpus characters (`wondrous:headband_of_epic_intellect_12` alone on
+  12). Removing it would dangle real references. Cleaned up in the same pass: its 33 entries
+  that `srd_core` already shadowed were deleted (`srd_core` wins on priority 0 vs −10, and the
+  duplicates had **zero** conflicting values — every difference was an optional field, with
+  `srd_core` strictly richer for armor speeds), and 8 live items carried a garbled
+  LST-conversion name of the form `"Flail, Flail (Heavy)"`, now `"Flail, Heavy"` to match
+  `srd_core`'s convention. 255 items → 222; PCG baseline verifies unchanged.
 
 ---
 
@@ -382,7 +435,59 @@ of a flat file to append to.
 
 ---
 
-## 8. Core features still half-built — **blocking for going public**
+## 8. Core features still half-built — **mostly fixed 2026-07-28**
+
+**Status after the engine/UI run (`e9a8a99`…`415450e`), re-verified against the code
+2026-07-28.** Three of the four subsections below are now closed and one is partly closed:
+
+| item | state |
+|---|---|
+| Skills — no total computed | **Fixed.** `SkillTotals` + `SkillSynergyBonuses` computed in a `ReplayEngine` tail pass (synergies consumed at `ReplayEngine.cs:357-362`, `SkillBonuses` finally read at `:382`), surfaced on `CharacterSheet` and rendered in `SheetView`. |
+| `Capabilities` write-only | **Fixed.** `SheetView` renders them grouped, so a druid's wild-shape forms are visible. |
+| `SLA.SaveDC` never displayed | **Fixed.** `SheetView.razor:252-254`. |
+| Level Adjustment — picker offers every race | **Fixed.** `RaceCatalog` gates the picker on a printed LA, marks non-PC races, and keeps an already-selected one via `alwaysIncludeId`; the sheet distinguishes "no sanctioned LA" from "LA +0". The REST API applied none of this until 2026-07-28 — `GetCatalog`/`GetRaces` returned one flat unmarked list — and now returns `levelAdjustment` + `isPcRace` on a `RaceSummaryDto`. Verified across the corpus: **0 of 54 characters' races are hidden from the default picker**, so nothing became un-editable. |
+| Languages | **Partly fixed** — see below. |
+
+Languages: **Fixed 2026-07-29.** The import and display halves landed first (`.pcg` `LANGUAGE:`
+lines are parsed, `CharacterState.Languages` reaches the sheet) — verified across the corpus:
+all 45 characters with source languages import them completely, including `Drow Sign Language →
+drow_sign_language`; the 9 with none are animal companions whose files genuinely carry no
+`LANGUAGE:` line. The authoring half is now done too:
+
+- **Languages are real content.** New `LanguageDefinition` type and `languages/` content
+  directory, with the 20 SRD languages in `srd_core/languages/srd.json`. This exists so choices
+  can be *offered* — "any bonus language except secret ones" is not expressible without a list.
+  `CharacterState.Languages` deliberately stays a bag of free-form string ids and is **never**
+  validated against the catalogue: PCGen import mints ids from arbitrary source text
+  (`daemonic`, `fae`, `telepathy`), and a character who speaks something no pack defines is
+  still a valid character.
+- **Races carry their language lines.** `automaticLanguages`, `bonusLanguages` and
+  `bonusLanguagesAny` on `RaceDefinition` and in `race.schema.json`; populated for the seven PC
+  races plus drow. `bonusLanguagesAny` is a flag rather than a wildcard list entry so the
+  "except secret languages" half of the SRD rule lives in the data model, not in a magic string.
+- **Int-based selection.** `Character.BonusLanguageIds` is a creation-time input alongside
+  `BaseAbilityScores` — 3.5 prices these off *starting* Int, so a later ability increase does not
+  buy another language. `LanguageCatalog` owns the allowance and offer rules (in Studio, not the
+  UI, so the builder and the API cannot drift apart the way the race picker and the API did).
+  Spent in `ReplayStudio` after base abilities and before the tick loop, warning rather than
+  failing on an over-spend, an unoffered pick or a duplicate.
+- **Surfaced everywhere:** builder card with per-race checkboxes and a picks-used counter,
+  `/api/content/languages`, languages on the catalogue, and the race language lines on
+  `RaceSummaryDto`.
+
+**Dragon Disciple is now enterable by a built character** — asserted by
+`DragonDiscipleIsEnterableByABuiltCharacter` and confirmed over HTTP. 14 assertions in
+`LanguageTests`; suite 891/891; PCG baseline verifies unchanged (PCGen already wrote every
+race's automatic languages into the `.pcg` files, so granting them racially changed nothing).
+
+Still open: the three Fiendish Codex II prestige classes' "Language: Infernal" prerequisite is
+now *mechanically* restorable — a non-hellbred character can take Infernal as a bonus language —
+but the FC2 packs have not been re-audited to put it back. Also unbuilt: languages from
+Speak Language skill ranks, and race language lines for the private packs' races.
+
+Original write-up follows.
+
+
 
 Two features the Fiendish Codex audit (2026-07-28) pushed into view. Both are cases where the
 *data model* exists but nothing upstream or downstream connects to it, so they read as present
