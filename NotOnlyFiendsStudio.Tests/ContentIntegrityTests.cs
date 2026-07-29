@@ -55,13 +55,6 @@ public class ContentIntegrityTests
         "skill:scry",
         "skill:divination",
         "skill:dispel_magic",
-
-        // The SRD half-dragon template has never been extracted, so Dragon Disciple's
-        // "may not already be a half-dragon" restriction has nothing to test against. The id was
-        // written unprefixed ("half_dragon"), which this sweep found; the prefix is corrected so
-        // the restriction starts working the day the template is added, but the template is
-        // missing content, not a naming mismatch, so it stays a gap.
-        "template:half_dragon",
     };
 
     private static IEnumerable<Reference> CollectBrokenReferences(ContentRegistry registry)

@@ -1,0 +1,67 @@
+[
+{
+  "id": "template:half_dragon",
+  "name": "Half-Dragon",
+  "typeOverride": "dragon",
+  "subtypeAdditions": [],
+  "abilityModifiers": {
+    "str": 8,
+    "dex": 0,
+    "con": 2,
+    "int": 2,
+    "wis": 0,
+    "cha": 2
+  },
+  "naturalArmor": 4,
+  "speedModifiers": {},
+  "levelAdjustment": 3,
+  "naturalAttacks": [
+    { "name": "Claw", "damage": "1d4", "count": 2, "isPrimary": true },
+    { "name": "Bite", "damage": "1d6", "count": 1, "isPrimary": false }
+  ],
+  "creationPermabuffs": [
+    {
+      "$type": "GrantAbility",
+      "ability": {
+        "id": "hd_darkvision_60",
+        "name": "Darkvision 60 ft.",
+        "description": "Can see in the dark up to 60 feet."
+      }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": {
+        "id": "hd_low_light_vision",
+        "name": "Low-Light Vision",
+        "description": "Sees twice as far as a human in starlight, moonlight, torchlight and similar conditions of poor illumination."
+      }
+    },
+    {
+      "$type": "GrantImmunity",
+      "immunity": "sleep"
+    },
+    {
+      "$type": "GrantImmunity",
+      "immunity": "paralysis"
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": {
+        "id": "hd_breath_weapon",
+        "name": "Breath Weapon",
+        "description": "Once per day, a breath weapon dealing 6d8 points of damage; a successful Reflex save (DC 10 + 1/2 the half-dragon's racial HD + the half-dragon's Con modifier) halves the damage. Shape and energy depend on the dragon variety: 60-foot line of acid (black, copper), 60-foot line of lightning (blue, bronze), 60-foot line of fire (brass), 30-foot cone of corrosive acid gas (green), 30-foot cone of fire (red, gold), or 30-foot cone of cold (white, silver)."
+      }
+    },
+    {
+      "$type": "GrantAbility",
+      "ability": {
+        "id": "hd_variety_immunity",
+        "name": "Dragon Variety Immunity",
+        "description": "Immunity to one energy type determined by the dragon variety: acid (black, green, copper), electricity (blue, bronze), fire (red, brass, gold) or cold (white, silver). The variety is not modelled as a selectable choice, so this immunity is recorded descriptively rather than applied mechanically."
+      }
+    }
+  ],
+  "scalingPermabuffs": {},
+  "scalingFormulas": []
+}
+]

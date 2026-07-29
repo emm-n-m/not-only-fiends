@@ -170,20 +170,31 @@ spell — corrected to `spellLevel: 0`. Thaumaturgist's existing `CanCastSpellLe
 already exactly matched *lesser planar ally* (a real 4th-level cleric spell) — no change
 needed there. Cosmic Descryer gained `CanCastSpellLevel(9, Arcane)` for *gate*.
 
-**Content gap, not a code defect:** Dragon Disciple's `HasLanguage{"draconic"}` and
-`LacksTemplate{"half_dragon"}` prerequisites are correctly implemented and unit-tested, but
-currently unsatisfiable by any real character build — no race/class content grants
-`draconic` as a fixed language (a new `GrantLanguage` permabuff and `CharacterState.Languages`
-field were added, but nothing populates them yet), and **no `half_dragon` template exists in
-content yet, even though Half-Dragon is a genuine SRD template** (not homebrew — it's the
-standard inherited template applied to nondragon creatures, same category as `half_fiend`,
-which already exists at `Content/packs/srd_core/templates/half_fiend.json`). It needs proper
-extraction via the `extract-template` skill from the SRD mirror or a source PDF — neither was
-available on this machine when this was written (mirror not synced here; author was away from
-the machine with the source copy). **Next session: extract `half_dragon` as a template
-(mirroring `half_fiend.json`'s shape — type override, ability modifiers, natural armor,
-breath weapon, etc.), then this prerequisite becomes real.** Do not add a fabricated grant to
-make it pass in the meantime.
+~~**Content gap, not a code defect:** Dragon Disciple's `HasLanguage{"draconic"}` and
+`LacksTemplate{"half_dragon"}` prerequisites are unsatisfiable by any real character build.~~
+**Both halves closed.** `draconic` became reachable when the authoring side of languages landed
+(2026-07-29); `template:half_dragon` was extracted 2026-07-29 from the SRD mirror
+(`monstersHtoI.html`, "Creating a Half-Dragon") into
+`Content/packs/srd_core/templates/half_dragon.json`. Dragon Disciple is now enterable and its
+exclusion gates against a template that exists. Removed from `ContentIntegrityTests`' known-gaps
+list; regressions `HalfDragon_MatchesSrdTemplate`,
+`HalfDragon_GrantsNoWingsToAMediumCharacter`, and an added registry assertion in
+`DragonDisciple_RequiresDraconicAndExcludesHalfDragon`.
+
+Three parts of the SRD text are **not** modelled, none of which bite a PC build:
+
+- **Dragon variety is not selectable.** The 10 varieties differ only in breath energy/shape and
+  one extra energy immunity. Kept as a single generic `template:half_dragon` rather than 10
+  variants, because `LacksTemplate.IsMet` is an exact `Contains` (`Prerequisite.cs:264`) — a
+  split would silently stop matching Dragon Disciple's exclusion. Same call the elemental-saves
+  fix in §1 made in reverse, and for the same reason: split only when a consumer needs the
+  distinction. Both variety-dependent effects are recorded as descriptive `GrantAbility` text so
+  they reach the sheet rather than vanishing.
+- **Wings are size-conditional** ("Large or larger has wings … Medium or smaller does not").
+  Not expressible, and every PC race here is Medium or smaller, so the template grants no fly
+  speed — the correct answer for every character that can actually take it.
+- **"Increase racial HD by one die size, to a maximum of d12"** and the dragon skill-point
+  formula `(6 + Int) × (HD + 3)` have no schema field. Only affects characters with racial HD.
 
 Deliberately **not** modelled — narrative gates with no mechanical test:
 Assassin ("must kill someone for no other reason than to join the assassins"), Blackguard
@@ -612,3 +623,96 @@ yet:
 The builder listing is the user-visible half and the one that matters for going public: it is
 a discoverability trap on the very first step of character creation. It is also exactly what
 the `audit-agent-api` skill exists to catch, so re-run that once a filter or badge exists.
+
+---
+
+## 9. SRD equipment extraction — 16% -> 53% on 2026-07-29
+
+Measured by diffing item anchors in the SRD mirror's item pages against every
+`equipment/*.json` in all packs. At the start of the day **~145 of 888 SRD item entries were
+present (16%)**, and five schema categories were entirely empty — `gear`, `rod`, `staff`,
+`ammunition` plus `potion`/`scroll`/`wand` — so a character could buy a longsword but not a
+backpack, a rope, a quiver of arrows or a staff. **Now 471 of 888 (53%)**, 819 items total.
+
+| page | entries | covered | missing |
+|---|---|---|---|
+| `magicItemsWI.html` — wondrous | 199 | 181 | 18 |
+| `magicItemsAW.html` — magic armor & weapons | 136 | 50 | **86** |
+| `magicItemsICA.html` — intelligent/cursed/artifacts | 89 | 0 | **89** |
+| `goodsAndServices.html` — mundane goods | 97 | 73 | 24 (rules anchors) |
+| `weapons.html` — mundane weapons | 76 | 33 | 43 (rules anchors) |
+| `epicMagicItemsOther.html` | 67 | 17 | 50 |
+| `magicItemsPRR.html` — potions/rings/rods | 63 | 58 | 5 |
+| `epicMagicItems.html` | 57 | 18 | 39 |
+| `armor.html` — mundane armor | 40 | 12 | 28 (rules anchors) |
+| `magicItemsSSW.html` — staffs/scrolls/wands | 28 | 21 | 7 |
+| `epicArtifacts.html` — epic artifacts | 28 | 3 | 25 |
+| `specialMaterials.html` | 8 | 5 | 3 |
+
+The residual "missing" on the three mundane pages is almost entirely rules-section anchors
+(`armor-check-penalty`, `weapon-qualities`), not items — every base weapon, armor and shield
+is present.
+
+### Done 2026-07-29
+
+- **Mundane goods & services** — 152 items from tables 2–8 of `goodsAndServices.html` into
+  `goods_and_services.json`, populating the empty `gear` category.
+  Regression: `SrdGoodsAndServices_LoadIntoTheGearCategory`.
+- **Ammunition and the mundane weapon gaps** — `ammunition_and_gaps.json`. The `ammunition`
+  category held nothing at all, so no bow in the game was usable. Added arrows, crossbow
+  bolts, repeating-crossbow bolts, sling bullets, the net, spiked shields, and the armor
+  table's three "Extras" rows (armor spikes, shield spikes, locked gauntlet).
+  Regression: `SrdAmmunition_AndTheRemainingMundaneWeaponGaps_Load`.
+- **Rings, rods and staffs** — 100 items from `magicItemsPRR.html` / `magicItemsSSW.html`.
+  `rod` and `staff` were empty categories; `ring` held only the protection ladder.
+  Regression: `SrdRingsRodsAndStaffs_Load`.
+- **Wondrous items** — 257 items from `magicItemsWI.html`, the largest batch.
+  Regression: `SrdWondrousItems_Load`.
+
+### Conventions settled while doing it — the remaining batches should follow these
+
+- Prices are stored in **copper** (`priceCp`), so a 30,000 gp galley is 3,000,000 cp.
+- `weightLbs` is an **integer**, so sub-pound items floor to 0. Pre-existing convention
+  (`weapon:dart` is 1/2 lb and already stored 0), kept deliberately rather than widening the
+  schema mid-extraction (user ruling 2026-07-29). Worth revisiting if encumbrance is ever
+  computed — 33 of the gear items weigh under a pound and now read as weightless.
+- **A tiered price clause becomes one item per tier**, not one item at the cheapest price:
+  `Price 3,000 gp (lesser), 11,000 gp (normal), 24,500 gp (greater)` produces three rods.
+- **The enhancement bonus is part of an item's identity, not a suffix to strip.** An early
+  dedup pass normalised `+N` away and silently dropped Bracers of Armor +2/+4/+6/+7 as
+  "already present" — the packs in fact carried only +1/+3/+5/+8. Any name-matching against
+  existing content must keep the bonus as a token.
+- **Items priced by a variant table** (bag of holding, carpet of flying, crystal ball,
+  necklace of fireballs, ioun stones) have no `Price N gp` clause; read the column headed
+  "Market Price". Their descriptions also embed `table-*` anchors, so slicing an entry at the
+  next anchor truncates it before its price — slice at the next *item* anchor.
+- Sub-priced rows are qualified with their parent row (`Lock, amazing`, not `Amazing`).
+- Slot inference is order-sensitive: "Bracers of Armor" is a **wrists** item, and a naive
+  keyword scan calls it torso because the name contains "armor".
+- **Services are deliberately excluded** (`goodsAndServices.html` table 9: hirelings,
+  messengers, road tolls). Priced services, not ownable equipment, with no schema
+  representation. Barding's x2/x4 multipliers are likewise a rule, not an item.
+- **Potions, scrolls and wands are deliberately not extracted.** The SRD defines them
+  generatively ("a wand of any 4th-level or lower spell"), priced by spell and caster level
+  rather than enumerated. Emitting them means generating one item per spell per caster level —
+  a content-design decision, not a transcription. Decide the shape before extracting.
+
+### Known gaps in what was extracted
+
+- **Figurines of Wondrous Power** (9 variants) and **Feather Token** (6 variants) are not
+  extracted. Both are composite entries whose variants are inline sub-sections with their own
+  Price clauses but no usable per-variant anchor boundary. Deferred rather than guessed at.
+- Wondrous descriptions retain the trailing `School; CL Nth; Craft ...` clause. It is SRD text
+  and harmless, but a display layer may want it split into fields.
+
+**Pre-existing content bugs found in passing, not fixed:**
+`pcgen_srd/equipment/srd_equipment_epic.json` has doubled-prefix names —
+`"Rod of Rod (Besiegement)"`, `"Rod of Rod (Fortification)"`, `"Staff of Staff (Fiery Power)"`,
+`"Staff of Staff (Nature's Fury)"`. `srd_equipment.json` has garbled composite-bow names —
+`"Longbow (Composite) Longbow STR"`, `"Shortbow (Composite +0) Shortbow STR0"`. Same class of
+defect as the garbled LST names fixed in `34a0f3a`. The ids resolve, so these are cosmetic
+rather than dangling.
+
+**Remaining order**, by how often a real character touches them: magic armour & weapons (86 —
+the enchantment lines, `+1` through `+5` and the named properties) → intelligent/cursed items
+and artifacts (89) → epic items and artifacts (114) last.

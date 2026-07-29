@@ -1,0 +1,2130 @@
+[
+  {
+    "id": "gear:backpack_empty",
+    "name": "Backpack (empty)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 2,
+    "priceCp": 200,
+    "description": "Adventuring Gear (2 gp, 2 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:barrel_empty",
+    "name": "Barrel (empty)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 30,
+    "priceCp": 200,
+    "description": "Adventuring Gear (2 gp, 30 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:basket_empty",
+    "name": "Basket (empty)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 40,
+    "description": "Adventuring Gear (4 sp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:bedroll",
+    "name": "Bedroll",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 10,
+    "description": "Adventuring Gear (1 sp, 5 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:bell",
+    "name": "Bell",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 100,
+    "description": "Adventuring Gear (1 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:blanket_winter",
+    "name": "Blanket, winter",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 3,
+    "priceCp": 50,
+    "description": "Adventuring Gear (5 sp, 3 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:block_and_tackle",
+    "name": "Block and tackle",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 500,
+    "description": "Adventuring Gear (5 gp, 5 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:bottle_wine_glass",
+    "name": "Bottle, wine glass",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 200,
+    "description": "Adventuring Gear (2 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:bucket_empty",
+    "name": "Bucket (empty)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 2,
+    "priceCp": 50,
+    "description": "Adventuring Gear (5 sp, 2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:caltrops",
+    "name": "Caltrops",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 2,
+    "priceCp": 100,
+    "description": "Adventuring Gear (1 gp, 2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:candle",
+    "name": "Candle",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 1,
+    "description": "Adventuring Gear (1 cp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:canvas_sq_yd",
+    "name": "Canvas (sq. yd.)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 10,
+    "description": "Adventuring Gear (1 sp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:case_map_or_scroll",
+    "name": "Case, map or scroll",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 100,
+    "description": "Adventuring Gear (1 gp, 1/2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:chain_10_ft",
+    "name": "Chain (10 ft.)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 2,
+    "priceCp": 3000,
+    "description": "Adventuring Gear (30 gp, 2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:chalk_1_piece",
+    "name": "Chalk, 1 piece",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 1,
+    "description": "Adventuring Gear (1 cp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:chest_empty",
+    "name": "Chest (empty)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 25,
+    "priceCp": 200,
+    "description": "Adventuring Gear (2 gp, 25 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:crowbar",
+    "name": "Crowbar",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 200,
+    "description": "Adventuring Gear (2 gp, 5 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:firewood_per_day",
+    "name": "Firewood (per day)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 20,
+    "priceCp": 1,
+    "description": "Adventuring Gear (1 cp, 20 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:fishhook",
+    "name": "Fishhook",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 10,
+    "description": "Adventuring Gear (1 sp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:fishing_net_25_sq_ft",
+    "name": "Fishing net, 25 sq. ft.",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 400,
+    "description": "Adventuring Gear (4 gp, 5 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:flask_empty",
+    "name": "Flask (empty)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 3,
+    "description": "Adventuring Gear (3 cp, 1-1/2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:flint_and_steel",
+    "name": "Flint and steel",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 100,
+    "description": "Adventuring Gear (1 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:grappling_hook",
+    "name": "Grappling hook",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 4,
+    "priceCp": 100,
+    "description": "Adventuring Gear (1 gp, 4 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:hammer",
+    "name": "Hammer",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 2,
+    "priceCp": 50,
+    "description": "Adventuring Gear (5 sp, 2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:ink_1_oz_vial",
+    "name": "Ink (1 oz. vial)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 800,
+    "description": "Adventuring Gear (8 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:inkpen",
+    "name": "Inkpen",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 10,
+    "description": "Adventuring Gear (1 sp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:jug_clay",
+    "name": "Jug, clay",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 9,
+    "priceCp": 3,
+    "description": "Adventuring Gear (3 cp, 9 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:ladder_10_foot",
+    "name": "Ladder, 10-foot",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 20,
+    "priceCp": 5,
+    "description": "Adventuring Gear (5 cp, 20 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:lamp_common",
+    "name": "Lamp, common",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 10,
+    "description": "Adventuring Gear (1 sp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:lantern_bullseye",
+    "name": "Lantern, bullseye",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 3,
+    "priceCp": 1200,
+    "description": "Adventuring Gear (12 gp, 3 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:lantern_hooded",
+    "name": "Lantern, hooded",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 2,
+    "priceCp": 700,
+    "description": "Adventuring Gear (7 gp, 2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:lock_very_simple",
+    "name": "Lock, very simple",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 2000,
+    "description": "Adventuring Gear (20 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:lock_average",
+    "name": "Lock, average",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 4000,
+    "description": "Adventuring Gear (40 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:lock_good",
+    "name": "Lock, good",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 8000,
+    "description": "Adventuring Gear (80 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:lock_amazing",
+    "name": "Lock, amazing",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 15000,
+    "description": "Adventuring Gear (150 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:manacles",
+    "name": "Manacles",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 2,
+    "priceCp": 1500,
+    "description": "Adventuring Gear (15 gp, 2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:manacles_masterwork",
+    "name": "Manacles, masterwork",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 2,
+    "priceCp": 5000,
+    "description": "Adventuring Gear (50 gp, 2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:mirror_small_steel",
+    "name": "Mirror, small steel",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 1000,
+    "description": "Adventuring Gear (10 gp, 1/2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:mug_tankard_clay",
+    "name": "Mug/Tankard, clay",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 2,
+    "description": "Adventuring Gear (2 cp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:oil_1_pint_flask",
+    "name": "Oil (1-pint flask)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 10,
+    "description": "Adventuring Gear (1 sp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:paper_sheet",
+    "name": "Paper (sheet)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 40,
+    "description": "Adventuring Gear (4 sp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:parchment_sheet",
+    "name": "Parchment (sheet)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 20,
+    "description": "Adventuring Gear (2 sp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:pick_miners",
+    "name": "Pick, miner's",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 10,
+    "priceCp": 300,
+    "description": "Adventuring Gear (3 gp, 10 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:pitcher_clay",
+    "name": "Pitcher, clay",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 2,
+    "description": "Adventuring Gear (2 cp, 5 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:piton",
+    "name": "Piton",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 10,
+    "description": "Adventuring Gear (1 sp, 1/2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:pole_10_foot",
+    "name": "Pole 10-foot",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 8,
+    "priceCp": 20,
+    "description": "Adventuring Gear (2 sp, 8 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:pot_iron",
+    "name": "Pot, iron",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 10,
+    "priceCp": 50,
+    "description": "Adventuring Gear (5 sp, 10 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:pouch_belt_empty",
+    "name": "Pouch, belt (empty)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 100,
+    "description": "Adventuring Gear (1 gp, 1/2 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:ram_portable",
+    "name": "Ram, portable",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 20,
+    "priceCp": 1000,
+    "description": "Adventuring Gear (10 gp, 20 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:rations_trail_per_day",
+    "name": "Rations, trail (per day)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 50,
+    "description": "Adventuring Gear (5 sp, 1 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:rope_hempen_50_ft",
+    "name": "Rope, hempen (50 ft.)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 10,
+    "priceCp": 100,
+    "description": "Adventuring Gear (1 gp, 10 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:rope_silk_50_ft",
+    "name": "Rope, silk (50 ft.)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 1000,
+    "description": "Adventuring Gear (10 gp, 5 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:sack_empty",
+    "name": "Sack (empty)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 10,
+    "description": "Adventuring Gear (1 sp, 1/2 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:sealing_wax",
+    "name": "Sealing wax",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 100,
+    "description": "Adventuring Gear (1 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:sewing_needle",
+    "name": "Sewing needle",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 50,
+    "description": "Adventuring Gear (5 sp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:signal_whistle",
+    "name": "Signal whistle",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 80,
+    "description": "Adventuring Gear (8 sp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:signet_ring",
+    "name": "Signet ring",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 500,
+    "description": "Adventuring Gear (5 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:sledge",
+    "name": "Sledge",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 10,
+    "priceCp": 100,
+    "description": "Adventuring Gear (1 gp, 10 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:soap_per_lb",
+    "name": "Soap (per lb.)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 50,
+    "description": "Adventuring Gear (5 sp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:spade_or_shovel",
+    "name": "Spade or shovel",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 8,
+    "priceCp": 200,
+    "description": "Adventuring Gear (2 gp, 8 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:spyglass",
+    "name": "Spyglass",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 100000,
+    "description": "Adventuring Gear (1000 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:tent",
+    "name": "Tent",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 20,
+    "priceCp": 1000,
+    "description": "Adventuring Gear (10 gp, 20 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:torch",
+    "name": "Torch",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 1,
+    "description": "Adventuring Gear (1 cp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:vial_ink_or_potion",
+    "name": "Vial ink or potion",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 100,
+    "description": "Adventuring Gear (1 gp, 1/10 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:waterskin",
+    "name": "Waterskin",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 4,
+    "priceCp": 100,
+    "description": "Adventuring Gear (1 gp, 4 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:whetstone",
+    "name": "Whetstone",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 2,
+    "description": "Adventuring Gear (2 cp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "adventuring_gear"
+    ]
+  },
+  {
+    "id": "gear:acid_flask",
+    "name": "Acid (flask)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 1000,
+    "description": "Special Substances and Items (10 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "special_substances_and_items"
+    ]
+  },
+  {
+    "id": "gear:alchemists_fire_flask",
+    "name": "Alchemist's fire (flask)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 2000,
+    "description": "Special Substances and Items (20 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "special_substances_and_items"
+    ]
+  },
+  {
+    "id": "gear:antitoxin_vial",
+    "name": "Antitoxin (vial)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 5000,
+    "description": "Special Substances and Items (50 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "special_substances_and_items"
+    ]
+  },
+  {
+    "id": "gear:everburning_torch",
+    "name": "Everburning torch",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 11000,
+    "description": "Special Substances and Items (110 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "special_substances_and_items"
+    ]
+  },
+  {
+    "id": "gear:holy_water_flask",
+    "name": "Holy water (flask)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 2500,
+    "description": "Special Substances and Items (25 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "special_substances_and_items"
+    ]
+  },
+  {
+    "id": "gear:smokestick",
+    "name": "Smokestick",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 2000,
+    "description": "Special Substances and Items (20 gp, 1/2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "special_substances_and_items"
+    ]
+  },
+  {
+    "id": "gear:sunrod",
+    "name": "Sunrod",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 200,
+    "description": "Special Substances and Items (2 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "special_substances_and_items"
+    ]
+  },
+  {
+    "id": "gear:tanglefoot_bag",
+    "name": "Tanglefoot bag",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 4,
+    "priceCp": 5000,
+    "description": "Special Substances and Items (50 gp, 4 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "special_substances_and_items"
+    ]
+  },
+  {
+    "id": "gear:thunderstone",
+    "name": "Thunderstone",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 3000,
+    "description": "Special Substances and Items (30 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "special_substances_and_items"
+    ]
+  },
+  {
+    "id": "gear:tindertwig",
+    "name": "Tindertwig",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 100,
+    "description": "Special Substances and Items (1 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "special_substances_and_items"
+    ]
+  },
+  {
+    "id": "gear:alchemists_lab",
+    "name": "Alchemist's lab",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 40,
+    "priceCp": 50000,
+    "description": "Tools and Skill Kits (500 gp, 40 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:artisans_tools",
+    "name": "Artisan's tools",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 500,
+    "description": "Tools and Skill Kits (5 gp, 5 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:artisans_tools_masterwork",
+    "name": "Artisan's tools, masterwork",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 5500,
+    "description": "Tools and Skill Kits (55 gp, 5 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:climbers_kit",
+    "name": "Climber's kit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 8000,
+    "description": "Tools and Skill Kits (80 gp, 5 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:disguise_kit",
+    "name": "Disguise kit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 8,
+    "priceCp": 5000,
+    "description": "Tools and Skill Kits (50 gp, 8 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:healers_kit",
+    "name": "Healer's kit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 5000,
+    "description": "Tools and Skill Kits (50 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:holly_and_mistletoe",
+    "name": "Holly and mistletoe",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "Tools and Skill Kits (-, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:holy_symbol_wooden",
+    "name": "Holy symbol, wooden",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 100,
+    "description": "Tools and Skill Kits (1 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:holy_symbol_silver",
+    "name": "Holy symbol, silver",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 2500,
+    "description": "Tools and Skill Kits (25 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:hourglass",
+    "name": "Hourglass",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 2500,
+    "description": "Tools and Skill Kits (25 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:magnifying_glass",
+    "name": "Magnifying glass",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 10000,
+    "description": "Tools and Skill Kits (100 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:musical_instrument_common",
+    "name": "Musical instrument, common",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 3,
+    "priceCp": 500,
+    "description": "Tools and Skill Kits (5 gp, 3 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:musical_instrument_masterwork",
+    "name": "Musical instrument, masterwork",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 3,
+    "priceCp": 10000,
+    "description": "Tools and Skill Kits (100 gp, 3 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:scale_merchants",
+    "name": "Scale, merchant's",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 200,
+    "description": "Tools and Skill Kits (2 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:spell_component_pouch",
+    "name": "Spell component pouch",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 2,
+    "priceCp": 500,
+    "description": "Tools and Skill Kits (5 gp, 2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:spellbook_wizards_blank",
+    "name": "Spellbook, wizard's (blank)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 3,
+    "priceCp": 1500,
+    "description": "Tools and Skill Kits (15 gp, 3 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:thieves_tools",
+    "name": "Thieves' tools",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 3000,
+    "description": "Tools and Skill Kits (30 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:thieves_tools_masterwork",
+    "name": "Thieves' tools, masterwork",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 2,
+    "priceCp": 10000,
+    "description": "Tools and Skill Kits (100 gp, 2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:tool_masterwork",
+    "name": "Tool, masterwork",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 5000,
+    "description": "Tools and Skill Kits (50 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:water_clock",
+    "name": "Water clock",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 200,
+    "priceCp": 100000,
+    "description": "Tools and Skill Kits (1000 gp, 200 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "tools_and_skill_kits"
+    ]
+  },
+  {
+    "id": "gear:artisans_outfit",
+    "name": "Artisan's outfit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 4,
+    "priceCp": 100,
+    "description": "Clothing (1 gp, 4 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "clothing"
+    ]
+  },
+  {
+    "id": "gear:clerics_vestments",
+    "name": "Cleric's vestments",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 6,
+    "priceCp": 500,
+    "description": "Clothing (5 gp, 6 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "clothing"
+    ]
+  },
+  {
+    "id": "gear:cold_weather_outfit",
+    "name": "Cold weather outfit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 7,
+    "priceCp": 800,
+    "description": "Clothing (8 gp, 7 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "clothing"
+    ]
+  },
+  {
+    "id": "gear:courtiers_outfit",
+    "name": "Courtier's outfit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 6,
+    "priceCp": 3000,
+    "description": "Clothing (30 gp, 6 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "clothing"
+    ]
+  },
+  {
+    "id": "gear:entertainers_outfit",
+    "name": "Entertainer's outfit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 4,
+    "priceCp": 300,
+    "description": "Clothing (3 gp, 4 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "clothing"
+    ]
+  },
+  {
+    "id": "gear:explorers_outfit",
+    "name": "Explorer's outfit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 8,
+    "priceCp": 1000,
+    "description": "Clothing (10 gp, 8 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "clothing"
+    ]
+  },
+  {
+    "id": "gear:monks_outfit",
+    "name": "Monk's outfit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 2,
+    "priceCp": 500,
+    "description": "Clothing (5 gp, 2 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "clothing"
+    ]
+  },
+  {
+    "id": "gear:nobles_outfit",
+    "name": "Noble's outfit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 10,
+    "priceCp": 7500,
+    "description": "Clothing (75 gp, 10 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "clothing"
+    ]
+  },
+  {
+    "id": "gear:peasants_outfit",
+    "name": "Peasant's outfit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 2,
+    "priceCp": 10,
+    "description": "Clothing (1 sp, 2 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "clothing"
+    ]
+  },
+  {
+    "id": "gear:royal_outfit",
+    "name": "Royal outfit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 15,
+    "priceCp": 20000,
+    "description": "Clothing (200 gp, 15 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "clothing"
+    ]
+  },
+  {
+    "id": "gear:scholars_outfit",
+    "name": "Scholar's outfit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 6,
+    "priceCp": 500,
+    "description": "Clothing (5 gp, 6 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "clothing"
+    ]
+  },
+  {
+    "id": "gear:travelers_outfit",
+    "name": "Traveler's outfit",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 100,
+    "description": "Clothing (1 gp, 5 lb.1).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "clothing"
+    ]
+  },
+  {
+    "id": "gear:ale_gallon",
+    "name": "Ale (gallon)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 8,
+    "priceCp": 20,
+    "description": "Food, Drink, and Lodging (2 sp, 8 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:ale_mug",
+    "name": "Ale (mug)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 4,
+    "description": "Food, Drink, and Lodging (4 cp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:banquet_per_person",
+    "name": "Banquet (per person)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 1000,
+    "description": "Food, Drink, and Lodging (10 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:bread_per_loaf",
+    "name": "Bread, per loaf",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 2,
+    "description": "Food, Drink, and Lodging (2 cp, 1/2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:cheese_hunk_of",
+    "name": "Cheese, hunk of",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 10,
+    "description": "Food, Drink, and Lodging (1 sp, 1/2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:inn_stay_good_per_day",
+    "name": "Inn stay, good (per day)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 200,
+    "description": "Food, Drink, and Lodging (2 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:inn_stay_common_per_day",
+    "name": "Inn stay, common (per day)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 50,
+    "description": "Food, Drink, and Lodging (5 sp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:inn_stay_poor_per_day",
+    "name": "Inn stay, poor (per day)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 20,
+    "description": "Food, Drink, and Lodging (2 sp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:meals_good_per_day",
+    "name": "Meals, good (per day)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 50,
+    "description": "Food, Drink, and Lodging (5 sp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:meals_common_per_day",
+    "name": "Meals, common (per day)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 30,
+    "description": "Food, Drink, and Lodging (3 sp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:meals_poor_per_day",
+    "name": "Meals, poor (per day)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 10,
+    "description": "Food, Drink, and Lodging (1 sp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:meat_chunk_of",
+    "name": "Meat, chunk of",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 30,
+    "description": "Food, Drink, and Lodging (3 sp, 1/2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:wine_common_pitcher",
+    "name": "Wine, common (pitcher)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 6,
+    "priceCp": 20,
+    "description": "Food, Drink, and Lodging (2 sp, 6 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:wine_fine_bottle",
+    "name": "Wine, fine (bottle)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 1000,
+    "description": "Food, Drink, and Lodging (10 gp, 1-1/2 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "food_drink_and_lodging"
+    ]
+  },
+  {
+    "id": "gear:bit_and_bridle",
+    "name": "Bit and bridle",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 200,
+    "description": "Mounts and Related Gear (2 gp, 1 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:dog_guard",
+    "name": "Dog, guard",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 2500,
+    "description": "Mounts and Related Gear (25 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:dog_riding",
+    "name": "Dog, riding",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 15000,
+    "description": "Mounts and Related Gear (150 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:donkey_or_mule",
+    "name": "Donkey or mule",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 800,
+    "description": "Mounts and Related Gear (8 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:feed_per_day",
+    "name": "Feed (per day)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 10,
+    "priceCp": 5,
+    "description": "Mounts and Related Gear (5 cp, 10 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:horse_heavy",
+    "name": "Horse, heavy",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 20000,
+    "description": "Mounts and Related Gear (200 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:horse_light",
+    "name": "Horse, light",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 7500,
+    "description": "Mounts and Related Gear (75 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:pony",
+    "name": "Pony",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 3000,
+    "description": "Mounts and Related Gear (30 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:warhorse_heavy",
+    "name": "Warhorse, heavy",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 40000,
+    "description": "Mounts and Related Gear (400 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:warhorse_light",
+    "name": "Warhorse, light",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 15000,
+    "description": "Mounts and Related Gear (150 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:warpony",
+    "name": "Warpony",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 10000,
+    "description": "Mounts and Related Gear (100 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:saddle_military",
+    "name": "Saddle, military",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 30,
+    "priceCp": 2000,
+    "description": "Mounts and Related Gear (20 gp, 30 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:saddle_pack",
+    "name": "Saddle, pack",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 15,
+    "priceCp": 500,
+    "description": "Mounts and Related Gear (5 gp, 15 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:saddle_riding",
+    "name": "Saddle, riding",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 25,
+    "priceCp": 1000,
+    "description": "Mounts and Related Gear (10 gp, 25 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:saddle_exotic_military",
+    "name": "Saddle, exotic military",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 40,
+    "priceCp": 6000,
+    "description": "Mounts and Related Gear (60 gp, 40 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:saddle_exotic_pack",
+    "name": "Saddle, exotic pack",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 20,
+    "priceCp": 1500,
+    "description": "Mounts and Related Gear (15 gp, 20 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:saddle_exotic_riding",
+    "name": "Saddle, exotic riding",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 30,
+    "priceCp": 3000,
+    "description": "Mounts and Related Gear (30 gp, 30 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:saddlebags",
+    "name": "Saddlebags",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 8,
+    "priceCp": 400,
+    "description": "Mounts and Related Gear (4 gp, 8 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:stabling_per_day",
+    "name": "Stabling (per day)",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 50,
+    "description": "Mounts and Related Gear (5 sp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "mounts_and_related_gear"
+    ]
+  },
+  {
+    "id": "gear:carriage",
+    "name": "Carriage",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 600,
+    "priceCp": 10000,
+    "description": "Transport (100 gp, 600 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "transport"
+    ]
+  },
+  {
+    "id": "gear:cart",
+    "name": "Cart",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 200,
+    "priceCp": 1500,
+    "description": "Transport (15 gp, 200 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "transport"
+    ]
+  },
+  {
+    "id": "gear:galley",
+    "name": "Galley",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 3000000,
+    "description": "Transport (30,000 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "transport"
+    ]
+  },
+  {
+    "id": "gear:keelboat",
+    "name": "Keelboat",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 300000,
+    "description": "Transport (3,000 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "transport"
+    ]
+  },
+  {
+    "id": "gear:longship",
+    "name": "Longship",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 1000000,
+    "description": "Transport (10,000 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "transport"
+    ]
+  },
+  {
+    "id": "gear:rowboat",
+    "name": "Rowboat",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 100,
+    "priceCp": 5000,
+    "description": "Transport (50 gp, 100 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "transport"
+    ]
+  },
+  {
+    "id": "gear:oar",
+    "name": "Oar",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 10,
+    "priceCp": 200,
+    "description": "Transport (2 gp, 10 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "transport"
+    ]
+  },
+  {
+    "id": "gear:sailing_ship",
+    "name": "Sailing ship",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 1000000,
+    "description": "Transport (10,000 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "transport"
+    ]
+  },
+  {
+    "id": "gear:sled",
+    "name": "Sled",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 300,
+    "priceCp": 2000,
+    "description": "Transport (20 gp, 300 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "transport"
+    ]
+  },
+  {
+    "id": "gear:wagon",
+    "name": "Wagon",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 400,
+    "priceCp": 3500,
+    "description": "Transport (35 gp, 400 lb.).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "transport"
+    ]
+  },
+  {
+    "id": "gear:warship",
+    "name": "Warship",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 0,
+    "priceCp": 2500000,
+    "description": "Transport (25,000 gp, -).",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": [
+      "transport"
+    ]
+  }
+]

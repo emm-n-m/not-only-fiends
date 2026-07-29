@@ -1,0 +1,143 @@
+[
+  {
+    "id": "ammunition:arrows_20",
+    "name": "Arrows (20)",
+    "category": "ammunition",
+    "slot": null,
+    "weightLbs": 3,
+    "priceCp": 100,
+    "description": "A quiver of 20 arrows, for a longbow or shortbow. An arrow that hits is destroyed; one that misses has a 50% chance of being destroyed.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": ["ammunition", "bow"]
+  },
+  {
+    "id": "ammunition:crossbow_bolts_10",
+    "name": "Bolts, crossbow (10)",
+    "category": "ammunition",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 100,
+    "description": "A case of 10 bolts, for a hand, light or heavy crossbow. A bolt that hits is destroyed; one that misses has a 50% chance of being destroyed.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": ["ammunition", "crossbow"]
+  },
+  {
+    "id": "ammunition:repeating_crossbow_bolts_5",
+    "name": "Bolts, repeating crossbow (5)",
+    "category": "ammunition",
+    "slot": null,
+    "weightLbs": 1,
+    "priceCp": 100,
+    "description": "A 5-bolt magazine for a repeating crossbow. Loading a new magazine is a full-round action that provokes attacks of opportunity.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": ["ammunition", "crossbow"]
+  },
+  {
+    "id": "ammunition:sling_bullets_10",
+    "name": "Bullets, sling (10)",
+    "category": "ammunition",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 10,
+    "description": "A pouch of 10 lead sling bullets. A bullet that hits is destroyed; one that misses has a 50% chance of being destroyed.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": ["ammunition", "sling"]
+  },
+  {
+    "id": "weapon:net",
+    "name": "Net",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 6,
+    "priceCp": 2000,
+    "description": "Used to entangle enemies. Throwing it is a ranged touch attack with a maximum range of 10 feet. An entangled creature takes a -2 penalty on attack rolls and a -4 penalty on Dexterity, moves at half speed, and cannot charge or run; casting a spell while entangled requires a DC 15 Concentration check. Escape is a DC 20 Escape Artist check, or a DC 25 Strength check to burst it (the net has 5 hit points); both are full-round actions. Useful only against creatures within one size category of the thrower.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "0",
+      "rangeFt": 10,
+      "damageType": "none",
+      "ranged": true,
+      "thrown": true,
+      "proficiency": "exotic"
+    },
+    "tags": ["exotic", "thrown"]
+  },
+  {
+    "id": "weapon:spiked_shield_light",
+    "name": "Shield, light spiked",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "A light shield fitted with spikes, used as an off-hand piercing weapon. Cost and weight are those of the shield plus its spikes ('special' in the SRD weapon table, because both depend on the shield the spikes are attached to); the shield itself is shield:light_wooden or shield:light_steel.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d4",
+      "critMultiplier": 2,
+      "damageType": "piercing",
+      "light": true,
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "shield"]
+  },
+  {
+    "id": "weapon:spiked_shield_heavy",
+    "name": "Shield, heavy spiked",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "A heavy shield fitted with spikes, used as an off-hand piercing weapon. Cost and weight are those of the shield plus its spikes ('special' in the SRD weapon table, because both depend on the shield the spikes are attached to); the shield itself is shield:heavy_wooden or shield:heavy_steel.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "weapon": {
+      "damage": "1d6",
+      "critMultiplier": 2,
+      "damageType": "piercing",
+      "proficiency": "martial"
+    },
+    "tags": ["martial", "shield"]
+  },
+  {
+    "id": "gear:shield_spikes",
+    "name": "Shield spikes",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 1000,
+    "description": "Spikes added to a shield, turning it into a martial piercing weapon that increases shield bash damage as if the shield were one size category larger. Cannot be put on a buckler or a tower shield. +10 gp and +5 lb. on top of the shield.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": ["armor_accessory"]
+  },
+  {
+    "id": "gear:armor_spikes",
+    "name": "Armor spikes",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 10,
+    "priceCp": 5000,
+    "description": "Spikes added to armor, letting the wearer deal piercing damage with a successful grapple attack or as an off-hand weapon. +50 gp and +10 lb. on top of the armor.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": ["armor_accessory"]
+  },
+  {
+    "id": "gear:locked_gauntlet",
+    "name": "Gauntlet, locked",
+    "category": "gear",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 800,
+    "description": "An armored gauntlet with chains and braces that attach a weapon to it so the weapon cannot be dropped easily. Grants a +10 bonus on any roll made to keep from being disarmed. Removing a weapon from it is a full-round action, and the hand is not free to cast spells.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": ["armor_accessory"]
+  }
+]

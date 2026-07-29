@@ -31,6 +31,171 @@ public class ContentValidationTests
     }
 
     [Fact]
+    public void SrdGoodsAndServices_LoadIntoTheGearCategory()
+    {
+        // goodsAndServices.html tables 2-8, extracted 2026-07-29. Before this, the "gear"
+        // category was empty in every pack — a character could buy a longsword but not a
+        // backpack. Prices are stored in copper (1 gp = 100 cp).
+        var registry = TestContentHelper.LoadAllPacks();
+
+        var gear = registry.GetAllEquipment()
+            .Where(e => e.Category == EquipmentCategory.Gear)
+            .ToList();
+        Assert.True(gear.Count >= 150, $"expected the full goods table, found {gear.Count}");
+
+        Assert.True(registry.TryGetEquipment("gear:backpack_empty", out var backpack));
+        Assert.Equal(200, backpack!.PriceCp);   // 2 gp
+        Assert.Equal(2, backpack.WeightLbs);
+
+        Assert.True(registry.TryGetEquipment("gear:spyglass", out var spyglass));
+        Assert.Equal(100_000, spyglass!.PriceCp); // 1,000 gp — the priciest piece of gear
+
+        Assert.True(registry.TryGetEquipment("gear:galley", out var galley));
+        Assert.Equal(3_000_000, galley!.PriceCp); // 30,000 gp, and why price is copper-denominated
+
+        // Sub-priced rows are qualified with their parent row, not left as bare "Amazing".
+        Assert.True(registry.TryGetEquipment("gear:lock_amazing", out var amazing));
+        Assert.Equal("Lock, amazing", amazing!.Name);
+        Assert.Equal(15_000, amazing.PriceCp);   // 150 gp
+
+        // Sub-pound items floor to 0, matching the existing convention (weapon:dart, 1/2 lb).
+        Assert.True(registry.TryGetEquipment("gear:piton", out var piton));
+        Assert.Equal(0, piton!.WeightLbs);
+
+        // Holly and mistletoe is priced "-" in the SRD because it is free, not unpriced.
+        Assert.True(registry.TryGetEquipment("gear:holly_and_mistletoe", out var holly));
+        Assert.Equal(0, holly!.PriceCp);
+    }
+
+    [Fact]
+    public void SrdAmmunition_AndTheRemainingMundaneWeaponGaps_Load()
+    {
+        // weapons.html and armor.html, extracted 2026-07-29. Every base weapon, armor and shield
+        // was already present; what was missing was all ammunition (the category held nothing at
+        // all, so no bow was usable), the net, and the three armor "Extras" rows.
+        var registry = TestContentHelper.LoadAllPacks();
+
+        var ammo = registry.GetAllEquipment()
+            .Where(e => e.Category == EquipmentCategory.Ammunition)
+            .ToList();
+        Assert.Equal(4, ammo.Count);
+
+        Assert.True(registry.TryGetEquipment("ammunition:arrows_20", out var arrows));
+        Assert.Equal(100, arrows!.PriceCp);      // 1 gp
+        Assert.Equal(3, arrows.WeightLbs);
+
+        Assert.True(registry.TryGetEquipment("ammunition:sling_bullets_10", out var bullets));
+        Assert.Equal(10, bullets!.PriceCp);      // 1 sp — the one ammunition priced in silver
+        Assert.Equal(5, bullets.WeightLbs);
+
+        // "Net ... 20 gp ... 10 ft. ... 6 lb." — an exotic weapon that deals no damage.
+        Assert.True(registry.TryGetEquipment("weapon:net", out var net));
+        Assert.Equal(2000, net!.PriceCp);
+        Assert.Equal(10, net.Weapon!.RangeFt);
+        Assert.Equal("exotic", net.Weapon.Proficiency);
+
+        // Armor table "Extras": armor spikes +50 gp/+10 lb., shield spikes +10 gp/+5 lb.,
+        // locked gauntlet 8 gp/+5 lb. Stored as the increment, since each rides on a host item.
+        Assert.True(registry.TryGetEquipment("gear:armor_spikes", out var aspikes));
+        Assert.Equal(5000, aspikes!.PriceCp);
+        Assert.Equal(10, aspikes.WeightLbs);
+
+        Assert.True(registry.TryGetEquipment("gear:shield_spikes", out var sspikes));
+        Assert.Equal(1000, sspikes!.PriceCp);
+        Assert.Equal(5, sspikes.WeightLbs);
+
+        Assert.True(registry.TryGetEquipment("gear:locked_gauntlet", out var lg));
+        Assert.Equal(800, lg!.PriceCp);
+        Assert.Equal(5, lg.WeightLbs);
+    }
+
+    [Fact]
+    public void SrdRingsRodsAndStaffs_Load()
+    {
+        // magicItemsPRR.html and magicItemsSSW.html, extracted 2026-07-29. The rod and staff
+        // categories held nothing at all; rings held only the +1..+10 protection ladder.
+        var registry = TestContentHelper.LoadAllPacks();
+
+        var rods = registry.GetAllEquipment().Where(e => e.Category == EquipmentCategory.Rod).ToList();
+        var staffs = registry.GetAllEquipment().Where(e => e.Category == EquipmentCategory.Staff).ToList();
+        Assert.Equal(21, staffs.Count);
+        Assert.True(rods.Count >= 30, $"expected the metamagic tiers too, found {rods.Count}");
+
+        Assert.True(registry.TryGetEquipment("staff:power", out var power));
+        Assert.Equal(211_000 * 100, power!.PriceCp);
+
+        // Prices embedded after an in-description table still parse (these three sit after a
+        // "table-..." anchor, which naive slicing cuts the entry off before).
+        Assert.True(registry.TryGetEquipment("rod:wonder", out var wonder));
+        Assert.Equal(12_000 * 100, wonder!.PriceCp);
+        Assert.True(registry.TryGetEquipment("ring:elemental_command", out var elemental));
+        Assert.Equal(200_000 * 100, elemental!.PriceCp);
+
+        // A tiered price clause becomes one item per tier, not one item at the cheapest price.
+        Assert.True(registry.TryGetEquipment("rod:metamagic_extend_lesser", out var lesser));
+        Assert.True(registry.TryGetEquipment("rod:metamagic_extend_normal", out var normal));
+        Assert.True(registry.TryGetEquipment("rod:metamagic_extend_greater", out var greater));
+        Assert.Equal(3_000 * 100, lesser!.PriceCp);
+        Assert.Equal(11_000 * 100, normal!.PriceCp);
+        Assert.Equal(24_500 * 100, greater!.PriceCp);
+
+        Assert.True(registry.TryGetEquipment("ring:wizardry_iv", out var wiz4));
+        Assert.Equal(100_000 * 100, wiz4!.PriceCp);
+
+        // The generic "Ring of Protection +1" row is deliberately not re-extracted — the
+        // existing ring:protection_1..5 / ring:ring_of_protection_6..10 ladder supersedes it.
+        Assert.False(registry.TryGetEquipment("ring:protection", out _));
+        Assert.True(registry.TryGetEquipment("ring:protection_1", out _));
+    }
+
+    [Fact]
+    public void SrdWondrousItems_Load()
+    {
+        // magicItemsWI.html, extracted 2026-07-29 — the largest single batch. The packs held
+        // 69 wondrous items, almost all tiered stat ladders; the page describes ~190 distinct
+        // ones. Existing entries are matched by name and left alone rather than duplicated.
+        var registry = TestContentHelper.LoadAllPacks();
+
+        var wondrous = registry.GetAllEquipment()
+            .Where(e => e.Category == EquipmentCategory.Wondrous)
+            .ToList();
+        Assert.True(wondrous.Count >= 300, $"expected the SRD page plus the existing ladder, found {wondrous.Count}");
+
+        Assert.True(registry.TryGetEquipment("wondrous:boots_of_striding_and_springing", out var boots));
+        Assert.Equal(5_500 * 100, boots!.PriceCp);
+        Assert.Equal("feet", boots.Slot);
+
+        Assert.True(registry.TryGetEquipment("wondrous:circlet_of_persuasion", out var circlet));
+        Assert.Equal(4_500 * 100, circlet!.PriceCp);
+        Assert.Equal("head", circlet.Slot);
+
+        // "Bracers of Armor" is a wrists item; a naive keyword match calls it torso because
+        // the name contains "armor".
+        Assert.True(registry.TryGetEquipment("wondrous:bracers_of_armor_2", out var bracers));
+        Assert.Equal("wrists", bracers!.Slot);
+        Assert.Equal(4_000 * 100, bracers.PriceCp);
+
+        // The packs carried Bracers of Armor +1/+3/+5/+8 only; the even tiers were missing
+        // because the enhancement bonus is part of the item's identity, not a suffix to strip.
+        foreach (var n in new[] { 1, 2, 3, 4, 5, 6, 7, 8 })
+            Assert.True(registry.TryGetEquipment($"wondrous:bracers_of_armor_{n}", out _)
+                        || registry.TryGetEquipment($"wondrous:bracers_armor_{n}", out _),
+                        $"Bracers of Armor +{n} missing");
+
+        // Items priced by a variant table rather than a "Price N gp" clause.
+        Assert.True(registry.TryGetEquipment("wondrous:bag_of_holding_type_iv", out var bag));
+        Assert.Equal(10_000 * 100, bag!.PriceCp);
+        Assert.Equal(60, bag.WeightLbs);
+
+        Assert.True(registry.TryGetEquipment("wondrous:ioun_stone_lavender_and_green", out var ioun));
+        Assert.Equal(40_000 * 100, ioun!.PriceCp);
+
+        Assert.True(registry.TryGetEquipment("wondrous:necklace_of_fireballs_type_vii", out var necklace));
+        Assert.Equal(8_700 * 100, necklace!.PriceCp);
+        Assert.Equal("neck", necklace.Slot);
+    }
+
+    [Fact]
     public void BrokenRacialHDReference_ProducesError()
     {
         var registry = new ContentRegistry();

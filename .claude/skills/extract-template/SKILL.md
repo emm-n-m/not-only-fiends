@@ -1,6 +1,6 @@
 ---
 name: extract-template
-description: Extract template definitions from a D&D 3.5e source (PDF primary, HTML fallback for the few SRD templates in the mirror). Produces template JSON matching the schema.
+description: Extract template definitions from a D&D 3.5e source (HTML preferred — the SRD mirror carries 16 templates; PDF for supplements). Produces template JSON matching the schema.
 argument-hint: <source-path> [template-ids...]
 ---
 
@@ -10,20 +10,44 @@ You are extracting template data for the NotOnlyFiendsStudio content pipeline.
 
 ## Source selection
 
-Templates are the one content type where PDF is typically the better source — most iconic templates (half-fiend, half-celestial, half-dragon, vampire, lich, wraith) live in monster files not present in our SRD HTML mirror (which only has `monstersA`, `monstersG`, `monstersS`). HTML is viable for a handful only.
+Prefer HTML. **The mirror carries all 16 monster files, not the three this doc used to claim**, and every iconic SRD template is in it — half-dragon, half-fiend, half-celestial, vampire, lich, ghost, lycanthrope and more. Corrected 2026-07-29 after `half_dragon` was extracted from `monstersHtoI.html`; the old text sent extractions to a PDF that was never needed. PDF stays the fallback for supplement templates with no SRD page.
+
+To confirm what the mirror holds, the canonical section heading is `<h5>CREATING A <NAME></h5>`:
+
+```
+grep -rn -i "CREATING AN\? " NotOnlyFiendsStudio/Content/srd_html/*.html
+```
 
 Dispatch on the argument:
-- Ends in `.pdf` → PDF extraction (primary workflow).
-- Ends in `.html`/`.htm` → HTML extraction (limited set; see landmark files).
-- No path given → ask the user and recommend PDF for supplement templates.
+- Ends in `.html`/`.htm`, or names an SRD template → HTML extraction (primary workflow).
+- Ends in `.pdf` → PDF extraction (supplements, and anything the grep above does not find).
+- No path given → grep the mirror first; only ask the user for a PDF if the template is absent.
 
-### SRD HTML landmark files (limited)
+### SRD HTML landmark files
+
+Every template below is confirmed present in the mirror (verified 2026-07-29):
+
+| template | file |
+|---|---|
+| Celestial | `monstersBtoC.html` |
+| Fiendish | `monstersEtoF.html` |
+| Ghost | `monstersG.html` |
+| Half-Celestial, **Half-Dragon**, Half-Fiend | `monstersHtoI.html` |
+| Lich, Lycanthrope | `monstersKtoL.html` |
+| Skeleton | `monstersS.html` |
+| Vampire, Zombie | `monstersTtoZ.html` |
+| Demilich, Paragon, Pseudonatural, Worm That Walks | `epicNonAbominations.html` |
+| Phrenic | `psionicMonsters.html` |
+
+Already extracted: `half_fiend`, `half_dragon`, `fiendish`, `lich` (see `srd_core/templates/`).
+
+Other landmark files:
 
 - [improvingMonsters.html](../../../NotOnlyFiendsStudio/Content/srd_html/improvingMonsters.html) — general rules for reading templates, acquired vs. inherited, stacking. **No specific templates here**, just rules.
 - [monstersG.html](../../../NotOnlyFiendsStudio/Content/srd_html/monstersG.html) — contains **Ghost** template at `<h3><a id="ghost"></a>GHOST</h3>` (line ~1257) with the `<h5>CREATING A GHOST</h5>` section.
 - [monstersS.html](../../../NotOnlyFiendsStudio/Content/srd_html/monstersS.html) — contains **Skeleton** template at `<h3><a id="skeleton"></a>SKELETON</h3>` (line ~1862) with `<h5>CREATING A SKELETON</h5>` and a size variant table.
 
-Templates not in the mirror (use PDF): half-fiend, half-celestial, half-dragon, vampire, lich, wraith, zombie, pseudonatural, fiendish, celestial.
+Templates genuinely **not** in the mirror (use PDF): wraith, and any supplement template.
 
 ## HTML extraction workflow (when the template is available)
 

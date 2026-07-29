@@ -634,14 +634,11 @@ public class RulesAccuracyTests
     public void DragonDisciple_RequiresDraconicAndExcludesHalfDragon()
     {
         // "Any nondragon (cannot already be a half-dragon)" and "Languages: Draconic."
-        // Both are correctly implemented and unit-tested here. The language is now reachable via
-        // PCG import (see PcgConverterTests); no "template:half_dragon" exists in content yet, so
-        // the exclusion still has nothing to test against. Content gap, not a code defect.
-        //
-        // The template id was authored unprefixed as "half_dragon" while every template in the
-        // registry is "template:<id>", so the exclusion would not have fired even once the
-        // template existed. Found by ContentIntegrityTests' cross-reference sweep and corrected;
-        // behaviour is unchanged today because neither id resolves.
+        // Both halves are now reachable by a real character: draconic is granted by content and
+        // by PCG import (see PcgConverterTests), and "template:half_dragon" was extracted from the
+        // SRD mirror on 2026-07-29, so the exclusion finally gates against a template that exists.
+        // Asserted against the registry below rather than a hand-built id, which is what the
+        // earlier version of this test could not do.
         var driver = (HDDriver)Content.Value.GetDriver("class:dragon_disciple");
         var language = driver.Prerequisites.OfType<HasLanguage>().Single();
         var noDragon = driver.Prerequisites.OfType<LacksTemplate>().Single();
@@ -654,10 +651,57 @@ public class RulesAccuracyTests
         Assert.True(language.IsMet(withLanguage));
         Assert.False(language.IsMet(new CharacterState()));
 
+        // The excluded template resolves in the registry — the gap this test used to document.
+        Assert.NotNull(Content.Value.GetTemplate(noDragon.TemplateId));
+
         var withTemplate = new CharacterState();
         withTemplate.TemplateIds.Add("template:half_dragon");
         Assert.False(noDragon.IsMet(withTemplate));
         Assert.True(noDragon.IsMet(new CharacterState()));
+    }
+
+    [Fact]
+    public void HalfDragon_MatchesSrdTemplate()
+    {
+        // SRD "Creating a Half-Dragon" (monstersHtoI.html). Type becomes dragon, natural armor
+        // improves by +4, Str +8/Con +2/Int +2/Cha +2, level adjustment +3.
+        var template = Content.Value.GetTemplate("template:half_dragon");
+
+        Assert.Equal(CreatureType.Dragon, template.TypeOverride);
+        Assert.Equal(4, template.NaturalArmor);
+        Assert.Equal(3, template.LevelAdjustment);
+
+        Assert.Equal(8, template.AbilityModifiers!.STR);
+        Assert.Equal(0, template.AbilityModifiers.DEX);
+        Assert.Equal(2, template.AbilityModifiers.CON);
+        Assert.Equal(2, template.AbilityModifiers.INT);
+        Assert.Equal(0, template.AbilityModifiers.WIS);
+        Assert.Equal(2, template.AbilityModifiers.CHA);
+
+        // "two claw attacks and a bite attack, and the claws are the primary natural weapon."
+        var claw = template.NaturalAttacks.Single(a => a.Name == "Claw");
+        Assert.Equal(2, claw.Count);
+        Assert.True(claw.IsPrimary);
+
+        var bite = template.NaturalAttacks.Single(a => a.Name == "Bite");
+        Assert.Equal(1, bite.Count);
+        Assert.False(bite.IsPrimary);
+
+        // "immunity to sleep and paralysis effects" — the variety-dependent third immunity is
+        // descriptive only, since dragon variety is not a selectable choice.
+        var immunities = template.CreationPermabuffs.OfType<GrantImmunity>().Select(g => g.Immunity).ToList();
+        Assert.Contains("sleep", immunities);
+        Assert.Contains("paralysis", immunities);
+    }
+
+    [Fact]
+    public void HalfDragon_GrantsNoWingsToAMediumCharacter()
+    {
+        // "A half-dragon that is Large or larger has wings... A half-dragon that is Medium or
+        // smaller does not have wings." Size-conditional wings are not expressible, and every PC
+        // race here is Medium or smaller, so the template correctly grants no fly speed.
+        var template = Content.Value.GetTemplate("template:half_dragon");
+        Assert.Empty(template.SpeedModifiers);
     }
 
     [Fact]
