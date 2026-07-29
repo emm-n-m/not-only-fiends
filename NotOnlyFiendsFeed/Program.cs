@@ -83,6 +83,7 @@ app.MapGet("/api/content/feats/{id}", (string id, AgentApiService api) => Lookup
 app.MapGet("/api/content/domains", (AgentApiService api) => TypedResults.Ok(api.GetDomains()));
 app.MapGet("/api/content/domains/{id}", (string id, AgentApiService api) => Lookup(() => api.GetDomain(id)));
 
+app.MapGet("/api/content/languages", (AgentApiService api) => TypedResults.Ok(api.GetLanguages()));
 app.MapGet("/api/content/skills", (AgentApiService api) => TypedResults.Ok(api.GetSkills()));
 app.MapGet("/api/content/skills/{id}", (string id, AgentApiService api) => Lookup(() => api.GetSkill(id)));
 

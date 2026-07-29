@@ -42,7 +42,7 @@ public sealed class AgentApiService
         LoadedPacks = _contentService.LoadedPacks.Select(MapPack).ToList(),
         Races = _content.GetAllRaces()
             .OrderBy(r => r.Name)
-            .Select(r => MapSummary(r.Id, r.Name, r.Description))
+            .Select(MapRace)
             .ToList(),
         Drivers = _content.GetAllDrivers()
             .OfType<HDDriver>()
@@ -70,6 +70,10 @@ public sealed class AgentApiService
             .OrderBy(cf => cf.Name)
             .Select(cf => MapSummary(cf.Id, cf.Name, cf.Description))
             .ToList(),
+        Languages = _content.GetAllLanguages()
+            .OrderBy(l => l.Name)
+            .Select(MapLanguage)
+            .ToList(),
         Equipment = _content.GetAllEquipment()
             .OrderBy(e => e.Category)
             .ThenBy(e => e.Name)
@@ -78,9 +82,37 @@ public sealed class AgentApiService
         SpellCount = _content.GetAllSpells().Count()
     };
 
-    public IEnumerable<ContentSummaryDto> GetRaces() => _content.GetAllRaces()
+    public IEnumerable<RaceSummaryDto> GetRaces() => _content.GetAllRaces()
         .OrderBy(r => r.Name)
-        .Select(r => MapSummary(r.Id, r.Name, r.Description));
+        .Select(MapRace);
+
+    /// <summary>
+    /// Applies the same PC-sanctioning rule the builder's picker uses, so an agent driving the API
+    /// can tell a player-character race from a monster entry instead of seeing one flat list.
+    /// </summary>
+    private static RaceSummaryDto MapRace(RaceDefinition race) => new()
+    {
+        Id = race.Id,
+        Name = race.Name,
+        Description = race.Description,
+        LevelAdjustment = race.LevelAdjustment,
+        IsPcRace = RaceCatalog.IsSanctionedPcRace(race),
+        AutomaticLanguages = new List<string>(race.AutomaticLanguages),
+        BonusLanguages = new List<string>(race.BonusLanguages),
+        BonusLanguagesAny = race.BonusLanguagesAny
+    };
+
+    private static LanguageSummaryDto MapLanguage(LanguageDefinition language) => new()
+    {
+        Id = language.Id,
+        Name = language.Name,
+        Description = language.Description,
+        IsSecret = language.IsSecret
+    };
+
+    public IEnumerable<LanguageSummaryDto> GetLanguages() => _content.GetAllLanguages()
+        .OrderBy(l => l.Name)
+        .Select(MapLanguage);
 
     public IEnumerable<DriverSummaryDto> GetDrivers() => _content.GetAllDrivers()
         .OfType<HDDriver>()

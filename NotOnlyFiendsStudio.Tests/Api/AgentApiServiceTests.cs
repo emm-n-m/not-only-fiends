@@ -28,6 +28,53 @@ public class AgentApiServiceTests
     }
 
     [Fact]
+    public void RaceCatalogExposesPlayerCharacterSanctioning()
+    {
+        var races = SharedService.Value.GetRaces().ToList();
+
+        // The API must make the same distinction the builder's picker does — otherwise an agent
+        // sees one flat list and cannot tell a PC race from a monster entry.
+        var human = races.Single(r => r.Id == "race:human");
+        Assert.True(human.IsPcRace);
+        Assert.Equal(0, human.LevelAdjustment);
+
+        // LA +0 is a real price, not a missing one: the flag must track "was it printed at all".
+        Assert.All(races, r => Assert.Equal(r.LevelAdjustment.HasValue, r.IsPcRace));
+    }
+
+    [Fact]
+    public void UnsanctionedRaceStillSerializesItsNullLevelAdjustment()
+    {
+        // The app configures WhenWritingNull globally, which would drop the key for exactly the
+        // races the PC/non-PC distinction is about — leaving a caller reading `levelAdjustment`
+        // with a missing field instead of an answer.
+        var options = new System.Text.Json.JsonSerializerOptions
+        {
+            PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        };
+
+        var json = System.Text.Json.JsonSerializer.Serialize(
+            new RaceSummaryDto { Id = "race:x", Name = "X", LevelAdjustment = null, IsPcRace = false },
+            options);
+
+        Assert.Contains("\"levelAdjustment\":null", json);
+    }
+
+    [RequiresPrivatePacksFact]
+    public void RaceCatalogMarksUnsanctionedRacesInsteadOfHidingThem()
+    {
+        var config = new ConfigurationBuilder().Build();
+        var contentService = new ServerContentService(config, NullLogger<ServerContentService>.Instance);
+        var races = new AgentApiService(contentService, new CharacterStore(contentService))
+            .GetRaces().ToList();
+
+        var unsanctioned = races.Where(r => !r.IsPcRace).ToList();
+        Assert.NotEmpty(unsanctioned);
+        Assert.All(unsanctioned, r => Assert.Null(r.LevelAdjustment));
+    }
+
+    [Fact]
     public void EvaluateReturnsSheetAndQualifiedFeats()
     {
         var response = SharedService.Value.Evaluate(new EvaluateCharacterRequest

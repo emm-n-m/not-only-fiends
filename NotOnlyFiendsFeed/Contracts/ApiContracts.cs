@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using NotOnlyFiendsStudio.Models;
 
 namespace NotOnlyFiendsFeed.Contracts;
@@ -58,15 +59,28 @@ public sealed class ApiHealthResponse
 public sealed class ContentCatalogResponse
 {
     public List<PackSummaryDto> LoadedPacks { get; set; } = new();
-    public List<ContentSummaryDto> Races { get; set; } = new();
+    public List<RaceSummaryDto> Races { get; set; } = new();
     public List<DriverSummaryDto> Drivers { get; set; } = new();
     public List<ContentSummaryDto> Templates { get; set; } = new();
     public List<FeatSummaryDto> Feats { get; set; } = new();
     public List<ContentSummaryDto> Domains { get; set; } = new();
     public List<ContentSummaryDto> Skills { get; set; } = new();
     public List<ContentSummaryDto> ClassFeatures { get; set; } = new();
+    public List<LanguageSummaryDto> Languages { get; set; } = new();
     public List<EquipmentSummaryDto> Equipment { get; set; } = new();
     public int SpellCount { get; set; }
+}
+
+/// <summary>
+/// A language that can be offered as a choice. <c>isSecret</c> languages (Druidic) are never part
+/// of a race's "any bonus language" allowance, so a caller filtering the list needs to see it.
+/// </summary>
+public sealed class LanguageSummaryDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public bool IsSecret { get; set; }
 }
 
 public sealed class PackSummaryDto
@@ -82,6 +96,42 @@ public sealed class ContentSummaryDto
     public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
+}
+
+/// <summary>
+/// A race, carrying the same player-character sanctioning that the builder's picker shows.
+///
+/// Races are listed rather than filtered: the builder is also used to construct companions and
+/// monsters, so removing unsanctioned entries would break that workflow (see
+/// <see cref="NotOnlyFiendsStudio.Studio.RaceCatalog.ForPicker"/>). Callers that only want PC
+/// options should select on <see cref="IsPcRace"/>.
+/// </summary>
+public sealed class RaceSummaryDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    /// <summary>Null when the source never priced this race for player characters — see
+    /// <see cref="IsPcRace"/>. Distinct from 0, which means "playable at no cost", like a Human.</summary>
+    /// <remarks>
+    /// Serialized even when null, overriding the app-wide <c>WhenWritingNull</c> policy: null here
+    /// is the meaningful answer, and omitting the key would make a caller reading
+    /// <c>levelAdjustment</c> hit a missing field exactly for the races the distinction is about.
+    /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    public int? LevelAdjustment { get; set; }
+    /// <summary>False for monster, companion and creature entries with no printed Level Adjustment.</summary>
+    public bool IsPcRace { get; set; }
+
+    /// <summary>Languages granted automatically at creation.</summary>
+    public List<string> AutomaticLanguages { get; set; } = new();
+    /// <summary>
+    /// Languages this race may spend Int-based bonus picks on. Empty when
+    /// <see cref="BonusLanguagesAny"/> is true — the offer is then every non-secret language.
+    /// </summary>
+    public List<string> BonusLanguages { get; set; } = new();
+    /// <summary>True when the race may take any non-secret language (human, half-elf).</summary>
+    public bool BonusLanguagesAny { get; set; }
 }
 
 public sealed class DriverSummaryDto
