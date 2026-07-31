@@ -482,6 +482,34 @@ public class ContentValidationTests
     }
 
     [Fact]
+    public void InvalidPermabuffFormula_IsReportedDuringValidation()
+    {
+        var registry = new ContentRegistry();
+        registry.RegisterEquipment(new EquipmentDefinition
+        {
+            Id = "equipment:broken_formula",
+            Name = "Broken Formula",
+            Category = EquipmentCategory.Wondrous,
+            GrantedPermabuffs = new List<Permabuff>
+            {
+                new GrantTypedBonus
+                {
+                    Target = BonusTarget.AbilityStr,
+                    BonusType = BonusType.Enhancement,
+                    Value = new Formula("1 +")
+                }
+            }
+        });
+
+        registry.Validate();
+
+        Assert.Contains(registry.Errors, e =>
+            e.Kind == ContentErrorKind.InvalidValue
+            && e.Message.Contains("GrantTypedBonus")
+            && e.Message.Contains("1 +"));
+    }
+
+    [Fact]
     public void MultipleContentRoots_MergeCorrectly()
     {
         var registry = TestContentHelper.LoadAllPacks();

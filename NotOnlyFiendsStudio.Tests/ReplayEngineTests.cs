@@ -206,6 +206,90 @@ public class ReplayStudioTests
     }
 
     [Fact]
+    public void ConstitutionIncrease_RecalculatesAllExistingHitDice()
+    {
+        var engine = new ReplayStudio(CreateContentRegistry());
+        var character = new Character
+        {
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 10, CON = 13, INT = 10, WIS = 10, CHA = 10
+            },
+            Ticks = new List<Tick>
+            {
+                new() { DriverId = "class:fighter" },
+                new() { DriverId = "class:fighter" },
+                new() { DriverId = "class:fighter" },
+                new()
+                {
+                    DriverId = "class:fighter",
+                    Choices = new TickChoices { AbilityIncrease = Ability.CON }
+                }
+            }
+        };
+
+        var state = engine.Evaluate(character);
+
+        Assert.Equal(14, state.AbilityScores.CON);
+        Assert.Equal(36, state.HP); // 10 + 2 on first HD, then three times 6 + 2.
+    }
+
+    [Fact]
+    public void ClassFeatureOptionRequirements_ProduceWarnings()
+    {
+        var registry = CreateContentRegistry();
+        ((HDDriver)registry.GetDriver("class:fighter")).LevelPermabuffs[1].Add(
+            new GrantClassFeatureSelection { FeatureType = "class_feature:test" });
+        registry.RegisterClassFeature(new ClassFeatureDefinition
+        {
+            Id = "class_feature:test",
+            Name = "Test Options",
+            Options = new List<ClassFeatureOption>
+            {
+                new()
+                {
+                    Id = "option:restricted",
+                    Name = "Restricted Option",
+                    MinEffectiveLevel = 5,
+                    RequiredCasterLevel = 5,
+                    RequiredAlignment = "good"
+                }
+            }
+        });
+        var character = new Character
+        {
+            RaceId = "race:human",
+            Alignment = Alignment.CE,
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10
+            },
+            Ticks = new List<Tick>
+            {
+                new()
+                {
+                    DriverId = "class:fighter",
+                    Choices = new TickChoices
+                    {
+                        ClassFeatureChoices = new Dictionary<string, List<string>>
+                        {
+                            ["class_feature:test"] = new() { "option:restricted" }
+                        }
+                    }
+                }
+            }
+        };
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        Assert.Contains(state.Warnings, w => w.Message.Contains("requires effective level 5"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("requires caster level 5"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("requires alignment good"));
+        Assert.Contains("option:restricted", state.ClassFeatureSelections["class_feature:test"]);
+    }
+
+    [Fact]
     public void Multiclass_Fighter2Rogue1()
     {
         var registry = CreateContentRegistry();

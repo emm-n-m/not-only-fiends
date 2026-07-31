@@ -108,6 +108,7 @@ public class TemplateTests
         Assert.Contains(state.SLAs, s => s.Id == "hf_sla_desecrate");
         Assert.Contains(state.SLAs, s => s.Id == "hf_sla_unholy_blight");
         Assert.Contains(state.SLAs, s => s.Id == "hf_sla_poison");
+        Assert.All(state.SLAs, sla => Assert.Equal(8, sla.CasterLevel));
         // Should NOT have contagion (HD 9) yet
         Assert.DoesNotContain(state.SLAs, s => s.Id == "hf_sla_contagion");
 
@@ -143,18 +144,22 @@ public class TemplateTests
         var state1 = engine.Evaluate(character, upToHD: 1);
         Assert.Single(state1.SLAs);
         Assert.Equal("hf_sla_darkness", state1.SLAs[0].Id);
+        Assert.All(state1.SLAs, sla => Assert.Equal(1, sla.CasterLevel));
 
         // At HD 5: darkness, desecrate, unholy_blight
         var state5 = engine.Evaluate(character, upToHD: 5);
         Assert.Equal(3, state5.SLAs.Count);
+        Assert.All(state5.SLAs, sla => Assert.Equal(5, sla.CasterLevel));
 
         // At HD 9: +contagion = 5 total
         var state9 = engine.Evaluate(character, upToHD: 9);
         Assert.Equal(5, state9.SLAs.Count);
+        Assert.All(state9.SLAs, sla => Assert.Equal(9, sla.CasterLevel));
 
         // At HD 19: all 10 SLAs
         var state19 = engine.Evaluate(character, upToHD: 19);
         Assert.Equal(10, state19.SLAs.Count);
+        Assert.All(state19.SLAs, sla => Assert.Equal(19, sla.CasterLevel));
         Assert.Contains(state19.SLAs, s => s.Id == "hf_sla_destruction");
     }
 

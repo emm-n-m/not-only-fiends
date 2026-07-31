@@ -33,7 +33,7 @@ public class ContentConflictTests
     }
 
     [Fact]
-    public void Warn_AcceptsLastAndLogsError()
+    public void Warn_AcceptsLastAndLogsWarning()
     {
         var registry = new ContentRegistry { OnConflict = ConflictResolution.Warn };
         registry.RegisterFeat(MakeFeat("test_feat", FeatType.General));
@@ -41,8 +41,9 @@ public class ContentConflictTests
 
         var feat = registry.GetFeat("test_feat");
         Assert.Equal(FeatType.FighterBonus, feat.Type);
-        Assert.True(registry.HasErrors);
-        Assert.Contains(registry.Errors, e => e.Kind == ContentErrorKind.DuplicateId);
+        Assert.False(registry.HasErrors);
+        Assert.True(registry.HasWarnings);
+        Assert.Contains(registry.Errors, e => e.Kind == ContentErrorKind.DuplicateId && e.IsWarning);
     }
 
     [Fact]
@@ -54,6 +55,19 @@ public class ContentConflictTests
 
         var feat = registry.GetFeat("test_feat");
         Assert.Equal(FeatType.General, feat.Type);
+        Assert.True(registry.HasErrors);
+        Assert.Contains(registry.Errors, e => e.Kind == ContentErrorKind.DuplicateId);
+    }
+
+    [Fact]
+    public void Validate_DoesNotEraseLoadConflicts()
+    {
+        var registry = new ContentRegistry { OnConflict = ConflictResolution.Error };
+        registry.RegisterFeat(MakeFeat("test_feat", FeatType.General));
+        registry.RegisterFeat(MakeFeat("test_feat", FeatType.FighterBonus));
+
+        registry.Validate();
+
         Assert.True(registry.HasErrors);
         Assert.Contains(registry.Errors, e => e.Kind == ContentErrorKind.DuplicateId);
     }

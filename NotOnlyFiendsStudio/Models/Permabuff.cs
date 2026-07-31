@@ -204,7 +204,16 @@ public class GrantSLA : Permabuff
 
     public override void Apply(PermabuffContext ctx)
     {
-        var sla = new SLA { Id = SLA.Id, Name = SLA.Name, Description = SLA.Description, UsesPerDay = SLA.UsesPerDay, CasterLevel = CasterLevelEqualsTotalHD ? ctx.State.TotalHD : SLA.CasterLevel, SaveDC = SLA.SaveDC };
+        var sla = new SLA
+        {
+            Id = SLA.Id,
+            Name = SLA.Name,
+            Description = SLA.Description,
+            UsesPerDay = SLA.UsesPerDay,
+            CasterLevel = CasterLevelEqualsTotalHD ? ctx.State.TotalHD : SLA.CasterLevel,
+            SaveDC = SLA.SaveDC,
+            CasterLevelTracksTotalHD = CasterLevelEqualsTotalHD
+        };
         ctx.State.SLAs.Add(sla);
     }
 }

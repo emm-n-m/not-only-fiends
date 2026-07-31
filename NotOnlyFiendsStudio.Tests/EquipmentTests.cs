@@ -69,6 +69,75 @@ public class EquipmentTests
     }
 
     [Fact]
+    public void NegativeDexterityStillAppliesWhileFlatFooted()
+    {
+        var state = new ReplayStudio(BuildRegistry()).Evaluate(BuildFighter(level: 1, dex: 8));
+
+        Assert.Equal(9, state.AC.Total);
+        Assert.Equal(9, state.AC.Touch);
+        Assert.Equal(9, state.AC.FlatFooted);
+    }
+
+    [Fact]
+    public void SmallSizeImprovesArmorClassAndWeaponAttacks()
+    {
+        var registry = BuildRegistry();
+        registry.RegisterRace(new RaceDefinition
+        {
+            Id = "race:small_test",
+            Name = "Small Test Race",
+            Type = CreatureType.Humanoid,
+            Size = Size.Small,
+            Speeds = new Dictionary<MovementMode, int> { [MovementMode.Land] = 20 }
+        });
+        var character = BuildFighter(level: 1, str: 16, dex: 14);
+        character.RaceId = "race:small_test";
+        character.Equipment.Add(new EquipmentEntry
+        {
+            ItemId = "Test Sword",
+            Permabuffs = new List<Permabuff>
+            {
+                new GrantWeaponLine
+                {
+                    Profile = new WeaponProfile { Damage = "1d6" },
+                    DisplayName = "Test Sword"
+                }
+            }
+        });
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        Assert.Equal(1, state.AC.Components[BonusType.Size]);
+        Assert.Equal(13, state.AC.Total);
+        Assert.Equal(11, state.AC.FlatFooted);
+        Assert.Equal(5, Assert.Single(state.AttackLines).Bonuses[0]); // BAB 1 + STR 3 + size 1.
+    }
+
+    [Fact]
+    public void ConstitutionEquipmentRecalculatesHitPoints()
+    {
+        var character = BuildFighter(level: 2, con: 12);
+        character.Equipment.Add(new EquipmentEntry
+        {
+            ItemId = "Constitution Amulet",
+            Permabuffs = new List<Permabuff>
+            {
+                new GrantTypedBonus
+                {
+                    Target = BonusTarget.AbilityCon,
+                    BonusType = BonusType.Enhancement,
+                    Value = new Formula("2")
+                }
+            }
+        });
+
+        var state = new ReplayStudio(BuildRegistry()).Evaluate(character);
+
+        Assert.Equal(14, state.AbilityScores.CON);
+        Assert.Equal(20, state.HP); // 10 + 2 on first HD, then 6 + 2.
+    }
+
+    [Fact]
     public void FullPlate_GivesArmor8_CapsDexAt1()
     {
         var registry = BuildRegistry();

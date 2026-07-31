@@ -86,11 +86,14 @@ public sealed class ServerContentService
         }
 
         registry.Validate();
+        foreach (var warning in registry.Errors.Where(error => error.IsWarning))
+            logger.LogWarning("Content warning: {Kind}: {Message}", warning.Kind, warning.Message);
         if (registry.HasErrors)
         {
             var firstErrors = string.Join(
                 Environment.NewLine,
-                registry.Errors.Take(10).Select(e => $"{e.Kind}: {e.Message}"));
+                registry.Errors.Where(error => !error.IsWarning).Take(10)
+                    .Select(e => $"{e.Kind}: {e.Message}"));
             throw new InvalidOperationException($"Content validation failed:{Environment.NewLine}{firstErrors}");
         }
 

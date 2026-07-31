@@ -252,6 +252,17 @@ internal static class FormulaParser
 
         var token = tokens[pos];
 
+        // Unary signs are factors, not binary expressions. Content commonly uses
+        // negative constants for cursed-item penalties.
+        if (token is "+" or "-")
+        {
+            pos++;
+            var operand = ParseFactor(tokens, ref pos);
+            return token == "+"
+                ? operand
+                : new BinaryOpNode(new NumberNode(0), '-', operand);
+        }
+
         // Number
         if (int.TryParse(token, out var num))
         {

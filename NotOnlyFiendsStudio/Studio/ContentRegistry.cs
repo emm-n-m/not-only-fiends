@@ -56,11 +56,11 @@ public class ContentRegistry : IContentLookup
                 case ConflictResolution.FirstWins:
                     return;
                 case ConflictResolution.Warn:
-                    _errors.Add(new ContentError(ContentErrorKind.DuplicateId,
-                        $"Duplicate {typeof(T).Name} ID '{id}' — later definition used"));
+                    _loadDiagnostics.Add(new ContentError(ContentErrorKind.DuplicateId,
+                        $"Duplicate {typeof(T).Name} ID '{id}' — later definition used", IsWarning: true));
                     break;
                 case ConflictResolution.Error:
-                    _errors.Add(new ContentError(ContentErrorKind.DuplicateId,
+                    _loadDiagnostics.Add(new ContentError(ContentErrorKind.DuplicateId,
                         $"Duplicate {typeof(T).Name} ID '{id}' — first definition kept"));
                     return;
                 case ConflictResolution.LastWins:
@@ -247,43 +247,45 @@ public class ContentRegistry : IContentLookup
 
     // --- Validation ---
 
-    private readonly List<ContentError> _errors = new();
-    public IReadOnlyList<ContentError> Errors => _errors;
-    public bool HasErrors => _errors.Count > 0;
+    private readonly List<ContentError> _loadDiagnostics = new();
+    private readonly List<ContentError> _validationErrors = new();
+    public IReadOnlyList<ContentError> Errors => _loadDiagnostics.Concat(_validationErrors).ToList();
+    public bool HasErrors => Errors.Any(error => !error.IsWarning);
+    public bool HasWarnings => Errors.Any(error => error.IsWarning);
 
     public void Validate()
     {
-        _errors.Clear();
+        _validationErrors.Clear();
 
         // Check empty IDs
         foreach (var race in _races.Values)
             if (string.IsNullOrWhiteSpace(race.Id))
-                _errors.Add(new ContentError(ContentErrorKind.MissingId, "Race has empty ID"));
+                _validationErrors.Add(new ContentError(ContentErrorKind.MissingId, "Race has empty ID"));
 
         foreach (var driver in _drivers.Values)
             if (string.IsNullOrWhiteSpace(driver.Id))
-                _errors.Add(new ContentError(ContentErrorKind.MissingId, "Driver has empty ID"));
+                _validationErrors.Add(new ContentError(ContentErrorKind.MissingId, "Driver has empty ID"));
 
         foreach (var template in _templates.Values)
             if (string.IsNullOrWhiteSpace(template.Id))
-                _errors.Add(new ContentError(ContentErrorKind.MissingId, "Template has empty ID"));
+                _validationErrors.Add(new ContentError(ContentErrorKind.MissingId, "Template has empty ID"));
 
         foreach (var feat in _feats.Values)
             if (string.IsNullOrWhiteSpace(feat.Id))
-                _errors.Add(new ContentError(ContentErrorKind.MissingId, "Feat has empty ID"));
+                _validationErrors.Add(new ContentError(ContentErrorKind.MissingId, "Feat has empty ID"));
 
         foreach (var domain in _domains.Values)
             if (string.IsNullOrWhiteSpace(domain.Id))
-                _errors.Add(new ContentError(ContentErrorKind.MissingId, "Domain has empty ID"));
+                _validationErrors.Add(new ContentError(ContentErrorKind.MissingId, "Domain has empty ID"));
 
         foreach (var cf in _classFeatures.Values)
         {
             if (string.IsNullOrWhiteSpace(cf.Id))
-                _errors.Add(new ContentError(ContentErrorKind.MissingId, "ClassFeature has empty ID"));
+                _validationErrors.Add(new ContentError(ContentErrorKind.MissingId, "ClassFeature has empty ID"));
             foreach (var opt in cf.Options)
             {
                 if (string.IsNullOrWhiteSpace(opt.Id))
-                    _errors.Add(new ContentError(ContentErrorKind.MissingId,
+                    _validationErrors.Add(new ContentError(ContentErrorKind.MissingId,
                         $"ClassFeature '{cf.Id}' has option with empty ID"));
                 ValidatePermabuffList(opt.GrantedPermabuffs, $"ClassFeature '{cf.Id}' option '{opt.Id}'");
                 foreach (var (benefitSet, buffs) in opt.AdditionalPermabuffs)
@@ -293,13 +295,13 @@ public class ContentRegistry : IContentLookup
 
         foreach (var spell in _spells.Values)
             if (string.IsNullOrWhiteSpace(spell.Id))
-                _errors.Add(new ContentError(ContentErrorKind.MissingId, "Spell has empty ID"));
+                _validationErrors.Add(new ContentError(ContentErrorKind.MissingId, "Spell has empty ID"));
 
         // Cross-reference: Race → RacialHDDriverId exists as a driver
         foreach (var race in _races.Values)
         {
             if (race.RacialHDDriverId != null && !_drivers.ContainsKey(race.RacialHDDriverId))
-                _errors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
                     $"Race '{race.Id}' references racial HD driver '{race.RacialHDDriverId}' which does not exist"));
         }
 
@@ -311,7 +313,7 @@ public class ContentRegistry : IContentLookup
             foreach (var (level, spellId) in domain.BonusSpells)
             {
                 if (!_spells.ContainsKey(spellId))
-                    _errors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                    _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
                         $"Domain '{domain.Id}' grants bonus spell '{spellId}' at level {level} which does not exist"));
             }
         }
@@ -329,6 +331,9 @@ public class ContentRegistry : IContentLookup
 
         foreach (var feat in _feats.Values)
             ValidatePermabuffList(feat.GrantedPermabuffs, $"Feat '{feat.Id}'");
+
+        foreach (var domain in _domains.Values)
+            ValidatePermabuffList(domain.GrantedPermabuffs, $"Domain '{domain.Id}'");
 
         foreach (var template in _templates.Values)
         {
@@ -353,7 +358,7 @@ public class ContentRegistry : IContentLookup
                 }
                 catch (FormulaException ex)
                 {
-                    _errors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                    _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
                         $"Race '{race.Id}' has invalid scaling formula '{sf.Formula.Expression}': {ex.Message}"));
                 }
             }
@@ -370,7 +375,7 @@ public class ContentRegistry : IContentLookup
                 }
                 catch (FormulaException ex)
                 {
-                    _errors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                    _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
                         $"Template '{template.Id}' has invalid scaling formula '{sf.Formula.Expression}': {ex.Message}"));
                 }
             }
@@ -383,7 +388,7 @@ public class ContentRegistry : IContentLookup
         foreach (var eq in _equipment.Values)
         {
             if (string.IsNullOrWhiteSpace(eq.Id))
-                _errors.Add(new ContentError(ContentErrorKind.MissingId, "Equipment has empty ID"));
+                _validationErrors.Add(new ContentError(ContentErrorKind.MissingId, "Equipment has empty ID"));
             ValidatePermabuffList(eq.GrantedPermabuffs, $"Equipment '{eq.Id}'");
             ValidatePrerequisites(eq.Prerequisites, $"Equipment '{eq.Id}'");
         }
@@ -395,16 +400,16 @@ public class ContentRegistry : IContentLookup
         {
             if (prereq is HasFeat hasFeat && !_feats.ContainsKey(hasFeat.FeatId)
                 && !IsSelectableFeatVariant(hasFeat.FeatId))
-                _errors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
                     $"{context} has HasFeat prerequisite referencing unknown feat '{hasFeat.FeatId}'"));
 
             if (prereq is HasFeatSelections hasFeatSel && !_feats.ContainsKey(hasFeatSel.FeatId)
                 && !_feats.Keys.Any(id => id.StartsWith(hasFeatSel.FeatId + "_", StringComparison.Ordinal)))
-                _errors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
                     $"{context} has HasFeatSelections prerequisite referencing unknown feat '{hasFeatSel.FeatId}'"));
 
             if (prereq is MinClassLevel minClass && !_drivers.ContainsKey(minClass.ClassId))
-                _errors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
                     $"{context} has MinClassLevel prerequisite referencing unknown driver '{minClass.ClassId}'"));
         }
     }
@@ -439,11 +444,35 @@ public class ContentRegistry : IContentLookup
         foreach (var buff in permabuffs)
         {
             if (buff is GrantBonusFeat gbf && !_feats.ContainsKey(gbf.FeatId))
-                _errors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
                     $"{context} has GrantBonusFeat referencing unknown feat '{gbf.FeatId}'"));
             if (buff is ApplyClassFeatureOptionBenefits benefits && !_classFeatures.ContainsKey(benefits.FeatureType))
-                _errors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
                     $"{context} applies benefits from unknown class feature '{benefits.FeatureType}'"));
+
+            var formula = buff switch
+            {
+                GrantEffectiveLevels effectiveLevels => effectiveLevels.BonusFormula,
+                GrantRacialSpellcasting racialSpellcasting => racialSpellcasting.LevelFormula,
+                GrantCompanionSlot companionSlot => companionSlot.EffectiveLevelFormula,
+                GrantTypedBonus typedBonus => typedBonus.Value,
+                _ => null
+            };
+            if (formula != null)
+                ValidateFormula(formula, context, buff.GetType().Name);
+        }
+    }
+
+    private void ValidateFormula(Formula formula, string context, string source)
+    {
+        try
+        {
+            formula.Evaluate(new CharacterState());
+        }
+        catch (FormulaException ex)
+        {
+            _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                $"{context} has invalid {source} formula '{formula.Expression}': {ex.Message}"));
         }
     }
 
@@ -453,13 +482,13 @@ public class ContentRegistry : IContentLookup
         {
             if (!IsKnownSpellList(spellListId))
             {
-                _errors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
                     $"Spell '{spell.Id}' references unknown spell list '{spellListId}'"));
             }
 
             if (level < 0)
             {
-                _errors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
                     $"Spell '{spell.Id}' has invalid level {level} for spell list '{spellListId}'"));
             }
         }
@@ -492,4 +521,4 @@ public enum ContentErrorKind
     InvalidValue
 }
 
-public record ContentError(ContentErrorKind Kind, string Message);
+public record ContentError(ContentErrorKind Kind, string Message, bool IsWarning = false);

@@ -236,6 +236,10 @@ public class SLA
     public string? UsesPerDay { get; set; }
     public int CasterLevel { get; set; }
     public int? SaveDC { get; set; }
+
+    // Runtime provenance used by replay to keep HD-scaled SLAs current. This is
+    // deliberately not part of CharacterState's public JSON contract.
+    internal bool CasterLevelTracksTotalHD { get; set; }
 }
 
 public class HitDieEntry

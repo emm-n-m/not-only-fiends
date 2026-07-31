@@ -218,7 +218,11 @@ public sealed class AgentApiService
 
         string? id = null;
         if (save)
+        {
+            var state = _replayStudio.Evaluate(result.Character);
+            result.Character.Sheet = CharacterSheet.FromState(state);
             id = _characterStore.Create(result.Character);
+        }
 
         return new ImportPcgResponse
         {
@@ -240,11 +244,13 @@ public sealed class AgentApiService
     public CharacterMutationResponseDto EvaluateAndEnvelope(string id, Character character)
     {
         var state = _replayStudio.Evaluate(character);
+        var sheet = CharacterSheet.FromState(state);
+        character.Sheet = sheet;
         return new CharacterMutationResponseDto
         {
             Id = id,
             Character = character,
-            Sheet = CharacterSheet.FromState(state),
+            Sheet = sheet,
             State = state,
             PendingChoices = BuildPendingChoices(state),
             QualifiedFeats = GetQualifiedFeats(state),
@@ -259,29 +265,32 @@ public sealed class AgentApiService
 
         _ = _content.GetDriver(tick.DriverId);
 
-        var character = _characterStore.Get(id);
-        character.Ticks.Add(tick);
-        _characterStore.Replace(id, character);
-        return EvaluateAndEnvelope(id, character);
+        return _characterStore.Update(id, character =>
+        {
+            character.Ticks.Add(tick);
+            return EvaluateAndEnvelope(id, character);
+        });
     }
 
     public CharacterMutationResponseDto DeleteLastTick(string id)
     {
-        var character = _characterStore.Get(id);
-        if (character.Ticks.Count == 0)
-            throw new InvalidOperationException($"Character '{id}' has no ticks to remove");
+        return _characterStore.Update(id, character =>
+        {
+            if (character.Ticks.Count == 0)
+                throw new InvalidOperationException($"Character '{id}' has no ticks to remove");
 
-        character.Ticks.RemoveAt(character.Ticks.Count - 1);
-        _characterStore.Replace(id, character);
-        return EvaluateAndEnvelope(id, character);
+            character.Ticks.RemoveAt(character.Ticks.Count - 1);
+            return EvaluateAndEnvelope(id, character);
+        });
     }
 
     public CharacterMutationResponseDto AppendEvent(string id, PermanentEvent evt)
     {
-        var character = _characterStore.Get(id);
-        character.PermanentEvents.Add(evt);
-        _characterStore.Replace(id, character);
-        return EvaluateAndEnvelope(id, character);
+        return _characterStore.Update(id, character =>
+        {
+            character.PermanentEvents.Add(evt);
+            return EvaluateAndEnvelope(id, character);
+        });
     }
 
     public NextStepResponse GetNextStepById(
@@ -338,14 +347,15 @@ public sealed class AgentApiService
 
         _ = _content.GetDriver(tick.DriverId);
 
-        var character = _characterStore.Get(id);
-        if (index < 0 || index >= character.Ticks.Count)
-            throw new ArgumentException(
-                $"Tick index {index} is out of range (character has {character.Ticks.Count} ticks)");
+        return _characterStore.Update(id, character =>
+        {
+            if (index < 0 || index >= character.Ticks.Count)
+                throw new ArgumentException(
+                    $"Tick index {index} is out of range (character has {character.Ticks.Count} ticks)");
 
-        character.Ticks[index] = tick;
-        _characterStore.Replace(id, character);
-        return EvaluateAndEnvelope(id, character);
+            character.Ticks[index] = tick;
+            return EvaluateAndEnvelope(id, character);
+        });
     }
 
     public RulesDto GetRules()

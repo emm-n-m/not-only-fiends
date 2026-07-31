@@ -40,6 +40,22 @@ public class GameRules
         };
     };
 
+    // Shared by AC and attack calculations. ColossalPlus follows the Colossal
+    // modifier because the core 3.5e size table has no larger category.
+    public Func<Size, int> CalculateSizeModifier { get; init; } = size => size switch
+    {
+        Size.Fine => 8,
+        Size.Diminutive => 4,
+        Size.Tiny => 2,
+        Size.Small => 1,
+        Size.Medium => 0,
+        Size.Large => -1,
+        Size.Huge => -2,
+        Size.Gargantuan => -4,
+        Size.Colossal or Size.ColossalPlus => -8,
+        _ => 0
+    };
+
     public static GameRules Standard35e() => new();
 
     public bool GrantsStandardFeat(int totalHD) => StandardFeatHDs.Contains(totalHD);

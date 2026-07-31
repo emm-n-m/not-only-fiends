@@ -134,6 +134,25 @@ public sealed class CharacterStore
         }
     }
 
+    /// <summary>
+    /// Runs a read-modify-validate-write operation under the store lock. If the
+    /// callback throws, the original file is left untouched.
+    /// </summary>
+    public TResult Update<TResult>(string id, Func<Character, TResult> update)
+    {
+        var path = PathFor(id);
+        lock (_writeLock)
+        {
+            if (!File.Exists(path))
+                throw new CharacterStoreException("not_found", $"Character not found: {id}");
+
+            var character = Deserialize(path);
+            var result = update(character);
+            WriteAtomic(path, character);
+            return result;
+        }
+    }
+
     public bool Delete(string id)
     {
         var path = PathFor(id);

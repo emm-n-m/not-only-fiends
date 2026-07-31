@@ -77,6 +77,17 @@ public class FormulaTests
         Assert.Equal(20, f.Evaluate(CreateState()));
     }
 
+    [Theory]
+    [InlineData("-10", -10)]
+    [InlineData("2 * -4", -8)]
+    [InlineData("--3", 3)]
+    [InlineData("-(2 + 3)", -5)]
+    [InlineData("+7", 7)]
+    public void UnaryOperators(string expression, int expected)
+    {
+        Assert.Equal(expected, new Formula(expression).Evaluate(CreateState()));
+    }
+
     [Fact]
     public void Attribute_TotalHD()
     {

@@ -883,6 +883,8 @@ public class RulesAccuracyTests
     {
         var aranea = Human(new Tick { DriverId = "racial_hd:magical_beast" });
         aranea.RaceId = "race:aranea";
+        Assert.Equal(10, Assert.Single(Evaluate(aranea).HitDice).DieSize);
+
         aranea.TemplateIds.Add("template:half_dragon");
         var racial = Evaluate(aranea);
         Assert.Equal(12, Assert.Single(racial.HitDice).DieSize); // magical beast d10 -> d12

@@ -74,6 +74,7 @@ public class ReplayStudio
             var tick = character.Ticks[i];
             state.TotalHD = i + 1;
             state.HDList.Add(tick.DriverId);
+            RefreshDynamicSLAs(state);
             ctx.CurrentTickChoices = tick.Choices;
             ctx.CurrentDriverId = tick.DriverId;
 
@@ -92,7 +93,12 @@ public class ReplayStudio
             var driver = _content.GetDriver(tick.DriverId);
             ctx.CurrentDriverKind = driver is HDDriver contextDriver ? contextDriver.Kind : null;
             ctx.CurrentRacialHitDieMaximum = ctx.CurrentDriverKind == DriverKind.RacialHD
-                ? character.TemplateIds.Select(id => _content.GetTemplate(id).RacialHitDieMaximum).Where(max => max.HasValue).Select(max => max!.Value).DefaultIfEmpty().Min()
+                ? character.TemplateIds
+                    .Select(id => _content.GetTemplate(id).RacialHitDieMaximum)
+                    .Where(max => max.HasValue)
+                    .Select(max => max!.Value)
+                    .Cast<int?>()
+                    .Min()
                 : null;
             if (driver is HDDriver hdDriver && hdDriver.MaxLevel.HasValue
                 && driverLevel > hdDriver.MaxLevel.Value
@@ -254,6 +260,10 @@ public class ReplayStudio
         //    ctx.EquipmentPass) → finalize AC, attack lines, encumbrance.
         EvaluateEquipment(ctx, character);
 
+        // Constitution changes are retroactive to every existing hit die, including
+        // level increases, permanent events, and worn equipment.
+        FinalizeHitPoints(state);
+
         // 5a. Validate template prerequisites against the finished state. Acquired templates
         // (e.g. Unseelie Champion's ranger-level gate) reference class levels that do not
         // exist at creation time, and ability requirements should see post-equipment scores,
@@ -293,6 +303,24 @@ public class ReplayStudio
         FinalizeDomainSpellLikeAbilities(ctx);
 
         return state;
+    }
+
+    private static void RefreshDynamicSLAs(CharacterState state)
+    {
+        foreach (var sla in state.SLAs.Where(s => s.CasterLevelTracksTotalHD))
+            sla.CasterLevel = state.TotalHD;
+    }
+
+    private void FinalizeHitPoints(CharacterState state)
+    {
+        var conMod = AbilityScoreSet.Modifier(state.AbilityScores.CON);
+        state.HP = state.HitDice.Select((hitDie, index) =>
+        {
+            var roll = _rules.FirstHDMaxHP && index == 0
+                ? hitDie.DieSize
+                : hitDie.DieSize / 2 + 1;
+            return Math.Max(1, roll + conMod);
+        }).Sum();
     }
 
     /// <summary>
@@ -1167,6 +1195,15 @@ public class ReplayStudio
                     var option = featureDef.Options.FirstOrDefault(o => o.Id == optionId);
                     if (option != null)
                     {
+                        foreach (var violation in GetClassFeatureOptionViolations(state, featureType, option))
+                        {
+                            state.Warnings.Add(new Warning
+                            {
+                                TickIndex = state.TotalHD,
+                                Message = $"class feature option '{featureType}/{optionId}' {violation}"
+                            });
+                        }
+
                         state.ClassFeatureSelections.TryAdd(featureType, new List<string>());
                         state.ClassFeatureSelections[featureType].Add(optionId);
                         state.PendingClassFeatureSelections[featureType]--;
@@ -1191,6 +1228,62 @@ public class ReplayStudio
             }
         }
     }
+
+    private static IEnumerable<string> GetClassFeatureOptionViolations(
+        CharacterState state,
+        string featureType,
+        ClassFeatureOption option)
+    {
+        if (option.MinEffectiveLevel > 0)
+        {
+            var slotLevels = state.CompanionSlots
+                .Where(slot => slot.ClassFeatureType == featureType)
+                .Select(slot => slot.EffectiveLevelFormula.Evaluate(state))
+                .ToList();
+            var effectiveLevel = slotLevels.Count > 0
+                ? slotLevels.Max()
+                : state.Spellcasting.Values.Select(caster => caster.CasterLevel).DefaultIfEmpty(0).Max();
+            if (effectiveLevel < option.MinEffectiveLevel)
+                yield return $"requires effective level {option.MinEffectiveLevel} (current {effectiveLevel})";
+        }
+
+        if (option.RequiredCasterLevel > 0)
+        {
+            var casterLevel = state.Spellcasting.Values
+                .Select(caster => caster.CasterLevel)
+                .DefaultIfEmpty(0)
+                .Max();
+            if (casterLevel < option.RequiredCasterLevel)
+                yield return $"requires caster level {option.RequiredCasterLevel} (current {casterLevel})";
+        }
+
+        if (!string.IsNullOrWhiteSpace(option.RequiredAlignment)
+            && !MatchesAlignmentRequirement(state.Alignment, option.RequiredAlignment))
+        {
+            yield return $"requires alignment {option.RequiredAlignment} (current {state.Alignment})";
+        }
+    }
+
+    private static bool MatchesAlignmentRequirement(Alignment alignment, string requirement) =>
+        requirement.Trim().ToLowerInvariant() switch
+        {
+            "any" => true,
+            "good" => alignment is Alignment.LG or Alignment.NG or Alignment.CG,
+            "evil" => alignment is Alignment.LE or Alignment.NE or Alignment.CE,
+            // The Improved Familiar table uses "neutral" for neutral on the good/evil axis.
+            "neutral" => alignment is Alignment.LN or Alignment.N or Alignment.CN,
+            "lawful" => alignment is Alignment.LG or Alignment.LN or Alignment.LE,
+            "chaotic" => alignment is Alignment.CG or Alignment.CN or Alignment.CE,
+            "lawful good" => alignment == Alignment.LG,
+            "lawful neutral" => alignment == Alignment.LN,
+            "lawful evil" => alignment == Alignment.LE,
+            "neutral good" => alignment == Alignment.NG,
+            "neutral evil" => alignment == Alignment.NE,
+            "chaotic good" => alignment == Alignment.CG,
+            "chaotic neutral" => alignment == Alignment.CN,
+            "chaotic evil" => alignment == Alignment.CE,
+            _ => false
+        };
 
     private void EvaluateEquipment(PermabuffContext ctx, Character character)
     {
@@ -1280,6 +1373,9 @@ public class ReplayStudio
         var bestShield = shieldContribs.OrderByDescending(a => a.Profile.ArmorBonus).FirstOrDefault();
 
         state.AC.Components.Clear();
+        var sizeModifier = _rules.CalculateSizeModifier(state.Size);
+        if (sizeModifier != 0)
+            state.AC.Components[BonusType.Size] = sizeModifier;
         if (bestArmor != null) state.AC.Components[BonusType.Armor] = bestArmor.Profile.ArmorBonus;
         if (bestShield != null) state.AC.Components[BonusType.Shield] = bestShield.Profile.ArmorBonus;
 
@@ -1321,7 +1417,7 @@ public class ReplayStudio
         state.AC.Touch = 10 + touchSum + dexContrib;
         // Flat-footed AC excludes Dex and Dodge.
         var flatComponents = state.AC.Components.Where(kv => kv.Key != BonusType.Dodge).Sum(kv => kv.Value);
-        state.AC.FlatFooted = 10 + flatComponents;
+        state.AC.FlatFooted = 10 + flatComponents + Math.Min(0, dexContrib);
 
         // --- Attack lines from equipped weapons ---
         FinalizeAttackLines(state, pass);
@@ -1356,6 +1452,7 @@ public class ReplayStudio
             if (key.Target != BonusTarget.Attack) continue;
             typedAttackBonus += BonusStack.Aggregate(key.Type, values);
         }
+        typedAttackBonus += _rules.CalculateSizeModifier(state.Size);
 
         // SRD TWF penalties:
         //   no feat, heavy off-hand: -6 / -10
