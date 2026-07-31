@@ -44,6 +44,11 @@ Source audit reports:
   Assassin/Blackguard `classLevels` assignments.
 - [ ] Restore the "Language: Infernal" prerequisite on the three Fiendish Codex II prestige
   classes now that Infernal can be selected by non-hellbred characters.
+- [ ] Add the Unseelie Champion homebrew template (deceit LSTs, 2026-03). Grants effective
+  ranger level = ranger (or planar ranger) levels + outsider HD for ranger class features,
+  favored enemy, animal companion level, wild empathy, and spellcasting. Needs an
+  effective-class-level engine primitive; currently the one WARN in the PCG baseline
+  (`Vzraella, Abyssal Herald`).
 - [ ] Add the HD-gated parts of the hellbred Infernal Aspect choices:
   - bonus devil-touched feats at 4 and 14 HD;
   - darkvision progression from 30 to 60 to 120 feet;
@@ -106,17 +111,7 @@ These block accurate content rather than representing bad source transcription.
   - Bulwark of the Great Dragon uses 1,612,970 gp from its description rather than the
     1,612,980 gp shown in the random-item table.
 
-## 5. PCGen regression follow-up
-
-- [ ] Run `PcgImportRegression` on a machine with `PCGEN_CHARACTERS_PATH` configured and review
-  the golden diff after the recent importer/content changes. In particular, confirm:
-  - animal companions using PCGen `TN` now import as engine `N`, not `LG`;
-  - `Masterwork Cold Iron Longsword +2` now resolves to the real cold-iron item rather than the
-    plain longsword.
-- [ ] Accept the baseline only after verifying the changes are intentional, using
-  `UPDATE_PCG_BASELINE=1`, then run once more in verify mode.
-
-## 6. Before making the repository public
+## 5. Before making the repository public
 
 - [ ] Add a README verification-status section explaining that the engine is well-tested while
   SRD content remains best-effort and is still being audited.
