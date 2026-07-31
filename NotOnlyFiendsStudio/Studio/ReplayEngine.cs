@@ -1124,6 +1124,7 @@ public class ReplayStudio
                         pass.Weapons.Add(new WeaponContribution
                         {
                             Profile = def.Weapon,
+                            EnhancementBonus = def.EnhancementBonus,
                             MainHand = item.MainHand,
                             TwoHanded = item.TwoHanded,
                             DisplayName = def.Name

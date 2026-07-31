@@ -122,7 +122,7 @@ Translate item powers into permabuffs. Common mappings:
 | Periapt of Wisdom +N | `GrantTypedBonus(target=abilityWis, bonusType=enhancement, value=N)` |
 | Cloak of Charisma +N | `GrantTypedBonus(target=abilityCha, bonusType=enhancement, value=N)` |
 | Amulet of Health +N | `GrantTypedBonus(target=abilityCon, bonusType=enhancement, value=N)` |
-| Magic weapon +N | (on weapon entry) `enhancementBonus` on a `GrantWeaponLine`, plus typed bonuses for special abilities (flaming = description only for now) |
+| Magic weapon +N | Top-level `enhancementBonus: N`; special abilities such as flaming remain in the description until they have dedicated mechanics |
 
 `Formula` values are strings — `{ "expression": "3" }` for a flat number.
 

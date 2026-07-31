@@ -53,6 +53,31 @@ public class PcgConverterTests
         Assert.Equal("Clean import", result.Summary);
     }
 
+    [Theory]
+    [InlineData("N")]
+    [InlineData("TN")]
+    [InlineData("tn")]
+    public void Convert_TrueNeutralAlignment_MapsToNeutral(string pcgenAlignment)
+    {
+        var data = CreateClericData();
+        data.Alignment = pcgenAlignment;
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper());
+
+        Assert.Equal(Alignment.N, result.Character.Alignment);
+    }
+
+    [Fact]
+    public void Convert_UnknownAlignment_FallsBackToNeutral()
+    {
+        var data = CreateClericData();
+        data.Alignment = "unknown";
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper());
+
+        Assert.Equal(Alignment.N, result.Character.Alignment);
+    }
+
     [Fact]
     public void Convert_AbilityScores_MappedCorrectly()
     {

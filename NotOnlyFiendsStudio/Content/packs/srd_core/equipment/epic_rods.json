@@ -310,5 +310,17 @@
       "cl38",
       "epic"
     ]
+  },
+  {
+    "id": "rod:epic_spellcaster",
+    "name": "Rod of the Epic Spellcaster",
+    "category": "rod",
+    "slot": null,
+    "weightLbs": 5,
+    "priceCp": 24540000,
+    "description": "This adamantine rod grants its wielder a +10 insight bonus on Spellcraft checks made to cast epic spells while it is held or carried. Caster Level 21st; Prerequisites: Craft Rod, Craft Epic Rod; Market Price 245,400 gp.",
+    "prerequisites": [],
+    "grantedPermabuffs": [],
+    "tags": ["rod", "epic", "cl21"]
   }
 ]

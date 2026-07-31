@@ -963,6 +963,10 @@ else
                                 @if (contentDef.Weapon != null)
                                 {
                                     <span class="badge bg-secondary me-1">@contentDef.Weapon.Damage @contentDef.Weapon.DamageType</span>
+                                    @if (contentDef.EnhancementBonus != 0)
+                                    {
+                                        <span class="badge bg-info me-1">@(contentDef.EnhancementBonus > 0 ? "+" : "")@contentDef.EnhancementBonus enhancement</span>
+                                    }
                                 }
                                 @if (contentDef.Armor != null)
                                 {

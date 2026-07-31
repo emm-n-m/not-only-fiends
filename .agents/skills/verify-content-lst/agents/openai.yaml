@@ -1,0 +1,4 @@
+interface:
+  display_name: "Verify Private Content"
+  short_description: "Audit private packs against PCGen LST sources"
+  default_prompt: "Use $verify-content-lst to audit the selected private packs against PCGen LST data."

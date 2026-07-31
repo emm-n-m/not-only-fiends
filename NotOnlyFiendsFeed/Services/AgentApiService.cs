@@ -646,6 +646,7 @@ public sealed class AgentApiService
         PriceCp = eq.PriceCp,
         Description = eq.Description,
         WeaponDamage = eq.Weapon?.Damage,
+        EnhancementBonus = eq.EnhancementBonus,
         ArmorBonus = eq.Armor?.ArmorBonus,
         EffectSummary = eq.GrantedPermabuffs.Select(SummarizePermabuff).ToList()
     };

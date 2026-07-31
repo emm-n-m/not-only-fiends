@@ -319,6 +319,34 @@ public class EquipmentTests
     }
 
     [Fact]
+    public void CatalogWeaponEnhancement_AppliesToAttackAndDamage()
+    {
+        var registry = BuildRegistry();
+        registry.RegisterEquipment(new EquipmentDefinition
+        {
+            Id = "weapon:magic_longsword",
+            Name = "+3 Longsword",
+            Category = EquipmentCategory.Weapon,
+            EnhancementBonus = 3,
+            Weapon = new WeaponProfile
+            {
+                Damage = "1d8",
+                CritRangeLow = 19,
+                DamageType = "slashing",
+                Proficiency = "martial"
+            }
+        });
+        var engine = new ReplayStudio(registry);
+        var character = BuildFighter(1, str: 14);
+        character.Equipment.Add(new EquipmentEntry { ContentId = "weapon:magic_longsword" });
+
+        var line = Assert.Single(engine.Evaluate(character).AttackLines);
+
+        Assert.Equal(new[] { 6 }, line.Bonuses); // BAB 1 + STR 2 + enhancement 3
+        Assert.Equal("1d8+5", line.Damage);      // STR 2 + enhancement 3
+    }
+
+    [Fact]
     public void Iteratives_Bab11Yields11_6_1()
     {
         var registry = BuildRegistry();

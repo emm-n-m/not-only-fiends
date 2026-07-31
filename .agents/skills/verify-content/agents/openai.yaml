@@ -1,0 +1,4 @@
+interface:
+  display_name: "Verify SRD Content"
+  short_description: "Audit public content against authoritative SRD text"
+  default_prompt: "Use $verify-content to audit existing public content against the local SRD mirror."

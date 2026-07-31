@@ -168,6 +168,7 @@ public sealed class EquipmentSummaryDto
     public long PriceCp { get; set; }
     public string? Description { get; set; }
     public string? WeaponDamage { get; set; }
+    public int EnhancementBonus { get; set; }
     public int? ArmorBonus { get; set; }
     public List<string> EffectSummary { get; set; } = new();
 }

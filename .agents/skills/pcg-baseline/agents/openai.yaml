@@ -1,0 +1,4 @@
+interface:
+  display_name: "PCG Import Baseline"
+  short_description: "Verify and review PCG golden-baseline drift"
+  default_prompt: "Use $pcg-baseline to verify PCG import behavior against the golden baseline."

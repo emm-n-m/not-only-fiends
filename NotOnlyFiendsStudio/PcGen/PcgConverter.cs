@@ -42,9 +42,17 @@ public static class PcgConverter
     public static PcgConversionResult Convert(PcgCharacterData data, PcgIdMapper mapper, ContentRegistry? registry = null)
     {
         var result = new PcgConversionResult();
-        var alignment = Alignment.N;
-        if (!string.IsNullOrEmpty(data.Alignment))
-            Enum.TryParse(data.Alignment, true, out alignment);
+        // PCGen uses TN for true neutral, while the engine calls that enum value N.
+        // Keep neutral as the fallback: Enum.TryParse resets an out parameter to the
+        // enum default on failure, which is LG for Alignment.
+        var alignmentText = data.Alignment.Trim();
+        if (alignmentText.Equals("TN", StringComparison.OrdinalIgnoreCase))
+            alignmentText = nameof(Alignment.N);
+
+        var alignment = Enum.TryParse<Alignment>(alignmentText, true, out var parsedAlignment)
+            && Enum.IsDefined(parsedAlignment)
+                ? parsedAlignment
+                : Alignment.N;
         var character = new Character
         {
             Name = data.CharacterName,

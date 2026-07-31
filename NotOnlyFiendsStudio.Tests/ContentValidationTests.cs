@@ -121,7 +121,7 @@ public class ContentValidationTests
 
         var rods = registry.GetAllEquipment().Where(e => e.Category == EquipmentCategory.Rod).ToList();
         var staffs = registry.GetAllEquipment().Where(e => e.Category == EquipmentCategory.Staff).ToList();
-        Assert.Equal(35, staffs.Count);
+        Assert.Equal(36, staffs.Count);
         Assert.True(rods.Count >= 30, $"expected the metamagic tiers too, found {rods.Count}");
 
         Assert.True(registry.TryGetEquipment("staff:power", out var power));
@@ -149,6 +149,62 @@ public class ContentValidationTests
         // existing ring:protection_1..5 / ring:ring_of_protection_6..10 ladder supersedes it.
         Assert.False(registry.TryGetEquipment("ring:protection", out _));
         Assert.True(registry.TryGetEquipment("ring:protection_1", out _));
+    }
+
+    [Fact]
+    public void SrdCompositeCursedAndArtifactItems_Load()
+    {
+        // Concrete entries from magicItemsWI.html, magicItemsICA.html, epicMagicItemsOther.html,
+        // and epicArtifacts.html. Intelligent-item powers and spell-based consumables are
+        // generative rules rather than finite catalog entries and are intentionally excluded.
+        var registry = TestContentHelper.LoadAllPacks();
+        var equipment = registry.GetAllEquipment().ToList();
+
+        Assert.Equal(6, equipment.Count(e => e.Id.StartsWith("wondrous:feather_token_", StringComparison.Ordinal)));
+        Assert.Equal(29, equipment.Count(e => e.Tags.Contains("cursed")));
+        Assert.Equal(31, equipment.Count(e => e.Tags.Contains("artifact")));
+
+        Assert.True(registry.TryGetEquipment("wondrous:feather_token_swan_boat", out var swanBoat));
+        Assert.Equal(450 * 100, swanBoat!.PriceCp);
+
+        Assert.True(registry.TryGetEquipment("armor:arrow_attraction", out var arrowAttraction));
+        Assert.Equal(11, arrowAttraction!.Armor!.ArmorBonus); // +3 full plate: base 8 + enhancement 3
+
+        Assert.True(registry.TryGetEquipment("weapon:cursed_sword_minus_2", out var cursedSword));
+        Assert.Equal(-2, cursedSword!.EnhancementBonus);
+
+        Assert.True(registry.TryGetEquipment("wondrous:book_of_infinite_spells", out _));
+        Assert.True(registry.TryGetEquipment("wondrous:everfull_purse", out _));
+        Assert.True(registry.TryGetEquipment("ring:nine_facets", out _));
+
+        Assert.True(registry.TryGetEquipment("rod:epic_spellcaster", out var spellcasterRod));
+        Assert.Equal(245_400 * 100, spellcasterRod!.PriceCp);
+    }
+
+    [Fact]
+    public void NamedMagicWeapons_CarryTheirBaselineEnhancementModifier()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var namedMagicWeapons = registry.GetAllEquipment()
+            .Where(e => e.Category == EquipmentCategory.Weapon)
+            .Where(e => e.Tags.Contains("magic") || e.Tags.Contains("epic") || e.Tags.Contains("artifact"))
+            .Where(e => e.Id != "weapon:javelin_of_lightning") // consumed as a lightning bolt; no weapon bonus
+            .ToList();
+
+        Assert.NotEmpty(namedMagicWeapons);
+        Assert.DoesNotContain(namedMagicWeapons, weapon => weapon.EnhancementBonus == 0);
+
+        Assert.Equal(2, registry.GetEquipment("weapon:holy_avenger").EnhancementBonus); // +5 is paladin-only
+        Assert.Equal(2, registry.GetEquipment("weapon:elven_greatbow").EnhancementBonus); // +5 is elf-only
+        Assert.Equal(-2, registry.GetEquipment("weapon:cursed_sword_minus_2").EnhancementBonus);
+    }
+
+    [Fact]
+    public void SrdEquipmentDescriptions_AreNotBulkExtractionTruncations()
+    {
+        var equipment = TestContentHelper.LoadAllPacks().GetAllEquipment();
+
+        Assert.DoesNotContain(equipment, item => item.Description?.EndsWith("...", StringComparison.Ordinal) == true);
     }
 
     [Fact]

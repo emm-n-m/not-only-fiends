@@ -1,0 +1,302 @@
+[
+  {
+    "id": "wondrous:amulet_of_inescapable_location",
+    "name": "Amulet of Inescapable Location",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 100000,
+    "description": "Appears to prevent magical location and detection, but instead imposes a -10 penalty on saves against divination spells.",
+    "tags": ["magic", "cursed", "cl10"]
+  },
+  {
+    "id": "armor:arrow_attraction",
+    "name": "Armor of Arrow Attraction",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 900000,
+    "description": "Appears and functions as +3 full plate in melee, but imposes a -15 AC penalty against ranged weapon attacks.",
+    "armor": { "kind": "heavy", "armorBonus": 11, "maxDex": 1, "checkPenalty": -5, "arcaneFailurePct": 35, "speed30": 20, "speed20": 15 },
+    "tags": ["magic", "cursed", "heavy", "cl16"]
+  },
+  {
+    "id": "armor:rage",
+    "name": "Armor of Rage",
+    "category": "armor",
+    "slot": "body",
+    "weightLbs": 50,
+    "priceCp": 160000,
+    "description": "Functions as +1 full plate, but gives its wearer -4 Charisma and grants unfriendly creatures within 300 feet +1 morale on attacks against the wearer.",
+    "armor": { "kind": "heavy", "armorBonus": 9, "maxDex": 1, "checkPenalty": -5, "arcaneFailurePct": 35, "speed30": 20, "speed20": 15 },
+    "tags": ["magic", "cursed", "heavy", "cl16"]
+  },
+  {
+    "id": "wondrous:bag_of_devouring",
+    "name": "Bag of Devouring",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "Appears to be a bag of holding, but is an extradimensional creature's feeding orifice. It can seize and consume creatures reaching inside and may swallow stored contents into another plane.",
+    "tags": ["magic", "cursed", "unpriced", "cl17"]
+  },
+  {
+    "id": "wondrous:boots_of_dancing",
+    "name": "Boots of Dancing",
+    "category": "wondrous",
+    "slot": "feet",
+    "weightLbs": 0,
+    "priceCp": 3000000,
+    "description": "Appear to be beneficial magic boots, but subject the wearer to irresistible dance during or while fleeing melee. Remove curse is required once revealed.",
+    "tags": ["magic", "cursed", "cl16"]
+  },
+  {
+    "id": "wondrous:bracers_of_defenselessness",
+    "name": "Bracers of Defenselessness",
+    "category": "wondrous",
+    "slot": "wrists",
+    "weightLbs": 0,
+    "priceCp": 120000,
+    "description": "Appear and function as bracers of armor +5 until a worthy enemy attacks, after which they impose a -5 AC penalty and require remove curse to take off.",
+    "tags": ["magic", "cursed", "cl16"]
+  },
+  {
+    "id": "wondrous:broom_of_animated_attack",
+    "name": "Broom of Animated Attack",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 520000,
+    "description": "Appears to be a broom of flying, but dumps its rider and attacks with four +5 attacks per round; its straw blinds and its handle deals 1d6 damage.",
+    "tags": ["magic", "cursed", "cl10"]
+  },
+  {
+    "id": "wondrous:cloak_of_poisonousness",
+    "name": "Cloak of Poisonousness",
+    "category": "wondrous",
+    "slot": "shoulders",
+    "weightLbs": 0,
+    "priceCp": 6200000,
+    "description": "Kills a wearer who fails a DC 28 Fortitude save when donned. It requires remove curse to take off, after which neutralize poison permits revival magic.",
+    "tags": ["magic", "cursed", "cl15"]
+  },
+  {
+    "id": "wondrous:crystal_hypnosis_ball",
+    "name": "Crystal Hypnosis Ball",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "Appears to be a crystal ball, but fascinates its user and implants telepathic suggestions from a remote controller. It is an uncreatable minor artifact.",
+    "tags": ["magic", "cursed", "artifact", "unpriced", "cl17"]
+  },
+  {
+    "id": "wondrous:dust_of_sneezing_and_choking",
+    "name": "Dust of Sneezing and Choking",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 240000,
+    "description": "Appears to be dust of appearance. Creatures in its 20-foot spread risk 2d6 Constitution damage, another 1d6 one minute later, and are stunned for 5d4 rounds even on a successful save.",
+    "tags": ["magic", "cursed", "consumable", "cl7"]
+  },
+  {
+    "id": "wondrous:flask_of_curses",
+    "name": "Flask of Curses",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 210000,
+    "description": "When first opened, creatures within 30 feet must make a DC 17 Will save or take -2 on attacks, saves, and skill checks until remove curse is cast.",
+    "tags": ["magic", "cursed", "cl7"]
+  },
+  {
+    "id": "wondrous:gauntlets_of_fumbling",
+    "name": "Gauntlets of Fumbling",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 0,
+    "priceCp": 130000,
+    "description": "Appear beneficial until danger activates the curse, after which the wearer loses 2 Dexterity and has a 50% chance each round to drop anything held.",
+    "tags": ["magic", "cursed", "cl7"]
+  },
+  {
+    "id": "wondrous:helm_of_opposite_alignment",
+    "name": "Helm of Opposite Alignment",
+    "category": "wondrous",
+    "slot": "head",
+    "weightLbs": 3,
+    "priceCp": 400000,
+    "description": "On a failed DC 15 Will save, permanently changes the wearer's alignment to a radically opposed one. Only wish or miracle restores the former alignment.",
+    "tags": ["magic", "cursed", "consumable", "cl12"]
+  },
+  {
+    "id": "wondrous:incense_of_obsession",
+    "name": "Incense of Obsession",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 20000,
+    "description": "Appears to be incense of meditation, but makes a divine spellcaster obsessively confident and determined to expend every available spell within 24 hours.",
+    "tags": ["magic", "cursed", "consumable", "cl6"]
+  },
+  {
+    "id": "weapon:mace_of_blood",
+    "name": "Mace of Blood",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 8,
+    "priceCp": 1600000,
+    "description": "A +3 heavy mace whose bonus fades unless coated in blood daily. Its possessor must make a DC 13 Will save each day or become chaotic evil.",
+    "enhancementBonus": 3,
+    "weapon": { "damage": "1d8", "critMultiplier": 2, "damageType": "bludgeoning", "proficiency": "simple" },
+    "tags": ["magic", "cursed", "simple", "cl8"]
+  },
+  {
+    "id": "wondrous:medallion_of_thought_projection",
+    "name": "Medallion of Thought Projection",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 180000,
+    "description": "Appears to read thoughts but supplies misleading figments while broadcasting the user's own thoughts to creatures in the targeted area.",
+    "tags": ["magic", "cursed", "cl7"]
+  },
+  {
+    "id": "wondrous:necklace_of_strangulation",
+    "name": "Necklace of Strangulation",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 6000000,
+    "description": "Constrains immediately when worn, dealing 6 damage per round. It cannot be removed short of limited wish, wish, or miracle and remains attached after death.",
+    "tags": ["magic", "cursed", "cl18"]
+  },
+  {
+    "id": "weapon:net_of_snaring",
+    "name": "Net of Snaring",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 6,
+    "priceCp": 1000000,
+    "description": "A +3 net that functions only underwater and can be commanded to shoot up to 30 feet to trap a creature.",
+    "enhancementBonus": 3,
+    "weapon": { "damage": "0", "rangeFt": 30, "damageType": "none", "ranged": true, "thrown": true, "proficiency": "exotic" },
+    "tags": ["magic", "cursed", "exotic", "cl8"]
+  },
+  {
+    "id": "wondrous:periapt_of_foul_rotting",
+    "name": "Periapt of Foul Rotting",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 1700000,
+    "description": "After 24 hours in a creature's possession, permanently drains 1 Dexterity, Constitution, and Charisma each week until a prescribed sequence of curative magic is completed.",
+    "tags": ["magic", "cursed", "cl10"]
+  },
+  {
+    "id": "potion:poison",
+    "name": "Potion of Poison",
+    "category": "potion",
+    "weightLbs": 0,
+    "priceCp": 500000,
+    "description": "A corrupted potion that forces a DC 16 Fortitude save against 1d10 Constitution damage, repeated one minute later.",
+    "tags": ["magic", "cursed", "consumable", "cl12"]
+  },
+  {
+    "id": "wondrous:robe_of_powerlessness",
+    "name": "Robe of Powerlessness",
+    "category": "wondrous",
+    "slot": "body",
+    "weightLbs": 0,
+    "priceCp": 550000,
+    "description": "Imposes -10 Strength and Intelligence while worn. Removing it is easy, but remove curse followed by heal is required to restore the victim.",
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityStr", "bonusType": "untyped", "value": { "expression": "-10" } },
+      { "$type": "GrantTypedBonus", "target": "abilityInt", "bonusType": "untyped", "value": { "expression": "-10" } }
+    ],
+    "tags": ["magic", "cursed", "cl13"]
+  },
+  {
+    "id": "wondrous:robe_of_vermin",
+    "name": "Robe of Vermin",
+    "category": "wondrous",
+    "slot": "body",
+    "weightLbs": 0,
+    "priceCp": 1650000,
+    "description": "Appears protective, but in combat imposes -5 initiative and -2 on attacks, saves, and skill checks; spellcasting also requires a concentration check.",
+    "tags": ["magic", "cursed", "cl13"]
+  },
+  {
+    "id": "ring:clumsiness",
+    "name": "Ring of Clumsiness",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 50000,
+    "description": "Functions as a ring of feather falling but also imposes -4 Dexterity and 20% arcane spell failure for spells with somatic components.",
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityDex", "bonusType": "untyped", "value": { "expression": "-4" } }
+    ],
+    "tags": ["magic", "cursed", "cl15"]
+  },
+  {
+    "id": "wondrous:scarab_of_death",
+    "name": "Scarab of Death",
+    "category": "wondrous",
+    "slot": "neck",
+    "weightLbs": 0,
+    "priceCp": 8000000,
+    "description": "Animates into a burrowing beetle after being held or carried, killing its victim unless a DC 25 Reflex save tears it away first for 3d6 damage.",
+    "tags": ["magic", "cursed", "cl19"]
+  },
+  {
+    "id": "weapon:cursed_backbiter_spear",
+    "name": "Spear, Cursed Backbiter",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 3,
+    "priceCp": 750000,
+    "description": "A +2 shortspear that strikes its wielder on a natural 1 in melee and deals double its normal damage back to the wielder when the curse triggers on a throw.",
+    "enhancementBonus": 2,
+    "weapon": { "damage": "1d6", "critMultiplier": 2, "rangeFt": 20, "damageType": "piercing", "thrown": true, "proficiency": "simple" },
+    "tags": ["magic", "cursed", "simple", "thrown", "cl10"]
+  },
+  {
+    "id": "wondrous:stone_of_weight",
+    "name": "Stone of Weight (Loadstone)",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 100000,
+    "description": "Halves its possessor's base land speed and magically returns if discarded or destroyed until remove curse is cast.",
+    "tags": ["magic", "cursed", "cl5"]
+  },
+  {
+    "id": "weapon:cursed_sword_minus_2",
+    "name": "-2 Sword, Cursed",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 4,
+    "priceCp": 150000,
+    "description": "A longsword that imposes -2 on attacks and damage in combat and, after one week, compels its owner to use it. Only limited wish, wish, or miracle disposes of it.",
+    "enhancementBonus": -2,
+    "weapon": { "damage": "1d8", "critRangeLow": 19, "critMultiplier": 2, "damageType": "slashing", "proficiency": "martial" },
+    "tags": ["magic", "cursed", "martial", "cl15"]
+  },
+  {
+    "id": "weapon:berserking_sword",
+    "name": "Sword, Berserking",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 8,
+    "priceCp": 1750000,
+    "description": "Appears to be a +2 greatsword, but drives its wielder berserk in battle, forcing attacks against the nearest creature until no living target remains nearby.",
+    "enhancementBonus": 2,
+    "weapon": { "damage": "2d6", "critRangeLow": 19, "critMultiplier": 2, "damageType": "slashing", "twoHanded": true, "proficiency": "martial" },
+    "tags": ["magic", "cursed", "martial", "two_handed", "cl8"]
+  },
+  {
+    "id": "wondrous:vacuous_grimoire",
+    "name": "Vacuous Grimoire",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 600000,
+    "description": "Reading even one word forces two DC 15 Will saves against 1 permanent Intelligence drain and 2 permanent Wisdom drain. It must be burned while remove curse is cast to destroy it.",
+    "tags": ["magic", "cursed", "cl20"]
+  }
+]

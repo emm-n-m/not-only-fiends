@@ -1,0 +1,4 @@
+interface:
+  display_name: "Extract Templates"
+  short_description: "Extract creature templates into validated JSON"
+  default_prompt: "Use $extract-template to extract the requested creature templates from the supplied source."

@@ -1,0 +1,56 @@
+[
+  {
+    "id": "wondrous:feather_token_anchor",
+    "name": "Feather Token, Anchor",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 5000,
+    "description": "A single-use token that moors a watercraft and renders it immobile for up to one day.",
+    "tags": ["magic", "consumable", "cl12"]
+  },
+  {
+    "id": "wondrous:feather_token_bird",
+    "name": "Feather Token, Bird",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 30000,
+    "description": "A single-use token that delivers a small written message unerringly to a designated target, as a carrier pigeon would.",
+    "tags": ["magic", "consumable", "cl12"]
+  },
+  {
+    "id": "wondrous:feather_token_fan",
+    "name": "Feather Token, Fan",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 20000,
+    "description": "A single-use token that becomes a huge fan, propelling one ship at about 25 mph or reducing existing winds for up to 8 hours. It does not function on land.",
+    "tags": ["magic", "consumable", "cl12"]
+  },
+  {
+    "id": "wondrous:feather_token_swan_boat",
+    "name": "Feather Token, Swan Boat",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 45000,
+    "description": "A single-use token that becomes a swanlike boat moving at 60 feet. It carries eight horses and gear or thirty-two Medium creatures and lasts for one day.",
+    "tags": ["magic", "consumable", "cl12"]
+  },
+  {
+    "id": "wondrous:feather_token_tree",
+    "name": "Feather Token, Tree",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 40000,
+    "description": "A single-use token that instantaneously creates a great oak with a 5-foot-diameter trunk, 60-foot height, and 40-foot crown.",
+    "tags": ["magic", "consumable", "cl12"]
+  },
+  {
+    "id": "wondrous:feather_token_whip",
+    "name": "Feather Token, Whip",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 50000,
+    "description": "A single-use token that becomes a self-wielding +1 whip for up to 1 hour. It attacks at +10, deals 1d6+1 damage, and makes a free grapple attack at +15 after a hit.",
+    "tags": ["magic", "consumable", "cl12"]
+  }
+]

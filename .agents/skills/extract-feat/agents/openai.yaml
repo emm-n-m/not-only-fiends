@@ -1,0 +1,4 @@
+interface:
+  display_name: "Extract Feats"
+  short_description: "Extract D&D feats into validated content JSON"
+  default_prompt: "Use $extract-feat to extract the requested feats from the supplied source."

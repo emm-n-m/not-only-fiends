@@ -1,0 +1,4 @@
+interface:
+  display_name: "Extract Classes"
+  short_description: "Extract D&D classes into validated content JSON"
+  default_prompt: "Use $extract-class to extract the requested class definitions from the supplied source."

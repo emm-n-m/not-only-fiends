@@ -24,6 +24,7 @@ public class AgentApiServiceTests
         Assert.Contains(catalog.LoadedPacks, pack => pack.Id == "srd_core");
         Assert.Contains(catalog.Races, race => race.Id == "race:human");
         Assert.Contains(catalog.Drivers, driver => driver.Id == "class:fighter");
+        Assert.Equal(3, catalog.Equipment.Single(item => item.Id == "weapon:frost_brand").EnhancementBonus);
         Assert.True(catalog.SpellCount > 0);
     }
 

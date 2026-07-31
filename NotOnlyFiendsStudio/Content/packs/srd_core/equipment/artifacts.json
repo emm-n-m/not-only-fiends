@@ -1,0 +1,226 @@
+[
+  {
+    "id": "wondrous:book_of_infinite_spells",
+    "name": "Book of Infinite Spells",
+    "category": "wondrous",
+    "weightLbs": 3,
+    "priceCp": 0,
+    "description": "A minor artifact containing 1d8+22 pages, each bearing a randomly determined spell. Its possessor may cast the open page's spell once per day but risks an involuntary page turn after every use.",
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "cl18"]
+  },
+  {
+    "id": "weapon:hammer_of_thunderbolts",
+    "name": "Hammer of Thunderbolts",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 15,
+    "priceCp": 0,
+    "description": "A +3 Large returning warhammer. With gauntlets of ogre power and a belt of giant strength it becomes +5, doubles the belt's Strength bonus, gains giant bane, and can stun or slay giants when hurled.",
+    "enhancementBonus": 3,
+    "weapon": { "damage": "2d6", "critMultiplier": 3, "rangeFt": 30, "damageType": "bludgeoning", "twoHanded": true, "thrown": true, "proficiency": "martial" },
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "martial", "thrown", "cl20"]
+  },
+  {
+    "id": "wondrous:philosophers_stone",
+    "name": "Philosopher's Stone",
+    "category": "wondrous",
+    "weightLbs": 3,
+    "priceCp": 0,
+    "description": "A minor artifact whose quicksilver can transmute up to 5,000 pounds of iron into silver or 1,000 pounds of lead into gold. Its powder also enables true resurrection for 1d10 creatures.",
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "cl20"]
+  },
+  {
+    "id": "wondrous:sphere_of_annihilation",
+    "name": "Sphere of Annihilation",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "A 2-foot black globe that obliterates matter entering it. An arcane caster can move it through force of will, with opposed control checks when multiple creatures contend for it.",
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "cl20"]
+  },
+  {
+    "id": "wondrous:talisman_of_pure_good",
+    "name": "Talisman of Pure Good",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "A six-charge minor artifact usable by a pure good divine spellcaster to open a fissure beneath an evil divine spellcaster within 100 feet. Neutral and evil divine casters are harmed by touching it.",
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "good", "cl18"]
+  },
+  {
+    "id": "wondrous:talisman_of_the_sphere",
+    "name": "Talisman of the Sphere",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 0,
+    "description": "Doubles an arcane spellcaster's modifier when controlling a sphere of annihilation and reduces how often control must be checked. Non-arcane creatures take 5d6 damage merely by holding it.",
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "cl16"]
+  },
+  {
+    "id": "wondrous:talisman_of_reluctant_wishes",
+    "name": "Talisman of Reluctant Wishes",
+    "category": "wondrous",
+    "weightLbs": 1,
+    "priceCp": 0,
+    "description": "A minor artifact governed by an initial Charisma check: it may behave as a loadstone, grant temporary access to a wish, or remain for months and grant multiple wishes before becoming a diamond.",
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "cl20"]
+  },
+  {
+    "id": "wondrous:talisman_of_ultimate_evil",
+    "name": "Talisman of Ultimate Evil",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "A six-charge minor artifact usable by a profoundly evil divine spellcaster to open a fissure beneath a good divine spellcaster within 100 feet. Neutral and good divine casters are harmed by touching it.",
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "evil", "cl18"]
+  },
+  {
+    "id": "wondrous:moaning_diamond",
+    "name": "The Moaning Diamond",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "A major artifact that reshapes up to 5,000 cubic feet of earth and stone three times per day and can summon one maximum-hit-point elder earth elemental at a time.",
+    "tags": ["magic", "artifact", "major_artifact", "unpriced"]
+  },
+  {
+    "id": "wondrous:orbs_of_dragonkind",
+    "name": "The Orbs of Dragonkind",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "Ten major artifacts, each bound to a dragon variety. An orb dominates matching dragons, grants defensive traits and breath immunity, supplies a breath weapon, communicates with other orbs, and has a variety-specific spell power.",
+    "tags": ["magic", "artifact", "major_artifact", "unpriced", "dragon"]
+  },
+  {
+    "id": "weapon:saints_mace",
+    "name": "The Saint's Mace",
+    "category": "weapon",
+    "slot": "weapon",
+    "weightLbs": 8,
+    "priceCp": 0,
+    "description": "A +5 holy axiomatic disruption heavy mace that can project searing light at will as a 20th-level caster.",
+    "enhancementBonus": 5,
+    "weapon": { "damage": "1d8", "critMultiplier": 2, "damageType": "bludgeoning", "proficiency": "simple" },
+    "tags": ["magic", "artifact", "major_artifact", "unpriced", "simple", "good", "lawful"]
+  },
+  {
+    "id": "staff:shadowstaff",
+    "name": "The Shadowstaff",
+    "category": "staff",
+    "weightLbs": 1,
+    "priceCp": 0,
+    "description": "A major artifact granting +4 AC and Reflex saves in ordinary illumination. It summons shadows or a nightcrawler, grants gaseous shadow form, and projects 10d6 cold shadow bolts, but penalizes its wielder in bright light or total darkness.",
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "ac", "bonusType": "untyped", "value": { "expression": "4" } },
+      { "$type": "GrantTypedBonus", "target": "saveRef", "bonusType": "untyped", "value": { "expression": "4" } }
+    ],
+    "tags": ["magic", "artifact", "major_artifact", "unpriced", "shadow"]
+  },
+  {
+    "id": "shield:shield_of_the_sun",
+    "name": "The Shield of the Sun",
+    "category": "shield",
+    "slot": "shield",
+    "weightLbs": 15,
+    "priceCp": 0,
+    "description": "A +5 heavy shield that grants spellcasting as a 20th-level paladin with Wisdom 20, spell resistance 15, and resistance 10 to five energy types. Its owner owes an annual quest to a lawful good deity.",
+    "armor": { "kind": "shield", "armorBonus": 7, "maxDex": null, "checkPenalty": -1, "arcaneFailurePct": 15, "speed30": 30, "speed20": 20 },
+    "tags": ["magic", "artifact", "major_artifact", "unpriced", "good", "lawful"]
+  },
+  {
+    "id": "wondrous:everfull_purse",
+    "name": "Everfull Purse",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "A minor artifact that replaces one gold piece left inside at sunset with twenty-five gold pieces at sunrise. It has no effect if anything else is placed within.",
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "cl20"]
+  },
+  {
+    "id": "wondrous:libram_of_ineffable_damnation",
+    "name": "Libram of Ineffable Damnation",
+    "category": "wondrous",
+    "weightLbs": 3,
+    "priceCp": 0,
+    "description": "After one week of study, an evil arcane caster gains +1 inherent to the relevant casting ability and substantial experience. Other readers risk permanent drain or insanity; the book vanishes after use.",
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "evil", "cl19"]
+  },
+  {
+    "id": "wondrous:libram_of_silver_magic",
+    "name": "Libram of Silver Magic",
+    "category": "wondrous",
+    "weightLbs": 3,
+    "priceCp": 0,
+    "description": "After one week of study, a neutral arcane caster gains +1 inherent to the relevant casting ability and substantial experience. Other readers risk permanent drain or insanity; the book vanishes after use.",
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "neutral", "cl19"]
+  },
+  {
+    "id": "wondrous:manual_of_puissant_skill_at_arms",
+    "name": "Manual of Puissant Skill at Arms",
+    "category": "wondrous",
+    "weightLbs": 3,
+    "priceCp": 0,
+    "description": "After one week of study, a barbarian, fighter, monk, paladin, or ranger gains +1 inherent Strength and substantial experience. Ineligible arcane casters risk experience loss and Intelligence drain.",
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "cl19"]
+  },
+  {
+    "id": "wondrous:manual_of_stealthy_pilfering",
+    "name": "Manual of Stealthy Pilfering",
+    "category": "wondrous",
+    "weightLbs": 3,
+    "priceCp": 0,
+    "description": "After one week of study, a rogue gains +1 inherent Dexterity and substantial experience. Ineligible divine casters risk experience loss and Wisdom drain.",
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "cl19"]
+  },
+  {
+    "id": "wondrous:rogues_dice",
+    "name": "Rogue's Dice",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "A pair of minor-artifact dice producing one of eleven beneficial or harmful results on an announced roll, from permanent ability loss and negative levels to limited wish or experience gain.",
+    "tags": ["magic", "artifact", "minor_artifact", "unpriced", "cl20"]
+  },
+  {
+    "id": "wondrous:cup_and_talisman_of_the_demigod",
+    "name": "Cup and Talisman of the Demigod",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "Paired major artifacts. The cup transforms holy water into potent curatives; the talisman grants +6 Charisma and restorative spells; combined, they create a monthly elixir of resurrection.",
+    "tags": ["magic", "artifact", "major_artifact", "unpriced", "good", "lawful"]
+  },
+  {
+    "id": "wondrous:eye_of_the_orc",
+    "name": "Eye of the Orc",
+    "category": "wondrous",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "A major artifact granting orcs +6 Strength and Charisma and doubled darkvision. Other wielders gain +2 Strength but lose Intelligence and Charisma; all wielded weapons become elf bane, and true seeing is available daily.",
+    "tags": ["magic", "artifact", "major_artifact", "unpriced", "orc"]
+  },
+  {
+    "id": "wondrous:iron_gauntlet_of_war",
+    "name": "Iron Gauntlet of War",
+    "category": "wondrous",
+    "slot": "hands",
+    "weightLbs": 1,
+    "priceCp": 0,
+    "description": "An intelligent lawful-evil major artifact granting +8 Strength, doubled smite damage, +4 Leadership with restrictions, and implosion once per day.",
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "abilityStr", "bonusType": "enhancement", "value": { "expression": "8" } }
+    ],
+    "tags": ["magic", "artifact", "major_artifact", "unpriced", "evil", "lawful", "intelligent"]
+  },
+  {
+    "id": "ring:nine_facets",
+    "name": "Ring of Nine Facets",
+    "category": "ring",
+    "slot": "ring",
+    "weightLbs": 0,
+    "priceCp": 0,
+    "description": "A major artifact whose randomly active daily facet grants one of nine defenses or movement powers. Its wearer can attempt to change facets through a difficult concentration check and suffers when removing it.",
+    "tags": ["magic", "artifact", "major_artifact", "unpriced"]
+  }
+]

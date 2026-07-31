@@ -85,6 +85,8 @@ public class EquipmentDefinition
     public List<Prerequisite> Prerequisites { get; set; } = new();
     public List<Permabuff> GrantedPermabuffs { get; set; } = new();
     public WeaponProfile? Weapon { get; set; }
+    /// <summary>Magic enhancement (or cursed penalty) applied to attack and damage rolls.</summary>
+    public int EnhancementBonus { get; set; }
     public ArmorProfile? Armor { get; set; }
     public List<string> Tags { get; set; } = new();
 }

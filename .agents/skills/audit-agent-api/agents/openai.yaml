@@ -1,0 +1,4 @@
+interface:
+  display_name: "Audit Agent API"
+  short_description: "Audit the REST API through a real character build"
+  default_prompt: "Use $audit-agent-api to exercise the REST API end to end and report agent-facing failures."

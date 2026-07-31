@@ -214,6 +214,11 @@
           "description": "Mechanical effects when the item is equipped. Mundane gear has an empty array; weapons typically reference WeaponProfile via the 'weapon' field rather than a permabuff."
         },
         "weapon": { "$ref": "#/$defs/WeaponProfile" },
+        "enhancementBonus": {
+          "type": "integer",
+          "minimum": -5,
+          "description": "Magic enhancement bonus, or cursed penalty, added to attack and damage rolls for the weapon profile. Masterwork-only attack bonuses do not use this field."
+        },
         "armor": { "$ref": "#/$defs/ArmorProfile" },
         "tags": {
           "type": "array",
