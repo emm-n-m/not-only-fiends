@@ -31,6 +31,10 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(MinPCLevel), "MinPCLevel")]
 [JsonDerivedType(typeof(HasPreparedCasting), "HasPreparedCasting")]
 [JsonDerivedType(typeof(CanCastSpellSchool), "CanCastSpellSchool")]
+[JsonDerivedType(typeof(HasSpellLikeAbility), "HasSpellLikeAbility")]
+[JsonDerivedType(typeof(HasCreatureTrait), "HasCreatureTrait")]
+[JsonDerivedType(typeof(HasSpecialAttack), "HasSpecialAttack")]
+[JsonDerivedType(typeof(MinSpellLikeAbilityCasterLevel), "MinSpellLikeAbilityCasterLevel")]
 public abstract class Prerequisite
 {
     public abstract bool IsMet(CharacterState state);
@@ -141,6 +145,35 @@ public class HasAbility : Prerequisite
     public override bool IsMet(CharacterState state) =>
         state.Abilities.Any(a => a.Id == AbilityId);
     public override string Description => $"Ability: {AbilityId}";
+}
+
+/// <summary>Requires at least one spell-like ability on the evaluated character.</summary>
+public class HasSpellLikeAbility : Prerequisite
+{
+    public override bool IsMet(CharacterState state) => state.SLAs.Count > 0;
+    public override string Description => "Spell-like ability";
+}
+
+public class HasCreatureTrait : Prerequisite
+{
+    public bool? Living { get; set; }
+    public bool? Corporeal { get; set; }
+    public override bool IsMet(CharacterState state) =>
+        (!Living.HasValue || state.IsLiving == Living) && (!Corporeal.HasValue || state.IsCorporeal == Corporeal);
+    public override string Description => string.Join(", ", new[] { Living.HasValue ? (Living.Value ? "living" : "nonliving") : null, Corporeal.HasValue ? (Corporeal.Value ? "corporeal" : "incorporeal") : null }.Where(x => x != null));
+}
+
+public class HasSpecialAttack : Prerequisite
+{
+    public override bool IsMet(CharacterState state) => state.SpecialAttacks.Count > 0;
+    public override string Description => "Special attack";
+}
+
+public class MinSpellLikeAbilityCasterLevel : Prerequisite
+{
+    public int Value { get; set; }
+    public override bool IsMet(CharacterState state) => state.SLAs.Any(s => s.CasterLevel >= Value);
+    public override string Description => $"Spell-like ability at caster level {Value}+";
 }
 
 public class HasSpellcasting : Prerequisite

@@ -90,6 +90,7 @@ public class ContentIntegrityTests
         var raceIds = new HashSet<string>(registry.GetAllRaces().Select(r => r.Id), StringComparer.Ordinal);
         var templateIds = new HashSet<string>(registry.GetAllTemplates().Select(t => t.Id), StringComparer.Ordinal);
         var domainIds = new HashSet<string>(registry.GetAllDomains().Select(d => d.Id), StringComparer.Ordinal);
+        var classFeatureIds = new HashSet<string>(registry.GetAllClassFeatures().Select(f => f.Id), StringComparer.Ordinal);
 
         var broken = new List<Reference>();
 
@@ -153,6 +154,9 @@ public class ContentIntegrityTests
                     case GrantRacialSpellcasting b:
                         Check(driverIds.Contains(b.ClassId), context, "GrantRacialSpellcasting", b.ClassId);
                         break;
+                    case ApplyClassFeatureOptionBenefits b:
+                        Check(classFeatureIds.Contains(b.FeatureType), context, "ApplyClassFeatureOptionBenefits", b.FeatureType);
+                        break;
                 }
             }
         }
@@ -214,7 +218,11 @@ public class ContentIntegrityTests
 
         foreach (var classFeature in registry.GetAllClassFeatures())
             foreach (var option in classFeature.Options)
+            {
                 CheckPermabuffs(option.GrantedPermabuffs, $"ClassFeature '{classFeature.Id}' option '{option.Id}'");
+                foreach (var (benefitSet, buffs) in option.AdditionalPermabuffs)
+                    CheckPermabuffs(buffs, $"ClassFeature '{classFeature.Id}' option '{option.Id}' benefit set '{benefitSet}'");
+            }
 
         foreach (var equipment in registry.GetAllEquipment())
         {

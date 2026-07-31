@@ -825,6 +825,135 @@ public class RulesAccuracyTests
         Assert.False(prereq.IsMet(Evaluate(Human(new Tick { DriverId = "class:wizard" }))));
     }
 
+    [Fact]
+    public void Barbarian_DamageReduction_AdvancesWithoutStacking()
+    {
+        var ticks = Enumerable.Range(0, 19)
+            .Select(_ => new Tick { DriverId = "class:barbarian" })
+            .ToArray();
+
+        var state = Evaluate(Human(ticks));
+
+        var dr = Assert.Single(state.DamageReduction);
+        Assert.Equal("-", dr.BypassedBy);
+        Assert.Equal(5, dr.Value);
+    }
+
+    [Fact]
+    public void DomainClassSkills_AndSpellLinks_AreApplied()
+    {
+        var state = Evaluate(Human(new Tick
+        {
+            DriverId = "class:cleric",
+            Choices = new TickChoices
+            {
+                ClassFeatureChoices = new Dictionary<string, List<string>>
+                {
+                    ["domains"] = new() { "domain:animal", "domain:trickery" }
+                }
+            }
+        }));
+
+        Assert.Contains("skill:knowledge_nature", state.ClassSkills);
+        Assert.Contains("skill:bluff", state.ClassSkills);
+        Assert.Contains("skill:disguise", state.ClassSkills);
+        Assert.Contains("skill:hide", state.ClassSkills);
+        Assert.Equal(3, Content.Value.GetSpell("spell:blacklight").ClassLevels["domain:darkness"]);
+        Assert.Equal(7, Content.Value.GetSpell("spell:hardening").ClassLevels["domain:artifice"]);
+        Assert.Equal(8, Content.Value.GetSpell("spell:maddening_scream").ClassLevels["domain:madness"]);
+    }
+
+    [Fact]
+    public void ExtraMusic_RequiresBardicMusic_AndAddsFourUses()
+    {
+        var feat = Content.Value.GetFeat("feat:extra_music");
+        var nonBard = Evaluate(Human(new Tick { DriverId = "class:fighter" }));
+        Assert.False(feat.Prerequisites.All(p => p.IsMet(nonBard)));
+
+        var bard = Evaluate(Human(new Tick
+        {
+            DriverId = "class:bard",
+            Choices = new TickChoices { FeatIds = new List<string> { "feat:extra_music" } }
+        }));
+        Assert.Equal(5, bard.Counters["bardic_music_uses"]);
+    }
+
+    [Fact]
+    public void HalfDragon_UpgradesOnlyRacialHitDice_AndGrantsLargeFlight()
+    {
+        var aranea = Human(new Tick { DriverId = "racial_hd:magical_beast" });
+        aranea.RaceId = "race:aranea";
+        aranea.TemplateIds.Add("template:half_dragon");
+        var racial = Evaluate(aranea);
+        Assert.Equal(12, Assert.Single(racial.HitDice).DieSize); // magical beast d10 -> d12
+
+        var giant = Human();
+        giant.RaceId = "race:fire_giant";
+        giant.TemplateIds.Add("template:half_dragon");
+        Assert.Equal(80, Evaluate(giant).Speeds[MovementMode.Fly]);
+
+        var classOnly = Human(new Tick { DriverId = "class:fighter" });
+        classOnly.TemplateIds.Add("template:half_dragon");
+        Assert.Equal(10, Assert.Single(Evaluate(classOnly).HitDice).DieSize);
+    }
+
+    [Fact]
+    public void HalfFiendAndFiendish_PersistTheirDurableState()
+    {
+        var halfFiend = Human(new Tick { DriverId = "class:fighter" });
+        halfFiend.TemplateIds.Add("template:half_fiend");
+        var halfFiendState = Evaluate(halfFiend);
+        Assert.Equal(30, halfFiendState.Speeds[MovementMode.Fly]);
+        Assert.Equal(1, Assert.Single(halfFiendState.SLAs).CasterLevel);
+
+        var fiendish = Human();
+        fiendish.RaceId = "race:companion_badger";
+        fiendish.TemplateIds.Add("template:fiendish");
+        var fiendishState = Evaluate(fiendish);
+        Assert.Equal(CreatureType.MagicalBeast, fiendishState.Type);
+        Assert.Contains(fiendishState.Abilities, a => a.Id == "fiendish_darkvision_60");
+        Assert.Contains(fiendishState.SpecialAttacks, a => a.Id == "fiendish_smite_good");
+    }
+
+    [Fact]
+    public void Domains_ExposeScopedCasterAndItemActivationRules()
+    {
+        var character = Human(new Tick
+        {
+            DriverId = "class:cleric",
+            Choices = new TickChoices { ClassFeatureChoices = new Dictionary<string, List<string>>
+            {
+                ["domains"] = new() { "domain:artifice", "domain:creation" }
+            }}
+        });
+        var state = Evaluate(character);
+        Assert.Equal(4, state.EffectiveCasterLevel("class:cleric", Content.Value.GetSpell("spell:minor_creation")));
+
+        character.Ticks[0].Choices.ClassFeatureChoices!["domains"] = new() { "domain:magic", "domain:knowledge" };
+        state = Evaluate(character);
+        var itemRule = Assert.Single(state.ItemActivationLevelRules);
+        Assert.Equal(1, itemRule.EffectiveLevel(state));
+    }
+
+    [Fact]
+    public void WarDomain_UsesPlayerChosenFavoredWeapon()
+    {
+        var character = Human(new Tick
+        {
+            DriverId = "class:cleric",
+            Choices = new TickChoices { ClassFeatureChoices = new Dictionary<string, List<string>>
+            {
+                ["domains"] = new() { "domain:war", "domain:knowledge" },
+                [GrantWarDomainWeaponFeats.ChoiceKey] = new() { "weapon:longsword" }
+            }}
+        });
+
+        var state = Evaluate(character);
+        Assert.Contains("feat:martial_weapon_proficiency_weapon:longsword", state.Feats);
+        Assert.Contains("feat:weapon_focus_weapon:longsword", state.Feats);
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("War domain requires"));
+    }
+
     // UA variant paladins: "A paladin of tyranny must be lawful evil"
     // (unearthedCoreClass.html). The content originally wrote the prerequisite as
     // {"alignment": "LE"} — a property MinSkillRanks-style silent drop turned into an

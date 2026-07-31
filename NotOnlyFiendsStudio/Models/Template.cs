@@ -10,12 +10,20 @@ public class TemplateDriver
     // when templates are applied. Unmet prerequisites warn, matching driver behavior.
     public List<Prerequisite> Prerequisites { get; set; } = new();
 
+    // Checked before this template mutates the base creature. Existing Prerequisites
+    // intentionally remain final-state checks for acquired-template requirements.
+    public List<Prerequisite> ApplicabilityPrerequisites { get; set; } = new();
+
     // One-time modifications at creation
     public CreatureType? TypeOverride { get; set; }
+    public Dictionary<CreatureType, CreatureType> TypeOverridesByBaseType { get; set; } = new();
     public List<string> SubtypeAdditions { get; set; } = new();
     public AbilityScoreSet? AbilityModifiers { get; set; }
     public int? NaturalArmor { get; set; }
     public Dictionary<MovementMode, int> SpeedModifiers { get; set; } = new();
+    public List<DerivedSpeedRule> DerivedSpeedRules { get; set; } = new();
+    public int RacialHitDieSizeAdjustment { get; set; }
+    public int? RacialHitDieMaximum { get; set; }
     public int LevelAdjustment { get; set; }
     public List<NaturalAttack> NaturalAttacks { get; set; } = new();
     public List<Permabuff> CreationPermabuffs { get; set; } = new();
@@ -58,4 +66,15 @@ public class TemplateDriver
         }
         return buffs;
     }
+}
+
+public class DerivedSpeedRule
+{
+    public MovementMode Mode { get; set; }
+    public MovementMode SourceMode { get; set; } = MovementMode.Land;
+    public int Multiplier { get; set; } = 1;
+    public int? Maximum { get; set; }
+    public Size? MinimumSize { get; set; }
+    /// <summary>Do not replace a permanent speed already greater than the derived value.</summary>
+    public bool PreserveBetterExisting { get; set; }
 }

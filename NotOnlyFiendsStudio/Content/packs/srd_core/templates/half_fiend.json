@@ -2,6 +2,11 @@
 {
   "id": "template:half_fiend",
   "name": "Half-Fiend",
+  "applicabilityPrerequisites": [
+    { "$type": "HasCreatureTrait", "living": true, "corporeal": true },
+    { "$type": "MinAbility", "ability": "INT", "value": 4 },
+    { "$type": "AlignmentReq", "allowed": ["LE", "NE", "CE", "LN", "N", "CN", "LG", "NG", "CG"] }
+  ],
   "typeOverride": "outsider",
   "subtypeAdditions": ["native"],
   "abilityModifiers": {
@@ -13,9 +18,10 @@
     "cha": 2
   },
   "naturalArmor": 1,
-  "speedModifiers": {
-    "fly": 60
-  },
+  "speedModifiers": {},
+  "derivedSpeedRules": [
+    { "mode": "fly", "sourceMode": "land", "preserveBetterExisting": true }
+  ],
   "levelAdjustment": 4,
   "naturalAttacks": [
     { "name": "Bite", "damage": "1d6", "count": 1, "isPrimary": true },
@@ -63,61 +69,61 @@
     "1": [
       {
         "$type": "GrantSLA",
-        "sla": { "id": "hf_sla_darkness", "name": "Darkness", "usesPerDay": "3/day" }
+        "sla": { "id": "hf_sla_darkness", "name": "Darkness", "usesPerDay": "3/day" }, "casterLevelEqualsTotalHD": true
       }
     ],
     "3": [
       {
         "$type": "GrantSLA",
-        "sla": { "id": "hf_sla_desecrate", "name": "Desecrate", "usesPerDay": "1/day" }
+        "sla": { "id": "hf_sla_desecrate", "name": "Desecrate", "usesPerDay": "1/day" }, "casterLevelEqualsTotalHD": true
       }
     ],
     "5": [
       {
         "$type": "GrantSLA",
-        "sla": { "id": "hf_sla_unholy_blight", "name": "Unholy Blight", "usesPerDay": "1/day" }
+        "sla": { "id": "hf_sla_unholy_blight", "name": "Unholy Blight", "usesPerDay": "1/day" }, "casterLevelEqualsTotalHD": true
       }
     ],
     "7": [
       {
         "$type": "GrantSLA",
-        "sla": { "id": "hf_sla_poison", "name": "Poison", "usesPerDay": "3/day" }
+        "sla": { "id": "hf_sla_poison", "name": "Poison", "usesPerDay": "3/day" }, "casterLevelEqualsTotalHD": true
       }
     ],
     "9": [
       {
         "$type": "GrantSLA",
-        "sla": { "id": "hf_sla_contagion", "name": "Contagion", "usesPerDay": "1/day" }
+        "sla": { "id": "hf_sla_contagion", "name": "Contagion", "usesPerDay": "1/day" }, "casterLevelEqualsTotalHD": true
       }
     ],
     "11": [
       {
         "$type": "GrantSLA",
-        "sla": { "id": "hf_sla_blasphemy", "name": "Blasphemy", "usesPerDay": "1/day" }
+        "sla": { "id": "hf_sla_blasphemy", "name": "Blasphemy", "usesPerDay": "1/day" }, "casterLevelEqualsTotalHD": true
       }
     ],
     "13": [
       {
         "$type": "GrantSLA",
-        "sla": { "id": "hf_sla_unholy_aura", "name": "Unholy Aura", "usesPerDay": "3/day" }
+        "sla": { "id": "hf_sla_unholy_aura", "name": "Unholy Aura", "usesPerDay": "3/day" }, "casterLevelEqualsTotalHD": true
       }
     ],
     "15": [
       {
         "$type": "GrantSLA",
-        "sla": { "id": "hf_sla_haste", "name": "Haste", "usesPerDay": "3/day" }
+        "sla": { "id": "hf_sla_haste", "name": "Haste", "usesPerDay": "3/day" }, "casterLevelEqualsTotalHD": true
       }
     ],
     "17": [
       {
         "$type": "GrantSLA",
-        "sla": { "id": "hf_sla_horrid_wilting", "name": "Horrid Wilting", "usesPerDay": "1/day" }
+        "sla": { "id": "hf_sla_horrid_wilting", "name": "Horrid Wilting", "usesPerDay": "1/day" }, "casterLevelEqualsTotalHD": true
       }
     ],
     "19": [
       {
         "$type": "GrantSLA",
-        "sla": { "id": "hf_sla_destruction", "name": "Destruction", "usesPerDay": "1/day" }
+        "sla": { "id": "hf_sla_destruction", "name": "Destruction", "usesPerDay": "1/day" }, "casterLevelEqualsTotalHD": true
       }
     ]
   },

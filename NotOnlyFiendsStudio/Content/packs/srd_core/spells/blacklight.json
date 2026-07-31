@@ -4,6 +4,7 @@
   "name": "Blacklight",
   "school": "evocation",
   "classLevels": {
+    "domain:darkness": 3,
     "class:sorcerer": 3,
     "class:wizard": 3
   },
@@ -18,10 +19,10 @@
   "duration": "1/level rounds (D)",
   "savingThrow": "Will negates or none (object)",
   "spellResistance": "yes or no (object)",
-  "description": "",
+  "description": "Creates an area of total darkness that normal vision and darkvision cannot penetrate; the caster can see normally within the blacklit area.",
   "descriptors": [
     "darkness"
   ],
-  "area": "A 20-ft-radious emanation centered on a creature, object, or a point in space"
+  "area": "A 20-ft.-radius emanation centered on a creature, object, or a point in space"
 }
 ]

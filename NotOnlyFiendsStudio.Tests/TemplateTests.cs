@@ -18,7 +18,10 @@ public class TemplateTests
         Assert.Equal(4, template.AbilityModifiers!.STR);
         Assert.Equal(4, template.LevelAdjustment);
         Assert.Equal(1, template.NaturalArmor);
-        Assert.Equal(60, template.SpeedModifiers[MovementMode.Fly]);
+        var flight = Assert.Single(template.DerivedSpeedRules);
+        Assert.Equal(MovementMode.Fly, flight.Mode);
+        Assert.Equal(MovementMode.Land, flight.SourceMode);
+        Assert.True(flight.PreserveBetterExisting);
         Assert.Equal(2, template.NaturalAttacks.Count);
         Assert.Equal(10, template.ScalingPermabuffs.Count); // SLAs at 10 HD thresholds
         Assert.Single(template.ScalingFormulas); // SR formula
@@ -90,9 +93,9 @@ public class TemplateTests
         Assert.Contains(state.NaturalAttacks, a => a.Name == "Bite");
         Assert.Contains(state.NaturalAttacks, a => a.Name == "Claw" && a.Count == 2);
 
-        // Movement: land 30 (outsider) + fly 60 (half-fiend)
+        // Movement: Half-Fiend derives permanent flight from the base land speed.
         Assert.Equal(30, state.Speeds[MovementMode.Land]);
-        Assert.Equal(60, state.Speeds[MovementMode.Fly]);
+        Assert.Equal(30, state.Speeds[MovementMode.Fly]);
 
         // Resistances from half-fiend
         Assert.Equal(10, state.Resistances["acid"]);

@@ -109,6 +109,7 @@ public static class BonusStack
 public interface IContentLookup
 {
     bool TryGetFeat(string id, out FeatDefinition? feat);
+    bool TryGetClassFeature(string id, out ClassFeatureDefinition? classFeature);
     bool TryGetDomain(string id, out DomainDefinition? domain);
     bool TryGetEquipment(string id, out EquipmentDefinition? equipment);
 }
@@ -121,6 +122,8 @@ public class PermabuffContext
     public TickChoices? CurrentTickChoices { get; set; }
     // Driver id of the current tick being processed (null outside tick context, e.g. race/template setup).
     public string? CurrentDriverId { get; set; }
+    public DriverKind? CurrentDriverKind { get; set; }
+    public int? CurrentRacialHitDieMaximum { get; set; }
     // Feat id currently being applied (non-null only while a feat's GrantedPermabuffs are cascading).
     // Permabuffs that need to attribute a source should prefer this over CurrentDriverId when set.
     public string? CurrentFeatId { get; set; }

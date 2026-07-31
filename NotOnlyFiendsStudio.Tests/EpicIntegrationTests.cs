@@ -248,7 +248,7 @@ public class EpicIntegrationTests
 
         // Movement
         Assert.Equal(30, state.Speeds[MovementMode.Land]);
-        Assert.Equal(60, state.Speeds[MovementMode.Fly]);
+        Assert.Equal(30, state.Speeds[MovementMode.Fly]);
     }
 
     [Fact]

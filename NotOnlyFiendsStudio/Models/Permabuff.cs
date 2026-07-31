@@ -10,6 +10,10 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(GrantAbility), "GrantAbility")]
 [JsonDerivedType(typeof(RevokeAbility), "RevokeAbility")]
 [JsonDerivedType(typeof(GrantSLA), "GrantSLA")]
+[JsonDerivedType(typeof(GrantSpecialAttack), "GrantSpecialAttack")]
+[JsonDerivedType(typeof(GrantCasterLevelModifier), "GrantCasterLevelModifier")]
+[JsonDerivedType(typeof(GrantItemActivationLevelRule), "GrantItemActivationLevelRule")]
+[JsonDerivedType(typeof(GrantWarDomainWeaponFeats), "GrantWarDomainWeaponFeats")]
 [JsonDerivedType(typeof(GrantDomainSpellLikeAbilities), "GrantDomainSpellLikeAbilities")]
 [JsonDerivedType(typeof(RevokeSLA), "RevokeSLA")]
 [JsonDerivedType(typeof(GrantBonusFeat), "GrantBonusFeat")]
@@ -26,6 +30,7 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(GrantDR), "GrantDR")]
 [JsonDerivedType(typeof(GrantSkillBonus), "GrantSkillBonus")]
 [JsonDerivedType(typeof(GrantClassFeatureSelection), "GrantClassFeatureSelection")]
+[JsonDerivedType(typeof(ApplyClassFeatureOptionBenefits), "ApplyClassFeatureOptionBenefits")]
 [JsonDerivedType(typeof(GrantCapability), "GrantCapability")]
 [JsonDerivedType(typeof(GrantCompanionSlot), "GrantCompanionSlot")]
 [JsonDerivedType(typeof(ModifyLeadershipScore), "ModifyLeadershipScore")]
@@ -53,8 +58,13 @@ public class AddHitDie : Permabuff
     public override void Apply(PermabuffContext ctx)
     {
         var state = ctx.State;
+        var dieSize = DieSize;
+        if (ctx.CurrentDriverKind == DriverKind.RacialHD)
+            dieSize = Math.Min(ctx.CurrentRacialHitDieMaximum ?? int.MaxValue,
+                dieSize + state.RacialHitDieSizeAdjustment);
+        state.HitDice.Add(new HitDieEntry { DriverId = ctx.CurrentDriverId ?? string.Empty, DieSize = dieSize, IsRacial = ctx.CurrentDriverKind == DriverKind.RacialHD });
         var conMod = AbilityScoreSet.Modifier(state.AbilityScores.CON);
-        var roll = (ctx.Rules.FirstHDMaxHP && state.TotalHD == 1) ? DieSize : (DieSize / 2 + 1);
+        var roll = (ctx.Rules.FirstHDMaxHP && state.TotalHD == 1) ? dieSize : (dieSize / 2 + 1);
         state.HP += Math.Max(1, roll + conMod);
     }
 }
@@ -190,10 +200,55 @@ public class GrantLanguage : Permabuff
 public class GrantSLA : Permabuff
 {
     public SLA SLA { get; set; } = new();
+    public bool CasterLevelEqualsTotalHD { get; set; }
 
     public override void Apply(PermabuffContext ctx)
     {
-        ctx.State.SLAs.Add(SLA);
+        var sla = new SLA { Id = SLA.Id, Name = SLA.Name, Description = SLA.Description, UsesPerDay = SLA.UsesPerDay, CasterLevel = CasterLevelEqualsTotalHD ? ctx.State.TotalHD : SLA.CasterLevel, SaveDC = SLA.SaveDC };
+        ctx.State.SLAs.Add(sla);
+    }
+}
+
+public class GrantSpecialAttack : Permabuff
+{
+    public SpecialAttack Attack { get; set; } = new();
+    public override void Apply(PermabuffContext ctx) => ctx.State.SpecialAttacks.Add(Attack);
+}
+
+public class GrantCasterLevelModifier : Permabuff
+{
+    public CasterLevelModifier Modifier { get; set; } = new();
+    public override void Apply(PermabuffContext ctx) => ctx.State.CasterLevelModifiers.Add(Modifier);
+}
+
+public class GrantItemActivationLevelRule : Permabuff
+{
+    public ItemActivationLevelRule Rule { get; set; } = new();
+    public override void Apply(PermabuffContext ctx) => ctx.State.ItemActivationLevelRules.Add(Rule);
+}
+
+/// <summary>
+/// Grants the War domain's permanent weapon feats. Until deity definitions carry favored-weapon
+/// data, the player supplies a weapon content ID in CurrentTickChoices["war_favored_weapon"].
+/// </summary>
+public class GrantWarDomainWeaponFeats : Permabuff
+{
+    public const string ChoiceKey = "war_favored_weapon";
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        var picks = ctx.CurrentTickChoices?.ClassFeatureChoices?.GetValueOrDefault(ChoiceKey);
+        var weaponId = picks?.FirstOrDefault();
+        if (string.IsNullOrWhiteSpace(weaponId) || ctx.Content?.TryGetEquipment(weaponId, out var weapon) != true || weapon?.Category != EquipmentCategory.Weapon)
+        {
+            ctx.State.Warnings.Add(new Warning { TickIndex = ctx.State.TotalHD, Message = "War domain requires a valid favored weapon selection" });
+            return;
+        }
+
+        // A class-wide martial proficiency already covers every martial weapon.
+        if (!ctx.State.Feats.Contains("feat:weapon_proficiency_martial"))
+            new GrantBonusFeat { FeatId = $"feat:martial_weapon_proficiency_{weaponId}" }.Apply(ctx);
+        new GrantBonusFeat { FeatId = $"feat:weapon_focus_{weaponId}" }.Apply(ctx);
     }
 }
 
@@ -526,6 +581,35 @@ public class GrantClassFeatureSelection : Permabuff
     }
 }
 
+/// <summary>
+/// Applies a named set of benefits from the option previously selected for a class feature.
+/// This lets a single, persistent choice (such as a ranger's combat style) grow at later levels.
+/// </summary>
+public class ApplyClassFeatureOptionBenefits : Permabuff
+{
+    public string FeatureType { get; set; } = string.Empty;
+    public string BenefitSet { get; set; } = string.Empty;
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        if (ctx.Content == null
+            || !ctx.Content.TryGetClassFeature(FeatureType, out var feature)
+            || feature == null
+            || !ctx.State.ClassFeatureSelections.TryGetValue(FeatureType, out var picks))
+            return;
+
+        foreach (var optionId in picks)
+        {
+            var option = feature.Options.FirstOrDefault(o => o.Id == optionId);
+            if (option?.AdditionalPermabuffs.TryGetValue(BenefitSet, out var buffs) != true || buffs == null)
+                continue;
+
+            foreach (var buff in buffs)
+                buff.Apply(ctx);
+        }
+    }
+}
+
 public class GrantEffectiveLevels : Permabuff
 {
     public string TargetDriverId { get; set; } = string.Empty;
@@ -584,7 +668,14 @@ public class GrantDR : Permabuff
 
     public override void Apply(PermabuffContext ctx)
     {
-        ctx.State.DamageReduction.Add(new DREntry { Value = Value, BypassedBy = BypassedBy });
+        // DR from the same bypass condition does not stack. A higher later grant
+        // (for example barbarian DR 1/- becoming DR 2/-) replaces the prior value.
+        var existing = ctx.State.DamageReduction.FirstOrDefault(dr =>
+            string.Equals(dr.BypassedBy, BypassedBy, StringComparison.OrdinalIgnoreCase));
+        if (existing != null)
+            existing.Value = Math.Max(existing.Value, Value);
+        else
+            ctx.State.DamageReduction.Add(new DREntry { Value = Value, BypassedBy = BypassedBy });
     }
 }
 

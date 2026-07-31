@@ -4,6 +4,7 @@
   "name": "Hardening",
   "school": "transmutation",
   "classLevels": {
+    "domain:artifice": 7,
     "class:sorcerer": 6,
     "class:wizard": 6
   },
@@ -17,7 +18,7 @@
   "duration": "Permanent",
   "savingThrow": "None",
   "spellResistance": "yes (object)",
-  "description": "",
+  "description": "For every two caster levels, increases the target material's hardness by 1; this improves only its resistance to damage.",
   "target": "One item of a volume of no greater than (CASTERLEVEL*10) cu. ft."
 }
 ]

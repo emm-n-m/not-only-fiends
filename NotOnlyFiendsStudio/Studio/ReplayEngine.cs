@@ -39,8 +39,17 @@ public class ReplayStudio
         foreach (var templateId in character.TemplateIds)
         {
             var template = _content.GetTemplate(templateId);
+            foreach (var prereq in template.ApplicabilityPrerequisites)
+            {
+                if (!prereq.IsMet(state))
+                    state.Warnings.Add(new Warning { TickIndex = 0, Message = $"applicability prerequisite not met for template {template.Name}: {prereq.Description}" });
+            }
             ApplyTemplateCreation(ctx, template);
         }
+
+        // Derived movement is permanent character state. Resolve it after all template
+        // transformations and before the post-tick armor/load speed pass.
+        ResolveDerivedSpeeds(state, character.TemplateIds);
 
         // 3. Apply base ability scores (added to racial/template modifiers)
         ApplyBaseAbilities(state, character.BaseAbilityScores);
@@ -81,6 +90,10 @@ public class ReplayStudio
             // HD, skill points and epic BAB/save bonuses but no new class features
             // (LevelPermabuffs is empty past MaxLevel).
             var driver = _content.GetDriver(tick.DriverId);
+            ctx.CurrentDriverKind = driver is HDDriver contextDriver ? contextDriver.Kind : null;
+            ctx.CurrentRacialHitDieMaximum = ctx.CurrentDriverKind == DriverKind.RacialHD
+                ? character.TemplateIds.Select(id => _content.GetTemplate(id).RacialHitDieMaximum).Where(max => max.HasValue).Select(max => max!.Value).DefaultIfEmpty().Min()
+                : null;
             if (driver is HDDriver hdDriver && hdDriver.MaxLevel.HasValue
                 && driverLevel > hdDriver.MaxLevel.Value
                 && state.TotalHD <= _rules.EpicThreshold)
@@ -233,6 +246,8 @@ public class ReplayStudio
         }
 
         ctx.CurrentDriverId = null;
+        ctx.CurrentDriverKind = null;
+        ctx.CurrentRacialHitDieMaximum = null;
 
         // 5. Apply equipment as a structured post-tick pass:
         //    resolve content → apply permabuffs (typed contributions collected in
@@ -575,6 +590,8 @@ public class ReplayStudio
         state.RaceId = race.Id;
         state.Type = race.Type;
         state.Size = race.Size;
+        state.IsLiving = race.IsLiving;
+        state.IsCorporeal = race.IsCorporeal;
         // Null LA (source never priced this as a PC race) contributes 0 to ECL.
         state.LevelAdjustment = race.LevelAdjustment ?? 0;
 
@@ -582,7 +599,10 @@ public class ReplayStudio
             state.Subtypes.Add(subtype);
 
         foreach (var (mode, speed) in race.Speeds)
+        {
+            state.BaseSpeeds[mode] = speed;
             state.Speeds[mode] = speed;
+        }
 
         if (race.AbilityModifiers != null)
         {
@@ -661,8 +681,14 @@ public class ReplayStudio
         var state = ctx.State;
         state.TemplateIds.Add(template.Id);
 
+        var baseType = state.Type;
+
         if (template.TypeOverride.HasValue)
             state.Type = template.TypeOverride.Value;
+        else if (template.TypeOverridesByBaseType.TryGetValue(baseType, out var conditionalType))
+            state.Type = conditionalType;
+
+        state.RacialHitDieSizeAdjustment += template.RacialHitDieSizeAdjustment;
 
         foreach (var subtype in template.SubtypeAdditions)
             state.Subtypes.Add(subtype);
@@ -682,10 +708,11 @@ public class ReplayStudio
 
         foreach (var (mode, speed) in template.SpeedModifiers)
         {
-            if (state.Speeds.ContainsKey(mode))
-                state.Speeds[mode] += speed;
+            if (state.BaseSpeeds.ContainsKey(mode))
+                state.BaseSpeeds[mode] += speed;
             else
-                state.Speeds[mode] = speed;
+                state.BaseSpeeds[mode] = speed;
+            state.Speeds[mode] = state.BaseSpeeds[mode];
         }
 
         state.LevelAdjustment += template.LevelAdjustment;
@@ -695,6 +722,27 @@ public class ReplayStudio
 
         foreach (var buff in template.CreationPermabuffs)
             buff.Apply(ctx);
+    }
+
+    private void ResolveDerivedSpeeds(CharacterState state, IEnumerable<string> templateIds)
+    {
+        foreach (var templateId in templateIds)
+        {
+            var template = _content.GetTemplate(templateId);
+            foreach (var rule in template.DerivedSpeedRules)
+            {
+                if (rule.MinimumSize.HasValue && state.Size < rule.MinimumSize.Value)
+                    continue;
+                var source = state.BaseSpeeds.GetValueOrDefault(rule.SourceMode);
+                if (source <= 0) continue;
+                var derived = source * rule.Multiplier;
+                if (rule.Maximum.HasValue) derived = Math.Min(derived, rule.Maximum.Value);
+                if (rule.PreserveBetterExisting && state.BaseSpeeds.GetValueOrDefault(rule.Mode) > derived)
+                    continue;
+                state.BaseSpeeds[rule.Mode] = derived;
+                state.Speeds[rule.Mode] = derived;
+            }
+        }
     }
 
     private void ApplyBaseAbilities(CharacterState state, AbilityScoreSet baseScores)
@@ -856,6 +904,26 @@ public class ReplayStudio
                 {
                     state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"feat '{featId}' cannot be selected — {featDef.Name} is granted, not chosen" });
                     continue;
+                }
+
+                if (featDef?.SelectionRequired is { } selectionKind)
+                {
+                    var prefix = featDef.Id + "_";
+                    var selection = featId.StartsWith(prefix, StringComparison.Ordinal) ? featId[prefix.Length..] : null;
+                    var valid = selectionKind switch
+                    {
+                        "special_attack" => selection != null && state.SpecialAttacks.Any(a => a.Id == selection),
+                        "spell_like_ability" => selection != null && state.SLAs.Any(s => s.Id == selection),
+                        // Existing feat selections are stored as display-friendly suffixes and
+                        // several legacy callers submit the base ID. Keep those save formats
+                        // valid; only the new typed target sources are enforceable here.
+                        _ => true
+                    };
+                    if (!valid)
+                    {
+                        state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"feat '{featId}' requires a valid {selectionKind} selection" });
+                        continue;
+                    }
                 }
 
                 // Resolve slot BEFORE mutating state: matching restricted-bonus slot first,

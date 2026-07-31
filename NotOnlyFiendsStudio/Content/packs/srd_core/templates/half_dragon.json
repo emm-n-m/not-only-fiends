@@ -13,6 +13,11 @@
     "cha": 2
   },
   "naturalArmor": 4,
+  "racialHitDieSizeAdjustment": 2,
+  "racialHitDieMaximum": 12,
+  "derivedSpeedRules": [
+    { "mode": "fly", "sourceMode": "land", "multiplier": 2, "maximum": 120, "minimumSize": "large" }
+  ],
   "speedModifiers": {},
   "levelAdjustment": 3,
   "naturalAttacks": [

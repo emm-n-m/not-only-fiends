@@ -7,6 +7,10 @@ public class CharacterState
     public CreatureType Type { get; set; }
     public HashSet<string> Subtypes { get; set; } = new();
     public Size Size { get; set; }
+    // These are explicit because creature type alone cannot tell whether a creature is
+    // a legal target for templates such as Half-Fiend.
+    public bool IsLiving { get; set; } = true;
+    public bool IsCorporeal { get; set; } = true;
     public Alignment Alignment { get; set; }
     public string? Deity { get; set; }
     public List<string> TemplateIds { get; set; } = new();
@@ -18,6 +22,8 @@ public class CharacterState
     // Progression
     public int TotalHD { get; set; }
     public List<string> HDList { get; set; } = new();
+    public List<HitDieEntry> HitDice { get; set; } = new();
+    public int RacialHitDieSizeAdjustment { get; set; }
     public Dictionary<string, int> ClassLevels { get; set; } = new();
 
     // Effective level rules — templates/feats can grant bonus effective levels for class features
@@ -74,6 +80,13 @@ public class CharacterState
 
     // Spellcasting
     public Dictionary<string, SpellcastingState> Spellcasting { get; set; } = new();
+    public List<CasterLevelModifier> CasterLevelModifiers { get; set; } = new();
+    public List<ItemActivationLevelRule> ItemActivationLevelRules { get; set; } = new();
+
+    public int EffectiveCasterLevel(string classId, SpellDefinition spell) =>
+        Spellcasting.GetValueOrDefault(classId)?.CasterLevel is int baseLevel
+            ? baseLevel + CasterLevelModifiers.Where(m => m.Matches(spell)).Sum(m => m.Value)
+            : 0;
 
     // School → levels of every selected spell of that school (lowercase school names,
     // duplicates possible across classes). Recorded at spell-selection time, when the
@@ -111,6 +124,7 @@ public class CharacterState
     public List<GrantedAbility> Abilities { get; set; } = new();
     public Dictionary<string, int> Counters { get; set; } = new();
     public List<SLA> SLAs { get; set; } = new();
+    public List<SpecialAttack> SpecialAttacks { get; set; } = new();
     public HashSet<string> Immunities { get; set; } = new();
     public HashSet<string> Capabilities { get; set; } = new();
     public Dictionary<string, int> Resistances { get; set; } = new();
@@ -118,6 +132,8 @@ public class CharacterState
     public int? SpellResistance { get; set; }
 
     // Movement
+    /// <summary>Permanent speeds before armor/load reductions.</summary>
+    public Dictionary<MovementMode, int> BaseSpeeds { get; set; } = new();
     public Dictionary<MovementMode, int> Speeds { get; set; } = new();
 
     // Equipment-derived. Computed post-tick after all class/race/template progression;
@@ -220,6 +236,45 @@ public class SLA
     public string? UsesPerDay { get; set; }
     public int CasterLevel { get; set; }
     public int? SaveDC { get; set; }
+}
+
+public class HitDieEntry
+{
+    public string DriverId { get; set; } = string.Empty;
+    public int DieSize { get; set; }
+    public bool IsRacial { get; set; }
+}
+
+/// <summary>A durable, player-visible special attack. Combat resolution remains outside replay.</summary>
+public class SpecialAttack
+{
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string? UsesPerDay { get; set; }
+}
+
+/// <summary>Persistent, source-scoped caster-level modifier; it never changes unrelated spells.</summary>
+public class CasterLevelModifier
+{
+    public int Value { get; set; }
+    public string? School { get; set; }
+    public string? Subschool { get; set; }
+    public string? Descriptor { get; set; }
+    public bool Matches(SpellDefinition spell) =>
+        (School == null || string.Equals(School, spell.School, StringComparison.OrdinalIgnoreCase)) &&
+        (Subschool == null || string.Equals(Subschool, spell.Subschool, StringComparison.OrdinalIgnoreCase)) &&
+        (Descriptor == null || spell.Descriptors.Any(d => string.Equals(Descriptor, d, StringComparison.OrdinalIgnoreCase)));
+}
+
+public class ItemActivationLevelRule
+{
+    public string ActivationKind { get; set; } = string.Empty;
+    public string AsClassId { get; set; } = string.Empty;
+    public string SourceClassId { get; set; } = string.Empty;
+    public int Divisor { get; set; } = 1;
+    public int MinimumLevel { get; set; }
+    public int EffectiveLevel(CharacterState state) => Math.Max(MinimumLevel, state.ClassLevels.GetValueOrDefault(SourceClassId) / Divisor);
 }
 
 public class DREntry

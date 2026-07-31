@@ -4,6 +4,8 @@
     "name": "Artifice",
     "description": "Gain a +4 bonus on Craft checks, and cast conjuration (creation) spells at +1 caster level (+3 if you also have the Creation domain).",
     "grantedPermabuffs": [
+      { "$type": "GrantSkillBonus", "skillId": "skill:craft", "value": 4 },
+      { "$type": "GrantCasterLevelModifier", "modifier": { "value": 1, "school": "conjuration", "subschool": "creation" } },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -56,6 +58,7 @@
     "name": "Creation",
     "description": "Cast conjuration (creation) spells at +2 caster level (+3 if you also have the Artifice domain).",
     "grantedPermabuffs": [
+      { "$type": "GrantCasterLevelModifier", "modifier": { "value": 2, "school": "conjuration", "subschool": "creation" } },
       {
         "$type": "GrantAbility",
         "ability": {

@@ -286,6 +286,8 @@ public class ContentRegistry : IContentLookup
                     _errors.Add(new ContentError(ContentErrorKind.MissingId,
                         $"ClassFeature '{cf.Id}' has option with empty ID"));
                 ValidatePermabuffList(opt.GrantedPermabuffs, $"ClassFeature '{cf.Id}' option '{opt.Id}'");
+                foreach (var (benefitSet, buffs) in opt.AdditionalPermabuffs)
+                    ValidatePermabuffList(buffs, $"ClassFeature '{cf.Id}' option '{opt.Id}' benefit set '{benefitSet}'");
             }
         }
 
@@ -330,6 +332,8 @@ public class ContentRegistry : IContentLookup
 
         foreach (var template in _templates.Values)
         {
+            ValidatePrerequisites(template.Prerequisites, $"Template '{template.Id}'");
+            ValidatePrerequisites(template.ApplicabilityPrerequisites, $"Template '{template.Id}' applicability");
             ValidatePermabuffList(template.CreationPermabuffs, $"Template '{template.Id}'");
             foreach (var (hd, buffs) in template.ScalingPermabuffs)
                 ValidatePermabuffList(buffs, $"Template '{template.Id}' HD {hd}");
@@ -437,6 +441,9 @@ public class ContentRegistry : IContentLookup
             if (buff is GrantBonusFeat gbf && !_feats.ContainsKey(gbf.FeatId))
                 _errors.Add(new ContentError(ContentErrorKind.BrokenReference,
                     $"{context} has GrantBonusFeat referencing unknown feat '{gbf.FeatId}'"));
+            if (buff is ApplyClassFeatureOptionBenefits benefits && !_classFeatures.ContainsKey(benefits.FeatureType))
+                _errors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                    $"{context} applies benefits from unknown class feature '{benefits.FeatureType}'"));
         }
     }
 

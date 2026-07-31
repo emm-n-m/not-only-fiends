@@ -104,3 +104,16 @@ code {
 .search-select-item.selected {
     font-weight: 600;
 }
+
+.search-select-description {
+    color: #5c636a;
+    font-size: 0.78rem;
+    line-height: 1.25;
+    margin-top: 0.15rem;
+    white-space: normal;
+}
+
+.search-select-item:hover .search-select-description,
+.search-select-item.highlighted .search-select-description {
+    color: inherit;
+}

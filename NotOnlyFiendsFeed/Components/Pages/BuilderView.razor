@@ -329,6 +329,7 @@ else
                                           DisplaySelector="@(f => f.Name + (f.SelectionRequired != null ? $" ({f.SelectionRequired}...)" : ""))"
                                           ValueSelector="@(f => f.Id)"
                                           TitleSelector="@(f => f.Description)"
+                                          DescriptionSelector="@(f => f.Description)"
                                           CssClass="form-control-sm"
                                           Placeholder="Search feats..." />
                             @{
@@ -359,6 +360,11 @@ else
                                 <input type="text" class="form-control form-control-sm" style="width:150px"
                                        placeholder="Weapon..." @bind="_featSelectionInput" />
                             }
+                            else if (selectedFeatDef?.SelectionRequired != null)
+                            {
+                                <input type="text" class="form-control form-control-sm" style="width:180px"
+                                       placeholder="@($"{selectedFeatDef.SelectionRequired.Replace('_', ' ')}...")" @bind="_featSelectionInput" />
+                            }
                             <button class="btn btn-sm btn-outline-secondary" @onclick="() => AddFeatToTick(index)">Add</button>
                         </div>
                     </div>
@@ -376,6 +382,7 @@ else
                                               DisplaySelector="@(d => d.Name)"
                                               ValueSelector="@(d => d.Id)"
                                               TitleSelector="@(d => d.Description)"
+                                              DescriptionSelector="@(d => d.Description)"
                                               CssClass="form-control-sm"
                                               Placeholder="Search domains..." />
                                 <button class="btn btn-sm btn-outline-secondary" @onclick="() => AddDomainToTick(index, _domainInput)">Add</button>
@@ -393,6 +400,23 @@ else
                                 var domainDef = _domains.FirstOrDefault(d => d.Id == did);
                                 <span class="badge bg-primary me-1" title="@(domainDef?.Description ?? did)">@(domainDef?.Name ?? did.Replace("domain:", "")) <button class="btn-close btn-close-white btn-sm" @onclick="() => RemoveDomainFromTick(index, did)"></button></span>
                             }
+                        </div>
+                    }
+                    @if (tickDomains?.Contains("domain:war") == true)
+                    {
+                        var warWeapon = tick.Choices.ClassFeatureChoices?.GetValueOrDefault("war_favored_weapon")?.FirstOrDefault() ?? "";
+                        <div class="mt-2">
+                            <small class="text-muted">War domain favored weapon:</small>
+                            <SearchSelect TItem="EquipmentDefinition"
+                                          Items="@_equipmentCatalog.Where(e => e.Category == EquipmentCategory.Weapon)"
+                                          Value="@warWeapon"
+                                          ValueChanged="@((v) => SetWarFavoredWeapon(index, v))"
+                                          DisplaySelector="@(e => e.Name)"
+                                          ValueSelector="@(e => e.Id)"
+                                          TitleSelector="@(e => e.Description ?? e.Name)"
+                                          DescriptionSelector="@(e => e.Description ?? "")"
+                                          CssClass="form-control-sm"
+                                          Placeholder="Choose weapon..." />
                         </div>
                     }
 
@@ -480,6 +504,33 @@ else
                                 to no school and are never given up.
                             </small></div>
                         </div>
+                    }
+
+                    @* Static class-feature choices, such as a ranger's combat style. *@
+                    var classFeaturePicks = _tickClassFeaturePicks.GetValueOrDefault(index);
+                    @if (classFeaturePicks != null)
+                    {
+                        @foreach (var featurePick in classFeaturePicks)
+                        {
+                            <div class="mt-2 p-2 border rounded bg-light">
+                                <div><small class="text-muted"><strong>@featurePick.Feature.Name</strong> — @featurePick.Feature.Description</small></div>
+                                @for (var slot = 0; slot < featurePick.SlotCount; slot++)
+                                {
+                                    var capturedSlot = slot;
+                                    var currentPick = SelectedClassFeatureOption(tick, featurePick.Feature.Id, capturedSlot);
+                                    <select class="form-select form-select-sm mt-1 @(string.IsNullOrEmpty(currentPick) ? "border-warning" : "")"
+                                            style="max-width:360px"
+                                            value="@(currentPick ?? "")"
+                                            @onchange="(e) => SetClassFeatureChoice(index, featurePick.Feature.Id, capturedSlot, e.Value?.ToString())">
+                                        <option value="">Select @featurePick.Feature.Name...</option>
+                                        @foreach (var option in ClassFeatureOptionsForTick(index, featurePick.Feature.Id, capturedSlot))
+                                        {
+                                            <option value="@option.Id" title="@option.Description">@option.Name</option>
+                                        }
+                                    </select>
+                                }
+                            </div>
+                        }
                     }
 
                     @* Companion slots granted at this tick — pick species *@
@@ -638,16 +689,15 @@ else
                                                     {
                                                         <div class="mt-1">
                                                             <small class="text-muted">Level @capturedLvl:</small>
-                                                            <div class="d-flex align-items-center gap-1">
-                                                                <select class="form-select form-select-sm" style="max-width:250px"
-                                                                        @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v)) AddSpellSelection(index, capturedListId, capturedLvl, v); }">
-                                                                    <option value="">@(isSpellbook ? "Add to spellbook..." : "Add spell...")</option>
-                                                                    @foreach (var spell in spellsAtLevel)
-                                                                    {
-                                                                        <option value="@spell.Id" title="@spell.Description">@spell.Name</option>
-                                                                    }
-                                                                </select>
-                                                            </div>
+                                                            <SearchSelect TItem="SpellDefinition"
+                                                                          Items="spellsAtLevel"
+                                                                          DisplaySelector="@(s => s.Name)"
+                                                                          ValueSelector="@(s => s.Id)"
+                                                                          TitleSelector="@(s => SpellTooltip(s))"
+                                                                          DescriptionSelector="@(s => SpellTooltip(s))"
+                                                                          CssClass="form-control-sm"
+                                                                          Placeholder="@(isSpellbook ? "Add to spellbook..." : "Add spell...")"
+                                                                          ValueChanged="@((v) => { if (!string.IsNullOrEmpty(v)) AddSpellSelection(index, capturedListId, capturedLvl, v); })" />
                                                         </div>
                                                     }
                                                 }
@@ -884,13 +934,18 @@ else
                     <option value="gear">Gear</option>
                     <option value="ammunition">Ammunition</option>
                 </select>
-                <select class="form-select form-select-sm" style="flex:1 1 240px" @bind="_equipmentPickerSelection">
-                    <option value="">-- pick an item --</option>
-                    @foreach (var eq in _equipmentCatalog.Where(e => string.Equals(e.Category.ToString(), _equipmentPickerCategory, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        <option value="@eq.Id">@eq.Name@(eq.WeightLbs > 0 ? $" — {eq.WeightLbs} lb" : "")</option>
-                    }
-                </select>
+                <div style="flex:1 1 240px">
+                    <SearchSelect TItem="EquipmentDefinition"
+                                  Items="@_equipmentCatalog.Where(e => string.Equals(e.Category.ToString(), _equipmentPickerCategory, StringComparison.OrdinalIgnoreCase))"
+                                  Value="@_equipmentPickerSelection"
+                                  ValueChanged="@((v) => _equipmentPickerSelection = v ?? string.Empty)"
+                                  DisplaySelector="@(e => e.Name + (e.WeightLbs > 0 ? $" — {e.WeightLbs} lb" : ""))"
+                                  ValueSelector="@(e => e.Id)"
+                                  TitleSelector="@(e => e.Description ?? e.Name)"
+                                  DescriptionSelector="@(e => e.Description ?? e.Name)"
+                                  CssClass="form-control-sm"
+                                  Placeholder="Search equipment..." />
+                </div>
                 <button class="btn btn-sm btn-success" @onclick="AddCatalogItem" disabled="@string.IsNullOrEmpty(_equipmentPickerSelection)">+ Add</button>
                 <button class="btn btn-sm btn-outline-secondary" @onclick="AddCustomEquipmentEntry">+ Custom</button>
             </div>
@@ -1059,7 +1114,7 @@ else
                         <p>HD: @_state.TotalHD | ECL: @_state.ECL | Skills: @_state.UnspentSkillPoints pts</p>
                     </div>
                 </div>
-                @if (_state.Abilities.Any() || _state.Counters.Any() || _state.SLAs.Any())
+                @if (_state.Abilities.Any() || _state.Counters.Any() || _state.SLAs.Any() || _state.SpecialAttacks.Any())
                 {
                     <div class="row mt-2">
                         @if (_state.Abilities.Any())
@@ -1089,6 +1144,16 @@ else
                                 @foreach (var sla in _state.SLAs)
                                 {
                                     <span class="badge bg-primary me-1" title="@(sla.Description ?? "")">@sla.Name@(sla.UsesPerDay != null ? $" ({sla.UsesPerDay}/day)" : "")</span>
+                                }
+                            </div>
+                        }
+                        @if (_state.SpecialAttacks.Any())
+                        {
+                            <div class="col-md-4">
+                                <h5>Special Attacks</h5>
+                                @foreach (var attack in _state.SpecialAttacks)
+                                {
+                                    <span class="badge bg-danger me-1" title="@attack.Description">@attack.Name@(attack.UsesPerDay != null ? $" ({attack.UsesPerDay})" : "")</span>
                                 }
                             </div>
                         }
@@ -1400,6 +1465,7 @@ else
     private readonly Dictionary<int, TickCasterInfo> _tickCasterInfos = new();
     private readonly Dictionary<int, List<CompanionSlotState>> _tickNewCompanionSlots = new();
     private readonly Dictionary<int, TickWizardSchoolPicks> _tickWizardSchoolPicks = new();
+    private readonly Dictionary<int, List<TickClassFeaturePick>> _tickClassFeaturePicks = new();
     // Schools given up as of each tick, so the spell dropdowns can exclude them.
     private readonly Dictionary<int, HashSet<string>> _tickProhibitedSchools = new();
     // 0-level spells a spellbook caster holds for free at each tick — "all of them" only for a
@@ -1507,6 +1573,7 @@ else
         _tickCasterInfos.Clear();
         _tickNewCompanionSlots.Clear();
         _tickWizardSchoolPicks.Clear();
+        _tickClassFeaturePicks.Clear();
         _tickProhibitedSchools.Clear();
         _tickAutomaticCantrips.Clear();
 
@@ -1573,6 +1640,20 @@ else
                 _tickWizardSchoolPicks[i] = new TickWizardSchoolPicks(
                     PendingSpecialization: specialisationPending + specialisationHere > 0,
                     PendingProhibited: prohibitedPending + prohibitedHere);
+
+            var staticFeaturePicks = _classFeatures
+                .Where(f => f.Id != WizardSchools.SpecializationFeature
+                    && f.Id != WizardSchools.ProhibitedFeature
+                    && !state.CompanionSlots.Any(slot => slot.ClassFeatureType == f.Id)
+                    && f.Options.Count > 0)
+                .Select(f => new TickClassFeaturePick(
+                    f,
+                    state.PendingClassFeatureSelections.GetValueOrDefault(f.Id)
+                        + (chosenHere?.GetValueOrDefault(f.Id)?.Count ?? 0)))
+                .Where(p => p.SlotCount > 0)
+                .ToList();
+            if (staticFeaturePicks.Count > 0)
+                _tickClassFeaturePicks[i] = staticFeaturePicks;
 
             _tickProhibitedSchools[i] = WizardSchools.ProhibitedSchools(state).ToHashSet(StringComparer.OrdinalIgnoreCase);
             _tickAutomaticCantrips[i] = state.Spellcasting
@@ -2016,6 +2097,47 @@ else
     }
 
     private sealed record TickWizardSchoolPicks(bool PendingSpecialization, int PendingProhibited);
+    private sealed record TickClassFeaturePick(ClassFeatureDefinition Feature, int SlotCount);
+
+    private static string? SelectedClassFeatureOption(Tick tick, string featureType, int slot)
+    {
+        var picks = tick.Choices.ClassFeatureChoices?.GetValueOrDefault(featureType);
+        return picks != null && slot < picks.Count ? picks[slot] : null;
+    }
+
+    private List<ClassFeatureOption> ClassFeatureOptionsForTick(int tickIndex, string featureType, int slot)
+    {
+        var selectedElsewhere = _character.Ticks
+            .SelectMany((tick, index) => tick.Choices.ClassFeatureChoices?.GetValueOrDefault(featureType)
+                ?.Where((_, pickIndex) => index != tickIndex || pickIndex != slot)
+                ?? Enumerable.Empty<string>())
+            .ToHashSet(StringComparer.Ordinal);
+
+        return _classFeatures.FirstOrDefault(f => f.Id == featureType)?.Options
+            .Where(option => !selectedElsewhere.Contains(option.Id))
+            .ToList() ?? new List<ClassFeatureOption>();
+    }
+
+    private void SetClassFeatureChoice(int tickIndex, string featureType, int slot, string? optionId)
+    {
+        var tick = _character.Ticks[tickIndex];
+        tick.Choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
+        var picks = tick.Choices.ClassFeatureChoices.TryGetValue(featureType, out var existing)
+            ? new List<string>(existing)
+            : new List<string>();
+
+        while (picks.Count <= slot)
+            picks.Add(string.Empty);
+        picks[slot] = optionId ?? string.Empty;
+
+        var cleaned = picks.Where(p => !string.IsNullOrEmpty(p)).ToList();
+        if (cleaned.Count > 0)
+            tick.Choices.ClassFeatureChoices[featureType] = cleaned;
+        else
+            tick.Choices.ClassFeatureChoices.Remove(featureType);
+
+        OnCharacterChanged();
+    }
 
     // Purely a display toggle — it widens the picker's list and does not touch the character,
     // so it deliberately does not call OnCharacterChanged.
@@ -2061,6 +2183,16 @@ else
     {
         var listId = selection.ClassId.Replace("class:", "").Replace("domain:", "");
         return $"{listId} {selection.SpellLevel}th: {selection.SpellId}";
+    }
+
+    private static string SpellTooltip(SpellDefinition spell)
+    {
+        var school = string.IsNullOrEmpty(spell.Subschool)
+            ? spell.School
+            : $"{spell.School} ({spell.Subschool})";
+        var descriptors = spell.Descriptors.Any() ? $" [{string.Join(", ", spell.Descriptors)}]" : string.Empty;
+        var rules = $"{school}{descriptors}. {spell.CastingTime}; {spell.Range}; {spell.Duration}. Save: {spell.SavingThrow}. SR: {spell.SpellResistance}.";
+        return string.IsNullOrWhiteSpace(spell.Description) ? rules : $"{rules} {spell.Description}";
     }
 
     private List<FeatDefinition> GetTickFeats(int index) =>
@@ -2157,6 +2289,15 @@ else
         var domains = tick.Choices.ClassFeatureChoices?["domains"];
         if (domains == null) return;
         domains.Remove(domainId);
+        OnCharacterChanged();
+    }
+
+    private void SetWarFavoredWeapon(int tickIndex, string? weaponId)
+    {
+        var choices = _character.Ticks[tickIndex].Choices;
+        choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
+        choices.ClassFeatureChoices[GrantWarDomainWeaponFeats.ChoiceKey] =
+            string.IsNullOrWhiteSpace(weaponId) ? new List<string>() : new List<string> { weaponId };
         OnCharacterChanged();
     }
 

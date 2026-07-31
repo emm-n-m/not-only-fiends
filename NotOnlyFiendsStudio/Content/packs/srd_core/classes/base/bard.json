@@ -363,7 +363,9 @@
       }
     ]
   },
-  "perLevelPermabuffs": [],
+  "perLevelPermabuffs": [
+    { "$type": "ModifyCounter", "counterId": "bardic_music_uses" }
+  ],
   "prerequisites": [
     {
       "$type": "AlignmentReq",

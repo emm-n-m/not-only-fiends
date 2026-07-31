@@ -16,6 +16,7 @@
     "name": "Animal",
     "description": "You can use speak with animals once per day as a spell-like ability. Knowledge (nature) is a class skill.",
     "grantedPermabuffs": [
+      { "$type": "AddClassSkills", "skills": ["skill:knowledge_nature"] },
       {
         "$type": "GrantAbility",
         "ability": { "id": "domain_animal_power", "name": "Animal Domain Power", "description": "Speak with animals 1/day as a spell-like ability. Knowledge (nature) is a class skill." }
@@ -40,6 +41,7 @@
     "name": "Chaos",
     "description": "You cast chaos spells at +1 caster level.",
     "grantedPermabuffs": [
+      { "$type": "GrantCasterLevelModifier", "modifier": { "value": 1, "descriptor": "chaos" } },
       {
         "$type": "GrantAbility",
         "ability": { "id": "domain_chaos_power", "name": "Chaos Domain Power", "description": "Cast chaos spells at +1 caster level." }
@@ -88,6 +90,7 @@
     "name": "Evil",
     "description": "You cast evil spells at +1 caster level.",
     "grantedPermabuffs": [
+      { "$type": "GrantCasterLevelModifier", "modifier": { "value": 1, "descriptor": "evil" } },
       {
         "$type": "GrantAbility",
         "ability": { "id": "domain_evil_power", "name": "Evil Domain Power", "description": "Cast evil spells at +1 caster level." }
@@ -112,6 +115,7 @@
     "name": "Good",
     "description": "You cast good spells at +1 caster level.",
     "grantedPermabuffs": [
+      { "$type": "GrantCasterLevelModifier", "modifier": { "value": 1, "descriptor": "good" } },
       {
         "$type": "GrantAbility",
         "ability": { "id": "domain_good_power", "name": "Good Domain Power", "description": "Cast good spells at +1 caster level." }
@@ -136,6 +140,8 @@
     "name": "Knowledge",
     "description": "Add all Knowledge skills to your list of cleric class skills. You cast divination spells at +1 caster level.",
     "grantedPermabuffs": [
+      { "$type": "AddClassSkills", "skills": ["skill:knowledge"] },
+      { "$type": "GrantCasterLevelModifier", "modifier": { "value": 1, "school": "divination" } },
       {
         "$type": "GrantAbility",
         "ability": { "id": "domain_knowledge_power", "name": "Knowledge Domain Power", "description": "All Knowledge skills are class skills. Cast divination spells at +1 caster level." }
@@ -148,6 +154,7 @@
     "name": "Law",
     "description": "You cast law spells at +1 caster level.",
     "grantedPermabuffs": [
+      { "$type": "GrantCasterLevelModifier", "modifier": { "value": 1, "descriptor": "law" } },
       {
         "$type": "GrantAbility",
         "ability": { "id": "domain_law_power", "name": "Law Domain Power", "description": "Cast law spells at +1 caster level." }
@@ -172,6 +179,7 @@
     "name": "Magic",
     "description": "Use scrolls, wands, and other devices with spell completion or spell trigger activation as a wizard of one-half your cleric level (at least 1st level). For the purpose of using a scroll or other magic device, if you are also a wizard, actual wizard levels and these effective wizard levels stack.",
     "grantedPermabuffs": [
+      { "$type": "GrantItemActivationLevelRule", "rule": { "activationKind": "spell_completion_or_trigger", "asClassId": "class:wizard", "sourceClassId": "class:cleric", "divisor": 2, "minimumLevel": 1 } },
       {
         "$type": "GrantAbility",
         "ability": { "id": "domain_magic_power", "name": "Magic Domain Power", "description": "Use spell completion/trigger items as a wizard of half cleric level (min 1st)." }
@@ -184,6 +192,7 @@
     "name": "Plant",
     "description": "Rebuke or command plant creatures as an evil cleric rebukes or commands undead. Use this ability a total number of times per day equal to 3 + your Charisma modifier. This granted power is a supernatural ability. Knowledge (nature) is a class skill.",
     "grantedPermabuffs": [
+      { "$type": "AddClassSkills", "skills": ["skill:knowledge_nature"] },
       {
         "$type": "GrantAbility",
         "ability": { "id": "domain_plant_power", "name": "Plant Domain Power", "description": "Rebuke or command plant creatures. Knowledge (nature) is a class skill." }
@@ -232,6 +241,7 @@
     "name": "Travel",
     "description": "For a total time per day of 1 round per cleric level you possess, you can act normally regardless of magical effects that impede movement as if you were affected by the spell freedom of movement. This effect occurs automatically as soon as it applies, lasts until it runs out or is no longer needed, and can operate multiple times per day (up to the total daily limit of rounds). This granted power is a supernatural ability. Survival is a class skill.",
     "grantedPermabuffs": [
+      { "$type": "AddClassSkills", "skills": ["skill:survival"] },
       {
         "$type": "GrantAbility",
         "ability": { "id": "domain_travel_power", "name": "Freedom of Movement", "description": "1 round/cleric level per day of automatic freedom of movement. Survival is a class skill." }
@@ -244,6 +254,7 @@
     "name": "Trickery",
     "description": "Add Bluff, Disguise, and Hide to your list of cleric class skills.",
     "grantedPermabuffs": [
+      { "$type": "AddClassSkills", "skills": ["skill:bluff", "skill:disguise", "skill:hide"] },
       {
         "$type": "GrantAbility",
         "ability": { "id": "domain_trickery_power", "name": "Trickery Domain Power", "description": "Add Bluff, Disguise, and Hide to cleric class skills." }
@@ -256,6 +267,7 @@
     "name": "War",
     "description": "Free Martial Weapon Proficiency with deity's favored weapon (if necessary) and Weapon Focus with deity's favored weapon.",
     "grantedPermabuffs": [
+      { "$type": "GrantWarDomainWeaponFeats" },
       {
         "$type": "GrantAbility",
         "ability": { "id": "domain_war_power", "name": "War Domain Power", "description": "Free Martial Weapon Proficiency and Weapon Focus with deity's favored weapon." }

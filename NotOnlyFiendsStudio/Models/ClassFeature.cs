@@ -16,6 +16,8 @@ public class ClassFeatureOption
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public List<Permabuff> GrantedPermabuffs { get; set; } = new();
+    /// <summary>Named benefit sets applied by later class levels after this option is selected.</summary>
+    public Dictionary<string, List<Permabuff>> AdditionalPermabuffs { get; set; } = new();
 
     // Validation hints — informational; engine emits warnings when violated but
     // does not block the selection. Used by companion option lists (animal

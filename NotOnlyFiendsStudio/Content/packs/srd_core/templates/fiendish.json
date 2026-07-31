@@ -2,7 +2,17 @@
 {
   "id": "template:fiendish",
   "name": "Fiendish",
-  "subtypeAdditions": ["extraplanar"],
+  "applicabilityPrerequisites": [
+    { "$type": "AlignmentReq", "allowed": ["LE", "NE", "CE", "LN", "N", "CN"] },
+    { "$type": "AnyOf", "options": [
+      { "$type": "HasCreatureType", "type": "aberration" }, { "$type": "HasCreatureType", "type": "animal" },
+      { "$type": "HasCreatureType", "type": "dragon" }, { "$type": "HasCreatureType", "type": "fey" },
+      { "$type": "HasCreatureType", "type": "giant" }, { "$type": "HasCreatureType", "type": "humanoid" },
+      { "$type": "HasCreatureType", "type": "magicalBeast" }, { "$type": "HasCreatureType", "type": "monstrousHumanoid" },
+      { "$type": "HasCreatureType", "type": "ooze" }, { "$type": "HasCreatureType", "type": "plant" }, { "$type": "HasCreatureType", "type": "vermin" }
+    ] }
+  ],
+  "typeOverridesByBaseType": { "animal": "magicalBeast", "vermin": "magicalBeast" },
   "levelAdjustment": 2,
   "creationPermabuffs": [
     {
@@ -10,8 +20,8 @@
       "ability": { "id": "fiendish_darkvision_60", "name": "Darkvision 60 ft.", "description": "Can see in the dark up to 60 feet." }
     },
     {
-      "$type": "GrantAbility",
-      "ability": { "id": "fiendish_smite_good", "name": "Smite Good", "description": "Once per day the creature can make a normal melee attack to deal extra damage equal to its HD total (maximum +20) against a good foe." }
+      "$type": "GrantSpecialAttack",
+      "attack": { "id": "fiendish_smite_good", "name": "Smite Good", "usesPerDay": "1/day", "description": "Normal melee attack against a good foe; extra damage equals total HD (maximum +20)." }
     }
   ],
   "scalingPermabuffs": {

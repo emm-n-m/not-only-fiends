@@ -190,6 +190,10 @@
     ],
     "2": [
       {
+        "$type": "GrantClassFeatureSelection",
+        "featureType": "class_feature:ranger_combat_style"
+      },
+      {
         "$type": "GrantAbility",
         "ability": {
           "id": "combat_style",
@@ -236,6 +240,11 @@
     ],
     "6": [
       {
+        "$type": "ApplyClassFeatureOptionBenefits",
+        "featureType": "class_feature:ranger_combat_style",
+        "benefitSet": "improved"
+      },
+      {
         "$type": "GrantAbility",
         "ability": {
           "id": "improved_combat_style",
@@ -275,6 +284,11 @@
       }
     ],
     "11": [
+      {
+        "$type": "ApplyClassFeatureOptionBenefits",
+        "featureType": "class_feature:ranger_combat_style",
+        "benefitSet": "mastery"
+      },
       {
         "$type": "GrantAbility",
         "ability": {

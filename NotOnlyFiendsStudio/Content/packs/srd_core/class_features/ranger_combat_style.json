@@ -1,0 +1,41 @@
+[
+  {
+    "id": "class_feature:ranger_combat_style",
+    "name": "Ranger Combat Style",
+    "description": "At 2nd level, choose archery or two-weapon combat. The selected style grants additional feats at 6th and 11th level. These bonus feats are usable only while wearing light armor or no armor until combat style mastery.",
+    "options": [
+      {
+        "id": "combat_style:archery",
+        "name": "Archery",
+        "description": "Gain Rapid Shot at 2nd level, Manyshot at 6th level, and Improved Precise Shot at 11th level.",
+        "grantedPermabuffs": [
+          { "$type": "GrantBonusFeat", "featId": "feat:rapid_shot" }
+        ],
+        "additionalPermabuffs": {
+          "improved": [
+            { "$type": "GrantBonusFeat", "featId": "feat:manyshot" }
+          ],
+          "mastery": [
+            { "$type": "GrantBonusFeat", "featId": "feat:improved_precise_shot" }
+          ]
+        }
+      },
+      {
+        "id": "combat_style:two_weapon_combat",
+        "name": "Two-Weapon Combat",
+        "description": "Gain Two-Weapon Fighting at 2nd level, Improved Two-Weapon Fighting at 6th level, and Greater Two-Weapon Fighting at 11th level.",
+        "grantedPermabuffs": [
+          { "$type": "GrantBonusFeat", "featId": "feat:two_weapon_fighting" }
+        ],
+        "additionalPermabuffs": {
+          "improved": [
+            { "$type": "GrantBonusFeat", "featId": "feat:improved_two_weapon_fighting" }
+          ],
+          "mastery": [
+            { "$type": "GrantBonusFeat", "featId": "feat:greater_two_weapon_fighting" }
+          ]
+        }
+      }
+    ]
+  }
+]

@@ -4,9 +4,12 @@
     "name": "Ability Focus",
     "description": "+2 to the DC of one special attack you possess.",
     "type": "general",
-    "prerequisites": [],
+    "prerequisites": [
+      { "$type": "HasSpecialAttack" }
+    ],
     "grantedPermabuffs": [],
-    "repeatable": true
+    "repeatable": true,
+    "selectionRequired": "special_attack"
   },
   {
     "id": "feat:acrobatic",
@@ -380,11 +383,14 @@
   {
     "id": "feat:empower_spell_like_ability",
     "name": "Empower Spell-Like Ability",
-    "description": "Increase all variable numeric effects of one spell-like ability by 50%. Usable twice per day.",
+    "description": "Increase all variable numeric effects of one spell-like ability by 50%. Usable three times per day (or fewer if normally limited).",
     "type": "general",
-    "prerequisites": [],
+    "prerequisites": [
+      { "$type": "MinSpellLikeAbilityCasterLevel", "value": 6 }
+    ],
     "grantedPermabuffs": [],
-    "repeatable": true
+    "repeatable": true,
+    "selectionRequired": "spell_like_ability"
   },
   {
     "id": "feat:endurance",
@@ -462,8 +468,12 @@
     "name": "Extra Music",
     "description": "Gain four extra uses per day of bardic music.",
     "type": "general",
-    "prerequisites": [],
-    "grantedPermabuffs": [],
+    "prerequisites": [
+      { "$type": "HasAbility", "abilityId": "bardic_music" }
+    ],
+    "grantedPermabuffs": [
+      { "$type": "ModifyCounter", "counterId": "bardic_music_uses", "value": 4 }
+    ],
     "repeatable": true
   },
   {
@@ -1230,15 +1240,18 @@
     "name": "Quicken Spell-Like Ability",
     "description": "Use one spell-like ability as a free action up to three times per day.",
     "type": "general",
-    "prerequisites": [],
+    "prerequisites": [
+      { "$type": "MinSpellLikeAbilityCasterLevel", "value": 10 }
+    ],
     "grantedPermabuffs": [],
-    "repeatable": true
+    "repeatable": true,
+    "selectionRequired": "spell_like_ability"
   },
   {
     "id": "feat:rapid_reload",
     "name": "Rapid Reload",
     "description": "Reload the selected crossbow type faster: heavy as a move action, light as a free action.",
-    "type": "fighterBonus",
+    "type": "general",
     "prerequisites": [],
     "grantedPermabuffs": [],
     "repeatable": true,
@@ -1478,9 +1491,12 @@
     "name": "Spell Mastery",
     "description": "Prepare a number of spells equal to your Int modifier without a spellbook (wizard only).",
     "type": "general",
-    "prerequisites": [],
+    "prerequisites": [
+      { "$type": "MinClassLevel", "classId": "class:wizard", "value": 1 }
+    ],
     "grantedPermabuffs": [],
-    "repeatable": true
+    "repeatable": true,
+    "selectionRequired": "spell"
   },
   {
     "id": "feat:spell_penetration",

@@ -4,6 +4,7 @@
   "name": "Maddening Scream",
   "school": "enchantment",
   "classLevels": {
+    "domain:madness": 8,
     "class:sorcerer": 8,
     "class:wizard": 8
   },
@@ -17,7 +18,7 @@
   "duration": "1d4+1 rounds",
   "savingThrow": "None",
   "spellResistance": "yes",
-  "description": "",
+  "description": "Worsens the target's AC by 4, makes Reflex saves impossible except on a natural 20, and prevents use of a shield.",
   "subschool": "compulsion",
   "descriptors": [
     "mind-affecting"

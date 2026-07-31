@@ -19,7 +19,11 @@
                      title="@GetTitle(item)"
                      @onmousedown="() => Select(item)"
                      @onmousedown:preventDefault>
-                    @GetDisplay(item)
+                    <div>@GetDisplay(item)</div>
+                    @if (!string.IsNullOrWhiteSpace(GetDescription(item)))
+                    {
+                        <div class="search-select-description">@GetDescription(item)</div>
+                    }
                 </div>
             }
         </div>
@@ -35,6 +39,8 @@
     [Parameter] public string Placeholder { get; set; } = "Search...";
     [Parameter] public string CssClass { get; set; } = "";
     [Parameter] public Func<TItem, string>? TitleSelector { get; set; }
+    /// <summary>Optional rules text displayed beneath each result, rather than hidden in a native tooltip.</summary>
+    [Parameter] public Func<TItem, string>? DescriptionSelector { get; set; }
     [Parameter] public int MaxResults { get; set; } = 50;
 
     private string _search = "";
@@ -61,6 +67,7 @@
     private string GetDisplay(TItem item) => DisplaySelector(item);
     private string GetValue(TItem item) => ValueSelector(item);
     private string GetTitle(TItem item) => TitleSelector?.Invoke(item) ?? "";
+    private string GetDescription(TItem item) => DescriptionSelector?.Invoke(item) ?? "";
 
     private void UpdateFiltered()
     {
