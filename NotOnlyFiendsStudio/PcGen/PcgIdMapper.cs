@@ -26,6 +26,7 @@ public class PcgIdMapper
         // SRD companions/familiars
         ["Companion ~ Snake (Viper/Tiny)"] = "companion_snake_viper_tiny",
         ["Companion ~ Snake (Viper/Medium)"] = "companion_snake_viper_medium",
+        ["Companion ~ Snake (Viper/Large)"] = "companion_snake_viper_large",
         ["Snake (Constrictor)"] = "companion_snake_constrictor",
         ["Companion ~ Tiger"] = "companion_tiger",
         ["Companion ~ Devil (Imp)"] = "companion_devil_imp",
@@ -146,10 +147,14 @@ public class PcgIdMapper
         ["Flail +2 (Heavy/Cold Iron)"] = "weapon:flail",
         ["Elven Chain (Small)"] = "armor:elven_chain",
         ["Longbow +1 (Small)"] = "weapon:longbow",
+        ["Arrows +3 (50)"] = "ammunition:arrows_20",
+        ["Slaying Arrow (Greater/Outsiders Slaying Arrow (Greater/evil))"] = "ammunition:slaying_arrow_greater",
         // PCGen names that reorder/reformat an existing catalog item's display name rather than
         // varying it — the catalog entry already covers all color/size variants in its description.
         ["Robe of the Archmagi (White)"] = "wondrous:robe_of_the_archmagi",
         ["Robe of the Archmagi (Black)"] = "wondrous:robe_of_the_archmagi",
+        ["Horn of Blasting (Greater)"] = "wondrous:horn_of_blasting_greater",
+        ["Horn of Valhalla (Iron)"] = "wondrous:horn_of_valhalla",
         ["Boots (Winged)"] = "wondrous:boots_winged",
         ["Vestments (Druid)"] = "wondrous:vestment_druid_s",
         ["Outfit (Entertainer's)"] = "gear:entertainers_outfit",

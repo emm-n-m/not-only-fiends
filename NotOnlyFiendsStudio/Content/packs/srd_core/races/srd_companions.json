@@ -98,6 +98,55 @@
     "scalingFormulas": []
   },
   {
+    "id": "race:companion_snake_viper_large",
+    "name": "Snake, Viper (Large)",
+    "description": "Large animal companion with venomous bite, natural armor, and multi-terrain movement.",
+    "type": "animal",
+    "subtypes": [],
+    "size": "large",
+    "speeds": {
+      "land": 20,
+      "climb": 20,
+      "swim": 20
+    },
+    "abilityModifiers": {
+      "str": 0,
+      "dex": 6,
+      "con": 0,
+      "int": -9,
+      "wis": 2,
+      "cha": -8
+    },
+    "levelAdjustment": 0,
+    "bonusFeats": 0,
+    "bonusSkillPointsPerHD": 0,
+    "racialHDDriverId": "racial_hd:animal",
+    "racialPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "naturalArmor",
+        "value": 3
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "snake_scent",
+          "name": "Scent",
+          "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "snake_poison_large",
+          "name": "Poison",
+          "description": "Bite \u2014 Fort DC 11; 1d6 Con/1d6 Con."
+        }
+      }
+    ],
+    "scalingFormulas": []
+  },
+  {
     "id": "race:companion_raven",
     "name": "Raven",
     "description": "Tiny flying animal companion with low-light vision, often used as a familiar.",
