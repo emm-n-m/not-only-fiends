@@ -27,6 +27,10 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(MinCounter), "MinCounter")]
 [JsonDerivedType(typeof(AnyOf), "AnyOf")]
 [JsonDerivedType(typeof(HasCreatureType), "HasCreatureType")]
+[JsonDerivedType(typeof(DeityReq), "DeityReq")]
+[JsonDerivedType(typeof(MinPCLevel), "MinPCLevel")]
+[JsonDerivedType(typeof(HasPreparedCasting), "HasPreparedCasting")]
+[JsonDerivedType(typeof(CanCastSpellSchool), "CanCastSpellSchool")]
 public abstract class Prerequisite
 {
     public abstract bool IsMet(CharacterState state);
@@ -296,6 +300,89 @@ public class HasCreatureType : Prerequisite
     public CreatureType Type { get; set; }
     public override bool IsMet(CharacterState state) => state.Type == Type;
     public override string Description => $"Creature type: {Type}";
+}
+
+/// <summary>
+/// Deity or patron-allegiance requirement (PCGen PREDEITY). One type covers both a
+/// cleric's god and the Mark feats' archdevil allegiance — the audit's "deity" and
+/// "patron" wants are the same schema shape. Matching is case-insensitive against
+/// the character's free-form Deity field.
+/// </summary>
+public class DeityReq : Prerequisite
+{
+    /// <summary>Accepted deities/patrons. Empty means "any deity at all".</summary>
+    public List<string> Deities { get; set; } = new();
+
+    /// <summary>Inverts the check: the character must have NO deity (PREDEITY:N).</summary>
+    public bool RequireNone { get; set; }
+
+    public override bool IsMet(CharacterState state)
+    {
+        if (RequireNone)
+            return state.Deity == null;
+        if (state.Deity == null)
+            return false;
+        return Deities.Count == 0
+            || Deities.Any(d => string.Equals(d, state.Deity, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public override string Description => RequireNone
+        ? "No deity"
+        : Deities.Count == 0
+            ? "Any deity"
+            : $"Deity: {string.Join(" or ", Deities)}";
+}
+
+/// <summary>
+/// Total class levels — racial HD excluded (PCGen PREPCLEVEL). Distinct from MinHD,
+/// which counts racial HD too; a 9-HD erinyes with 3 ranger levels has 12 HD but
+/// PC level 3.
+/// </summary>
+public class MinPCLevel : Prerequisite
+{
+    public int Value { get; set; }
+    public override bool IsMet(CharacterState state) => state.ClassLevels.Values.Sum() >= Value;
+    public override string Description => $"Character (class) level {Value}+";
+}
+
+/// <summary>
+/// Requires a class that prepares its spells (wizard, cleric, druid) — the complement
+/// of HasSpontaneousCasting: preparation is the absence of a spells-known table.
+/// </summary>
+public class HasPreparedCasting : Prerequisite
+{
+    public CastingType? CastingType { get; set; }
+
+    public override bool IsMet(CharacterState state) =>
+        state.Spellcasting.Values.Any(s =>
+            s.SpellsKnown == null
+            && (!CastingType.HasValue || s.CastingType == CastingType.Value));
+
+    public override string Description => CastingType.HasValue
+        ? $"Able to prepare {CastingType.Value} spells"
+        : "Able to prepare spells";
+}
+
+/// <summary>
+/// School-gated casting (PCGen PRESPELLSCHOOL): at least MinCount selected spells of
+/// the given school at SpellLevel or higher. Reads state.SpellLevelsBySchool, which
+/// the engine populates at spell-selection time. Full-list casters never select, so
+/// they under-report here — the same acknowledged limitation as CanCastSpellLevel.
+/// </summary>
+public class CanCastSpellSchool : Prerequisite
+{
+    /// <summary>Lowercase school name (e.g. "necromancy").</summary>
+    public string School { get; set; } = string.Empty;
+    public int SpellLevel { get; set; }
+    public int MinCount { get; set; } = 1;
+
+    public override bool IsMet(CharacterState state) =>
+        state.SpellLevelsBySchool.TryGetValue(School.ToLowerInvariant(), out var levels)
+        && levels.Count(l => l >= SpellLevel) >= MinCount;
+
+    public override string Description => MinCount == 1
+        ? $"Able to cast a {SpellLevel}th-level {School} spell"
+        : $"Able to cast {MinCount} {School} spells of level {SpellLevel}+";
 }
 
 /// <summary>

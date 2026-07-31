@@ -73,6 +73,9 @@ public static class PcgParser
                 ParseRace(line, data);
             else if (line.StartsWith("ALIGN:"))
                 data.Alignment = line["ALIGN:".Length..];
+            else if (line.StartsWith("DEITY:"))
+                // First pipe segment only — the rest is domain/weapon/alignment noise.
+                data.Deity = line["DEITY:".Length..].Split('|')[0].Trim();
             else if (line.StartsWith("STAT:"))
                 ParseStat(line, data);
             else if (line.StartsWith("CLASS:"))

@@ -8,6 +8,7 @@ public class CharacterState
     public HashSet<string> Subtypes { get; set; } = new();
     public Size Size { get; set; }
     public Alignment Alignment { get; set; }
+    public string? Deity { get; set; }
     public List<string> TemplateIds { get; set; } = new();
     public HashSet<string> Languages { get; set; } = new();
 
@@ -73,6 +74,13 @@ public class CharacterState
 
     // Spellcasting
     public Dictionary<string, SpellcastingState> Spellcasting { get; set; } = new();
+
+    // School → levels of every selected spell of that school (lowercase school names,
+    // duplicates possible across classes). Recorded at spell-selection time, when the
+    // engine has the spell definition in hand, so CanCastSpellSchool can check state
+    // alone. Full-list casters never select spells, so — like CanCastSpellLevel — this
+    // under-approximates them; the content-aware fix is tracked in TODO §1.
+    public Dictionary<string, List<int>> SpellLevelsBySchool { get; set; } = new();
 
     // Domains — ordered list of selected domain IDs, plus owner map (domainId → granting classId)
     public List<string> Domains { get; set; } = new();

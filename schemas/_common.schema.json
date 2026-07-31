@@ -412,6 +412,49 @@
           },
           "required": ["$type", "type"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Deity or patron allegiance (PCGen PREDEITY). Empty deities list = any deity; requireNone = must have no deity.",
+          "properties": {
+            "$type": { "const": "DeityReq" },
+            "deities": { "type": "array", "items": { "type": "string" } },
+            "requireNone": { "type": "boolean", "default": false }
+          },
+          "required": ["$type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Total class levels, racial HD excluded (PCGen PREPCLEVEL). Use MinHD when racial HD should count.",
+          "properties": {
+            "$type": { "const": "MinPCLevel" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["$type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Requires a class that prepares spells (wizard/cleric/druid) — the complement of HasSpontaneousCasting.",
+          "properties": {
+            "$type": { "const": "HasPreparedCasting" },
+            "castingType": { "type": "string", "enum": ["arcane", "divine"] }
+          },
+          "required": ["$type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "School-gated casting (PCGen PRESPELLSCHOOL): minCount selected spells of the school at spellLevel or higher. Under-approximates full-list casters, like CanCastSpellLevel.",
+          "properties": {
+            "$type": { "const": "CanCastSpellSchool" },
+            "school": { "type": "string", "description": "Lowercase school name (e.g., 'necromancy')." },
+            "spellLevel": { "type": "integer", "minimum": 0 },
+            "minCount": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          "required": ["$type", "school", "spellLevel"],
+          "additionalProperties": false
         }
       ]
     },

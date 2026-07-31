@@ -6,6 +6,7 @@ public class PcgCharacterData
     public string CharacterName { get; set; } = "";
     public string Race { get; set; } = "";
     public string Alignment { get; set; } = "";
+    public string Deity { get; set; } = "";
     public Dictionary<string, int> BaseStats { get; set; } = new();
 
     public List<PcgClassEntry> Classes { get; set; } = new();

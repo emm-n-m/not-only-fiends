@@ -53,10 +53,16 @@ public static class PcgConverter
             && Enum.IsDefined(parsedAlignment)
                 ? parsedAlignment
                 : Alignment.N;
+        // PCGen writes "None" for godless characters; the engine models that as null.
+        var deity = data.Deity.Trim();
+        if (deity.Length == 0 || deity.Equals("None", StringComparison.OrdinalIgnoreCase))
+            deity = null!;
+
         var character = new Character
         {
             Name = data.CharacterName,
             Alignment = alignment,
+            Deity = deity,
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = data.BaseStats.GetValueOrDefault("STR"),

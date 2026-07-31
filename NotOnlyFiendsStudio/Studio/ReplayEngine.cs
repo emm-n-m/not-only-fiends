@@ -20,6 +20,7 @@ public class ReplayStudio
     {
         var state = new CharacterState();
         state.Alignment = character.Alignment;
+        state.Deity = string.IsNullOrWhiteSpace(character.Deity) ? null : character.Deity;
 
         // Companion-side: surface origin so templates/formulas can read MasterLevel.
         if (character.CompanionOrigin != null)
@@ -1026,7 +1027,17 @@ public class ReplayStudio
                 {
                     state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown spell '{selection.SpellId}'" });
                 }
-                else if (!selection.ClassId.StartsWith("domain:", StringComparison.Ordinal))
+                else if (!string.IsNullOrEmpty(spellDef.School))
+                {
+                    // Feed CanCastSpellSchool: the definition is only in hand here, so the
+                    // school is recorded now rather than resolved at prerequisite time.
+                    var school = spellDef.School.ToLowerInvariant();
+                    if (!state.SpellLevelsBySchool.TryGetValue(school, out var levels))
+                        state.SpellLevelsBySchool[school] = levels = new List<int>();
+                    levels.Add(selection.SpellLevel);
+                }
+
+                if (spellDef != null && !selection.ClassId.StartsWith("domain:", StringComparison.Ordinal))
                 {
                     // Domain picks come from the domain's own list, so only class picks are
                     // checked against the class spell list.

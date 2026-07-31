@@ -5,6 +5,10 @@ public class Character
     public string Name { get; set; } = string.Empty;
     public Alignment Alignment { get; set; } = Alignment.N;
 
+    // Deity or patron allegiance (e.g. a cleric's god, a Mark feat's archdevil).
+    // Free-form display name; null/empty means no allegiance.
+    public string? Deity { get; set; }
+
     // Initial State
     public string RaceId { get; set; } = string.Empty;
     public List<string> TemplateIds { get; set; } = new();
@@ -43,6 +47,7 @@ public class Character
     {
         Name = Name,
         Alignment = Alignment,
+        Deity = Deity,
         RaceId = RaceId,
         TemplateIds = new List<string>(TemplateIds),
         BaseAbilityScores = new AbilityScoreSet

@@ -397,6 +397,67 @@ public class PrerequisiteTests
     }
 
     [Fact]
+    public void DeityReq_AnySpecificAndNone()
+    {
+        var state = CreateState(); // no deity
+        Assert.False(new DeityReq().IsMet(state));                       // any deity
+        Assert.True(new DeityReq { RequireNone = true }.IsMet(state));   // no deity
+
+        state.Deity = "Mephistopheles";
+        Assert.True(new DeityReq().IsMet(state));
+        Assert.True(new DeityReq { Deities = new List<string> { "mephistopheles" } }.IsMet(state));
+        Assert.False(new DeityReq { Deities = new List<string> { "Bel" } }.IsMet(state));
+        Assert.False(new DeityReq { RequireNone = true }.IsMet(state));
+    }
+
+    [Fact]
+    public void MinPCLevel_ExcludesRacialHD()
+    {
+        var state = CreateState(); // fighter 5
+        state.TotalHD = 12;        // 7 racial HD on top — must not count
+        Assert.True(new MinPCLevel { Value = 5 }.IsMet(state));
+        Assert.False(new MinPCLevel { Value = 6 }.IsMet(state));
+        Assert.True(new MinHD { Value = 12 }.IsMet(state)); // contrast: MinHD sees all 12
+    }
+
+    [Fact]
+    public void HasPreparedCasting_PreparedVsSpontaneous()
+    {
+        var state = CreateState();
+        Assert.False(new HasPreparedCasting().IsMet(state));
+
+        state.Spellcasting["class:sorcerer"] = new SpellcastingState
+        {
+            ClassId = "class:sorcerer",
+            CastingType = CastingType.Arcane,
+            SpellsKnown = new Dictionary<int, int> { { 0, 4 } },
+        };
+        Assert.False(new HasPreparedCasting().IsMet(state));
+
+        state.Spellcasting["class:cleric"] = new SpellcastingState
+        {
+            ClassId = "class:cleric",
+            CastingType = CastingType.Divine,
+        };
+        Assert.True(new HasPreparedCasting().IsMet(state));
+        Assert.True(new HasPreparedCasting { CastingType = CastingType.Divine }.IsMet(state));
+        Assert.False(new HasPreparedCasting { CastingType = CastingType.Arcane }.IsMet(state));
+    }
+
+    [Fact]
+    public void CanCastSpellSchool_CountsLevelsAtOrAbove()
+    {
+        var state = CreateState();
+        Assert.False(new CanCastSpellSchool { School = "necromancy", SpellLevel = 1 }.IsMet(state));
+
+        state.SpellLevelsBySchool["necromancy"] = new List<int> { 1, 3 };
+        Assert.True(new CanCastSpellSchool { School = "Necromancy", SpellLevel = 3 }.IsMet(state));
+        Assert.False(new CanCastSpellSchool { School = "necromancy", SpellLevel = 4 }.IsMet(state));
+        Assert.True(new CanCastSpellSchool { School = "necromancy", SpellLevel = 1, MinCount = 2 }.IsMet(state));
+        Assert.False(new CanCastSpellSchool { School = "necromancy", SpellLevel = 3, MinCount = 2 }.IsMet(state));
+    }
+
+    [Fact]
     public void HasCreatureType_Met()
     {
         var state = CreateState(); // humanoid
