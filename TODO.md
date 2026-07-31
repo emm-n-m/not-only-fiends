@@ -73,6 +73,10 @@ These block accurate content rather than representing bad source transcription.
 - [ ] Grant languages purchased through Speak Language skill ranks.
 - [ ] Decide whether sub-pound equipment weights justify changing `weightLbs` from integer to a
   fractional type. Thirty-three extracted gear items currently round down to zero pounds.
+- [ ] Sync the schema `Prerequisite` definitions with the model. The `_common`, `feat`,
+  `hddriver`, and `equipment` schemas lag `Prerequisite.cs` — missing `MinSkillRanksAcross`,
+  `HasFeatOfAnyType`, `HasSpontaneousCasting`, `HasAnyRace`, `LacksTemplate`, `HasLanguage`,
+  `MinCounter`, and (outside `_common`) `AnyOf`/`HasCreatureType`.
 
 ### Known lower-priority fidelity limits
 

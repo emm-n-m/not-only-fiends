@@ -364,4 +364,49 @@ public class PrerequisiteTests
         state.Counters["sneak_attack_dice"] = 1;
         Assert.False(new MinCounter { CounterId = "sneak_attack_dice", Value = 2 }.IsMet(state));
     }
+
+    [Fact]
+    public void AnyOf_MetWhenAnyOptionMet()
+    {
+        var state = CreateState(); // fighter 5, no ranger levels
+        var anyOf = new AnyOf
+        {
+            Options = new List<Prerequisite>
+            {
+                new MinClassLevel { ClassId = "class:ranger", Value = 1 },
+                new MinClassLevel { ClassId = "class:fighter", Value = 1 },
+            }
+        };
+        Assert.True(anyOf.IsMet(state));
+    }
+
+    [Fact]
+    public void AnyOf_NotMetWhenNoOptionMet()
+    {
+        var state = CreateState();
+        var anyOf = new AnyOf
+        {
+            Options = new List<Prerequisite>
+            {
+                new MinClassLevel { ClassId = "class:ranger", Value = 1 },
+                new MinClassLevel { ClassId = "class:druid", Value = 1 },
+            }
+        };
+        Assert.False(anyOf.IsMet(state));
+        Assert.Contains(" or ", anyOf.Description);
+    }
+
+    [Fact]
+    public void HasCreatureType_Met()
+    {
+        var state = CreateState(); // humanoid
+        Assert.True(new HasCreatureType { Type = CreatureType.Humanoid }.IsMet(state));
+    }
+
+    [Fact]
+    public void HasCreatureType_NotMet()
+    {
+        var state = CreateState();
+        Assert.False(new HasCreatureType { Type = CreatureType.Outsider }.IsMet(state));
+    }
 }

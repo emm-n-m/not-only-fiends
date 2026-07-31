@@ -859,6 +859,96 @@ public class ReplayStudioTests
     }
 
     [Fact]
+    public void TemplatePrerequisites_ValidatedAgainstFinishedState()
+    {
+        var registry = new ContentRegistry();
+
+        registry.RegisterRace(new RaceDefinition
+        {
+            Id = "race:outsider",
+            Name = "Outsider",
+            Type = CreatureType.Outsider,
+            Size = Size.Medium,
+            Speeds = new Dictionary<MovementMode, int> { { MovementMode.Land, 30 } }
+        });
+
+        registry.RegisterDriver(new HDDriver
+        {
+            Kind = DriverKind.RacialHD,
+            Id = "racial_hd:outsider",
+            Name = "Outsider",
+            HitDie = 8,
+            SkillPointsPerLevel = 8,
+            BABProgression = BABProgression.Good,
+            SaveProgression = new SaveProgression { Fort = ProgressionRate.Good, Ref = ProgressionRate.Good, Will = ProgressionRate.Good }
+        });
+
+        registry.RegisterDriver(new HDDriver
+        {
+            Kind = DriverKind.Class,
+            Id = "class:ranger",
+            Name = "Ranger",
+            HitDie = 8,
+            SkillPointsPerLevel = 6,
+            BABProgression = BABProgression.Good,
+            SaveProgression = new SaveProgression { Fort = ProgressionRate.Good, Ref = ProgressionRate.Good, Will = ProgressionRate.Poor }
+        });
+
+        // Template gated on a class level that only exists AFTER the tick loop —
+        // the check must therefore run against the finished state, not at creation.
+        registry.RegisterTemplate(new TemplateDriver
+        {
+            Id = "template:unseelie_champion",
+            Name = "Unseelie Champion",
+            Prerequisites = new List<Prerequisite>
+            {
+                new HasCreatureType { Type = CreatureType.Outsider },
+                new AnyOf
+                {
+                    Options = new List<Prerequisite>
+                    {
+                        new MinClassLevel { ClassId = "class:ranger", Value = 1 },
+                        new MinClassLevel { ClassId = "class:planar_ranger", Value = 1 },
+                    }
+                }
+            }
+        });
+
+        var engine = new ReplayStudio(registry);
+
+        var qualified = new Character
+        {
+            Name = "Qualified",
+            RaceId = "race:outsider",
+            TemplateIds = new List<string> { "template:unseelie_champion" },
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick>
+            {
+                new() { DriverId = "racial_hd:outsider" },
+                new() { DriverId = "class:ranger" },
+            }
+        };
+        var qualifiedState = engine.Evaluate(qualified);
+        Assert.DoesNotContain(qualifiedState.Warnings, w => w.Message.Contains("template Unseelie Champion"));
+
+        var unqualified = new Character
+        {
+            Name = "Unqualified",
+            RaceId = "race:outsider",
+            TemplateIds = new List<string> { "template:unseelie_champion" },
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick>
+            {
+                new() { DriverId = "racial_hd:outsider" },
+                new() { DriverId = "racial_hd:outsider" },
+            }
+        };
+        var unqualifiedState = engine.Evaluate(unqualified);
+        var warning = Assert.Single(unqualifiedState.Warnings, w => w.Message.Contains("template Unseelie Champion"));
+        Assert.Contains("class:ranger level 1+ or class:planar_ranger level 1+", warning.Message);
+    }
+
+    [Fact]
     public void EffectiveLevel_WithoutTemplate_NoBoost()
     {
         var registry = new ContentRegistry();

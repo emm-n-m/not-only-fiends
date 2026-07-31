@@ -5,6 +5,11 @@ public class TemplateDriver
     public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
 
+    // Validated against the FINISHED state (tail pass), not at creation: acquired
+    // templates like Unseelie Champion gate on class levels that do not exist yet
+    // when templates are applied. Unmet prerequisites warn, matching driver behavior.
+    public List<Prerequisite> Prerequisites { get; set; } = new();
+
     // One-time modifications at creation
     public CreatureType? TypeOverride { get; set; }
     public List<string> SubtypeAdditions { get; set; } = new();

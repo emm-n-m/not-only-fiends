@@ -385,6 +385,33 @@
           },
           "required": ["$type", "featId", "minCount"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Met when any one of the wrapped prerequisites is met. Models 'X or Y' requirements (e.g., 'Ranger 1 or Planar Ranger 1') without approximating the disjunction.",
+          "properties": {
+            "$type": { "const": "AnyOf" },
+            "options": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/Prerequisite" },
+              "minItems": 2
+            }
+          },
+          "required": ["$type", "options"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Requires the character's final creature type (after template overrides), e.g. outsider-only templates.",
+          "properties": {
+            "$type": { "const": "HasCreatureType" },
+            "type": {
+              "type": "string",
+              "enum": ["aberration", "animal", "construct", "dragon", "elemental", "fey", "giant", "humanoid", "magicalBeast", "monstrousHumanoid", "ooze", "outsider", "plant", "undead", "vermin"]
+            }
+          },
+          "required": ["$type", "type"],
+          "additionalProperties": false
         }
       ]
     },

@@ -25,6 +25,8 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(LacksTemplate), "LacksTemplate")]
 [JsonDerivedType(typeof(HasLanguage), "HasLanguage")]
 [JsonDerivedType(typeof(MinCounter), "MinCounter")]
+[JsonDerivedType(typeof(AnyOf), "AnyOf")]
+[JsonDerivedType(typeof(HasCreatureType), "HasCreatureType")]
 public abstract class Prerequisite
 {
     public abstract bool IsMet(CharacterState state);
@@ -270,6 +272,30 @@ public class HasLanguage : Prerequisite
     public string LanguageId { get; set; } = string.Empty;
     public override bool IsMet(CharacterState state) => state.Languages.Contains(LanguageId);
     public override string Description => $"Language: {LanguageId}";
+}
+
+/// <summary>
+/// Met when any one of the wrapped prerequisites is met. Models "X or Y" requirements —
+/// "Ranger 1 or Planar Ranger 1", "Track feat or trapfinding" — without flattening the
+/// disjunction into a single approximated requirement.
+/// </summary>
+public class AnyOf : Prerequisite
+{
+    public List<Prerequisite> Options { get; set; } = new();
+    public override bool IsMet(CharacterState state) => Options.Any(o => o.IsMet(state));
+    public override string Description => string.Join(" or ", Options.Select(o => o.Description));
+}
+
+/// <summary>
+/// Requires the character's final creature type — which templates may have overridden —
+/// so an outsider-only template accepts both native outsiders and characters a prior
+/// template (e.g. half-fiend) turned into one.
+/// </summary>
+public class HasCreatureType : Prerequisite
+{
+    public CreatureType Type { get; set; }
+    public override bool IsMet(CharacterState state) => state.Type == Type;
+    public override string Description => $"Creature type: {Type}";
 }
 
 /// <summary>

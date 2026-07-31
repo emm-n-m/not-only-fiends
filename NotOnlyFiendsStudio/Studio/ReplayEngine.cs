@@ -238,6 +238,20 @@ public class ReplayStudio
         //    ctx.EquipmentPass) → finalize AC, attack lines, encumbrance.
         EvaluateEquipment(ctx, character);
 
+        // 5a. Validate template prerequisites against the finished state. Acquired templates
+        // (e.g. Unseelie Champion's ranger-level gate) reference class levels that do not
+        // exist at creation time, and ability requirements should see post-equipment scores,
+        // so this cannot run inside ApplyTemplateCreation.
+        foreach (var templateId in character.TemplateIds)
+        {
+            var template = _content.GetTemplate(templateId);
+            foreach (var prereq in template.Prerequisites)
+            {
+                if (!prereq.IsMet(state))
+                    state.Warnings.Add(new Warning { TickIndex = 0, Message = $"prerequisite not met for template {template.Name}: {prereq.Description}" });
+            }
+        }
+
         // 6. Tail pass — companion / leadership finalization.
         FinalizeCompanionAndLeadership(ctx, character);
 

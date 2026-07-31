@@ -243,6 +243,17 @@
           "type": "string",
           "description": "Display name (e.g., 'Half-Fiend')."
         },
+        "prerequisites": {
+          "type": "array",
+          "description": "Acquired-template requirements (e.g., Unseelie Champion: outsider type + a ranger level), validated against the finished character with a warning when unmet. Polymorphic by '$type'; see the Prerequisite definition in _common.schema.json for all shapes. Omit for birth/inherited templates.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "$type": { "type": "string" }
+            },
+            "required": ["$type"]
+          }
+        },
         "typeOverride": {
           "description": "Creature type to override the base race's type. Omit if the template does not change type.",
           "oneOf": [
