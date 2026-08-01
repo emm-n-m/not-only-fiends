@@ -183,8 +183,10 @@ public class ReplayStudio
             foreach (var sf in race.ScalingFormulas)
                 new SetAttribute(sf.Target, sf.Formula.Evaluate(state), sf.ResistanceElement, sf.AbilityScore).Apply(ctx);
 
-            // i. Ability score increase (every Nth HD per rules)
-            if (state.TotalHD % _rules.AbilityIncreaseInterval == 0 && tick.Choices.AbilityIncrease.HasValue)
+            // i. Ability score increase (scheduled class ticks only; racial adjustments are on the race)
+            if (driver is HDDriver abilityDriver
+                && _rules.GrantsAbilityIncrease(state.TotalHD, abilityDriver.Kind)
+                && tick.Choices.AbilityIncrease.HasValue)
                 ApplyAbilityIncrease(state, tick.Choices.AbilityIncrease.Value);
 
             // j. Feat slots — standard schedule from rules
@@ -316,9 +318,10 @@ public class ReplayStudio
         var conMod = AbilityScoreSet.Modifier(state.AbilityScores.CON);
         state.HP = state.HitDice.Select((hitDie, index) =>
         {
-            var roll = _rules.FirstHDMaxHP && index == 0
-                ? hitDie.DieSize
-                : hitDie.DieSize / 2 + 1;
+            var roll = hitDie.SavedRoll
+                ?? (_rules.FirstHDMaxHP && index == 0
+                    ? hitDie.DieSize
+                    : hitDie.DieSize / 2 + 1);
             return Math.Max(1, roll + conMod);
         }).Sum();
     }
@@ -814,6 +817,57 @@ public class ReplayStudio
         return state.PendingDomainSelections.FirstOrDefault(kv => kv.Value > 0).Key;
     }
 
+    private void ApplyDomainSelections(PermabuffContext ctx, IEnumerable<string> domainIds,
+        bool sourceAuthorized)
+    {
+        var state = ctx.State;
+        foreach (var domainId in domainIds)
+        {
+            if (state.Domains.Contains(domainId))
+            {
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"duplicate domain selection '{domainId}' ignored" });
+                continue;
+            }
+
+            var ownerClassId = sourceAuthorized
+                ? ctx.CurrentDriverId ?? GrantDomainSelection.OrphanOwner
+                : ChooseDomainOwner(state, ctx.CurrentDriverId);
+            if (ownerClassId == null)
+            {
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"no pending domain selections for '{domainId}'" });
+                continue;
+            }
+
+            if (!_content.TryGetDomain(domainId, out var domainDef) || domainDef == null)
+            {
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown domain '{domainId}'" });
+                continue;
+            }
+
+            state.Domains.Add(domainId);
+            state.DomainOwners[domainId] = ownerClassId;
+            if (!sourceAuthorized)
+            {
+                state.PendingDomainSelections[ownerClassId]--;
+                if (state.PendingDomainSelections[ownerClassId] == 0)
+                    state.PendingDomainSelections.Remove(ownerClassId);
+            }
+
+            foreach (var buff in domainDef.GrantedPermabuffs)
+                buff.Apply(ctx);
+
+            if (ownerClassId != GrantDomainSelection.OrphanOwner
+                && state.Spellcasting.TryGetValue(ownerClassId, out var ownerSc))
+            {
+                foreach (var lvl in ownerSc.SpellsPerDay.Keys.Where(l => l >= 1))
+                {
+                    ownerSc.DomainBonusSlots.TryAdd(lvl, 0);
+                    ownerSc.DomainBonusSlots[lvl]++;
+                }
+            }
+        }
+    }
+
     public List<FeatDefinition> GetAvailableFeats(CharacterState state, string? restriction = null)
     {
         var available = new List<FeatDefinition>();
@@ -1028,52 +1082,10 @@ public class ReplayStudio
         // (preferring the current tick's class) and grants its bonus slot only to that class.
         // NOTE: must process before SpellSelections so domain spell picks can resolve their owner class.
         if (choices.ClassFeatureChoices?.TryGetValue("domains", out var domainIds) == true && domainIds != null)
-        {
-            foreach (var domainId in domainIds)
-            {
-                if (state.Domains.Contains(domainId))
-                {
-                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"duplicate domain selection '{domainId}' ignored" });
-                    continue;
-                }
-
-                var ownerClassId = ChooseDomainOwner(state, ctx.CurrentDriverId);
-                if (ownerClassId == null)
-                {
-                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"no pending domain selections for '{domainId}'" });
-                    continue;
-                }
-
-                if (!_content.TryGetDomain(domainId, out var domainDef) || domainDef == null)
-                {
-                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown domain '{domainId}'" });
-                    continue;
-                }
-
-                state.Domains.Add(domainId);
-                state.DomainOwners[domainId] = ownerClassId;
-                state.PendingDomainSelections[ownerClassId]--;
-                if (state.PendingDomainSelections[ownerClassId] == 0)
-                    state.PendingDomainSelections.Remove(ownerClassId);
-
-                // Apply granted permabuffs (granted powers)
-                foreach (var buff in domainDef.GrantedPermabuffs)
-                    buff.Apply(ctx);
-
-                // Add +1 domain bonus slot per spell level 1+ on the OWNING class's spellcasting.
-                // Orphan-owned domains (race/template grants with no caster class) skip this step —
-                // granted powers fired above, but there's no spellcasting state to extend.
-                if (ownerClassId != GrantDomainSelection.OrphanOwner
-                    && state.Spellcasting.TryGetValue(ownerClassId, out var ownerSc))
-                {
-                    foreach (var lvl in ownerSc.SpellsPerDay.Keys.Where(l => l >= 1))
-                    {
-                        ownerSc.DomainBonusSlots.TryAdd(lvl, 0);
-                        ownerSc.DomainBonusSlots[lvl]++;
-                    }
-                }
-            }
-        }
+            ApplyDomainSelections(ctx, domainIds, sourceAuthorized: false);
+        if (choices.ClassFeatureChoices?.TryGetValue("imported_source_domains", out var importedDomainIds) == true
+            && importedDomainIds != null)
+            ApplyDomainSelections(ctx, importedDomainIds, sourceAuthorized: true);
 
         if (choices.SpellSelections != null)
         {
@@ -1137,13 +1149,19 @@ public class ReplayStudio
                 {
                     // Domain picks come from the domain's own list, so only class picks are
                     // checked against the class spell list.
-                    if (!spellDef.ClassLevels.TryGetValue(routedClassId, out var listLevel))
+                    var listSources = sc.ProgressionData?.SpellListSources ?? new List<string>();
+                    var matchingLevels = new[] { routedClassId }.Concat(listSources)
+                        .Where(source => spellDef.ClassLevels.ContainsKey(source))
+                        .Select(source => spellDef.ClassLevels[source])
+                        .ToList();
+                    if (matchingLevels.Count == 0)
                     {
                         state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"spell '{selection.SpellId}' is not on the {routedClassId} spell list" });
                     }
-                    else if (listLevel != selection.SpellLevel)
+                    else if (!matchingLevels.Contains(selection.SpellLevel))
                     {
-                        state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"spell '{selection.SpellId}' is level {listLevel} for {routedClassId}, not {selection.SpellLevel}" });
+                        var levels = string.Join("/", matchingLevels.Distinct().OrderBy(level => level));
+                        state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"spell '{selection.SpellId}' is level {levels} for {routedClassId}, not {selection.SpellLevel}" });
                     }
                 }
 
@@ -1165,7 +1183,7 @@ public class ReplayStudio
         {
             foreach (var (featureType, selectedIds) in choices.ClassFeatureChoices)
             {
-                if (featureType == "domains" || featureType == "advance_spellcasting")
+                if (featureType is "domains" or "imported_source_domains" or "advance_spellcasting")
                     continue;
 
                 if (selectedIds == null) continue;
@@ -1298,23 +1316,47 @@ public class ReplayStudio
                 if (!string.IsNullOrEmpty(item.ContentId))
                     ctx.Content?.TryGetEquipment(item.ContentId!, out def);
 
+                if (def != null)
+                {
+                    var unitWeight = item.WeightLbsOverride ?? def.WeightLbs;
+                    pass.TotalWeightLbs += unitWeight * Math.Max(0, item.Quantity);
+                }
+
+                // Carried items count toward encumbrance but are not equipped and grant no effects.
+                if (string.Equals(item.Slot, "carried", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
                 // Apply granted permabuffs from content, then any inline permabuffs on the entry.
                 if (def != null)
                 {
+                    var weaponCountBeforeBuffs = pass.Weapons.Count;
                     foreach (var buff in def.GrantedPermabuffs)
                         buff.Apply(ctx);
-                    pass.TotalWeightLbs += def.WeightLbs;
                     // Auto-derive weapon/armor profile from content when not already pushed by permabuffs.
-                    if (def.Weapon != null && !pass.Weapons.Any(w => ReferenceEquals(w.Profile, def.Weapon)))
+                    if (def.Weapon != null
+                        && !pass.Weapons.Skip(weaponCountBeforeBuffs).Any(w => ReferenceEquals(w.Profile, def.Weapon)))
                     {
-                        pass.Weapons.Add(new WeaponContribution
+                        var weapon = new WeaponContribution
                         {
                             Profile = def.Weapon,
                             EnhancementBonus = def.EnhancementBonus,
                             MainHand = item.MainHand,
                             TwoHanded = item.TwoHanded,
                             DisplayName = def.Name
-                        });
+                        };
+                        pass.Weapons.Add(weapon);
+
+                        if (item.DoubleWeapon || def.Weapon.DoubleWeapon)
+                        {
+                            pass.Weapons.Add(new WeaponContribution
+                            {
+                                Profile = def.Weapon,
+                                EnhancementBonus = def.EnhancementBonus,
+                                MainHand = false,
+                                TwoHanded = false,
+                                DisplayName = def.Name,
+                            });
+                        }
                     }
                     if (def.Armor != null && !pass.Armors.Any(a => ReferenceEquals(a.Profile, def.Armor)))
                     {

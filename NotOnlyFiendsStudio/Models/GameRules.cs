@@ -60,6 +60,13 @@ public class GameRules
 
     public bool GrantsStandardFeat(int totalHD) => StandardFeatHDs.Contains(totalHD);
 
+    /// <summary>
+    /// This ruleset stores racial ability adjustments on the race itself. Racial-HD ticks therefore
+    /// do not also grant the selectable every-four-HD ability increase used by class levels.
+    /// </summary>
+    public bool GrantsAbilityIncrease(int totalHD, DriverKind driverKind) =>
+        driverKind == DriverKind.Class && totalHD % AbilityIncreaseInterval == 0;
+
     public bool GrantsEpicFeat(int totalHD) =>
         totalHD >= EpicFeatStartHD && (totalHD - EpicFeatStartHD) % EpicFeatInterval == 0;
 

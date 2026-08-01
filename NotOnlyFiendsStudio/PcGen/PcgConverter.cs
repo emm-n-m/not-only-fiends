@@ -12,7 +12,9 @@ public class PcgConversionResult
     public List<string> DroppedClasses { get; set; } = new();
     public List<string> DroppedTemplates { get; set; } = new();
     public List<string> DroppedDomains { get; set; } = new();
+    public List<string> DroppedSpells { get; set; } = new();
     public List<string> DroppedEquipment { get; set; } = new();
+    public List<string> IgnoredTemporaryBonuses { get; set; } = new();
     public bool RaceDropped { get; set; }
 
     public string Summary
@@ -26,7 +28,9 @@ public class PcgConversionResult
             if (DroppedSkills.Count > 0) parts.Add($"{DroppedSkills.Count} skill(s) missing");
             if (DroppedTemplates.Count > 0) parts.Add($"{DroppedTemplates.Count} template(s) missing");
             if (DroppedDomains.Count > 0) parts.Add($"{DroppedDomains.Count} domain(s) missing");
+            if (DroppedSpells.Count > 0) parts.Add($"{DroppedSpells.Count} spell(s) missing");
             if (DroppedEquipment.Count > 0) parts.Add($"{DroppedEquipment.Count} equipment item(s) missing");
+            if (IgnoredTemporaryBonuses.Count > 0) parts.Add($"{IgnoredTemporaryBonuses.Count} temporary modifier(s) ignored");
             return parts.Count == 0 ? "Clean import" : string.Join(", ", parts);
         }
     }
@@ -73,6 +77,40 @@ public static class PcgConverter
                 CHA = data.BaseStats.GetValueOrDefault("CHA"),
             },
         };
+
+        foreach (var follower in data.Followers)
+        {
+            var sourceReference = string.IsNullOrWhiteSpace(follower.File) ? follower.Name : follower.File;
+            var linkType = MapCompanionLinkType(follower.Type);
+            character.CompanionLinks.Add(new CompanionLink
+            {
+                LinkType = linkType,
+                CompanionId = ToCharacterId(follower.Name, sourceReference),
+                SelectedSpecies = mapper.MapRace(follower.Race),
+                EffectiveLevelFormula = CompanionLevelFormula(linkType),
+                Notes = $"Imported from PCGen {follower.Type}; source file: {sourceReference}; source race: {follower.Race}",
+            });
+
+            if (sourceReference.Contains("..", StringComparison.Ordinal))
+                result.Warnings.Add($"Companion '{follower.Name}' uses external relative file reference '{sourceReference}' — link preserved by character id");
+        }
+
+        if (data.Master != null)
+        {
+            character.CompanionOrigin = new CompanionOrigin
+            {
+                LinkType = MapCompanionLinkType(data.Master.Type),
+                EffectiveMasterLevel = 0,
+                MasterCharacterId = ToCharacterId(data.Master.Name, data.Master.File),
+            };
+        }
+
+        foreach (var temporaryBonus in data.TemporaryBonuses)
+        {
+            var label = temporaryBonus.Split('|')[0];
+            result.IgnoredTemporaryBonuses.Add(label);
+            result.Warnings.Add($"Active PCGen temporary modifier '{label}' is not a permanent character input — ignored");
+        }
 
         // Map race
         var raceId = mapper.MapRace(data.Race);
@@ -200,8 +238,10 @@ public static class PcgConverter
                 });
         }
 
-        // Build domain selections
-        var domainSelections = new List<string>();
+        // Build domain selections with their PCGen owner tick. A domain can be granted after HD 1
+        // (e.g. Nymph Archdruid's Plant domain from Druid 2), so front-loading changes ownership
+        // and can try to spend a domain slot before it exists.
+        var domainSelections = new List<(string DomainId, string? SourceDriverId, int SourceLevel)>();
         foreach (var domain in data.Domains)
         {
             var domainId = mapper.MapDomain(domain.Name);
@@ -211,8 +251,13 @@ public static class PcgConverter
                 result.DroppedDomains.Add(domain.Name);
                 continue;
             }
-            domainSelections.Add(domainId);
+            domainSelections.Add((
+                domainId,
+                string.IsNullOrWhiteSpace(domain.SourceClass) ? null : mapper.MapClass(domain.SourceClass),
+                domain.SourceLevel));
         }
+
+        var wizardClass = data.Classes.FirstOrDefault(c => mapper.MapClass(c.Name) == "class:wizard");
 
         // Build ticks from level entries, tracking which level-up ability increases
         // the engine will re-apply so we can subtract them from the imported STAT values.
@@ -240,26 +285,58 @@ public static class PcgConverter
 
             var choices = new TickChoices();
 
-            // Ability increase
+            if (level.HitPoints > 0)
+                choices.HitPointsRolled = level.HitPoints;
+
+            // Ability increase. In this ruleset racial ability adjustments live on the race;
+            // PCGen PRESTAT rows on racial-HD levels must not become a second selectable bonus.
             if (level.AbilityIncrease != null &&
+                !driverId.StartsWith("racial_hd:", StringComparison.Ordinal) &&
                 Enum.TryParse<Ability>(level.AbilityIncrease, true, out var ability))
             {
                 choices.AbilityIncrease = ability;
             }
 
-            // Front-load domains onto the first valid tick so they resolve against
-            // the class that grants them (e.g., cleric taken at level 1).
-            if (character.Ticks.Count == 0 && domainSelections.Count > 0)
+            var domainsForTick = domainSelections
+                .Where(domain => domain.SourceDriverId == null
+                    ? character.Ticks.Count == 0
+                    : domain.SourceDriverId == driverId
+                      && (domain.SourceLevel > 0 ? domain.SourceLevel == level.ClassLevel : level.ClassLevel == 1))
+                .Select(domain => domain.DomainId)
+                .ToList();
+            if (domainsForTick.Count > 0)
             {
-                choices.ClassFeatureChoices = new Dictionary<string, List<string>>
-                {
-                    ["domains"] = domainSelections
-                };
+                var consumesClassSlot = DriverGrantsDomainSlots(registry, driverId);
+                AddClassFeatureChoices(choices,
+                    consumesClassSlot ? "domains" : "imported_source_domains", domainsForTick);
+            }
+
+            if (driverId == "class:wizard" && level.ClassLevel == 1 && wizardClass?.Subclass != null)
+            {
+                var specialty = MapWizardSpecialty(wizardClass.Subclass);
+                if (specialty != null)
+                    AddClassFeatureChoices(choices, WizardSchools.SpecializationFeature,
+                        new[] { WizardSchools.ToOptionId(specialty) });
+
+                AddClassFeatureChoices(choices, WizardSchools.ProhibitedFeature,
+                    wizardClass.ProhibitedSchools.Select(school =>
+                        WizardSchools.ToOptionId(school.Trim().ToLowerInvariant())));
+            }
+
+            var spellcasterChoices = level.SpellcasterChoices
+                .Select(mapper.MapClass)
+                .Where(id => id != null)
+                .Cast<string>()
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
+            if (spellcasterChoices.Count > 0)
+            {
+                AddClassFeatureChoices(choices, "advance_spellcasting", spellcasterChoices);
             }
 
             character.Ticks.Add(new Tick { DriverId = driverId, Choices = choices });
 
-            // Engine applies AbilityIncrease only when cumulative HD % interval == 0.
+            // Engine applies AbilityIncrease only on scheduled class ticks.
             // Record which increases will be re-applied so we can recover the rolled base.
             var cumulativeHD = character.Ticks.Count;
             if (cumulativeHD % abilityIncreaseInterval == 0 && choices.AbilityIncrease.HasValue)
@@ -275,6 +352,96 @@ public static class PcgConverter
         // (FeatSlots persist across ticks).
         if (character.Ticks.Count > 0 && featIds.Count > 0)
             character.Ticks[^1].Choices.FeatIds = featIds;
+
+        // PCGen emits three superficially similar kinds of spell rows:
+        //   - "Known Spells" for spontaneous casters: persistent build choices;
+        //   - "Spellbook (...)" for wizards: persistent spellbook contents;
+        //   - "Prepared Spells": a daily loadout, which the engine deliberately does not persist.
+        // It also emits every spell available to a wizard as "Known Spells". Resolve the engine's
+        // acquisition mode before accepting a row so those thousands of available-list entries do
+        // not become spellbook choices.
+        var spellSelections = new List<SpellSelection>();
+        var reportedSpellSources = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var reportedDroppedSpells = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        void ReportDroppedSpell(PcgSpellEntry spell, string warning)
+        {
+            var droppedKey = $"{spell.ClassName}: {spell.Name}";
+            if (!reportedDroppedSpells.Add(droppedKey))
+                return;
+
+            result.Warnings.Add(warning);
+            result.DroppedSpells.Add(spell.Name);
+        }
+
+        foreach (var spell in data.Spells)
+        {
+            var isKnownBook = spell.Book.Equals("Known Spells", StringComparison.OrdinalIgnoreCase);
+            var isSpellbook = spell.Book.StartsWith("Spellbook", StringComparison.OrdinalIgnoreCase);
+            if (!isKnownBook && !isSpellbook)
+                continue;
+
+            var classId = mapper.MapClass(spell.ClassName);
+            if (classId == null)
+            {
+                if (reportedSpellSources.Add(spell.ClassName))
+                    result.Warnings.Add($"Spell source '{spell.ClassName}' has no engine mapping — spells skipped");
+                ReportDroppedSpell(spell,
+                    $"Spell '{spell.Name}' ({spell.ClassName}) has an unmapped source class — skipped");
+                continue;
+            }
+
+            SpellAcquisition? acquisition = null;
+            if (registry != null)
+            {
+                var driver = registry.GetAllDrivers().OfType<HDDriver>()
+                    .FirstOrDefault(d => d.Id == classId);
+                acquisition = driver?.Spellcasting?.ResolvedAcquisition;
+                if (acquisition == null)
+                {
+                    if (reportedSpellSources.Add(spell.ClassName))
+                        result.Warnings.Add($"Spell source '{spell.ClassName}' maps to '{classId}' but has no modeled spellcasting — spells skipped");
+                    ReportDroppedSpell(spell,
+                        $"Spell '{spell.Name}' ({spell.ClassName}) has no modeled spellcasting source — skipped");
+                    continue;
+                }
+            }
+            else
+            {
+                acquisition = isSpellbook ? SpellAcquisition.Spellbook : SpellAcquisition.SpellsKnown;
+            }
+
+            if ((acquisition == SpellAcquisition.Spellbook && !isSpellbook)
+                || (acquisition == SpellAcquisition.SpellsKnown && !isKnownBook)
+                || acquisition == SpellAcquisition.FullList)
+            {
+                continue;
+            }
+
+            var spellId = mapper.MapSpell(spell.Name, registry);
+            if (spellId == null)
+            {
+                ReportDroppedSpell(spell,
+                    $"Spell '{spell.Name}' ({spell.ClassName}) has no engine mapping — skipped");
+                continue;
+            }
+
+            spellSelections.Add(new SpellSelection
+            {
+                ClassId = classId,
+                SpellLevel = spell.SpellLevel,
+                SpellId = spellId,
+            });
+        }
+
+        if (character.Ticks.Count > 0 && spellSelections.Count > 0)
+        {
+            character.Ticks[^1].Choices.SpellSelections = spellSelections
+                .DistinctBy(s => (s.ClassId, s.SpellLevel, s.SpellId))
+                .OrderBy(s => s.ClassId, StringComparer.Ordinal)
+                .ThenBy(s => s.SpellLevel)
+                .ThenBy(s => s.SpellId, StringComparer.Ordinal)
+                .ToList();
+        }
 
         // Skill allocations are distributed across ticks by bought-class. PCGen records
         // CLASSBOUGHT:[CLASS:X|RANKS:Y] per skill rank, telling us which class/racial HD
@@ -337,14 +504,18 @@ public static class PcgConverter
             {
                 ItemId = raw.Name,
                 ContentId = id,
+                Quantity = raw.Quantity,
+                WeightLbsOverride = raw.WeightLbs,
+                PriceCpOverride = raw.PriceCp,
             };
 
             if (raw.InActiveSet && raw.SlotName != null && mapper.IsWeaponSlot(raw.SlotName))
             {
-                var (mh, th) = mapper.InferHand(raw.SlotName);
+                var (mh, th, doubleWeapon) = mapper.InferHand(raw.SlotName);
                 entry.Slot = string.Empty;
                 entry.MainHand = mh;
                 entry.TwoHanded = th;
+                entry.DoubleWeapon = doubleWeapon;
             }
             else if (raw.InActiveSet && raw.SlotName != null)
             {
@@ -360,6 +531,26 @@ public static class PcgConverter
 
         result.Character = character;
         return result;
+    }
+
+    private static bool DriverGrantsDomainSlots(ContentRegistry? registry, string driverId)
+    {
+        if (registry == null)
+            return driverId is "class:cleric" or "class:cloistered_cleric";
+
+        HDDriver? driver;
+        try
+        {
+            driver = registry.GetDriver(driverId) as HDDriver;
+        }
+        catch (KeyNotFoundException)
+        {
+            return false;
+        }
+
+        return driver != null && (driver.PerLevelPermabuffs.OfType<GrantDomainSelection>().Any()
+            || driver.LevelPermabuffs.Values.SelectMany(value => value)
+                .OfType<GrantDomainSelection>().Any());
     }
 
     /// <summary>
@@ -378,5 +569,66 @@ public static class PcgConverter
             }
         }
         return ticks.Count - 1;
+    }
+
+    private static void AddClassFeatureChoices(TickChoices choices, string key, IEnumerable<string> values)
+    {
+        var additions = values.Where(value => !string.IsNullOrWhiteSpace(value)).ToList();
+        if (additions.Count == 0) return;
+
+        choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
+        if (!choices.ClassFeatureChoices.TryGetValue(key, out var existing))
+        {
+            existing = new List<string>();
+            choices.ClassFeatureChoices[key] = existing;
+        }
+
+        foreach (var value in additions)
+        {
+            if (!existing.Contains(value, StringComparer.Ordinal))
+                existing.Add(value);
+        }
+    }
+
+    private static string? MapWizardSpecialty(string subclass) => subclass.Trim().ToLowerInvariant() switch
+    {
+        "abjurer" => "abjuration",
+        "conjurer" => "conjuration",
+        "diviner" => "divination",
+        "enchanter" => "enchantment",
+        "evoker" => "evocation",
+        "illusionist" => "illusion",
+        "necromancer" => "necromancy",
+        "transmuter" => "transmutation",
+        _ => null,
+    };
+
+    private static string MapCompanionLinkType(string pcgenType) => pcgenType.Trim().ToLowerInvariant() switch
+    {
+        "animal companion" => "animal_companion",
+        "familiar" => "familiar",
+        "shadow companion" => "shadow_companion",
+        "cohort" => "leadership_cohort",
+        "follower" => "follower",
+        _ => PcgIdMapper.DefaultIdTransform(pcgenType),
+    };
+
+    private static Formula CompanionLevelFormula(string linkType) => linkType switch
+    {
+        "animal_companion" => new Formula("max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)"),
+        "familiar" => new Formula("CasterLevel(wizard) + CasterLevel(sorcerer)"),
+        "leadership_cohort" => new Formula("min(TotalHD - 2, LeadershipScore - 2)"),
+        _ => new Formula("TotalHD"),
+    };
+
+    private static string ToCharacterId(string name, string fallback)
+    {
+        var source = string.IsNullOrWhiteSpace(name)
+            ? Path.GetFileNameWithoutExtension(fallback.Replace('\\', '/'))
+            : name.Trim();
+        return new string(source.ToLowerInvariant()
+            .Select(c => char.IsLetterOrDigit(c) ? c : (c is ' ' or '-' or '_' ? '_' : '-'))
+            .ToArray())
+            .Trim('-', '_');
     }
 }

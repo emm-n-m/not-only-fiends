@@ -348,12 +348,18 @@
   },
   {
     "id": "skill:knowledge_architecture",
-    "name": "Knowledge (Architecture and Studioering)",
+    "name": "Knowledge (Architecture and Engineering)",
     "keyAbility": "int",
     "trainedOnly": true,
     "armorCheckPenalty": false,
-    "description": "",
-    "parentSkill": "skill:knowledge"
+    "description": "Buildings, aqueducts, bridges, and fortifications. At 5 ranks, grants a +2 synergy bonus on Search checks made to find secret doors or hidden compartments.",
+    "parentSkill": "skill:knowledge",
+    "synergies": [
+      {
+        "targetSkillId": "skill:search",
+        "bonus": 2
+      }
+    ]
   },
   {
     "id": "skill:knowledge_dungeoneering",

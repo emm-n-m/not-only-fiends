@@ -235,6 +235,9 @@ public sealed class AgentApiService
             DroppedClasses = result.DroppedClasses,
             DroppedTemplates = result.DroppedTemplates,
             DroppedDomains = result.DroppedDomains,
+            DroppedSpells = result.DroppedSpells,
+            DroppedEquipment = result.DroppedEquipment,
+            IgnoredTemporaryBonuses = result.IgnoredTemporaryBonuses,
             RaceDropped = result.RaceDropped
         };
     }
@@ -314,10 +317,16 @@ public sealed class AgentApiService
     {
         var currentState = _replayStudio.Evaluate(request.Character);
         var nextHd = currentState.TotalHD + 1;
+        var candidateIds = request.CandidateDriverIds != null
+            ? new HashSet<string>(request.CandidateDriverIds, StringComparer.Ordinal)
+            : null;
+        var abilityIncreaseDue = GetAvailableDrivers(currentState, request.Character)
+            .Where(driver => candidateIds == null || candidateIds.Contains(driver.Id))
+            .Any(driver => GameRules.Standard35e().GrantsAbilityIncrease(nextHd, driver.Kind));
         return new NextStepResponse
         {
             NextHd = nextHd,
-            AbilityIncreaseDue = nextHd % GameRules.Standard35e().AbilityIncreaseInterval == 0,
+            AbilityIncreaseDue = abilityIncreaseDue,
             CurrentState = currentState,
             CurrentSheet = CharacterSheet.FromState(currentState),
             CurrentPendingChoices = BuildPendingChoices(currentState),
@@ -395,7 +404,7 @@ public sealed class AgentApiService
         return new NextStepResponse
         {
             NextHd = nextHd,
-            AbilityIncreaseDue = nextHd % GameRules.Standard35e().AbilityIncreaseInterval == 0,
+            AbilityIncreaseDue = previews.Any(preview => preview.AbilityIncreaseDue),
             CurrentState = currentState,
             CurrentSheet = CharacterSheet.FromState(currentState),
             CurrentPendingChoices = BuildPendingChoices(currentState),
@@ -416,6 +425,7 @@ public sealed class AgentApiService
         return new DriverPreviewDto
         {
             Driver = MapDriver(driver),
+            AbilityIncreaseDue = GameRules.Standard35e().GrantsAbilityIncrease(projectedState.TotalHD, driver.Kind),
             Preview = new CharacterPreviewDto
             {
                 TotalHd = projectedState.TotalHD,

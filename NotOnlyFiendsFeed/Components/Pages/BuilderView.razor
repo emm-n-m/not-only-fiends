@@ -250,7 +250,7 @@ else
                         </div>
                         <div class="col-auto">
                             <strong>HD @hdNum</strong>
-                            @if (hdNum % 4 == 0)
+                            @if (IsAbilityIncreaseDue(index))
                             {
                                 @if (tick.Choices.AbilityIncrease != null)
                                 {
@@ -268,13 +268,13 @@ else
                                 <SearchSelect TItem="Driver"
                                               Items="_drivers"
                                               Value="@tick.DriverId"
-                                              ValueChanged="(v) => { tick.DriverId = v ?? tick.DriverId; OnCharacterChanged(); }"
+                                              ValueChanged="(v) => SetTickDriver(index, v)"
                                               DisplaySelector="@(d => d.Name)"
                                               ValueSelector="@(d => d.Id)"
                                               CssClass="form-control-sm"
                                               Placeholder="Search classes..." />
                             </div>
-                            @if (hdNum % 4 == 0)
+                            @if (IsAbilityIncreaseDue(index))
                             {
                                 <div class="col-md-2">
                                     <select class="form-select form-select-sm"
@@ -680,7 +680,7 @@ else
                                                 {
                                                     var capturedLvl = lvl;
                                                     var spellsAtLevel = _spells
-                                                        .Where(s => s.ClassLevels.TryGetValue(capturedListId, out var l) && l == capturedLvl)
+                                                        .Where(s => Content.Registry.TryGetSpellLevelForList(s, capturedListId, out var l) && l == capturedLvl)
                                                         .Where(s => !alreadyChosen.Contains(s.Id))
                                                         .Where(s => !barredSchools.Contains(s.School))
                                                         .OrderBy(s => s.Name)
@@ -1597,7 +1597,7 @@ else
             foreach (var (spellListId, sc) in state.Spellcasting.OrderBy(kv => kv.Key))
             {
                 var availableCount = _spells.Count(spell =>
-                    spell.ClassLevels.TryGetValue(spellListId, out var level)
+                    Content.Registry.TryGetSpellLevelForList(spell, spellListId, out var level)
                     && level <= sc.MaxSpellLevel);
                 summaries.Add(new TickSpellSummary(spellListId, sc.MaxSpellLevel, availableCount, IsDomainList: false));
             }
@@ -1764,6 +1764,22 @@ else
         else if (Enum.TryParse<Ability>(val, out var ability))
             _character.Ticks[index].Choices.AbilityIncrease = ability;
         OnCharacterChanged();
+    }
+
+    private void SetTickDriver(int index, string? driverId)
+    {
+        if (string.IsNullOrEmpty(driverId)) return;
+        _character.Ticks[index].DriverId = driverId;
+        if (!IsAbilityIncreaseDue(index))
+            _character.Ticks[index].Choices.AbilityIncrease = null;
+        OnCharacterChanged();
+    }
+
+    private bool IsAbilityIncreaseDue(int index)
+    {
+        if (index < 0 || index >= _character.Ticks.Count) return false;
+        var driver = _drivers.FirstOrDefault(d => d.Id == _character.Ticks[index].DriverId) as HDDriver;
+        return driver != null && GameRules.Standard35e().GrantsAbilityIncrease(index + 1, driver.Kind);
     }
 
     private void AddFeatToTick(int index)
@@ -2004,7 +2020,8 @@ else
     // How many spells a full-list caster has available at its current maximum spell level. Shown
     // instead of a picker, so the panel still says something useful about the class's reach.
     private int AvailableSpellCount(string spellListId, int maxSpellLevel) =>
-        _spells.Count(s => s.ClassLevels.TryGetValue(spellListId, out var lvl) && lvl <= maxSpellLevel);
+        _spells.Count(s => Content.Registry.TryGetSpellLevelForList(s, spellListId, out var lvl)
+            && lvl <= maxSpellLevel);
 
     // --- Specialist wizard schools ---
 

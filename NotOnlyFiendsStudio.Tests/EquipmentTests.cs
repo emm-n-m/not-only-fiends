@@ -541,8 +541,86 @@ public class EquipmentTests
         Assert.Equal(58, state.Encumbrance.LightMax);
         Assert.Equal(116, state.Encumbrance.MediumMax);
         Assert.Equal(175, state.Encumbrance.HeavyMax);
-        Assert.Equal(70, state.Encumbrance.TotalWeightLbs);
+        Assert.Equal(70d, state.Encumbrance.TotalWeightLbs);
         Assert.Equal(LoadCategory.Medium, state.Encumbrance.Load);
+    }
+
+    [Fact]
+    public void EquipmentQuantityAndWeightOverride_DriveEncumbrance()
+    {
+        var registry = BuildRegistry();
+        registry.RegisterEquipment(new EquipmentDefinition
+        {
+            Id = "gear:arrow",
+            Name = "Arrow",
+            Category = EquipmentCategory.Ammunition,
+            WeightLbs = 1,
+        });
+        var character = BuildFighter(1);
+        character.Equipment.Add(new EquipmentEntry
+        {
+            ContentId = "gear:arrow",
+            Quantity = 5,
+            WeightLbsOverride = 1.25,
+        });
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        Assert.Equal(6.25, state.Encumbrance.TotalWeightLbs);
+    }
+
+    [Fact]
+    public void CarriedEquipment_AddsWeightButDoesNotGrantEquippedEffects()
+    {
+        var registry = BuildRegistry();
+        registry.RegisterEquipment(new EquipmentDefinition
+        {
+            Id = "wondrous:carried_strength",
+            Name = "Carried Strength Item",
+            Category = EquipmentCategory.Wondrous,
+            WeightLbs = 5,
+            GrantedPermabuffs =
+            {
+                new GrantTypedBonus
+                {
+                    Target = BonusTarget.AbilityStr,
+                    BonusType = BonusType.Enhancement,
+                    Value = new Formula("4"),
+                },
+            },
+        });
+        var character = BuildFighter(1, str: 10);
+        character.Equipment.Add(new EquipmentEntry { ContentId = "wondrous:carried_strength", Slot = "carried" });
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        Assert.Equal(10, state.AbilityScores.STR);
+        Assert.Equal(5d, state.Encumbrance.TotalWeightLbs);
+    }
+
+    [Fact]
+    public void DoubleWeapon_ProducesMainAndOffHandAttackLines()
+    {
+        var registry = BuildRegistry();
+        registry.RegisterEquipment(new EquipmentDefinition
+        {
+            Id = "weapon:double_test",
+            Name = "Double Test Weapon",
+            Category = EquipmentCategory.Weapon,
+            Weapon = new WeaponProfile
+            {
+                Damage = "1d6",
+                DoubleWeapon = true,
+            },
+        });
+        var character = BuildFighter(1);
+        character.Equipment.Add(new EquipmentEntry { ContentId = "weapon:double_test", DoubleWeapon = true });
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        Assert.Equal(2, state.AttackLines.Count);
+        Assert.False(state.AttackLines[0].IsOffHand);
+        Assert.True(state.AttackLines[1].IsOffHand);
     }
 
     [Fact]

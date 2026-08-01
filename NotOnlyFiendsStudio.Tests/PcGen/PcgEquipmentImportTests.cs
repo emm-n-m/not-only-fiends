@@ -142,6 +142,12 @@ public class PcgEquipmentImportTests
         Assert.Null(mapper.MapEquipment("Mystery Trinket of Whimsy", registry));
     }
 
+    [Fact]
+    public void Mapper_ArmsSlot_NormalizesToWrists()
+    {
+        Assert.Equal("wrists", new PcgIdMapper().MapSlot("Arms"));
+    }
+
     // --- Registry ---
 
     [Fact]
@@ -151,6 +157,65 @@ public class PcgEquipmentImportTests
 
         Assert.True(registry.TryGetEquipmentByName("FULL PLATE", out var def));
         Assert.Equal("armor:full_plate", def!.Id);
+    }
+
+    [RequiresPrivatePacksFact]
+    public void PrivateCatalog_HarpBow_MatchesMalhavocLstAndReplaysAsWeapon()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        var harpBow = registry.GetEquipment("weapon:harp_bow");
+
+        Assert.Equal("Harp Bow", harpBow.Name);
+        Assert.Equal(EquipmentCategory.Weapon, harpBow.Category);
+        Assert.Equal("weapon", harpBow.Slot);
+        Assert.Equal(333_000, harpBow.PriceCp);
+        Assert.Equal(5, harpBow.WeightLbs);
+        Assert.NotNull(harpBow.Weapon);
+        Assert.Equal("1d6", harpBow.Weapon.Damage);
+        Assert.Equal(20, harpBow.Weapon.CritRangeLow);
+        Assert.Equal(3, harpBow.Weapon.CritMultiplier);
+        Assert.Equal(60, harpBow.Weapon.RangeFt);
+        Assert.Equal("piercing", harpBow.Weapon.DamageType);
+        Assert.True(harpBow.Weapon.Ranged);
+        Assert.True(harpBow.Weapon.TwoHanded);
+        Assert.Equal("martial", harpBow.Weapon.Proficiency);
+        Assert.Contains("+2 enhancement bonus on attack rolls only", harpBow.Description);
+
+        var mapper = new PcgIdMapper();
+        Assert.Equal(harpBow.Id, mapper.MapEquipment("Harp Bow (Small)", registry));
+        Assert.Equal(harpBow.Id, mapper.MapEquipment("Harp Bow (Medium)", registry));
+
+        var character = new Character
+        {
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10,
+                DEX = 10,
+                CON = 10,
+                INT = 10,
+                WIS = 10,
+                CHA = 10,
+            },
+            Ticks = { new Tick { DriverId = "class:fighter" } },
+            Equipment =
+            {
+                new EquipmentEntry
+                {
+                    ItemId = "Harp Bow",
+                    ContentId = harpBow.Id,
+                    MainHand = true,
+                    TwoHanded = true,
+                }
+            }
+        };
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+        var attack = Assert.Single(state.AttackLines);
+        Assert.Equal("Harp Bow", attack.Name);
+        Assert.Equal("1d6", attack.Damage);
+        Assert.Equal("x3", attack.Crit);
+        Assert.True(attack.IsRanged);
     }
 
     // --- Converter ---
@@ -245,6 +310,59 @@ public class PcgEquipmentImportTests
 
         var entry = Assert.Single(result.Character.Equipment);
         Assert.False(entry.MainHand);
+        Assert.False(entry.TwoHanded);
+    }
+
+    [Theory]
+    [InlineData("Primary Hand", true)]
+    [InlineData("Secondary Hand", false)]
+    public void Converter_ActualPcgenHandLabels_SetTheCorrectHand(string slot, bool expectedMainHand)
+    {
+        var data = MinimalCharacter(new PcgEquipmentRaw
+        {
+            Name = "Longsword",
+            SlotName = slot,
+            InActiveSet = true,
+        });
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), CreateRegistryWithEquipment());
+
+        Assert.Equal(expectedMainHand, Assert.Single(result.Character.Equipment).MainHand);
+    }
+
+    [Fact]
+    public void Converter_QuantityAndCharacterSpecificWeightAndPrice_ArePreserved()
+    {
+        var data = MinimalCharacter(new PcgEquipmentRaw
+        {
+            Name = "Longsword",
+            Quantity = 5,
+            WeightLbs = 1.25,
+            PriceCp = 166_500,
+        });
+
+        var entry = Assert.Single(PcgConverter.Convert(data, new PcgIdMapper(), CreateRegistryWithEquipment())
+            .Character.Equipment);
+
+        Assert.Equal(5, entry.Quantity);
+        Assert.Equal(1.25, entry.WeightLbsOverride);
+        Assert.Equal(166_500, entry.PriceCpOverride);
+    }
+
+    [Fact]
+    public void Converter_DoubleWeaponLabel_IsExplicitlyPreserved()
+    {
+        var data = MinimalCharacter(new PcgEquipmentRaw
+        {
+            Name = "Longsword",
+            SlotName = "Double Weapon",
+            InActiveSet = true,
+        });
+
+        var entry = Assert.Single(PcgConverter.Convert(data, new PcgIdMapper(), CreateRegistryWithEquipment())
+            .Character.Equipment);
+
+        Assert.True(entry.DoubleWeapon);
         Assert.False(entry.TwoHanded);
     }
 

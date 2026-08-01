@@ -132,6 +132,8 @@ public class PcgIdMapper
 
     private static readonly Dictionary<string, string> SkillOverrides = new(StringComparer.OrdinalIgnoreCase)
     {
+        ["Knowledge (Architecture and Engineering)"] = "knowledge_architecture",
+        ["Knowledge (History/Abyss)"] = "knowledge_history_abyss",
         ["Knowledge (The Planes)"] = "knowledge_planes",
     };
 
@@ -144,6 +146,8 @@ public class PcgIdMapper
         ["Masterwork Cold Iron Longsword +2"] = "weapon:masterwork_cold_iron_longsword",
         ["Sylvan Scimitar +2 (Silver/Wounding)"] = "weapon:sylvan_scimitar",
         ["Oathbow (Small)"] = "weapon:oathbow",
+        ["Harp Bow (Small)"] = "weapon:harp_bow",
+        ["Harp Bow (Medium)"] = "weapon:harp_bow",
         ["Flail +2 (Heavy/Cold Iron)"] = "weapon:flail",
         ["Elven Chain (Small)"] = "armor:elven_chain",
         ["Longbow +1 (Small)"] = "weapon:longbow",
@@ -226,7 +230,7 @@ public class PcgIdMapper
         ["Shoulders"] = "shoulders",
         ["Body"] = "body",
         ["Torso"] = "torso",
-        ["Arms"] = "arms",
+        ["Arms"] = "wrists",
         ["Hands"] = "hands",
         ["Wrists"] = "wrists",
         ["Fingers"] = "ring",
@@ -241,10 +245,13 @@ public class PcgIdMapper
     {
         "Equipped",
         "Primary Weapon",
+        "Primary Hand",
         "Secondary Weapon",
+        "Secondary Hand",
         "Off-hand",
         "Two Hand",
         "Both Hands",
+        "Double Weapon",
     };
 
     public string? MapRace(string pcgenRace)
@@ -284,6 +291,22 @@ public class PcgIdMapper
     public string MapTemplate(string pcgenTemplateName)
     {
         return "template:" + DefaultIdTransform(pcgenTemplateName);
+    }
+
+    /// <summary>
+    /// Resolves a PCGen spell name to the catalog. Prefer the conventional ID, then fall back to
+    /// an exact display-name match for legacy names whose content ID uses different word order.
+    /// Without a registry, return the conventional ID so lightweight conversion remains usable.
+    /// </summary>
+    public string? MapSpell(string pcgenSpellName, ContentRegistry? registry)
+    {
+        var id = "spell:" + DefaultIdTransform(pcgenSpellName);
+        if (registry == null || registry.TryGetSpell(id, out _))
+            return id;
+
+        return registry.TryGetSpellByName(pcgenSpellName, out var spell)
+            ? spell!.Id
+            : null;
     }
 
     /// <summary>
@@ -327,12 +350,13 @@ public class PcgIdMapper
     public string MapSlot(string pcgSlot) =>
         BodySlotMap.TryGetValue(pcgSlot, out var s) ? s : "carried";
 
-    public (bool MainHand, bool TwoHanded) InferHand(string pcgSlot) => pcgSlot.ToLowerInvariant() switch
+    public (bool MainHand, bool TwoHanded, bool DoubleWeapon) InferHand(string pcgSlot) => pcgSlot.ToLowerInvariant() switch
     {
-        "primary weapon" or "equipped" => (true, false),
-        "secondary weapon" or "off-hand" => (false, false),
-        "two hand" or "both hands" => (true, true),
-        _ => (true, false),
+        "primary weapon" or "primary hand" or "equipped" => (true, false, false),
+        "secondary weapon" or "secondary hand" or "off-hand" => (false, false, false),
+        "two hand" or "both hands" => (true, true, false),
+        "double weapon" => (true, false, true),
+        _ => (true, false, false),
     };
 
     public static string DefaultIdTransform(string name)

@@ -193,7 +193,7 @@ public class PcgConverterTests
     }
 
     [Fact]
-    public void Convert_DomainsFrontLoadedToTick0()
+    public void Convert_DomainsPlacedOnTheirSourceTick()
     {
         var data = CreateClericData();
         var mapper = new PcgIdMapper();
@@ -202,6 +202,168 @@ public class PcgConverterTests
         var domains = result.Character.Ticks[0].Choices.ClassFeatureChoices?["domains"];
         Assert.NotNull(domains);
         Assert.Contains("domain:war", domains);
+    }
+
+    [Fact]
+    public void Convert_LaterDomainSourceLevel_IsPlacedOnMatchingTick()
+    {
+        var data = CreateClericData();
+        data.Classes = new()
+        {
+            new PcgClassEntry { Name = "Bard", Level = 1 },
+            new PcgClassEntry { Name = "Druid", Level = 2 },
+        };
+        data.Levels = new()
+        {
+            new PcgLevelEntry { ClassName = "Bard", ClassLevel = 1 },
+            new PcgLevelEntry { ClassName = "Druid", ClassLevel = 1 },
+            new PcgLevelEntry { ClassName = "Druid", ClassLevel = 2 },
+        };
+        data.Domains = new()
+        {
+            new PcgDomainEntry { Name = "Plant", SourceClass = "Druid", SourceLevel = 2 },
+        };
+
+        var registry = TestContentHelper.LoadAllPacks();
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+
+        Assert.Null(result.Character.Ticks[0].Choices.ClassFeatureChoices);
+        Assert.Null(result.Character.Ticks[1].Choices.ClassFeatureChoices);
+        Assert.Equal(new[] { "domain:plant" },
+            result.Character.Ticks[2].Choices.ClassFeatureChoices!["imported_source_domains"]);
+
+        var state = new ReplayStudio(registry).Evaluate(result.Character);
+        Assert.Contains("domain:plant", state.Domains);
+        Assert.Equal("class:druid", state.DomainOwners["domain:plant"]);
+        Assert.DoesNotContain(state.Warnings,
+            warning => warning.Message.Contains("pending domain", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Convert_WizardSubclassAndProhibitedSchools_BecomeFirstLevelChoices()
+    {
+        var data = CreateClericData();
+        data.Classes = new()
+        {
+            new PcgClassEntry
+            {
+                Name = "Wizard",
+                Level = 1,
+                Subclass = "Abjurer",
+                ProhibitedSchools = new() { "Enchantment", "Evocation" },
+            },
+        };
+        data.Levels = new() { new PcgLevelEntry { ClassName = "Wizard", ClassLevel = 1 } };
+        data.Domains.Clear();
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper());
+        var choices = result.Character.Ticks[0].Choices.ClassFeatureChoices!;
+
+        Assert.Equal(new[] { "school:abjuration" }, choices[WizardSchools.SpecializationFeature]);
+        Assert.Equal(new[] { "school:enchantment", "school:evocation" }, choices[WizardSchools.ProhibitedFeature]);
+    }
+
+    [Fact]
+    public void Convert_PrestigeSpellcasterChoice_BecomesAdvanceChoice()
+    {
+        var data = CreateClericData();
+        data.Classes = new()
+        {
+            new PcgClassEntry { Name = "Wizard", Level = 1 },
+            new PcgClassEntry { Name = "Loremaster", Level = 1 },
+        };
+        data.Levels = new()
+        {
+            new PcgLevelEntry { ClassName = "Wizard", ClassLevel = 1 },
+            new PcgLevelEntry { ClassName = "Loremaster", ClassLevel = 1, SpellcasterChoices = new() { "Wizard" } },
+        };
+        data.Domains.Clear();
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper());
+
+        Assert.Equal(new[] { "class:wizard" },
+            result.Character.Ticks[1].Choices.ClassFeatureChoices!["advance_spellcasting"]);
+    }
+
+    [Fact]
+    public void ParseText_ExtractsDomainLevelWizardSchoolsAndSpellcasterChoices()
+    {
+        const string pcg = """
+            CLASS:Wizard|SUBCLASS:Abjurer|LEVEL:1|PROHIBITED:Enchantment,Evocation
+            CLASSABILITIESLEVEL:Loremaster=1|HITPOINTS:2|ADD:[SPELLCASTER:ANY|CHOICE:Wizard]
+            DOMAIN:Plant|SOURCE:[TYPE:PCClass|NAME:Druid|LEVEL:2]
+            """;
+
+        var data = PcgParser.ParseText(pcg);
+
+        Assert.Equal(new[] { "Enchantment", "Evocation" }, data.Classes[0].ProhibitedSchools);
+        Assert.Equal(new[] { "Wizard" }, data.Levels[0].SpellcasterChoices);
+        Assert.Equal("Druid", data.Domains[0].SourceClass);
+        Assert.Equal(2, data.Domains[0].SourceLevel);
+    }
+
+    [Fact]
+    public void Convert_HitPointRolls_AreStoredOnTheirTicks()
+    {
+        var data = CreateClericData();
+        data.Levels[0].HitPoints = 8;
+        data.Levels[1].HitPoints = 3;
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper());
+
+        Assert.Equal(8, result.Character.Ticks[0].Choices.HitPointsRolled);
+        Assert.Equal(3, result.Character.Ticks[1].Choices.HitPointsRolled);
+        Assert.Null(result.Character.Ticks[2].Choices.HitPointsRolled);
+    }
+
+    [Fact]
+    public void ParseText_ExtractsMasterFollowersAndTemporaryBonuses()
+    {
+        const string pcg = """
+            MASTER:Witch|TYPE:Animal Companion|HITDICE:2|FILE:Witch.pcg|ADJUSTMENT:-3
+            FOLLOWER:Witch's companion|TYPE:Animal Companion|RACE:COMPANION ~ HAWK|HITDICE:0|FILE:Witch's companion.pcg
+            TEMPBONUS:SPELL=Fox's Cunning|TBTARGET:PC|TBBONUS:STAT
+            """;
+
+        var data = PcgParser.ParseText(pcg);
+
+        Assert.Equal("Witch", data.Master!.Name);
+        Assert.Equal("Animal Companion", data.Master.Type);
+        Assert.Equal(2, data.Master.HitDice);
+        Assert.Equal(-3, data.Master.Adjustment);
+        Assert.Equal("Witch's companion", Assert.Single(data.Followers).Name);
+        Assert.Equal("SPELL=Fox's Cunning", Assert.Single(data.TemporaryBonuses).Split('|')[0]);
+    }
+
+    [Fact]
+    public void Convert_MasterFollowersAndTemporaryBonuses_AreExplicit()
+    {
+        var data = CreateClericData();
+        data.Master = new PcgMasterEntry
+        {
+            Name = "Witch",
+            Type = "Animal Companion",
+            File = "Witch.pcg",
+        };
+        data.Followers.Add(new PcgFollowerEntry
+        {
+            Name = "Witch's companion",
+            Type = "Animal Companion",
+            Race = "Companion ~ Hawk",
+            File = "Witch's companion.pcg",
+        });
+        data.TemporaryBonuses.Add("SPELL=Fox's Cunning|TBTARGET:PC");
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper());
+
+        Assert.Equal("animal_companion", result.Character.CompanionOrigin!.LinkType);
+        Assert.Equal("witch", result.Character.CompanionOrigin.MasterCharacterId);
+        var link = Assert.Single(result.Character.CompanionLinks);
+        Assert.Equal("animal_companion", link.LinkType);
+        Assert.Equal("witch-s_companion", link.CompanionId);
+        Assert.Equal("race:companion_hawk", link.SelectedSpecies);
+        Assert.Contains("SPELL=Fox's Cunning", result.IgnoredTemporaryBonuses);
+        Assert.Contains(result.Warnings, warning => warning.Contains("temporary modifier"));
     }
 
     [Fact]
@@ -222,6 +384,30 @@ public class PcgConverterTests
         Assert.Equal(4, result.Character.Ticks.Count);
         Assert.Equal(Ability.WIS, result.Character.Ticks[3].Choices.AbilityIncrease);
         Assert.Null(result.Character.Ticks[0].Choices.AbilityIncrease);
+    }
+
+    [Fact]
+    public void Convert_RacialHdPrestat_IsNotImportedOrSubtracted()
+    {
+        var data = new PcgCharacterData
+        {
+            CharacterName = "Fey Test",
+            Race = "Pixie",
+            BaseStats = new() { ["STR"] = 10, ["DEX"] = 10, ["CON"] = 10, ["INT"] = 10, ["WIS"] = 11, ["CHA"] = 10 },
+            Classes = new() { new PcgClassEntry { Name = "Fey", Level = 4 } },
+            Levels = new()
+            {
+                new PcgLevelEntry { ClassName = "Fey", ClassLevel = 1 },
+                new PcgLevelEntry { ClassName = "Fey", ClassLevel = 2 },
+                new PcgLevelEntry { ClassName = "Fey", ClassLevel = 3 },
+                new PcgLevelEntry { ClassName = "Fey", ClassLevel = 4, AbilityIncrease = "WIS" },
+            },
+        };
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper());
+
+        Assert.Null(result.Character.Ticks[3].Choices.AbilityIncrease);
+        Assert.Equal(11, result.Character.BaseAbilityScores.WIS);
     }
 
     [Fact]
@@ -417,6 +603,136 @@ public class PcgConverterTests
         var result = PcgConverter.Convert(data, mapper, registry);
 
         Assert.Contains("Alien Technology", result.DroppedSkills);
+    }
+
+    [Fact]
+    public void Convert_SpellsKnown_ImportsOnlyKnownSpellRows()
+    {
+        var data = CreateClericData();
+        data.Classes = new() { new PcgClassEntry { Name = "Sorcerer", Level = 3 } };
+        data.Levels = Enumerable.Range(1, 3)
+            .Select(level => new PcgLevelEntry { ClassName = "Sorcerer", ClassLevel = level })
+            .ToList();
+        data.Domains.Clear();
+        data.Spells = new()
+        {
+            new PcgSpellEntry { Name = "Magic Missile", ClassName = "Sorcerer", SpellLevel = 1, Book = "Known Spells" },
+            new PcgSpellEntry { Name = "Shield", ClassName = "Sorcerer", SpellLevel = 1, Book = "Known Spells" },
+            new PcgSpellEntry { Name = "Mage Armor", ClassName = "Sorcerer", SpellLevel = 1, Book = "Prepared Spells" },
+        };
+
+        var registry = TestContentHelper.LoadAllPacks();
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+
+        var spells = result.Character.Ticks[^1].Choices.SpellSelections;
+        Assert.NotNull(spells);
+        Assert.Equal(2, spells.Count);
+        Assert.Contains(spells, s => s.ClassId == "class:sorcerer" && s.SpellId == "spell:magic_missile" && s.SpellLevel == 1);
+        Assert.Contains(spells, s => s.ClassId == "class:sorcerer" && s.SpellId == "spell:shield" && s.SpellLevel == 1);
+        Assert.DoesNotContain(spells, s => s.SpellId == "spell:mage_armor");
+    }
+
+    [Fact]
+    public void Convert_Wizard_ImportsSpellbookButNotAvailableOrPreparedRows()
+    {
+        var data = CreateClericData();
+        data.Classes = new() { new PcgClassEntry { Name = "Wizard", Level = 3 } };
+        data.Levels = Enumerable.Range(1, 3)
+            .Select(level => new PcgLevelEntry { ClassName = "Wizard", ClassLevel = level })
+            .ToList();
+        data.Domains.Clear();
+        data.Spells = new()
+        {
+            // PCGen calls the wizard's entire available class list "Known Spells".
+            new PcgSpellEntry { Name = "Magic Missile", ClassName = "Wizard", SpellLevel = 1, Book = "Known Spells" },
+            new PcgSpellEntry { Name = "Shield", ClassName = "Wizard", SpellLevel = 1, Book = "Spellbook (Wizard's/Blank)" },
+            new PcgSpellEntry { Name = "Invisibility", ClassName = "Wizard", SpellLevel = 2, Book = "Prepared Spells" },
+        };
+
+        var registry = TestContentHelper.LoadAllPacks();
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+
+        var spell = Assert.Single(result.Character.Ticks[^1].Choices.SpellSelections!);
+        Assert.Equal("class:wizard", spell.ClassId);
+        Assert.Equal("spell:shield", spell.SpellId);
+        Assert.Equal(1, spell.SpellLevel);
+    }
+
+    [Fact]
+    public void Convert_FullListCaster_DoesNotPersistDailyPreparation()
+    {
+        var data = CreateClericData();
+        data.Spells = new()
+        {
+            new PcgSpellEntry { Name = "Bless", ClassName = "Cleric", SpellLevel = 1, Book = "Prepared Spells" },
+            new PcgSpellEntry { Name = "Command", ClassName = "Cleric", SpellLevel = 1, Book = "Known Spells" },
+        };
+
+        var registry = TestContentHelper.LoadAllPacks();
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+
+        Assert.Null(result.Character.Ticks[^1].Choices.SpellSelections);
+        Assert.DoesNotContain(result.Warnings, warning => warning.Contains("Bless") || warning.Contains("Command"));
+    }
+
+    [Fact]
+    public void Convert_UnknownSelectedSpell_IsWarnedAndDropped()
+    {
+        var data = CreateClericData();
+        data.Classes = new() { new PcgClassEntry { Name = "Sorcerer", Level = 1 } };
+        data.Levels = new() { new PcgLevelEntry { ClassName = "Sorcerer", ClassLevel = 1 } };
+        data.Domains.Clear();
+        data.Spells = new()
+        {
+            new PcgSpellEntry { Name = "Totally Made Up Spell", ClassName = "Sorcerer", SpellLevel = 1, Book = "Known Spells" },
+        };
+
+        var registry = TestContentHelper.LoadAllPacks();
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+
+        Assert.Null(result.Character.Ticks[^1].Choices.SpellSelections);
+        Assert.Contains("Totally Made Up Spell", result.DroppedSpells);
+        Assert.Contains(result.Warnings, warning => warning.Contains("Totally Made Up Spell") && warning.Contains("no engine mapping"));
+        Assert.Contains("1 spell(s) missing", result.Summary);
+    }
+
+    [Fact]
+    public void Convert_SelectedSpellWithModeledRacialSource_IsImported()
+    {
+        var data = CreateClericData();
+        data.Spells = new()
+        {
+            new PcgSpellEntry { Name = "Wish", ClassName = "Red Dragon", SpellLevel = 9, Book = "Known Spells" },
+        };
+
+        var registry = TestContentHelper.LoadAllPacks();
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+
+        var selection = Assert.Single(result.Character.Ticks[^1].Choices.SpellSelections!);
+        Assert.Equal("racial_hd:red_dragon", selection.ClassId);
+        Assert.Equal("spell:wish", selection.SpellId);
+        Assert.Equal(9, selection.SpellLevel);
+        Assert.Empty(result.DroppedSpells);
+        Assert.DoesNotContain(result.Warnings, warning => warning.Contains("no modeled spellcasting"));
+    }
+
+    [Fact]
+    public void Convert_SelectedSpells_AreDeduplicated()
+    {
+        var data = CreateClericData();
+        data.Classes = new() { new PcgClassEntry { Name = "Sorcerer", Level = 1 } };
+        data.Levels = new() { new PcgLevelEntry { ClassName = "Sorcerer", ClassLevel = 1 } };
+        data.Domains.Clear();
+        data.Spells = new()
+        {
+            new PcgSpellEntry { Name = "Magic Missile", ClassName = "Sorcerer", SpellLevel = 1, Book = "Known Spells" },
+            new PcgSpellEntry { Name = "Magic Missile", ClassName = "Sorcerer", SpellLevel = 1, Book = "Known Spells" },
+        };
+
+        var registry = TestContentHelper.LoadAllPacks();
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+
+        Assert.Single(result.Character.Ticks[^1].Choices.SpellSelections!);
     }
 
     [Fact]

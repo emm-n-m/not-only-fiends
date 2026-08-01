@@ -100,6 +100,12 @@ public static class PcgParser
                 ParseEquipmentSet(line, slotAssignments);
             else if (line.StartsWith("CALCEQUIPSET:"))
                 activeSetId = line["CALCEQUIPSET:".Length..].Trim();
+            else if (line.StartsWith("FOLLOWER:"))
+                ParseFollower(line, data);
+            else if (line.StartsWith("MASTER:"))
+                ParseMaster(line, data);
+            else if (line.StartsWith("TEMPBONUS:"))
+                data.TemporaryBonuses.Add(line["TEMPBONUS:".Length..]);
         }
 
         ResolveEquipmentSlots(data, slotAssignments, activeSetId);
@@ -157,6 +163,9 @@ public static class PcgParser
             Name = name,
             Level = level,
             Subclass = fields.GetValueOrDefault("SUBCLASS"),
+            ProhibitedSchools = fields.GetValueOrDefault("PROHIBITED")
+                ?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToList() ?? new List<string>(),
             SpellBase = fields.GetValueOrDefault("SPELLBASE"),
         };
         data.Classes.Add(entry);
@@ -192,6 +201,16 @@ public static class PcgParser
             var statEq = preStat.IndexOf('=');
             if (statEq >= 0)
                 entry.AbilityIncrease = preStat[..statEq];
+        }
+
+        foreach (Match match in Regex.Matches(
+                     line,
+                     @"ADD:\[SPELLCASTER:[^|\]]+\|CHOICE:([^\]]+)\]",
+                     RegexOptions.IgnoreCase))
+        {
+            var choice = match.Groups[1].Value.Trim();
+            if (choice.Length > 0)
+                entry.SpellcasterChoices.Add(choice);
         }
 
         data.Levels.Add(entry);
@@ -306,6 +325,7 @@ public static class PcgParser
         if (!fields.TryGetValue("DOMAIN", out var name)) return;
 
         var sourceClass = "";
+        var sourceLevel = 0;
         var sourceIdx = line.IndexOf("SOURCE:[");
         if (sourceIdx >= 0)
         {
@@ -316,6 +336,8 @@ public static class PcgParser
                 var srcContent = line[srcBracketStart..srcBracketEnd];
                 var srcFields = ParseFields(srcContent);
                 sourceClass = srcFields.GetValueOrDefault("NAME") ?? "";
+                if (srcFields.TryGetValue("LEVEL", out var levelText))
+                    int.TryParse(levelText, out sourceLevel);
             }
         }
 
@@ -323,7 +345,42 @@ public static class PcgParser
         {
             Name = name,
             SourceClass = sourceClass,
+            SourceLevel = sourceLevel,
         });
+    }
+
+    private static void ParseFollower(string line, PcgCharacterData data)
+    {
+        var fields = ParseFields(line);
+        if (!fields.TryGetValue("FOLLOWER", out var name)) return;
+        data.Followers.Add(new PcgFollowerEntry
+        {
+            Name = name,
+            Type = fields.GetValueOrDefault("TYPE") ?? "",
+            Race = fields.GetValueOrDefault("RACE") ?? "",
+            File = fields.GetValueOrDefault("FILE") ?? "",
+        });
+    }
+
+    private static void ParseMaster(string line, PcgCharacterData data)
+    {
+        var fields = ParseFields(line);
+        if (!fields.TryGetValue("MASTER", out var name)) return;
+        var entry = new PcgMasterEntry
+        {
+            Name = name,
+            Type = fields.GetValueOrDefault("TYPE") ?? "",
+            File = fields.GetValueOrDefault("FILE") ?? "",
+        };
+        var parsedHitDice = 0;
+        var parsedAdjustment = 0;
+        if (fields.TryGetValue("HITDICE", out var hitDice))
+            int.TryParse(hitDice, out parsedHitDice);
+        if (fields.TryGetValue("ADJUSTMENT", out var adjustment))
+            int.TryParse(adjustment, out parsedAdjustment);
+        entry.HitDice = parsedHitDice;
+        entry.Adjustment = parsedAdjustment;
+        data.Master = entry;
     }
 
     // PCGen models natural attacks (Bite, Claw, Sting, Tail Slap, Wing…) as auto-equipped

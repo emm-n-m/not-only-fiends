@@ -60,18 +60,30 @@ public class HDDriver : Driver
         }
 
         // Spellcasting uses featureLevel (boosted by effective level rules)
-        if (Spellcasting != null && Spellcasting.SpellsPerDay.ContainsKey(featureLevel))
+        var progressionLevel = featureLevel;
+        var hasMappedProgressionLevel = Spellcasting?.ProgressionLevelByDriverLevel is { Count: > 0 };
+        if (hasMappedProgressionLevel &&
+            !Spellcasting!.ProgressionLevelByDriverLevel.TryGetValue(featureLevel, out progressionLevel))
         {
-            var spd = Spellcasting.SpellsPerDay[featureLevel];
+            progressionLevel = 0;
+        }
+
+        if (Spellcasting != null && progressionLevel > 0 &&
+            Spellcasting.SpellsPerDay.ContainsKey(progressionLevel))
+        {
+            var spd = Spellcasting.SpellsPerDay[progressionLevel];
             Dictionary<int, int>? sk = null;
-            Spellcasting.SpellsKnown?.TryGetValue(featureLevel, out sk);
+            Spellcasting.SpellsKnown?.TryGetValue(progressionLevel, out sk);
+            var casterLevel = progressionLevel;
+            if (Spellcasting.CasterLevelByDriverLevel?.TryGetValue(featureLevel, out var mappedCasterLevel) == true)
+                casterLevel = mappedCasterLevel;
 
             buffs.Add(new UpdateSpellcasting
             {
                 ClassId = Id,
                 CastingType = Spellcasting.CastingType,
                 CastingStat = Spellcasting.CastingStat,
-                CasterLevel = featureLevel,
+                CasterLevel = casterLevel,
                 SpellsPerDay = spd,
                 SpellsKnown = sk,
                 ProgressionRef = Spellcasting
@@ -97,6 +109,18 @@ public class SpellcastingProgression
     public Ability CastingStat { get; set; }
     public Dictionary<int, Dictionary<int, int>> SpellsPerDay { get; set; } = new();
     public Dictionary<int, Dictionary<int, int>>? SpellsKnown { get; set; }
+
+    /// <summary>
+    /// Optional mapping for monster classes whose racial-HD level and spell-progression level
+    /// are different. Unmapped driver levels do not update spellcasting.
+    /// </summary>
+    public Dictionary<int, int> ProgressionLevelByDriverLevel { get; set; } = new();
+
+    /// <summary>Optional actual caster level at each driver level when it differs from progression.</summary>
+    public Dictionary<int, int>? CasterLevelByDriverLevel { get; set; }
+
+    /// <summary>Additional class/domain lists this progression may learn spells from.</summary>
+    public List<string> SpellListSources { get; set; } = new();
 
     /// <summary>
     /// Set only where the default inference is wrong — in practice only the wizard, which has no

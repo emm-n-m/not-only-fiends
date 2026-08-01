@@ -117,6 +117,33 @@ public class AgentApiServiceTests
         Assert.NotEmpty(fighter.PendingChoices.FeatChoices);
     }
 
+    [Fact]
+    public void NextStep_AbilityIncreaseIsDriverAwareForRacialHd()
+    {
+        var character = new Character
+        {
+            Name = "Pixie Test",
+            RaceId = "race:pixie",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks =
+            {
+                new Tick { DriverId = "racial_hd:fey" },
+                new Tick { DriverId = "racial_hd:fey" },
+                new Tick { DriverId = "racial_hd:fey" },
+            }
+        };
+
+        var response = SharedService.Value.GetNextStep(new NextStepRequest
+        {
+            Character = character,
+            CandidateDriverIds = new List<string> { "racial_hd:fey", "class:bard" }
+        });
+
+        Assert.True(response.AbilityIncreaseDue);
+        Assert.False(response.DriverPreviews.Single(p => p.Driver.Id == "racial_hd:fey").AbilityIncreaseDue);
+        Assert.True(response.DriverPreviews.Single(p => p.Driver.Id == "class:bard").AbilityIncreaseDue);
+    }
+
     [Theory]
     [InlineData(OptionDetail.None)]
     [InlineData(OptionDetail.Ids)]

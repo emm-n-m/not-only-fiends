@@ -77,12 +77,27 @@ public class PcgImportRegression
                     RaceDropped = result.RaceDropped,
                     Summary = result.Summary,
                     Warnings = result.Warnings,
+                    ReplayWarnings = state?.Warnings.Select(warning => warning.ToString()).ToList() ?? new(),
+                    IgnoredTemporaryBonuses = result.IgnoredTemporaryBonuses,
                     DroppedClasses = result.DroppedClasses,
                     DroppedFeats = result.DroppedFeats,
                     DroppedSkills = result.DroppedSkills,
                     DroppedTemplates = result.DroppedTemplates,
                     DroppedDomains = result.DroppedDomains,
+                    DroppedSpells = result.DroppedSpells,
                     DroppedEquipment = result.DroppedEquipment,
+                    SourceHitPointRolls = data.Levels.Select(level => level.HitPoints).ToList(),
+                    ImportedHitPointRolls = result.Character.Ticks
+                        .Select(tick => tick.Choices.HitPointsRolled ?? 0).ToList(),
+                    CompanionLinks = result.Character.CompanionLinks
+                        .Select(link => $"{link.LinkType}|{link.CompanionId}|{link.SelectedSpecies}")
+                        .OrderBy(link => link, StringComparer.Ordinal).ToList(),
+                    CompanionOrigin = result.Character.CompanionOrigin is { } origin
+                        ? $"{origin.LinkType}|{origin.MasterCharacterId}|{origin.EffectiveMasterLevel}"
+                        : null,
+                    WizardSpecialization = FeatureChoices(result.Character, WizardSchools.SpecializationFeature),
+                    WizardProhibitedSchools = FeatureChoices(result.Character, WizardSchools.ProhibitedFeature),
+                    SpellAdvancementChoices = FeatureChoices(result.Character, "advance_spellcasting"),
                     Hp = state?.HP ?? 0,
                     Bab = state?.EffectiveBAB ?? 0,
                     Saves = state?.EffectiveSaves,
@@ -101,6 +116,14 @@ public class PcgImportRegression
                     SpellAcquisition = state == null
                         ? new()
                         : state.Spellcasting.ToDictionary(kv => kv.Key, kv => kv.Value.Acquisition.ToString()),
+                    SelectedSpells = state == null
+                        ? new()
+                        : state.Spellcasting.Values
+                            .SelectMany(sc => sc.SelectedSpells)
+                            .Select(s => $"{s.ClassId}|{s.SpellLevel}|{s.SpellId}")
+                            .Distinct(StringComparer.Ordinal)
+                            .OrderBy(s => s, StringComparer.Ordinal)
+                            .ToList(),
                 });
             }
             catch (Exception ex)
@@ -192,18 +215,35 @@ public class PcgImportRegression
             TotalFiles = chars.Count + failures.Count,
             Imported = chars.Count,
             ParseFailures = failures.Count,
-            CleanImports = chars.Count(c => c.Warnings.Count == 0 && !c.RaceDropped),
-            WithWarnings = chars.Count(c => c.Warnings.Count > 0 || c.RaceDropped),
+            CleanImports = chars.Count(c => c.Warnings.Count == 0 && c.ReplayWarnings.Count == 0 && !c.RaceDropped),
+            WithWarnings = chars.Count(c => c.Warnings.Count > 0 || c.ReplayWarnings.Count > 0 || c.RaceDropped),
             RaceDroppedCount = chars.Count(c => c.RaceDropped),
+            ReplayWarningCount = chars.Sum(c => c.ReplayWarnings.Count),
+            CharactersWithReplayWarnings = chars.Count(c => c.ReplayWarnings.Count > 0),
+            CompanionLinkCount = chars.Sum(c => c.CompanionLinks.Count),
+            CompanionOriginCount = chars.Count(c => c.CompanionOrigin != null),
+            IgnoredTemporaryBonusCount = chars.Sum(c => c.IgnoredTemporaryBonuses.Count),
+            HpRollMismatchCharacters = chars.Count(c => !c.SourceHitPointRolls.SequenceEqual(c.ImportedHitPointRolls)),
+            SpecialistWizardCount = chars.Count(c => c.WizardSpecialization.Count > 0),
+            SpellAdvancementChoiceCount = chars.Sum(c => c.SpellAdvancementChoices.Count),
             UnmappedRaces = Tally(chars.Where(c => c.RaceDropped).Select(c => c.SourceRace ?? "(blank)")),
             TopUnmappedClasses = Tally(chars.SelectMany(c => c.DroppedClasses)),
             TopUnmappedFeats = Tally(chars.SelectMany(c => c.DroppedFeats)),
             TopUnmappedSkills = Tally(chars.SelectMany(c => c.DroppedSkills)),
             TopUnmappedTemplates = Tally(chars.SelectMany(c => c.DroppedTemplates)),
             TopUnmappedDomains = Tally(chars.SelectMany(c => c.DroppedDomains)),
+            TopUnmappedSpells = Tally(chars.SelectMany(c => c.DroppedSpells)),
             TopUnmappedEquipment = Tally(chars.SelectMany(c => c.DroppedEquipment)),
         };
     }
+
+    private static List<string> FeatureChoices(Character character, string featureId) =>
+        character.Ticks
+            .SelectMany((tick, index) => tick.Choices.ClassFeatureChoices != null
+                && tick.Choices.ClassFeatureChoices.TryGetValue(featureId, out var choices)
+                    ? choices.Select(choice => $"HD {index + 1}: {choice}")
+                    : Enumerable.Empty<string>())
+            .ToList();
 
     /// <summary>
     /// Saves each converted Character as a top-level JSON file in CHARACTERS_PATH (so the Feed
@@ -297,6 +337,12 @@ public class PcgImportRegression
         sb.AppendLine($"  - With warnings: **{r.Aggregate.WithWarnings}**");
         sb.AppendLine($"  - Race fallback used: **{r.Aggregate.RaceDroppedCount}**");
         sb.AppendLine($"  - Parse failures: **{r.Aggregate.ParseFailures}**");
+        sb.AppendLine($"  - Replay warnings: **{r.Aggregate.ReplayWarningCount}** across **{r.Aggregate.CharactersWithReplayWarnings}** characters");
+        sb.AppendLine($"  - Companion links/origins: **{r.Aggregate.CompanionLinkCount}** / **{r.Aggregate.CompanionOriginCount}**");
+        sb.AppendLine($"  - Ignored active temporary modifiers: **{r.Aggregate.IgnoredTemporaryBonusCount}**");
+        sb.AppendLine($"  - HP-roll sequence mismatches: **{r.Aggregate.HpRollMismatchCharacters}** characters");
+        sb.AppendLine($"  - Specialist wizards: **{r.Aggregate.SpecialistWizardCount}**");
+        sb.AppendLine($"  - Explicit spell-advancement choices: **{r.Aggregate.SpellAdvancementChoiceCount}**");
         sb.AppendLine();
 
         void WriteTally(string heading, List<TallyEntry> tally)
@@ -324,6 +370,7 @@ public class PcgImportRegression
         WriteTally("Top unmapped skills", r.Aggregate.TopUnmappedSkills);
         WriteTally("Top unmapped templates", r.Aggregate.TopUnmappedTemplates);
         WriteTally("Top unmapped domains", r.Aggregate.TopUnmappedDomains);
+        WriteTally("Top unmapped spells", r.Aggregate.TopUnmappedSpells);
         WriteTally("Top unmapped equipment", r.Aggregate.TopUnmappedEquipment);
 
         if (r.ParseFailures.Count > 0)
@@ -342,7 +389,7 @@ public class PcgImportRegression
         sb.AppendLine();
         foreach (var c in r.Characters.OrderBy(c => c.File, StringComparer.OrdinalIgnoreCase))
         {
-            var badge = c.Warnings.Count == 0 && !c.RaceDropped ? "OK" : "WARN";
+            var badge = c.Warnings.Count == 0 && c.ReplayWarnings.Count == 0 && !c.RaceDropped ? "OK" : "WARN";
             sb.AppendLine($"### [{badge}] `{c.File}` — {c.Name} (HD {c.Hd})");
             sb.AppendLine($"- Race: `{c.RaceId}`{(c.RaceDropped ? $" _(fallback, source: `{c.SourceRace}`)_" : "")}");
             sb.AppendLine($"- Summary: {c.Summary}");
@@ -351,7 +398,17 @@ public class PcgImportRegression
             if (c.DroppedSkills.Count > 0) sb.AppendLine($"- Dropped skills: {string.Join(", ", c.DroppedSkills.Distinct())}");
             if (c.DroppedTemplates.Count > 0) sb.AppendLine($"- Dropped templates: {string.Join(", ", c.DroppedTemplates.Distinct())}");
             if (c.DroppedDomains.Count > 0) sb.AppendLine($"- Dropped domains: {string.Join(", ", c.DroppedDomains.Distinct())}");
+            if (c.DroppedSpells.Count > 0) sb.AppendLine($"- Dropped spells: {string.Join(", ", c.DroppedSpells.Distinct())}");
             if (c.DroppedEquipment.Count > 0) sb.AppendLine($"- Dropped equipment: {string.Join(", ", c.DroppedEquipment.Distinct())}");
+            if (c.SelectedSpells.Count > 0) sb.AppendLine($"- Selected spells imported: {c.SelectedSpells.Count}");
+            if (c.ReplayWarnings.Count > 0) sb.AppendLine($"- Replay warnings: {c.ReplayWarnings.Count}");
+            if (c.CompanionLinks.Count > 0) sb.AppendLine($"- Companion links: {c.CompanionLinks.Count}");
+            if (c.CompanionOrigin != null) sb.AppendLine($"- Companion origin: `{c.CompanionOrigin}`");
+            if (c.IgnoredTemporaryBonuses.Count > 0) sb.AppendLine($"- Ignored active temporary modifiers: {c.IgnoredTemporaryBonuses.Count}");
+            if (!c.SourceHitPointRolls.SequenceEqual(c.ImportedHitPointRolls)) sb.AppendLine("- **HP roll import mismatch**");
+            if (c.WizardSpecialization.Count > 0) sb.AppendLine($"- Wizard specialization: {string.Join(", ", c.WizardSpecialization)}");
+            if (c.WizardProhibitedSchools.Count > 0) sb.AppendLine($"- Prohibited wizard schools: {string.Join(", ", c.WizardProhibitedSchools)}");
+            if (c.SpellAdvancementChoices.Count > 0) sb.AppendLine($"- Spell-advancement choices: {c.SpellAdvancementChoices.Count}");
             sb.AppendLine();
         }
 
@@ -390,6 +447,7 @@ public class PcgImportRegression
         delta.TallyChanges["Skills"] = DiffTally(baseline.Aggregate.TopUnmappedSkills, fresh.Aggregate.TopUnmappedSkills);
         delta.TallyChanges["Templates"] = DiffTally(baseline.Aggregate.TopUnmappedTemplates, fresh.Aggregate.TopUnmappedTemplates);
         delta.TallyChanges["Domains"] = DiffTally(baseline.Aggregate.TopUnmappedDomains, fresh.Aggregate.TopUnmappedDomains);
+        delta.TallyChanges["Spells"] = DiffTally(baseline.Aggregate.TopUnmappedSpells, fresh.Aggregate.TopUnmappedSpells);
         delta.TallyChanges["Equipment"] = DiffTally(baseline.Aggregate.TopUnmappedEquipment, fresh.Aggregate.TopUnmappedEquipment);
 
         var baseFail = baseline.ParseFailures.ToDictionary(f => f.File, StringComparer.OrdinalIgnoreCase);
@@ -418,6 +476,8 @@ public class PcgImportRegression
 
         var warnAdded = f.Warnings.Except(b.Warnings).ToList();
         var warnResolved = b.Warnings.Except(f.Warnings).ToList();
+        var auditAdded = AuditSignals(f).Except(AuditSignals(b), StringComparer.Ordinal).ToList();
+        var auditResolved = AuditSignals(b).Except(AuditSignals(f), StringComparer.Ordinal).ToList();
         var classesAdded = f.DroppedClasses.Except(b.DroppedClasses, StringComparer.OrdinalIgnoreCase).ToList();
         var classesResolved = b.DroppedClasses.Except(f.DroppedClasses, StringComparer.OrdinalIgnoreCase).ToList();
         var featsAdded = f.DroppedFeats.Except(b.DroppedFeats, StringComparer.OrdinalIgnoreCase).ToList();
@@ -428,6 +488,8 @@ public class PcgImportRegression
         var templatesResolved = b.DroppedTemplates.Except(f.DroppedTemplates, StringComparer.OrdinalIgnoreCase).ToList();
         var domainsAdded = f.DroppedDomains.Except(b.DroppedDomains, StringComparer.OrdinalIgnoreCase).ToList();
         var domainsResolved = b.DroppedDomains.Except(f.DroppedDomains, StringComparer.OrdinalIgnoreCase).ToList();
+        var spellsAdded = f.DroppedSpells.Except(b.DroppedSpells, StringComparer.OrdinalIgnoreCase).ToList();
+        var spellsResolved = b.DroppedSpells.Except(f.DroppedSpells, StringComparer.OrdinalIgnoreCase).ToList();
         var equipmentAdded = f.DroppedEquipment.Except(b.DroppedEquipment, StringComparer.OrdinalIgnoreCase).ToList();
         var equipmentResolved = b.DroppedEquipment.Except(f.DroppedEquipment, StringComparer.OrdinalIgnoreCase).ToList();
         var raceIdChanged = !string.Equals(b.RaceId, f.RaceId, StringComparison.Ordinal) || b.RaceDropped != f.RaceDropped;
@@ -442,22 +504,27 @@ public class PcgImportRegression
         var allFeatsResolved = b.Feats.Except(f.Feats, StringComparer.OrdinalIgnoreCase).ToList();
         var skillTotalsChanged = DictChanged(b.SkillTotals, f.SkillTotals);
         var acquisitionChanged = DictChanged(b.SpellAcquisition, f.SpellAcquisition);
+        var selectedSpellsAdded = f.SelectedSpells.Except(b.SelectedSpells, StringComparer.Ordinal).ToList();
+        var selectedSpellsResolved = b.SelectedSpells.Except(f.SelectedSpells, StringComparer.Ordinal).ToList();
         var languagesAdded = f.Languages.Except(b.Languages, StringComparer.OrdinalIgnoreCase).ToList();
         var languagesResolved = b.Languages.Except(f.Languages, StringComparer.OrdinalIgnoreCase).ToList();
 
         var anyChange = oldStatus != newStatus
             || warnAdded.Count > 0 || warnResolved.Count > 0
+            || auditAdded.Count > 0 || auditResolved.Count > 0
             || classesAdded.Count > 0 || classesResolved.Count > 0
             || featsAdded.Count > 0 || featsResolved.Count > 0
             || skillsAdded.Count > 0 || skillsResolved.Count > 0
             || templatesAdded.Count > 0 || templatesResolved.Count > 0
             || domainsAdded.Count > 0 || domainsResolved.Count > 0
+            || spellsAdded.Count > 0 || spellsResolved.Count > 0
             || equipmentAdded.Count > 0 || equipmentResolved.Count > 0
             || raceIdChanged
             || hpChanged || babChanged || savesChanged
             || skillRanksChanged || classLevelsChanged || casterLevelsChanged
             || allFeatsAdded.Count > 0 || allFeatsResolved.Count > 0
             || skillTotalsChanged || acquisitionChanged
+            || selectedSpellsAdded.Count > 0 || selectedSpellsResolved.Count > 0
             || languagesAdded.Count > 0 || languagesResolved.Count > 0;
 
         if (!anyChange) return null;
@@ -473,6 +540,8 @@ public class PcgImportRegression
             RaceIdChanged = raceIdChanged,
             WarningsAdded = warnAdded,
             WarningsResolved = warnResolved,
+            AuditSignalsAdded = auditAdded,
+            AuditSignalsResolved = auditResolved,
             ClassesAdded = classesAdded,
             ClassesResolved = classesResolved,
             FeatsAdded = featsAdded,
@@ -483,6 +552,8 @@ public class PcgImportRegression
             TemplatesResolved = templatesResolved,
             DomainsAdded = domainsAdded,
             DomainsResolved = domainsResolved,
+            SpellsAdded = spellsAdded,
+            SpellsResolved = spellsResolved,
             EquipmentAdded = equipmentAdded,
             EquipmentResolved = equipmentResolved,
             HpChanged = hpChanged,
@@ -511,6 +582,8 @@ public class PcgImportRegression
             AcquisitionChanged = acquisitionChanged,
             OldAcquisition = b.SpellAcquisition,
             NewAcquisition = f.SpellAcquisition,
+            SelectedSpellsAdded = selectedSpellsAdded,
+            SelectedSpellsResolved = selectedSpellsResolved,
             LanguagesAdded = languagesAdded,
             LanguagesResolved = languagesResolved,
         };
@@ -535,7 +608,20 @@ public class PcgImportRegression
     }
 
     private static string StatusOf(CharacterReport c) =>
-        c.Warnings.Count == 0 && !c.RaceDropped ? "OK" : "WARN";
+        c.Warnings.Count == 0 && c.ReplayWarnings.Count == 0 && !c.RaceDropped ? "OK" : "WARN";
+
+    private static IEnumerable<string> AuditSignals(CharacterReport c)
+    {
+        foreach (var warning in c.ReplayWarnings) yield return $"replay-warning:{warning}";
+        foreach (var value in c.IgnoredTemporaryBonuses) yield return $"ignored-temporary:{value}";
+        foreach (var value in c.CompanionLinks) yield return $"companion-link:{value}";
+        if (c.CompanionOrigin != null) yield return $"companion-origin:{c.CompanionOrigin}";
+        yield return $"source-hp-rolls:{string.Join(',', c.SourceHitPointRolls)}";
+        yield return $"imported-hp-rolls:{string.Join(',', c.ImportedHitPointRolls)}";
+        foreach (var value in c.WizardSpecialization) yield return $"wizard-specialization:{value}";
+        foreach (var value in c.WizardProhibitedSchools) yield return $"wizard-prohibited:{value}";
+        foreach (var value in c.SpellAdvancementChoices) yield return $"spell-advancement:{value}";
+    }
 
     private static List<TallyDelta> DiffTally(List<TallyEntry> baseline, List<TallyEntry> fresh)
     {
@@ -600,12 +686,16 @@ public class PcgImportRegression
                 if (c.CasterLevelsChanged) WriteDictChange(sb, "Caster levels", c.OldCasterLevels, c.NewCasterLevels);
                 if (c.SkillTotalsChanged) WriteDictChange(sb, "Skill totals", c.OldSkillTotals, c.NewSkillTotals);
                 if (c.AcquisitionChanged) WriteDictChange(sb, "Spell acquisition", c.OldAcquisition, c.NewAcquisition);
+                WriteListChange(sb, "Selected spells added", c.SelectedSpellsAdded);
+                WriteListChange(sb, "Selected spells resolved", c.SelectedSpellsResolved);
                 WriteListChange(sb, "Languages added", c.LanguagesAdded);
                 WriteListChange(sb, "Languages resolved", c.LanguagesResolved);
                 WriteListChange(sb, "Feats added", c.AllFeatsAdded);
                 WriteListChange(sb, "Feats resolved", c.AllFeatsResolved);
                 WriteListChange(sb, "Warnings added", c.WarningsAdded);
                 WriteListChange(sb, "Warnings resolved", c.WarningsResolved);
+                WriteListChange(sb, "Audit signals added", c.AuditSignalsAdded);
+                WriteListChange(sb, "Audit signals resolved", c.AuditSignalsResolved);
                 WriteListChange(sb, "Dropped classes added", c.ClassesAdded);
                 WriteListChange(sb, "Dropped classes resolved", c.ClassesResolved);
                 WriteListChange(sb, "Dropped feats added", c.FeatsAdded);
@@ -616,6 +706,8 @@ public class PcgImportRegression
                 WriteListChange(sb, "Dropped templates resolved", c.TemplatesResolved);
                 WriteListChange(sb, "Dropped domains added", c.DomainsAdded);
                 WriteListChange(sb, "Dropped domains resolved", c.DomainsResolved);
+                WriteListChange(sb, "Dropped spells added", c.SpellsAdded);
+                WriteListChange(sb, "Dropped spells resolved", c.SpellsResolved);
                 WriteListChange(sb, "Dropped equipment added", c.EquipmentAdded);
                 WriteListChange(sb, "Dropped equipment resolved", c.EquipmentResolved);
                 sb.AppendLine();
@@ -743,12 +835,21 @@ public class PcgImportRegression
         public int CleanImports { get; set; }
         public int WithWarnings { get; set; }
         public int RaceDroppedCount { get; set; }
+        public int ReplayWarningCount { get; set; }
+        public int CharactersWithReplayWarnings { get; set; }
+        public int CompanionLinkCount { get; set; }
+        public int CompanionOriginCount { get; set; }
+        public int IgnoredTemporaryBonusCount { get; set; }
+        public int HpRollMismatchCharacters { get; set; }
+        public int SpecialistWizardCount { get; set; }
+        public int SpellAdvancementChoiceCount { get; set; }
         public List<TallyEntry> UnmappedRaces { get; set; } = new();
         public List<TallyEntry> TopUnmappedClasses { get; set; } = new();
         public List<TallyEntry> TopUnmappedFeats { get; set; } = new();
         public List<TallyEntry> TopUnmappedSkills { get; set; } = new();
         public List<TallyEntry> TopUnmappedTemplates { get; set; } = new();
         public List<TallyEntry> TopUnmappedDomains { get; set; } = new();
+        public List<TallyEntry> TopUnmappedSpells { get; set; } = new();
         public List<TallyEntry> TopUnmappedEquipment { get; set; } = new();
     }
 
@@ -768,12 +869,22 @@ public class PcgImportRegression
         public bool RaceDropped { get; set; }
         public string Summary { get; set; } = string.Empty;
         public List<string> Warnings { get; set; } = new();
+        public List<string> ReplayWarnings { get; set; } = new();
+        public List<string> IgnoredTemporaryBonuses { get; set; } = new();
         public List<string> DroppedClasses { get; set; } = new();
         public List<string> DroppedFeats { get; set; } = new();
         public List<string> DroppedSkills { get; set; } = new();
         public List<string> DroppedTemplates { get; set; } = new();
         public List<string> DroppedDomains { get; set; } = new();
+        public List<string> DroppedSpells { get; set; } = new();
         public List<string> DroppedEquipment { get; set; } = new();
+        public List<int> SourceHitPointRolls { get; set; } = new();
+        public List<int> ImportedHitPointRolls { get; set; } = new();
+        public List<string> CompanionLinks { get; set; } = new();
+        public string? CompanionOrigin { get; set; }
+        public List<string> WizardSpecialization { get; set; } = new();
+        public List<string> WizardProhibitedSchools { get; set; } = new();
+        public List<string> SpellAdvancementChoices { get; set; } = new();
 
         // Computed-sheet fields (item 1 of TODO.md §4): catches content drift — a rules fix
         // that silently changes a saved character's stats — as a reviewable diff instead of
@@ -792,6 +903,7 @@ public class PcgImportRegression
         public List<string> Languages { get; set; } = new();
         public Dictionary<string, int> SkillTotals { get; set; } = new();
         public Dictionary<string, string> SpellAcquisition { get; set; } = new();
+        public List<string> SelectedSpells { get; set; } = new();
     }
 
     private sealed class ParseFailure
@@ -833,6 +945,8 @@ public class PcgImportRegression
         public bool RaceIdChanged { get; set; }
         public List<string> WarningsAdded { get; set; } = new();
         public List<string> WarningsResolved { get; set; } = new();
+        public List<string> AuditSignalsAdded { get; set; } = new();
+        public List<string> AuditSignalsResolved { get; set; } = new();
         public List<string> ClassesAdded { get; set; } = new();
         public List<string> ClassesResolved { get; set; } = new();
         public List<string> FeatsAdded { get; set; } = new();
@@ -843,6 +957,8 @@ public class PcgImportRegression
         public List<string> TemplatesResolved { get; set; } = new();
         public List<string> DomainsAdded { get; set; } = new();
         public List<string> DomainsResolved { get; set; } = new();
+        public List<string> SpellsAdded { get; set; } = new();
+        public List<string> SpellsResolved { get; set; } = new();
         public List<string> EquipmentAdded { get; set; } = new();
         public List<string> EquipmentResolved { get; set; } = new();
 
@@ -872,6 +988,8 @@ public class PcgImportRegression
         public bool AcquisitionChanged { get; set; }
         public Dictionary<string, string> OldAcquisition { get; set; } = new();
         public Dictionary<string, string> NewAcquisition { get; set; } = new();
+        public List<string> SelectedSpellsAdded { get; set; } = new();
+        public List<string> SelectedSpellsResolved { get; set; } = new();
         public List<string> LanguagesAdded { get; set; } = new();
         public List<string> LanguagesResolved { get; set; } = new();
     }

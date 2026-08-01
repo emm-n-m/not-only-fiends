@@ -62,9 +62,25 @@ public class AddHitDie : Permabuff
         if (ctx.CurrentDriverKind == DriverKind.RacialHD)
             dieSize = Math.Min(ctx.CurrentRacialHitDieMaximum ?? int.MaxValue,
                 dieSize + state.RacialHitDieSizeAdjustment);
-        state.HitDice.Add(new HitDieEntry { DriverId = ctx.CurrentDriverId ?? string.Empty, DieSize = dieSize, IsRacial = ctx.CurrentDriverKind == DriverKind.RacialHD });
+        var importedRoll = ctx.CurrentTickChoices?.HitPointsRolled;
+        if (importedRoll.HasValue && (importedRoll.Value < 1 || importedRoll.Value > dieSize))
+        {
+            state.Warnings.Add(new Warning
+            {
+                TickIndex = state.TotalHD,
+                Message = $"saved hit-point roll {importedRoll.Value} is outside d{dieSize}; preserved as source input",
+            });
+        }
+        state.HitDice.Add(new HitDieEntry
+        {
+            DriverId = ctx.CurrentDriverId ?? string.Empty,
+            DieSize = dieSize,
+            IsRacial = ctx.CurrentDriverKind == DriverKind.RacialHD,
+            SavedRoll = importedRoll,
+        });
         var conMod = AbilityScoreSet.Modifier(state.AbilityScores.CON);
-        var roll = (ctx.Rules.FirstHDMaxHP && state.TotalHD == 1) ? dieSize : (dieSize / 2 + 1);
+        var roll = importedRoll
+            ?? ((ctx.Rules.FirstHDMaxHP && state.TotalHD == 1) ? dieSize : (dieSize / 2 + 1));
         state.HP += Math.Max(1, roll + conMod);
     }
 }
@@ -462,11 +478,9 @@ public class AdvanceSpellcasting : Permabuff
         else
         {
             // Check for user selection
-            var choice = ctx.CurrentTickChoices?.ClassFeatureChoices
-                ?.GetValueOrDefault("advance_spellcasting")?.FirstOrDefault();
-            var selected = choice != null
-                ? matches.FirstOrDefault(s => s.ClassId == choice)
-                : null;
+            var choices = ctx.CurrentTickChoices?.ClassFeatureChoices
+                ?.GetValueOrDefault("advance_spellcasting") ?? new List<string>();
+            var selected = matches.FirstOrDefault(match => choices.Contains(match.ClassId, StringComparer.Ordinal));
 
             if (selected != null)
             {

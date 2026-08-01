@@ -623,6 +623,62 @@ public class ReplayStudioTests
         Assert.Equal(11, state.AbilityScores.STR);
     }
 
+    [Fact]
+    public void AbilityIncrease_OnRacialHdTick_DoesNotApply()
+    {
+        var registry = CreateContentRegistry();
+        registry.RegisterDriver(new HDDriver
+        {
+            Kind = DriverKind.RacialHD,
+            Id = "racial_hd:test",
+            Name = "Test Racial HD",
+            HitDie = 8,
+            SkillPointsPerLevel = 2,
+            BABProgression = BABProgression.Average,
+            SaveProgression = new SaveProgression(),
+        });
+        var engine = new ReplayStudio(registry);
+        var character = new Character
+        {
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks =
+            {
+                new() { DriverId = "racial_hd:test" },
+                new() { DriverId = "racial_hd:test" },
+                new() { DriverId = "racial_hd:test" },
+                new() { DriverId = "racial_hd:test", Choices = new TickChoices { AbilityIncrease = Ability.STR } },
+            }
+        };
+
+        var state = engine.Evaluate(character);
+
+        Assert.Equal(10, state.AbilityScores.STR);
+    }
+
+    [Fact]
+    public void SavedHitPointRoll_OverridesDeterministicRoll()
+    {
+        var registry = CreateContentRegistry();
+        var character = new Character
+        {
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 14, INT = 10, WIS = 10, CHA = 10 },
+            Ticks =
+            {
+                new Tick
+                {
+                    DriverId = "class:fighter",
+                    Choices = new TickChoices { HitPointsRolled = 3 },
+                },
+            },
+        };
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        Assert.Equal(5, state.HP); // source d10 roll 3 + CON 2, even though first HD normally maximizes
+    }
+
     // --- M3: Equipment Tests ---
 
     [Fact]

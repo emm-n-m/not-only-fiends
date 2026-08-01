@@ -360,6 +360,123 @@
           "name": "Bardic Music",
           "description": "Can use music or poetics to produce magical effects on those nearby."
         }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "countersong",
+          "name": "Countersong",
+          "description": "With 3 or more Perform ranks, creatures within 30 feet may use the bard's Perform check in place of saves against sonic or language-dependent magical attacks; lasts up to 10 rounds."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "fascinate",
+          "name": "Fascinate",
+          "description": "With 3 or more Perform ranks, fascinate creatures within 90 feet using a Perform check as the Will save DC; affects one additional creature per three bard levels beyond 1st."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "inspire_courage_1",
+          "name": "Inspire Courage +1",
+          "description": "With 3 or more Perform ranks, allies who hear the bard gain a +1 morale bonus on saves against charm and fear and on attack and weapon damage rolls while the song continues and for 5 rounds thereafter."
+        }
+      }
+    ],
+    "3": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "inspire_competence",
+          "name": "Inspire Competence",
+          "description": "With 6 or more Perform ranks, grant one visible ally within 30 feet a +2 competence bonus on checks with one skill while concentrating, for up to 2 minutes."
+        }
+      }
+    ],
+    "6": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "bard_suggestion",
+          "name": "Suggestion",
+          "description": "With 9 or more Perform ranks, use suggestion on a creature already fascinated; Will DC 10 + half bard level + Charisma modifier. This does not consume a bardic music use."
+        }
+      }
+    ],
+    "8": [
+      { "$type": "RevokeAbility", "abilityId": "inspire_courage_1" },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "inspire_courage_2",
+          "name": "Inspire Courage +2",
+          "description": "All Inspire Courage morale bonuses increase to +2."
+        }
+      }
+    ],
+    "9": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "inspire_greatness",
+          "name": "Inspire Greatness",
+          "description": "With 12 or more Perform ranks, grant willing allies within 30 feet 2 bonus d10 Hit Dice, temporary hit points, +2 competence on attacks, and +1 competence on Fortitude saves; one target plus one per three bard levels beyond 9th."
+        }
+      }
+    ],
+    "12": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "song_of_freedom",
+          "name": "Song of Freedom",
+          "description": "With 15 or more Perform ranks, concentrate and perform for 1 minute to create break enchantment at bard caster level for one target within 30 feet; cannot target self."
+        }
+      }
+    ],
+    "14": [
+      { "$type": "RevokeAbility", "abilityId": "inspire_courage_2" },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "inspire_courage_3",
+          "name": "Inspire Courage +3",
+          "description": "All Inspire Courage morale bonuses increase to +3."
+        }
+      }
+    ],
+    "15": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "inspire_heroics",
+          "name": "Inspire Heroics",
+          "description": "With 18 or more Perform ranks, grant willing allies within 30 feet a +4 morale bonus on saves and +4 dodge bonus to AC; one target plus one per three bard levels beyond 15th."
+        }
+      }
+    ],
+    "18": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "bard_mass_suggestion",
+          "name": "Mass Suggestion",
+          "description": "With 21 or more Perform ranks, simultaneously use Suggestion on any number of creatures already fascinated."
+        }
+      }
+    ],
+    "20": [
+      { "$type": "RevokeAbility", "abilityId": "inspire_courage_3" },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "inspire_courage_4",
+          "name": "Inspire Courage +4",
+          "description": "All Inspire Courage morale bonuses increase to +4."
+        }
       }
     ]
   },

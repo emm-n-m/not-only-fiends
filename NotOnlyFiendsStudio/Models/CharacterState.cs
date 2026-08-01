@@ -247,6 +247,7 @@ public class HitDieEntry
     public string DriverId { get; set; } = string.Empty;
     public int DieSize { get; set; }
     public bool IsRacial { get; set; }
+    public int? SavedRoll { get; set; }
 }
 
 /// <summary>A durable, player-visible special attack. Combat resolution remains outside replay.</summary>
@@ -380,7 +381,7 @@ public class AttackLine
 
 public class EncumbranceState
 {
-    public int TotalWeightLbs { get; set; }
+    public double TotalWeightLbs { get; set; }
     public LoadCategory Load { get; set; } = LoadCategory.Light;
     public int LightMax { get; set; }
     public int MediumMax { get; set; }
@@ -398,7 +399,7 @@ public class EquipmentPass
     public Dictionary<(BonusTarget Target, BonusType Type), List<int>> Contributions { get; } = new();
     public List<ArmorContribution> Armors { get; } = new();
     public List<WeaponContribution> Weapons { get; } = new();
-    public int TotalWeightLbs { get; set; }
+    public double TotalWeightLbs { get; set; }
 
     public void Add(BonusTarget target, BonusType type, int value)
     {

@@ -358,11 +358,10 @@ public class PcgReconstructionTests
         Assert.Equal(19, state.AbilityScores.WIS);
         Assert.Equal(9, state.AbilityScores.STR);
 
-        // HP: Studio uses deterministic formula (max first HD, average thereafter)
-        // Cleric d8: first HD = 8, subsequent = 8/2+1 = 5 each
-        // HP = 8 + 5*5 + CON mod(+1) * 6 = 33 + 6 = 39
+        // HP: preserve every PCGen HITPOINTS roll, then apply the final Constitution modifier
+        // to each die. This character's six source rolls plus CON produce 29 HP.
         var conMod = AbilityScoreSet.Modifier(data.BaseStats["CON"]);
-        var expectedHP = 8 + 5 * (data.TotalClassLevels - 1) + conMod * data.TotalClassLevels;
+        var expectedHP = data.Levels.Sum(level => Math.Max(1, level.HitPoints + conMod));
         Assert.Equal(expectedHP, state.HP);
 
         // BAB: Cleric has average (3/4) progression → level 6 = 4

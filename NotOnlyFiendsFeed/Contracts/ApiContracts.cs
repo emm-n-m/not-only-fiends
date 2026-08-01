@@ -199,6 +199,9 @@ public sealed class ImportPcgResponse
     public List<string> DroppedClasses { get; set; } = new();
     public List<string> DroppedTemplates { get; set; } = new();
     public List<string> DroppedDomains { get; set; } = new();
+    public List<string> DroppedSpells { get; set; } = new();
+    public List<string> DroppedEquipment { get; set; } = new();
+    public List<string> IgnoredTemporaryBonuses { get; set; } = new();
     public bool RaceDropped { get; set; }
 }
 
@@ -255,6 +258,8 @@ public sealed class NextStepResponse
 public sealed class DriverPreviewDto
 {
     public DriverSummaryDto Driver { get; set; } = new();
+    /// <summary>Whether choosing this specific driver grants the scheduled ability increase.</summary>
+    public bool AbilityIncreaseDue { get; set; }
     public CharacterPreviewDto Preview { get; set; } = new();
     public PendingChoicesDto PendingChoices { get; set; } = new();
 

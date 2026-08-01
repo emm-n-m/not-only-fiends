@@ -19,6 +19,9 @@ public class PcgCharacterData
     /// <summary>Language names as PCGen writes them ("Abyssal", "Draconic"), in file order.</summary>
     public List<string> Languages { get; set; } = new();
     public List<PcgEquipmentRaw> Equipment { get; set; } = new();
+    public List<PcgFollowerEntry> Followers { get; set; } = new();
+    public PcgMasterEntry? Master { get; set; }
+    public List<string> TemporaryBonuses { get; set; } = new();
 
     public int TotalClassLevels => Classes.Sum(c => c.Level);
 }
@@ -28,6 +31,7 @@ public class PcgClassEntry
     public string Name { get; set; } = "";
     public int Level { get; set; }
     public string? Subclass { get; set; }
+    public List<string> ProhibitedSchools { get; set; } = new();
     public string? SpellBase { get; set; }
 }
 
@@ -38,6 +42,7 @@ public class PcgLevelEntry
     public int HitPoints { get; set; }
     public int SkillsGained { get; set; }
     public string? AbilityIncrease { get; set; }
+    public List<string> SpellcasterChoices { get; set; } = new();
 }
 
 public class PcgSkillEntry
@@ -72,4 +77,22 @@ public class PcgDomainEntry
 {
     public string Name { get; set; } = "";
     public string SourceClass { get; set; } = "";
+    public int SourceLevel { get; set; }
+}
+
+public class PcgFollowerEntry
+{
+    public string Name { get; set; } = "";
+    public string Type { get; set; } = "";
+    public string Race { get; set; } = "";
+    public string File { get; set; } = "";
+}
+
+public class PcgMasterEntry
+{
+    public string Name { get; set; } = "";
+    public string Type { get; set; } = "";
+    public string File { get; set; } = "";
+    public int HitDice { get; set; }
+    public int Adjustment { get; set; }
 }

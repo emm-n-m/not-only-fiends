@@ -16,6 +16,7 @@ public class ContentRegistry : IContentLookup
     private readonly Dictionary<string, ClassFeatureDefinition> _classFeatures = new();
     private readonly Dictionary<string, LanguageDefinition> _languages = new();
     private readonly Dictionary<string, EquipmentDefinition> _equipment = new();
+    private Dictionary<string, SpellDefinition>? _spellsByName;
     private Dictionary<string, EquipmentDefinition>? _equipmentByName;
 
     public ConflictResolution OnConflict { get; set; } = ConflictResolution.LastWins;
@@ -35,7 +36,7 @@ public class ContentRegistry : IContentLookup
         RegisterContentType(new ContentTypeHandler<DomainDefinition>(
             "domains", domain => Register(_domains, domain, d => d.Id)));
         RegisterContentType(new ContentTypeHandler<SpellDefinition>(
-            "spells", spell => Register(_spells, spell, s => s.Id)));
+            "spells", RegisterSpell));
         RegisterContentType(new ContentTypeHandler<SkillDefinition>(
             "skills", skill => Register(_skills, skill, sk => sk.Id)));
         RegisterContentType(new ContentTypeHandler<ClassFeatureDefinition>(
@@ -80,7 +81,11 @@ public class ContentRegistry : IContentLookup
     public void RegisterTemplate(TemplateDriver template) => Register(_templates, template, t => t.Id);
     public void RegisterFeat(FeatDefinition feat) => Register(_feats, feat, f => f.Id);
     public void RegisterDomain(DomainDefinition domain) => Register(_domains, domain, d => d.Id);
-    public void RegisterSpell(SpellDefinition spell) => Register(_spells, spell, s => s.Id);
+    public void RegisterSpell(SpellDefinition spell)
+    {
+        Register(_spells, spell, s => s.Id);
+        _spellsByName = null;
+    }
     public void RegisterSkill(SkillDefinition skill) => Register(_skills, skill, sk => sk.Id);
     public void RegisterClassFeature(ClassFeatureDefinition cf) => Register(_classFeatures, cf, c => c.Id);
     public void RegisterEquipment(EquipmentDefinition equipment)
@@ -147,6 +152,18 @@ public class ContentRegistry : IContentLookup
     public bool TryGetSpell(string id, out SpellDefinition? spell) =>
         _spells.TryGetValue(id, out spell);
 
+    /// <summary>
+    /// Looks up a spell by its display name. PCGen persists names rather than content IDs, and
+    /// not every legacy name transforms to the catalog ID mechanically.
+    /// </summary>
+    public bool TryGetSpellByName(string name, out SpellDefinition? spell)
+    {
+        _spellsByName ??= _spells.Values
+            .GroupBy(s => s.Name, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+        return _spellsByName.TryGetValue(name, out spell);
+    }
+
     public bool TryGetClassFeature(string id, out ClassFeatureDefinition? cf) =>
         _classFeatures.TryGetValue(id, out cf);
 
@@ -193,12 +210,38 @@ public class ContentRegistry : IContentLookup
     public IEnumerable<SkillDefinition> GetAllSkills() => _skills.Values;
     public IEnumerable<LanguageDefinition> GetAllLanguages() => _languages.Values;
     public IEnumerable<EquipmentDefinition> GetAllEquipment() => _equipment.Values;
+    public bool TryGetSpellLevelForList(SpellDefinition spell, string spellListId, out int level)
+    {
+        if (spell.ClassLevels.TryGetValue(spellListId, out level))
+            return true;
+
+        if (_drivers.TryGetValue(spellListId, out var driver) && driver is HDDriver hd &&
+            hd.Spellcasting?.SpellListSources.Count > 0)
+        {
+            var levels = hd.Spellcasting.SpellListSources
+                .Where(spell.ClassLevels.ContainsKey)
+                .Select(source => spell.ClassLevels[source])
+                .ToList();
+            if (levels.Count > 0)
+            {
+                level = levels.Min();
+                return true;
+            }
+        }
+
+        level = 0;
+        return false;
+    }
+
     public IEnumerable<SpellDefinition> GetSpellsForList(string spellListId, int? maxSpellLevel = null) =>
         _spells.Values
-            .Where(s => s.ClassLevels.TryGetValue(spellListId, out var level)
-                && (!maxSpellLevel.HasValue || level <= maxSpellLevel.Value))
-            .OrderBy(s => s.ClassLevels[spellListId])
-            .ThenBy(s => s.Name);
+            .Select(spell => (Spell: spell,
+                HasLevel: TryGetSpellLevelForList(spell, spellListId, out var level),
+                Level: level))
+            .Where(item => item.HasLevel && (!maxSpellLevel.HasValue || item.Level <= maxSpellLevel.Value))
+            .OrderBy(item => item.Level)
+            .ThenBy(item => item.Spell.Name)
+            .Select(item => item.Spell);
     public IEnumerable<SpellDefinition> GetSpellsForClass(string classId, int? maxSpellLevel = null) =>
         GetSpellsForList(classId, maxSpellLevel);
 

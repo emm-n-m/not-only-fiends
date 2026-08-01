@@ -219,8 +219,9 @@ public class EpicIntegrationTests
         Assert.Equal(13, state.TotalHD); // 8 outsider + 5 fighter
         Assert.Equal(5, state.ClassLevels["class:fighter"]);
 
-        // Ability scores: base + half-fiend mods + 3 increases (HD 4,8,12)
-        Assert.Equal(23, state.AbilityScores.STR); // 16 + 4 (HF) + 3 (increases)
+        // Ability scores: racial-HD ticks do not grant selectable increases; the class tick at
+        // total HD 12 does. Base 16 + half-fiend 4 + one class-tick increase = 21.
+        Assert.Equal(21, state.AbilityScores.STR);
 
         // BAB: Outsider Good 8 = 8, Fighter Good 5 = 5, total = 13
         Assert.Equal(13, state.BaseBAB);

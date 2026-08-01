@@ -66,6 +66,7 @@ public class Character
             Choices = new TickChoices
             {
                 AbilityIncrease = t.Choices.AbilityIncrease,
+                HitPointsRolled = t.Choices.HitPointsRolled,
                 FeatIds = t.Choices.FeatIds == null ? null : new List<string>(t.Choices.FeatIds),
                 SkillAllocations = t.Choices.SkillAllocations == null
                     ? null
@@ -85,7 +86,19 @@ public class Character
             BeforeTick = e.BeforeTick,
             Permabuffs = new List<Permabuff>(e.Permabuffs)
         }).ToList(),
-        Equipment = new List<EquipmentEntry>(Equipment),
+        Equipment = Equipment.Select(item => new EquipmentEntry
+        {
+            ItemId = item.ItemId,
+            ContentId = item.ContentId,
+            Slot = item.Slot,
+            MainHand = item.MainHand,
+            TwoHanded = item.TwoHanded,
+            DoubleWeapon = item.DoubleWeapon,
+            Quantity = item.Quantity,
+            WeightLbsOverride = item.WeightLbsOverride,
+            PriceCpOverride = item.PriceCpOverride,
+            Permabuffs = new List<Permabuff>(item.Permabuffs),
+        }).ToList(),
         CompanionLinks = new List<CompanionLink>(CompanionLinks),
         CompanionOrigin = CompanionOrigin,
         Sheet = null
@@ -241,6 +254,8 @@ public class Tick
 public class TickChoices
 {
     public Ability? AbilityIncrease { get; set; }
+    /// <summary>Optional source die result for this HD; null uses the ruleset's deterministic roll.</summary>
+    public int? HitPointsRolled { get; set; }
     public List<string>? FeatIds { get; set; }
     public List<SkillAllocation>? SkillAllocations { get; set; }
     public List<SpellSelection>? SpellSelections { get; set; }
@@ -309,5 +324,11 @@ public class EquipmentEntry
     public string Slot { get; set; } = string.Empty;
     public bool MainHand { get; set; } = true;                // weapon hand assignment
     public bool TwoHanded { get; set; }
+    public bool DoubleWeapon { get; set; }
+    public double Quantity { get; set; } = 1;
+    /// <summary>PCGen character-specific size/customization weight; null uses catalog weight.</summary>
+    public double? WeightLbsOverride { get; set; }
+    /// <summary>PCGen character-specific size/customization price; null uses catalog price.</summary>
+    public long? PriceCpOverride { get; set; }
     public List<Permabuff> Permabuffs { get; set; } = new(); // inline permabuffs (homebrew, or overrides on top of content)
 }
