@@ -1,0 +1,1105 @@
+[
+  {
+    "id": "spell:animus_blast",
+    "name": "Animus Blast",
+    "school": "evocation",
+    "descriptors": [
+      "cold"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 standard action",
+    "range": "300 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "Reflex half",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 50.",
+    "area": "20-ft.-radius hemisphere burst"
+  },
+  {
+    "id": "spell:animus_blizzard",
+    "name": "Animus Blizzard",
+    "school": "evocation",
+    "descriptors": [
+      "cold"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 minute",
+    "range": "300 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "Reflex half",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 78.",
+    "area": "20-ft.-radius hemisphere burst"
+  },
+  {
+    "id": "spell:contingent_resurrection",
+    "name": "Contingent Resurrection",
+    "school": "conjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": true,
+      "xpCost": null
+    },
+    "castingTime": "1 minute",
+    "range": "Touch",
+    "duration": "Contingent until expended, then instantaneous",
+    "savingThrow": "None (see text)",
+    "spellResistance": "Yes (harmless)",
+    "description": "See text. See text. Spellcraft DC 52.",
+    "subschool": "healing",
+    "target": "You or creature touched"
+  },
+  {
+    "id": "spell:create_living_vault",
+    "name": "Create Living Vault (Ritual)",
+    "school": "conjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "100 days, 11 minutes",
+    "range": "0 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "None",
+    "spellResistance": "None",
+    "description": "See text. See text. Spellcraft DC 58.",
+    "subschool": "creation",
+    "target": "One living vault, 50 ft. by 50 ft. by 10 ft."
+  },
+  {
+    "id": "spell:crown_of_vermin",
+    "name": "Crown of Vermin",
+    "school": "conjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 minute",
+    "range": "Personal",
+    "duration": "20 rounds (D)",
+    "savingThrow": "None (see text)",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 56.",
+    "subschool": "summoning",
+    "area": "Aura of one thousand insects that surrounds you in a 10-ft. -radius spread"
+  },
+  {
+    "id": "spell:damnation",
+    "name": "Damnation",
+    "school": "enchantment",
+    "descriptors": [
+      "mind-affecting",
+      "teleportation"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "1 standard action",
+    "range": "special",
+    "duration": "Instantaneous (20 hours for compulsion)",
+    "savingThrow": "Will negates (see text)",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 97.",
+    "subschool": "compulsion",
+    "target": "Creature touched"
+  },
+  {
+    "id": "spell:demise_unseen",
+    "name": "Demise Unseen",
+    "school": "illusion",
+    "descriptors": [
+      "death",
+      "evil"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 standard action",
+    "range": "300 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "Fort negates",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 80.",
+    "subschool": "figment",
+    "target": "One creature of up to 80 HD"
+  },
+  {
+    "id": "spell:dire_winter",
+    "name": "Dire Winter",
+    "school": "evocation",
+    "descriptors": [
+      "cold"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "1 minute",
+    "range": "1,000 ft.",
+    "duration": "20 hours",
+    "savingThrow": "None",
+    "spellResistance": "None",
+    "description": "See text. See text. Spellcraft DC 319.",
+    "area": "1,000-ft. -radius emanation"
+  },
+  {
+    "id": "spell:dragon_knight",
+    "name": "Dragon Knight (Ritual)",
+    "school": "conjuration",
+    "descriptors": [
+      "fire"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 standard action",
+    "range": "75 ft.",
+    "duration": "20 rounds (D)",
+    "savingThrow": "None (see text)",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 38.",
+    "subschool": "summoning",
+    "target": "One summoned adult red dragon"
+  },
+  {
+    "id": "spell:dragon_strike",
+    "name": "Dragon Strike (Ritual)",
+    "school": "conjuration",
+    "descriptors": [
+      "fire"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "1 standard action",
+    "range": "75 ft.",
+    "duration": "20 rounds (D)",
+    "savingThrow": "None (see text)",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 50.",
+    "subschool": "summoning",
+    "target": "Ten summoned adult red dragons"
+  },
+  {
+    "id": "spell:dreamscape",
+    "name": "Dreamscape",
+    "school": "conjuration",
+    "descriptors": [
+      "teleportation"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 minute",
+    "range": "Touch",
+    "duration": "Instantaneous (D)",
+    "savingThrow": "Yes (harmless) (see text)",
+    "spellResistance": "Yes (harmless)",
+    "description": "See text. See text. Spellcraft DC 29.",
+    "target": "You and other touched willing creatures weighing up to 1,000 lb."
+  },
+  {
+    "id": "spell:eclipse",
+    "name": "Eclipse",
+    "school": "conjuration",
+    "descriptors": [
+      "transportation"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "10 minutes",
+    "range": "200 miles",
+    "duration": "Up to 8 hours (D)",
+    "savingThrow": "None",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 42.",
+    "subschool": "creation",
+    "area": "5-mile radius, centered on you"
+  },
+  {
+    "id": "spell:eidolon",
+    "name": "Eidolon",
+    "school": "conjuration",
+    "descriptors": [
+      "transportation"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "1 minute",
+    "range": "5 ft.",
+    "duration": "8 hours",
+    "savingThrow": "None",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 79.",
+    "subschool": "creation",
+    "target": "One duplicate of caster"
+  },
+  {
+    "id": "spell:enslave",
+    "name": "Enslave (Ritual)",
+    "school": "enchantment",
+    "descriptors": [
+      "mind-affecting"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "1 standard action",
+    "range": "75 ft.",
+    "duration": "Permanent",
+    "savingThrow": "Will negates",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 80.",
+    "subschool": "compulsion",
+    "target": "One living creature"
+  },
+  {
+    "id": "spell:epic_counterspell",
+    "name": "Epic Counterspell",
+    "school": "abjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 standard action",
+    "range": "300 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "None",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 69.",
+    "target": "One creature or object"
+  },
+  {
+    "id": "spell:epic_mage_armor",
+    "name": "Epic Mage Armor",
+    "school": "conjuration",
+    "descriptors": [
+      "force"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 minute",
+    "range": "Touch",
+    "duration": "24 hours (D)",
+    "savingThrow": "Will negates (harmless)",
+    "spellResistance": "Yes (harmless)",
+    "description": "See text. See text. Spellcraft DC 46.",
+    "subschool": "creation",
+    "target": "Creature touched"
+  },
+  {
+    "id": "spell:epic_repulsion",
+    "name": "Epic Repulsion",
+    "school": "abjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "10 minutes",
+    "range": "Touch",
+    "duration": "Permanent",
+    "savingThrow": "None",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 52.",
+    "target": "Object or creature touched"
+  },
+  {
+    "id": "spell:epic_spell_reflection",
+    "name": "Epic Spell Reflection",
+    "school": "abjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "41 days, 11 minutes",
+    "range": "Touch",
+    "duration": "Permanent",
+    "savingThrow": "None",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 68.",
+    "target": "Object or creature touched"
+  },
+  {
+    "id": "spell:eternal_freedom",
+    "name": "Eternal Freedom",
+    "school": "abjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "1 minute",
+    "range": "Touch",
+    "duration": "Permanent",
+    "savingThrow": "Will negates",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 150.",
+    "target": "Touched creature or object of 2,000 lb. or less"
+  },
+  {
+    "id": "spell:gathering_of_maggots",
+    "name": "Gathering of Maggots",
+    "school": "conjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": true,
+      "xpCost": null
+    },
+    "castingTime": "7 days",
+    "range": "special",
+    "duration": "Permanent",
+    "savingThrow": "Fortitude negates (harmless)",
+    "spellResistance": "Yes (harmless)",
+    "description": "See text. See text. Spellcraft DC 49.",
+    "subschool": "healing",
+    "target": "Dead creature touched"
+  },
+  {
+    "id": "spell:greater_ruin",
+    "name": "Greater Ruin",
+    "school": "transmutation",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "1 standard action",
+    "range": "12,000 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "Fortitude half",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 59.",
+    "target": "One creature, or up to a 10-foot cube of nonliving matter"
+  },
+  {
+    "id": "spell:greater_spell_resistance",
+    "name": "Greater Spell Resistance",
+    "school": "transmutation",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 minute",
+    "range": "Touch",
+    "duration": "20 hours",
+    "savingThrow": "Will negates (harmless)",
+    "spellResistance": "Yes (harmless)",
+    "description": "See text. See text. Spellcraft DC 45.",
+    "target": "Creature touched"
+  },
+  {
+    "id": "spell:hellball",
+    "name": "Hellball",
+    "school": "evocation",
+    "descriptors": [
+      "acid",
+      "fire",
+      "electricity",
+      "sonic"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "1 standard action",
+    "range": "300 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "Reflex half",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 90.",
+    "area": "40-ft. -radius spread"
+  },
+  {
+    "id": "spell:kinetic_control",
+    "name": "Kinetic Control",
+    "school": "abjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 minute",
+    "range": "Personal; touch",
+    "duration": "12 hours or until discharged",
+    "savingThrow": "None",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 100.",
+    "target": "You; creature or object touched"
+  },
+  {
+    "id": "spell:let_go_of_me",
+    "name": "Let Go of Me",
+    "school": "transmutation",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": false,
+      "somatic": false,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 free action",
+    "range": "Touch",
+    "duration": "Instantaneous",
+    "savingThrow": "Fortitude half",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 43.",
+    "target": "One creature or force grappling you"
+  },
+  {
+    "id": "spell:living_lightning",
+    "name": "Living Lightning",
+    "school": "evocation",
+    "descriptors": [
+      "electricity"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": false,
+      "somatic": false,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 standard action",
+    "range": "300 ft. or 150 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "Reflex half",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 140.",
+    "target": "A bolt 5 ft. wide by 300 ft. long, or 10 ft. wide by 150 ft. long"
+  },
+  {
+    "id": "spell:lord_of_nightmares",
+    "name": "Lord of Nightmares",
+    "school": "conjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "1 standard action",
+    "range": "75 ft.",
+    "duration": "20 rounds",
+    "savingThrow": "None",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 50.",
+    "subschool": "summoning",
+    "target": "One summoned creature"
+  },
+  {
+    "id": "spell:mass_frog",
+    "name": "Mass Frog",
+    "school": "transmutation",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 standard action",
+    "range": "300 ft.",
+    "duration": "Permanent",
+    "savingThrow": "Fortitude negates",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 55.",
+    "area": "40-ft. -radius hemisphere"
+  },
+  {
+    "id": "spell:momento_mori",
+    "name": "Momento Mori",
+    "school": "necromancy",
+    "descriptors": [
+      "death"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": false,
+      "somatic": false,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 quickened action",
+    "range": "300 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "Fortitude partial (see text)",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 86.",
+    "target": "One living creature"
+  },
+  {
+    "id": "spell:mummy_dust",
+    "name": "Mummy Dust",
+    "school": "necromancy",
+    "descriptors": [
+      "evil"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "1 standard action",
+    "range": "Touch",
+    "duration": "Instantaneous",
+    "savingThrow": "None",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 35.",
+    "target": "Two 18-HD mummies"
+  },
+  {
+    "id": "spell:nailed_to_the_sky",
+    "name": "Nailed to the Sky",
+    "school": "conjuration",
+    "descriptors": [
+      "teleportation"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "1 standard action",
+    "range": "300 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "Will negates",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 62.",
+    "target": "Creature or object weighing up to 1,000 lb."
+  },
+  {
+    "id": "spell:origin_of_species_achaierai",
+    "name": "Origin of Species: Achaierai",
+    "school": "conjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": true,
+      "xpCost": true
+    },
+    "castingTime": "100 days, 11 minutes",
+    "range": "0 ft.",
+    "duration": "Permanent",
+    "savingThrow": "None",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 38.",
+    "subschool": "creation",
+    "target": "One constructed creature up to Medium (20 cu. ft.)"
+  },
+  {
+    "id": "spell:peripety",
+    "name": "Peripety",
+    "school": "abjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 minute",
+    "range": "Personal",
+    "duration": "12 hours",
+    "savingThrow": "None",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 27.",
+    "target": "You"
+  },
+  {
+    "id": "spell:pestilence",
+    "name": "Pestilence",
+    "school": "conjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "10 minutes",
+    "range": "0 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "Fortitude negates",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 104.",
+    "area": "1,000-ft. -radius hemisphere"
+  },
+  {
+    "id": "spell:rain_of_fire",
+    "name": "Rain of Fire",
+    "school": "evocation",
+    "descriptors": [
+      "fire"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 minute",
+    "range": "0 ft.",
+    "duration": "20 hours",
+    "savingThrow": "Reflex negates (see text)",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 50.",
+    "area": "2-mile-radius emanation"
+  },
+  {
+    "id": "spell:raise_island",
+    "name": "Raise Island",
+    "school": "conjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "65 days, 11 minutes",
+    "range": "0 ft.",
+    "duration": "Permanent",
+    "savingThrow": "None",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 38.",
+    "subschool": "creation",
+    "area": "100-ft. -radius hemispherical island"
+  },
+  {
+    "id": "spell:ruin",
+    "name": "Ruin",
+    "school": "transmutation",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "1 full round",
+    "range": "12,000 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "Fortitude half",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 27.",
+    "target": "One creature, or up to a 10-foot cube of nonliving matter"
+  },
+  {
+    "id": "spell:safe_time",
+    "name": "Safe Time",
+    "school": "conjuration",
+    "descriptors": [
+      "teleportation"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 minute",
+    "range": "Touch",
+    "duration": "Contingent until expended, then 1 round of safe time",
+    "savingThrow": "None",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 64.",
+    "target": "You or creature touched"
+  },
+  {
+    "id": "spell:soul_dominion",
+    "name": "Soul Dominion",
+    "school": "divination",
+    "descriptors": [
+      "mind-affecting"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "10 minutes",
+    "range": "See text",
+    "duration": "20 minutes (D)",
+    "savingThrow": "Will negates (see text)",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 72.",
+    "subschool": "compulsion",
+    "target": "One other living creature"
+  },
+  {
+    "id": "spell:soul_scry",
+    "name": "Soul Scry",
+    "school": "divination",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "10 minutes",
+    "range": "See text",
+    "duration": "20 minutes (D)",
+    "savingThrow": "Will negates",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 55.",
+    "target": "One other living creature"
+  },
+  {
+    "id": "spell:spell_worm",
+    "name": "Spell Worm",
+    "school": "enchantment",
+    "descriptors": [
+      "mind-affecting"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 standard action",
+    "range": "75 ft.",
+    "duration": "20 hours or until completed",
+    "savingThrow": "Will negates",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 45.",
+    "subschool": "compulsion",
+    "target": "One living creature"
+  },
+  {
+    "id": "spell:summon_behemoth",
+    "name": "Summon Behemoth",
+    "school": "conjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 standard action",
+    "range": "75 ft.",
+    "duration": "20 rounds (D)",
+    "savingThrow": "None",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 72.",
+    "subschool": "summoning",
+    "target": "Summoned creature"
+  },
+  {
+    "id": "spell:superb_dispelling",
+    "name": "Superb Dispelling",
+    "school": "abjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 standard action",
+    "range": "300 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "None",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 59.",
+    "target": "One creature or object"
+  },
+  {
+    "id": "spell:time_duplicate",
+    "name": "Time Duplicate",
+    "school": "conjuration",
+    "descriptors": [
+      "teleportation"
+    ],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 free action",
+    "range": "special",
+    "duration": "1 round (see text)",
+    "savingThrow": "None (harmless)",
+    "spellResistance": "None (harmless)",
+    "description": "See text. See text. Spellcraft DC 71.",
+    "target": "You"
+  },
+  {
+    "id": "spell:vengeful_gaze_of_god",
+    "name": "Vengeful Gaze of God",
+    "school": "transmutation",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 standard action",
+    "range": "12,000 ft.",
+    "duration": "Instantaneous",
+    "savingThrow": "Fortitude half",
+    "spellResistance": "Yes",
+    "description": "See text. See text. Spellcraft DC 419",
+    "target": "One creature, or up to a 10-foot cube of nonliving matter in line of sight"
+  },
+  {
+    "id": "spell:verdigris",
+    "name": "Verdigris",
+    "school": "conjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": null
+    },
+    "castingTime": "1 minute",
+    "range": "300 ft.",
+    "duration": "24 hours",
+    "savingThrow": "Reflex half",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 58",
+    "subschool": "creation",
+    "area": "100-ft.-radius hemisphere"
+  },
+  {
+    "id": "spell:verdigris_tsunami",
+    "name": "Verdigris Tsunami",
+    "school": "conjuration",
+    "descriptors": [],
+    "classLevels": {
+      "class:epic_spells_wis": 10
+    },
+    "components": {
+      "verbal": true,
+      "somatic": true,
+      "divineFocus": false,
+      "xpCost": true
+    },
+    "castingTime": "10 minutes",
+    "range": "1,500 ft.",
+    "duration": "Permanent",
+    "savingThrow": "Reflex half",
+    "spellResistance": "No",
+    "description": "See text. See text. Spellcraft DC 170",
+    "subschool": "creation",
+    "area": "1,000-ft.-radius hemisphere"
+  }
+]

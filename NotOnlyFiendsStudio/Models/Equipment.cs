@@ -88,5 +88,7 @@ public class EquipmentDefinition
     /// <summary>Magic enhancement (or cursed penalty) applied to attack and damage rolls.</summary>
     public int EnhancementBonus { get; set; }
     public ArmorProfile? Armor { get; set; }
+    /// <summary>Personality and powers for a permanent intelligent magic item.</summary>
+    public IntelligentItemDefinition? IntelligentItem { get; set; }
     public List<string> Tags { get; set; } = new();
 }
