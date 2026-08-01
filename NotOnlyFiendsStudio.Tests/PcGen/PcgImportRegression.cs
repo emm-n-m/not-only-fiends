@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using NotOnlyFiendsFeed.Services;
 using NotOnlyFiendsStudio.Models;
 using NotOnlyFiendsStudio.PcGen;
 using NotOnlyFiendsStudio.Studio;
@@ -247,7 +248,8 @@ public class PcgImportRegression
 
     /// <summary>
     /// Saves each converted Character as a top-level JSON file in CHARACTERS_PATH (so the Feed
-    /// app picks them up directly — CharacterStore treats filename-without-extension as the id).
+    /// app picks them up directly). CharacterStore derives ids from Character.Name; the source
+    /// PCG filename is only an import input and must not become the character's identity.
     /// First run: writes any file that doesn't exist yet. Re-runs: skips existing files so
     /// in-UI edits aren't clobbered, unless PCG_OVERWRITE_CHARACTERS=1.
     /// Falls back to "{reportDir}/converted/" if CHARACTERS_PATH isn't configured.
@@ -273,19 +275,18 @@ public class PcgImportRegression
             isFallback = true;
         }
 
-        var invalid = Path.GetInvalidFileNameChars();
         int written = 0, skipped = 0, overwritten = 0;
         var preservedExamples = new List<string>();
 
-        foreach (var (stem, character) in characters)
+        foreach (var (_, character) in characters)
         {
-            var safe = new string(stem.Select(c => invalid.Contains(c) ? '_' : c).ToArray());
-            var path = Path.Combine(destination, safe + ".json");
+            var id = CharacterStore.DeriveId(character);
+            var path = Path.Combine(destination, id + ".json");
             var exists = File.Exists(path);
             if (exists && !overwriteExisting)
             {
                 skipped++;
-                if (preservedExamples.Count < 5) preservedExamples.Add(safe + ".json");
+                if (preservedExamples.Count < 5) preservedExamples.Add(id + ".json");
                 continue;
             }
             File.WriteAllText(path, JsonSerializer.Serialize(character, JsonOpts), Encoding.UTF8);
