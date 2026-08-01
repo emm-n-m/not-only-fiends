@@ -1,5 +1,6 @@
 using NotOnlyFiendsStudio.Studio;
 using NotOnlyFiendsStudio.Models;
+using NotOnlyFiendsStudio.PcGen;
 
 namespace NotOnlyFiendsStudio.Tests;
 
@@ -553,6 +554,99 @@ public class CompanionTests
         Assert.Contains(result.MasterState.Warnings, w => w.Message.Contains("missing companion"));
     }
 
+    [Theory]
+    [InlineData("familiar")]
+    [InlineData("improved_familiar")]
+    public void CompanionResolver_Familiar_InheritsMasterHpBabAndProgressionSaves(string linkType)
+    {
+        var registry = BuildBasicRegistry();
+        registry.RegisterDriver(BuildFighterDriver());
+        registry.RegisterDriver(new HDDriver
+        {
+            Kind = DriverKind.RacialHD,
+            Id = "racial_hd:test_familiar",
+            Name = "Familiar HD",
+            HitDie = 8,
+            SkillPointsPerLevel = 2,
+            BABProgression = BABProgression.Average,
+            SaveProgression = new SaveProgression
+            {
+                Fort = ProgressionRate.Poor,
+                Ref = ProgressionRate.Good,
+                Will = ProgressionRate.Poor
+            }
+        });
+        registry.RegisterRace(new RaceDefinition
+        {
+            Id = "race:test_familiar",
+            Name = "Test Familiar",
+            Type = CreatureType.MagicalBeast,
+            Size = Size.Small,
+            RacialHDDriverId = "racial_hd:test_familiar",
+            RacialPermabuffs = new List<Permabuff>
+            {
+                new ModifyAttribute { Target = AttributeTarget.AllSaves, Value = 1 }
+            }
+        });
+
+        var master = new Character
+        {
+            Name = "Master",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 14, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 4).Select(_ => new Tick
+            {
+                DriverId = "class:fighter",
+                Choices = new TickChoices { HitPointsRolled = 5 }
+            }).ToList(),
+            PermanentEvents = new List<PermanentEvent>
+            {
+                new()
+                {
+                    BeforeTick = 0,
+                    Permabuffs = new List<Permabuff>
+                    {
+                        new ModifyAttribute { Target = AttributeTarget.AllSaves, Value = 5 }
+                    }
+                }
+            },
+            CompanionLinks = new List<CompanionLink>
+            {
+                new()
+                {
+                    LinkType = linkType,
+                    CompanionId = "familiar",
+                    EffectiveLevelFormula = new Formula("ClassLevel(wizard) + ClassLevel(sorcerer)")
+                }
+            }
+        };
+        var familiar = new Character
+        {
+            Name = "Familiar",
+            RaceId = "race:test_familiar",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 18, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 2).Select(_ => new Tick
+            {
+                DriverId = "racial_hd:test_familiar",
+                Choices = new TickChoices { HitPointsRolled = 8 }
+            }).ToList()
+        };
+
+        var result = new CompanionResolver(new ReplayStudio(registry), _ => familiar).Build(master);
+        var familiarState = Assert.Single(result.Companions).State;
+
+        Assert.Equal(28, result.MasterState.HP);
+        Assert.Equal(14, familiarState.HP);
+        Assert.Equal(result.MasterState.BaseBAB, familiarState.EffectiveBAB);
+        Assert.Equal(9, result.MasterState.BaseSaves.Fort); // progression 4 + master's own +5 bonus
+        Assert.Equal(5, familiarState.BaseSaves.Fort); // master's progression 4 + familiar's own +1
+        Assert.Equal(2, familiarState.BaseSaves.Ref);  // master's progression 1 + familiar's own +1
+        Assert.Equal(2, familiarState.BaseSaves.Will);
+        Assert.Equal(6, familiarState.EffectiveSaves.Ref); // base 2 + familiar Dex modifier 4
+    }
+
     // ---------- helpers ----------
 
     private static ContentRegistry BuildBasicRegistry()
@@ -754,7 +848,7 @@ public class CompanionTests
                     LinkType = "familiar",
                     CompanionId = "cat-familiar",
                     SelectedSpecies = "race:familiar_cat",
-                    EffectiveLevelFormula = new Formula("CasterLevel(wizard) + CasterLevel(sorcerer)")
+                    EffectiveLevelFormula = new Formula("ClassLevel(wizard) + ClassLevel(sorcerer)")
                 }
             }
         };
@@ -1162,7 +1256,7 @@ public class CompanionTests
                     LinkType = "familiar",
                     CompanionId = "psd",
                     SelectedSpecies = "race:familiar_pseudodragon",
-                    EffectiveLevelFormula = new Formula("CasterLevel(wizard) + CasterLevel(sorcerer)")
+                    EffectiveLevelFormula = new Formula("ClassLevel(wizard) + ClassLevel(sorcerer)")
                 }
             }
         };
@@ -1606,7 +1700,7 @@ public class CompanionTests
                     LinkType = "familiar",
                     CompanionId = "owl-familiar",
                     SelectedSpecies = "race:familiar_owl",
-                    EffectiveLevelFormula = new Formula("CasterLevel(wizard) + CasterLevel(sorcerer)")
+                    EffectiveLevelFormula = new Formula("ClassLevel(wizard) + ClassLevel(sorcerer)")
                 }
             }
         };
@@ -1636,5 +1730,70 @@ public class CompanionTests
         Assert.Contains(owlBuild.State.Abilities, a => a.Id == "fam_speak_with_animals");
         // SR tier (11) NOT yet reached.
         Assert.DoesNotContain(owlBuild.State.Abilities, a => a.Id == "fam_spell_resistance");
+    }
+
+    [RequiresPcgenCharactersFact]
+    public void DuchessRoseElite_LillietteUsesMasterDerivedFamiliarStats()
+    {
+        var sourceRoot = TestContentHelper.GetOptionalPcgenCharactersPath()!;
+        var rosePath = Directory.GetFiles(
+            sourceRoot, "Duchess Rose, Elite Succubus.pcg", SearchOption.AllDirectories).Single();
+        var lilliettePath = Directory.GetFiles(
+            sourceRoot, "Lilly.pcg", SearchOption.AllDirectories).Single();
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        var mapper = new PcgIdMapper();
+        var rose = PcgConverter.Convert(
+            PcgParser.ParseText(File.ReadAllText(rosePath), Path.GetFileName(rosePath)),
+            mapper,
+            registry).Character;
+        var lilliette = PcgConverter.Convert(
+            PcgParser.ParseText(File.ReadAllText(lilliettePath), Path.GetFileName(lilliettePath)),
+            mapper,
+            registry).Character;
+
+        Assert.Contains("template:familiar_standard", lilliette.TemplateIds);
+
+        // Exercise migration of a character save imported before this fix.
+        Assert.Single(rose.CompanionLinks).EffectiveLevelFormula =
+            new Formula("CasterLevel(wizard) + CasterLevel(sorcerer)");
+
+        var result = new CompanionResolver(
+            new ReplayStudio(registry),
+            id => id == "lilly" ? lilliette : null).Build(rose);
+        var familiarState = Assert.Single(result.Companions).State;
+
+        Assert.Equal(23, result.MasterState.Spellcasting["class:sorcerer"].CasterLevel);
+        Assert.Equal(6, result.MasterState.ClassLevels["class:sorcerer"]);
+        Assert.Equal(50, result.MasterState.Speeds[MovementMode.Fly]);
+        Assert.Equal(FlightManeuverability.Average, result.MasterState.FlyManeuverability);
+        Assert.Equal(6, familiarState.EffectiveMasterLevel);
+        Assert.Equal(199, result.MasterState.HP);
+        Assert.Equal(99, familiarState.HP);
+        Assert.Equal(Math.Max(1, result.MasterState.HP / 2), familiarState.HP);
+        Assert.Equal(10, result.MasterState.BaseBAB);
+        Assert.Equal(5, result.MasterState.EpicAttackBonus);
+        Assert.Equal(15, result.MasterState.EffectiveBAB);
+        Assert.Equal(10, familiarState.BaseBAB);
+        Assert.Equal(0, familiarState.EpicAttackBonus);
+        Assert.Equal(result.MasterState.BaseBAB, familiarState.EffectiveBAB);
+        Assert.Equal(6, familiarState.BaseSaves.Fort);
+        Assert.Equal(12, familiarState.BaseSaves.Ref);
+        Assert.Equal(15, familiarState.BaseSaves.Will);
+        Assert.Equal(result.MasterState.ProgressionBaseSaves.Fort, familiarState.BaseSaves.Fort);
+        Assert.Equal(result.MasterState.ProgressionBaseSaves.Ref, familiarState.BaseSaves.Ref);
+        Assert.Equal(result.MasterState.ProgressionBaseSaves.Will, familiarState.BaseSaves.Will);
+        Assert.Equal(4, result.MasterState.EpicSaveBonus);
+        Assert.Equal(0, familiarState.EpicSaveBonus);
+        Assert.Equal(6, familiarState.NaturalArmor); // Elemental base +3, familiar adjustment +3.
+        Assert.Equal(8, familiarState.AbilityScores.INT);
+        Assert.Equal(CreatureType.Elemental, familiarState.Type);
+        Assert.Contains(familiarState.Abilities, ability => ability.Id == "fam_alertness");
+        Assert.Contains(familiarState.Abilities, ability => ability.Id == "fam_improved_evasion");
+        Assert.Contains(familiarState.Abilities, ability => ability.Id == "fam_share_spells");
+        Assert.Contains(familiarState.Abilities, ability => ability.Id == "fam_empathic_link");
+        Assert.Contains(familiarState.Abilities, ability => ability.Id == "fam_deliver_touch_spells");
+        Assert.Contains(familiarState.Abilities, ability => ability.Id == "fam_speak_with_master");
+        Assert.DoesNotContain(familiarState.Abilities, ability => ability.Id == "fam_speak_with_animals");
+        Assert.Contains(familiarState.Abilities, ability => ability.Id == "air_elem_whirlwind");
     }
 }

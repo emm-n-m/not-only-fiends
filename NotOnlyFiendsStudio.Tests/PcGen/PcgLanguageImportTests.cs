@@ -88,6 +88,8 @@ public class PcgLanguageImportTests
 
         Assert.Empty(result.Warnings);
         Assert.Single(result.Character.Ticks);
+        Assert.Equal(new[] { "common", "draconic" }, result.Character.SourceLanguageIds);
+        Assert.Empty(result.Character.PermanentEvents);
 
         var state = new ReplayStudio(registry).Evaluate(result.Character);
         Assert.Equal(1, state.TotalHD);

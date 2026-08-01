@@ -511,6 +511,23 @@ public class RulesAccuracyTests
     }
 
     [Fact]
+    public void Shadowdancer_SummonShadowGrantsFixedScalingCompanionSlot()
+    {
+        var driver = (HDDriver)Content.Value.GetDriver("class:shadowdancer");
+        var slot = driver.LevelPermabuffs[3].OfType<GrantCompanionSlot>().Single();
+
+        Assert.Equal("shadow_companion", slot.LinkType);
+        Assert.Equal("race:companion_shadow", slot.SelectedSpecies);
+        var state = new CharacterState();
+        state.ClassLevels["class:shadowdancer"] = 3;
+        Assert.Equal(3, slot.EffectiveLevelFormula.Evaluate(state));
+        state.ClassLevels["class:shadowdancer"] = 6;
+        Assert.Equal(5, slot.EffectiveLevelFormula.Evaluate(state));
+        state.ClassLevels["class:shadowdancer"] = 9;
+        Assert.Equal(7, slot.EffectiveLevelFormula.Evaluate(state));
+    }
+
+    [Fact]
     public void DuelistRequiresPerformRanks_ViaAnyPerformSubskill()
     {
         // "Skills: Perform 3 ranks" — Perform is an umbrella, so any single sub-skill counts.

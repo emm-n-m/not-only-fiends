@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using NotOnlyFiendsStudio.Models;
 using NotOnlyFiendsStudio.Studio;
 
 namespace NotOnlyFiendsStudio.PcGen;
@@ -71,6 +72,12 @@ public class PcgIdMapper
         ["Rogue"] = "class:rogue",
         ["Warrior"] = "class:warrior",
         ["Wizard"] = "class:wizard",
+
+        // PCGen's level-zero pseudo classes for developed epic spells. These are recognized
+        // spell lists in the engine, but deliberately are not selectable HD drivers.
+        ["Epic Spells (CHA)"] = EpicSpellcasting.CharismaListId,
+        ["Epic Spells (INT)"] = EpicSpellcasting.IntelligenceListId,
+        ["Epic Spells (WIS)"] = EpicSpellcasting.WisdomListId,
 
         // SRD prestige classes
         ["Arcane Archer"] = "class:arcane_archer",
@@ -300,6 +307,13 @@ public class PcgIdMapper
     /// </summary>
     public string? MapSpell(string pcgenSpellName, ContentRegistry? registry)
     {
+        // PCGen stores parenthesized qualifiers in reverse display order. The content id follows
+        // the repository's normal "mass" suffix convention.
+        if (pcgenSpellName.Equals("Frog (Mass)", StringComparison.OrdinalIgnoreCase))
+            return registry == null || registry.TryGetSpell("spell:frog_mass", out _)
+                ? "spell:frog_mass"
+                : null;
+
         var id = "spell:" + DefaultIdTransform(pcgenSpellName);
         if (registry == null || registry.TryGetSpell(id, out _))
             return id;

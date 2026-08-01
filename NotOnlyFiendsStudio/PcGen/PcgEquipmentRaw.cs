@@ -10,6 +10,8 @@ public class PcgEquipmentRaw
     public double Quantity { get; set; } = 1;
     public double WeightLbs { get; set; }
     public long PriceCp { get; set; }
+    public string? Customization { get; set; }
+    public string? BaseItemName { get; set; }
     public string? SlotName { get; set; }
     public bool InActiveSet { get; set; }
 }

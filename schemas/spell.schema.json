@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "spell.schema.json",
   "title": "D&D 3.5e Spell Definition",
-  "description": "Schema for SpellDefinition content files (NEW type — not yet implemented in C# engine). Each file is a JSON array of spells. Designed to follow existing content pipeline patterns. Self-contained for LLM use.",
+  "description": "Schema for SpellDefinition content files. Each file is a JSON array of spells. Designed to follow existing content pipeline patterns. Self-contained for LLM use.",
   "type": "array",
   "items": { "$ref": "#/$defs/SpellDefinition" },
 
@@ -25,7 +25,7 @@
         "material": { "type": ["string", "null"], "description": "Material component description, or null if none. e.g., 'bat guano and sulfur'." },
         "focus": { "type": ["string", "null"], "description": "Focus description, or null if none." },
         "divineFocus": { "type": "boolean", "description": "DF component (divine casters use holy symbol)." },
-        "xpCost": { "type": ["string", "null"], "description": "XP cost, or null if none. e.g., '250 XP'." }
+        "xpCost": { "type": ["string", "boolean", "null"], "description": "Exact XP cost when stated, true when the source only identifies an XP component, or null if none." }
       },
       "required": ["verbal", "somatic", "divineFocus"],
       "additionalProperties": false
@@ -56,7 +56,7 @@
           "type": "object",
           "description": "Maps driver IDs to spell level for that class. e.g., { 'class:sorcerer': 3, 'class:wizard': 3, 'class:cleric': 4 }. Use the driver ID format from hddriver.schema.json.",
           "patternProperties": {
-            "^.+$": { "type": "integer", "minimum": 0, "maximum": 9 }
+            "^.+$": { "type": "integer", "minimum": 0, "maximum": 10 }
           },
           "additionalProperties": false,
           "minProperties": 1

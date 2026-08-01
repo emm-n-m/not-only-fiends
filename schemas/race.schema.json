@@ -70,6 +70,10 @@
         "climb"
       ]
     },
+    "FlightManeuverability": {
+      "type": "string",
+      "enum": ["clumsy", "poor", "average", "good", "perfect"]
+    },
     "AttributeTarget": {
       "type": "string",
       "enum": [
@@ -462,6 +466,10 @@
             }
           },
           "additionalProperties": false
+        },
+        "flyManeuverability": {
+          "$ref": "#/$defs/FlightManeuverability",
+          "description": "Flight maneuverability grade. Omit when the race has no fly speed or the source gives no grade."
         },
         "abilityModifiers": {
           "description": "Racial ability score adjustments. Use null for races with no modifiers (e.g., Human).",

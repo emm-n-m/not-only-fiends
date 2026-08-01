@@ -353,12 +353,16 @@ public static class PcgParser
     {
         var fields = ParseFields(line);
         if (!fields.TryGetValue("FOLLOWER", out var name)) return;
+        var hitDice = 0;
+        if (fields.TryGetValue("HITDICE", out var hitDiceText))
+            int.TryParse(hitDiceText, out hitDice);
         data.Followers.Add(new PcgFollowerEntry
         {
             Name = name,
             Type = fields.GetValueOrDefault("TYPE") ?? "",
             Race = fields.GetValueOrDefault("RACE") ?? "",
             File = fields.GetValueOrDefault("FILE") ?? "",
+            HitDice = hitDice,
         });
     }
 
@@ -411,6 +415,19 @@ public static class PcgParser
         if (fields.TryGetValue("COST", out var c)
             && double.TryParse(c, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var cv))
             raw.PriceCp = (long)(cv * 100);
+        // CUSTOMIZATION is the final field, but it contains an internal literal pipe
+        // (`BASEITEM:...|DATA:...`), so the generic pipe-delimited parser truncates it.
+        // Preserve the entire tail verbatim for the custom-item modifier importer.
+        const string customizationMarker = "|CUSTOMIZATION:";
+        var customizationIndex = line.IndexOf(customizationMarker, StringComparison.Ordinal);
+        if (customizationIndex >= 0)
+        {
+            var customization = line[(customizationIndex + customizationMarker.Length)..];
+            raw.Customization = customization;
+            var baseItem = Regex.Match(customization, @"BASEITEM:(?<name>[^|$\]]+)");
+            if (baseItem.Success)
+                raw.BaseItemName = baseItem.Groups["name"].Value.Trim();
+        }
 
         data.Equipment.Add(raw);
     }

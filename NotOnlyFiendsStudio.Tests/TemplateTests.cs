@@ -199,6 +199,8 @@ public class TemplateTests
             SubtypeAdditions = new List<string> { "native" },
             AbilityModifiers = new AbilityScoreSet { STR = 2, DEX = 0, CON = 0, INT = 0, WIS = 0, CHA = 0 },
             NaturalArmor = 3,
+            SpeedModifiers = new Dictionary<MovementMode, int> { { MovementMode.Fly, 50 } },
+            FlyManeuverability = FlightManeuverability.Good,
             LevelAdjustment = 2,
             NaturalAttacks = new List<NaturalAttack>
             {
@@ -248,6 +250,8 @@ public class TemplateTests
         Assert.Equal(16, state.AbilityScores.STR); // 14 base + 2 template
         Assert.Equal(3, state.NaturalArmor);
         Assert.Equal(2, state.LevelAdjustment);
+        Assert.Equal(50, state.Speeds[MovementMode.Fly]);
+        Assert.Equal(FlightManeuverability.Good, state.FlyManeuverability);
         Assert.Single(state.NaturalAttacks);
         Assert.Contains(state.Abilities, a => a.Id == "test_ability");
     }

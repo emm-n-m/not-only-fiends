@@ -86,6 +86,7 @@ public class PcgFollowerEntry
     public string Type { get; set; } = "";
     public string Race { get; set; } = "";
     public string File { get; set; } = "";
+    public int HitDice { get; set; }
 }
 
 public class PcgMasterEntry

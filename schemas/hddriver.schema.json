@@ -45,6 +45,16 @@
       "enum": ["class", "racialHD"]
     },
 
+    "MovementMode": {
+      "type": "string",
+      "enum": ["land", "fly", "swim", "burrow", "climb"]
+    },
+
+    "FlightManeuverability": {
+      "type": "string",
+      "enum": ["clumsy", "poor", "average", "good", "perfect"]
+    },
+
     "SaveProgression": {
       "type": "object",
       "properties": {
@@ -314,6 +324,18 @@
             "ability": { "$ref": "#/$defs/GrantedAbility" }
           },
           "required": ["$type", "ability"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant a movement mode at the stated speed, preserving a better existing speed or fly maneuverability. Repeating the same grant is idempotent and never adds the speeds together.",
+          "properties": {
+            "$type": { "const": "GrantMovement" },
+            "mode": { "$ref": "#/$defs/MovementMode" },
+            "speed": { "type": "integer", "minimum": 1 },
+            "flyManeuverability": { "$ref": "#/$defs/FlightManeuverability" }
+          },
+          "required": ["$type", "mode", "speed"],
           "additionalProperties": false
         },
         {

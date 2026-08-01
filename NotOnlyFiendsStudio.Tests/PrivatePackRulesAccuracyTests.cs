@@ -18,6 +18,34 @@ public class PrivatePackRulesAccuracyTests
         return Assert.Single(driver.Prerequisites.OfType<MinSkillRanks>(), p => p.SkillId == skillId);
     }
 
+    // deceit/epic/custom_spells_epic.lst: Mind Rape is an Epic Spells (CHA/INT/WIS)
+    // level-10 enchantment (compulsion, mind-affecting) with V, S and XP components.
+    [RequiresPrivatePacksFact]
+    public void MindRape_MatchesTheDeceitEpicSpellList()
+    {
+        var spell = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable()
+            .GetSpell("spell:mind_rape");
+
+        Assert.Equal("Mind Rape", spell.Name);
+        Assert.Equal("enchantment", spell.School);
+        Assert.Equal("compulsion", spell.Subschool);
+        Assert.Contains("mind-affecting", spell.Descriptors);
+        Assert.Equal("special", spell.Range);
+        Assert.Equal("special", spell.Target);
+        Assert.Equal("instantaneous (24 hours for compulsion)", spell.Duration);
+        Assert.Equal("Will special", spell.SavingThrow);
+        Assert.Equal("yes", spell.SpellResistance);
+        Assert.True(spell.Components.Verbal);
+        Assert.True(spell.Components.Somatic);
+        Assert.Equal(System.Text.Json.JsonValueKind.True, spell.Components.XpCost?.ValueKind);
+        Assert.All(new[]
+        {
+            EpicSpellcasting.CharismaListId,
+            EpicSpellcasting.IntelligenceListId,
+            EpicSpellcasting.WisdomListId,
+        }, listId => Assert.Equal(10, spell.ClassLevels[listId]));
+    }
+
     // PRESKILL:1,Knowledge (Necrology)=10 (necromancy_classes.lst). User ruling
     // 2026-07-28: Necrology is deliberately a costly niche skill — it exists as
     // skill:knowledge_necrology rather than being mapped onto arcana/religion.
@@ -44,11 +72,12 @@ public class PrivatePackRulesAccuracyTests
         Assert.Equal(8, SkillPrereq("class:arcane_hierophant", "skill:knowledge_nature").Value);
     }
 
-    // Class line 10: DR:10/Cold Iron or Good (enchantment_classes_35e.lst); template
-    // line: BONUS:SKILL|Listen,Spot|8|TYPE=Racial (enchantment_templates.lst:8) —
-    // these were prose-only before the P3 fix pass.
+    // Class line 10: MOVE:Fly,50 and DR:10/Cold Iron or Good
+    // (enchantment_classes_35e.lst); template line:
+    // BONUS:SKILL|Listen,Spot|8|TYPE=Racial (enchantment_templates.lst:8).
+    // The granted succubus form uses the SRD succubus's Average maneuverability.
     [RequiresPrivatePacksFact]
-    public void DarkTemptress_LevelTenGrantsStructuredDrAndTemplateGrantsListenSpot()
+    public void DarkTemptress_LevelTenGrantsStructuredDrFlightAndTemplateGrantsListenSpot()
     {
         var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
 
@@ -57,7 +86,18 @@ public class PrivatePackRulesAccuracyTests
         Assert.Equal(10, dr.Value);
         Assert.Equal("cold iron or good", dr.BypassedBy);
 
-        var listenSpot = registry.GetTemplate("template:dark_temptress_succubized")
+        var movement = ((HDDriver)registry.GetDriver("class:dark_temptress")).LevelPermabuffs[10]
+            .OfType<GrantMovement>().Single();
+        Assert.Equal(MovementMode.Fly, movement.Mode);
+        Assert.Equal(50, movement.Speed);
+        Assert.Equal(FlightManeuverability.Average, movement.FlyManeuverability);
+
+        var succubized = registry.GetTemplate("template:dark_temptress_succubized");
+        var templateMovement = succubized.CreationPermabuffs.OfType<GrantMovement>().Single();
+        Assert.Equal(MovementMode.Fly, templateMovement.Mode);
+        Assert.Equal(50, templateMovement.Speed);
+        Assert.Equal(FlightManeuverability.Average, templateMovement.FlyManeuverability);
+        var listenSpot = succubized
             .CreationPermabuffs.OfType<GrantSkillBonus>()
             .Where(b => b.Value == 8)
             .Select(b => b.SkillId)

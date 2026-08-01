@@ -201,6 +201,7 @@ public sealed class ImportPcgResponse
     public List<string> DroppedDomains { get; set; } = new();
     public List<string> DroppedSpells { get; set; } = new();
     public List<string> DroppedEquipment { get; set; } = new();
+    public List<string> UnsupportedCustomEquipmentModifiers { get; set; } = new();
     public List<string> IgnoredTemporaryBonuses { get; set; } = new();
     public bool RaceDropped { get; set; }
 }
@@ -365,6 +366,7 @@ public sealed class SpellcastingSummaryDto
     public string ClassId { get; set; } = string.Empty;
     public CastingType CastingType { get; set; }
     public Ability CastingStat { get; set; }
+    public SpellAcquisition Acquisition { get; set; }
     public int CasterLevel { get; set; }
     public int MaxSpellLevel { get; set; }
     public Dictionary<int, int> SpellsPerDay { get; set; } = new();

@@ -4,8 +4,6 @@
 
 Extract spell data from the provided source text and output valid JSON matching the SpellDefinition schema. Output a JSON array (even for a single spell).
 
-**Note**: The SpellDefinition type is not yet implemented in the C# engine. This schema defines the target format for future integration.
-
 ## Output Format
 
 - Root is a JSON array: `[{ ... }, { ... }]`
@@ -35,6 +33,9 @@ Map source abbreviations to driver IDs:
 | Pal | `class:paladin` |
 | Rgr | `class:ranger` |
 | Wiz | `class:wizard` |
+| Epic Spells (CHA) | `class:epic_spells_cha` |
+| Epic Spells (INT) | `class:epic_spells_int` |
+| Epic Spells (WIS) | `class:epic_spells_wis` |
 
 **Important**: When a spell appears on the "Sor/Wiz" list, create entries for BOTH `class:sorcerer` AND `class:wizard` at the same level.
 
@@ -71,7 +72,7 @@ Common descriptors as array elements: `"acid"`, `"air"`, `"chaotic"`, `"cold"`, 
 - `material`: string description if M component, null otherwise
 - `focus`: string description if F component, null otherwise
 - `divineFocus`: true if DF component (divine casters use holy symbol)
-- `xpCost`: string if XP component (e.g., `"250 XP"`), null otherwise
+- `xpCost`: exact string when stated (e.g., `"250 XP"`), `true` when the source only says XP, null otherwise
 
 ### Range Categories
 Use the exact SRD wording:

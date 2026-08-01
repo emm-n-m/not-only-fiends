@@ -47,7 +47,7 @@ public class CompanionResolver
                 continue;
             }
 
-            var effective = link.EffectiveLevelFormula.Evaluate(result.MasterState);
+            var effective = EvaluateEffectiveMasterLevel(link, result.MasterState);
 
             // Inject origin so the companion's templates/formulas can read MasterLevel.
             companion.CompanionOrigin = new CompanionOrigin
@@ -58,6 +58,9 @@ public class CompanionResolver
             };
 
             var companionState = _engine.Evaluate(companion);
+            if (IsFamiliarLinkType(link.LinkType))
+                ApplyFamiliarMasterStats(result.MasterState, companionState);
+
             result.Companions.Add(new CompanionBuild
             {
                 Link = link,
@@ -81,6 +84,48 @@ public class CompanionResolver
         }
 
         return result;
+    }
+
+    private static int EvaluateEffectiveMasterLevel(CompanionLink link, CharacterState master)
+    {
+        // Existing imported saves may still contain the former caster-level formula.
+        // Migrate that exact legacy expression at replay time without overriding a
+        // deliberately authored custom familiar progression formula.
+        if (IsFamiliarLinkType(link.LinkType)
+            && link.EffectiveLevelFormula.Expression
+                == "CasterLevel(wizard) + CasterLevel(sorcerer)")
+        {
+            return new Formula("ClassLevel(wizard) + ClassLevel(sorcerer)").Evaluate(master);
+        }
+
+        return link.EffectiveLevelFormula.Evaluate(master);
+    }
+
+    private static bool IsFamiliarLinkType(string linkType) =>
+        linkType is "familiar" or "improved_familiar";
+
+    private static void ApplyFamiliarMasterStats(CharacterState master, CharacterState familiar)
+    {
+        // PCGen's standard familiar modifier mirrors the 3.5e familiar rules:
+        // COPYMASTERBAB:MASTER, COPYMASTERCHECK:MASTER, and
+        // COPYMASTERHP:max(1,MASTER/2). Preserve bonuses belonging to the familiar
+        // itself while replacing only its HD-derived base saves.
+        var ownFortBonus = familiar.BaseSaves.Fort - familiar.ProgressionBaseSaves.Fort;
+        var ownRefBonus = familiar.BaseSaves.Ref - familiar.ProgressionBaseSaves.Ref;
+        var ownWillBonus = familiar.BaseSaves.Will - familiar.ProgressionBaseSaves.Will;
+
+        familiar.HP = Math.Max(1, master.HP / 2);
+        // "Base attack bonus" is the pre-epic class/racial-HD value. Epic attack is a
+        // character-level bonus, not BAB, and is not copied by the familiar rule.
+        familiar.BaseBAB = master.BaseBAB;
+        familiar.EpicAttackBonus = 0;
+        familiar.BaseSaves = new SaveSet
+        {
+            Fort = master.ProgressionBaseSaves.Fort + ownFortBonus,
+            Ref = master.ProgressionBaseSaves.Ref + ownRefBonus,
+            Will = master.ProgressionBaseSaves.Will + ownWillBonus
+        };
+        familiar.EpicSaveBonus = 0;
     }
 }
 

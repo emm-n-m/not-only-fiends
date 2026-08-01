@@ -32,6 +32,11 @@
       "enum": ["land", "fly", "swim", "burrow", "climb"]
     },
 
+    "FlightManeuverability": {
+      "type": "string",
+      "enum": ["clumsy", "poor", "average", "good", "perfect"]
+    },
+
     "AttributeTarget": {
       "type": "string",
       "enum": ["naturalArmor", "spellResistance", "levelAdjustment", "resistance", "abilityScore"]
@@ -120,6 +125,18 @@
             "ability": { "$ref": "#/$defs/GrantedAbility" }
           },
           "required": ["$type", "ability"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Grant a movement mode at the stated speed, preserving a better existing speed or fly maneuverability. Repeated grants do not add speeds together.",
+          "properties": {
+            "$type": { "const": "GrantMovement" },
+            "mode": { "$ref": "#/$defs/MovementMode" },
+            "speed": { "type": "integer", "minimum": 1 },
+            "flyManeuverability": { "$ref": "#/$defs/FlightManeuverability" }
+          },
+          "required": ["$type", "mode", "speed"],
           "additionalProperties": false
         },
         {
@@ -284,6 +301,10 @@
             "^(land|fly|swim|burrow|climb)$": { "type": "integer" }
           },
           "additionalProperties": false
+        },
+        "flyManeuverability": {
+          "$ref": "#/$defs/FlightManeuverability",
+          "description": "Flight maneuverability grade granted or replaced by this template."
         },
         "levelAdjustment": {
           "type": "integer",

@@ -35,9 +35,11 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(GrantCompanionSlot), "GrantCompanionSlot")]
 [JsonDerivedType(typeof(ModifyLeadershipScore), "ModifyLeadershipScore")]
 [JsonDerivedType(typeof(GrantTypedBonus), "GrantTypedBonus")]
+[JsonDerivedType(typeof(GrantEquipmentSkillBonus), "GrantEquipmentSkillBonus")]
 [JsonDerivedType(typeof(GrantArmorProfile), "GrantArmorProfile")]
 [JsonDerivedType(typeof(GrantWeaponLine), "GrantWeaponLine")]
 [JsonDerivedType(typeof(GrantLanguage), "GrantLanguage")]
+[JsonDerivedType(typeof(GrantMovement), "GrantMovement")]
 public abstract class Permabuff
 {
     public abstract void Apply(PermabuffContext ctx);
@@ -125,9 +127,16 @@ public class AddSaves : Permabuff
     {
         var state = ctx.State;
         var rules = ctx.Rules;
-        state.BaseSaves.Fort += CalculateIncrement(rules, Progression.Fort, ClassLevel);
-        state.BaseSaves.Ref += CalculateIncrement(rules, Progression.Ref, ClassLevel);
-        state.BaseSaves.Will += CalculateIncrement(rules, Progression.Will, ClassLevel);
+        var fort = CalculateIncrement(rules, Progression.Fort, ClassLevel);
+        var reflex = CalculateIncrement(rules, Progression.Ref, ClassLevel);
+        var will = CalculateIncrement(rules, Progression.Will, ClassLevel);
+
+        state.BaseSaves.Fort += fort;
+        state.BaseSaves.Ref += reflex;
+        state.BaseSaves.Will += will;
+        state.ProgressionBaseSaves.Fort += fort;
+        state.ProgressionBaseSaves.Ref += reflex;
+        state.ProgressionBaseSaves.Will += will;
     }
 
     public static int CalculateTotal(ProgressionRate rate, int level) =>
@@ -211,6 +220,28 @@ public class GrantLanguage : Permabuff
     public string LanguageId { get; set; } = string.Empty;
 
     public override void Apply(PermabuffContext ctx) => ctx.State.Languages.Add(LanguageId);
+}
+
+public class GrantMovement : Permabuff
+{
+    public MovementMode Mode { get; set; }
+    public int Speed { get; set; }
+    public FlightManeuverability? FlyManeuverability { get; set; }
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        var state = ctx.State;
+        var effectiveSpeed = Math.Max(state.BaseSpeeds.GetValueOrDefault(Mode), Speed);
+        state.BaseSpeeds[Mode] = effectiveSpeed;
+        state.Speeds[Mode] = effectiveSpeed;
+
+        if (Mode == MovementMode.Fly && FlyManeuverability.HasValue
+            && (!state.FlyManeuverability.HasValue
+                || FlyManeuverability.Value > state.FlyManeuverability.Value))
+        {
+            state.FlyManeuverability = FlyManeuverability.Value;
+        }
+    }
 }
 
 public class GrantSLA : Permabuff
@@ -730,6 +761,8 @@ public class GrantCompanionSlot : Permabuff
 {
     public string LinkType { get; set; } = string.Empty;
     public string ClassFeatureType { get; set; } = string.Empty;
+    /// <summary>A fixed species for class features that do not ask the player to choose one.</summary>
+    public string? SelectedSpecies { get; set; }
     public Formula EffectiveLevelFormula { get; set; } = new();
     public bool UpgradeOnly { get; set; }
 
@@ -742,6 +775,8 @@ public class GrantCompanionSlot : Permabuff
         {
             // Always rewrite formula so later granters can stack/upgrade scaling.
             existing.EffectiveLevelFormula = EffectiveLevelFormula;
+            if (!string.IsNullOrEmpty(SelectedSpecies))
+                existing.SelectedSpecies = SelectedSpecies;
             return;
         }
 
@@ -758,7 +793,8 @@ public class GrantCompanionSlot : Permabuff
             LinkType = LinkType,
             Granter = granter,
             ClassFeatureType = ClassFeatureType,
-            EffectiveLevelFormula = EffectiveLevelFormula
+            EffectiveLevelFormula = EffectiveLevelFormula,
+            SelectedSpecies = SelectedSpecies,
         });
 
         state.PendingCompanionSelections[LinkType] =
@@ -840,6 +876,31 @@ public class GrantTypedBonus : Permabuff
     {
         var current = state.AbilityScores.GetScore(ability);
         state.AbilityScores.SetScore(ability, current + v);
+    }
+}
+
+/// <summary>
+/// A typed equipment bonus to one named skill. Unlike the general GrantSkillBonus permabuff,
+/// this participates in equipment stacking (for example, two +5 competence bonuses to Bluff
+/// still contribute +5 total).
+/// </summary>
+public class GrantEquipmentSkillBonus : Permabuff
+{
+    public string SkillId { get; set; } = string.Empty;
+    public BonusType BonusType { get; set; } = BonusType.Competence;
+    public Formula Value { get; set; } = new();
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        var value = Value.Evaluate(ctx.State);
+        if (ctx.EquipmentPass != null)
+        {
+            ctx.EquipmentPass.AddSkill(SkillId, BonusType, value);
+            return;
+        }
+
+        ctx.State.SkillBonuses.TryAdd(SkillId, 0);
+        ctx.State.SkillBonuses[SkillId] += value;
     }
 }
 

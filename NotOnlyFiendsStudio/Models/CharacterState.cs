@@ -33,6 +33,15 @@ public class CharacterState
     public int BaseBAB { get; set; }
     public SaveSet BaseSaves { get; set; } = new();
 
+    /// <summary>
+    /// Save progression contributed by HD drivers only. This remains separate from
+    /// <see cref="BaseSaves"/> because that legacy total also receives racial, feat,
+    /// template, and equipment bonuses. Familiar inheritance needs the master's base
+    /// save bonuses as calculated from class and racial-HD progression.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public SaveSet ProgressionBaseSaves { get; set; } = new();
+
     // Epic bonuses (HD 21+)
     public int EpicAttackBonus { get; set; }
     public int EpicSaveBonus { get; set; }
@@ -135,6 +144,7 @@ public class CharacterState
     /// <summary>Permanent speeds before armor/load reductions.</summary>
     public Dictionary<MovementMode, int> BaseSpeeds { get; set; } = new();
     public Dictionary<MovementMode, int> Speeds { get; set; } = new();
+    public FlightManeuverability? FlyManeuverability { get; set; }
 
     // Equipment-derived. Computed post-tick after all class/race/template progression;
     // never written from per-tick code.
@@ -321,13 +331,17 @@ public class SpellcastingState
     // Stored progression data for AdvanceSpellcasting to use
     public SpellcastingProgression? ProgressionData { get; set; }
 
+    // Dynamic spell lists such as developed epic spells have no HD-driver progression.
+    public SpellAcquisition? AcquisitionOverride { get; set; }
+
     /// <summary>
     /// How this caster acquires spells. Falls back to the same inference
     /// <see cref="SpellcastingProgression.ResolvedAcquisition"/> makes, for the racial-grant paths
     /// that may not carry a progression reference.
     /// </summary>
     public SpellAcquisition Acquisition =>
-        ProgressionData?.ResolvedAcquisition
+        AcquisitionOverride
+        ?? ProgressionData?.ResolvedAcquisition
         ?? (SpellsKnown != null ? SpellAcquisition.SpellsKnown : SpellAcquisition.FullList);
 
     public void ApplyProgression(int casterLevel)
@@ -397,6 +411,7 @@ public enum LoadCategory { Light, Medium, Heavy, OverLoad }
 public class EquipmentPass
 {
     public Dictionary<(BonusTarget Target, BonusType Type), List<int>> Contributions { get; } = new();
+    public Dictionary<(string SkillId, BonusType Type), List<int>> SkillContributions { get; } = new();
     public List<ArmorContribution> Armors { get; } = new();
     public List<WeaponContribution> Weapons { get; } = new();
     public double TotalWeightLbs { get; set; }
@@ -406,6 +421,14 @@ public class EquipmentPass
         var key = (target, type);
         if (!Contributions.TryGetValue(key, out var list))
             Contributions[key] = list = new List<int>();
+        list.Add(value);
+    }
+
+    public void AddSkill(string skillId, BonusType type, int value)
+    {
+        var key = (skillId, type);
+        if (!SkillContributions.TryGetValue(key, out var list))
+            SkillContributions[key] = list = new List<int>();
         list.Add(value);
     }
 }

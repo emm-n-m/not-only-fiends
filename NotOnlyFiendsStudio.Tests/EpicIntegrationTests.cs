@@ -12,6 +12,55 @@ public class EpicIntegrationTests
     }
 
     [Fact]
+    public void EpicSpellcasting_UsesKnowledgeRanksForOpenSlots_AndKeepsDevelopedSpells()
+    {
+        var (registry, engine) = CreateStudio();
+        var ticks = Enumerable.Range(0, 22)
+            .Select(_ => new Tick { DriverId = "class:sorcerer", Choices = new TickChoices() })
+            .ToList();
+        ticks[20].Choices = new TickChoices
+        {
+            FeatIds = new List<string> { "feat:epic_spellcasting" },
+            SkillAllocations = new List<SkillAllocation>
+            {
+                new() { SkillId = "skill:knowledge_arcana", HalfRanks = 48 },
+                new() { SkillId = "skill:spellcraft", HalfRanks = 48 },
+            },
+            SpellSelections = new List<SpellSelection>
+            {
+                new()
+                {
+                    ClassId = EpicSpellcasting.CharismaListId,
+                    SpellLevel = 10,
+                    SpellId = "spell:frog_mass",
+                },
+            },
+        };
+        var character = new Character
+        {
+            Name = "Epic Sorcerer",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 10, CON = 12, INT = 14, WIS = 10, CHA = 24,
+            },
+            Ticks = ticks,
+        };
+
+        var state = engine.Evaluate(character);
+        var epic = state.Spellcasting[EpicSpellcasting.CharismaListId];
+
+        Assert.Equal(SpellAcquisition.Developed, epic.Acquisition);
+        Assert.Equal(10, epic.MaxSpellLevel);
+        Assert.Equal(2, epic.SpellsPerDay[10]);
+        Assert.Contains(epic.SelectedSpells, spell => spell.SpellId == "spell:frog_mass");
+        Assert.DoesNotContain(state.Warnings, warning =>
+            warning.Message.Contains("unknown spellcasting class", StringComparison.Ordinal));
+        Assert.Contains(registry.GetSpellsForList(EpicSpellcasting.CharismaListId),
+            spell => spell.Id == "spell:frog_mass");
+    }
+
+    [Fact]
     public void EpicProgression_Fighter25_BABAndSavesCorrect()
     {
         var (_, engine) = CreateStudio();

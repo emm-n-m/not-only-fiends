@@ -396,6 +396,112 @@ public class ReplayStudioTests
     }
 
     [Fact]
+    public void FeatChosenAtPrestigeEntryHD_SatisfiesDriverPrerequisite()
+    {
+        var registry = CreateContentRegistry();
+        registry.RegisterFeat(new FeatDefinition
+        {
+            Id = "feat:entry_key",
+            Name = "Entry Key",
+            Type = FeatType.General,
+        });
+        registry.RegisterDriver(new HDDriver
+        {
+            Kind = DriverKind.Class,
+            Id = "class:test_prestige",
+            Name = "Test Prestige",
+            HitDie = 6,
+            BABProgression = BABProgression.Average,
+            SaveProgression = new SaveProgression
+            {
+                Fort = ProgressionRate.Poor,
+                Ref = ProgressionRate.Poor,
+                Will = ProgressionRate.Good,
+            },
+            Prerequisites = new List<Prerequisite>
+            {
+                new HasFeat { FeatId = "feat:entry_key" },
+            },
+        });
+        var ticks = Enumerable.Range(0, 5)
+            .Select(_ => new Tick { DriverId = "class:fighter" })
+            .Append(new Tick
+            {
+                DriverId = "class:test_prestige",
+                Choices = new TickChoices
+                {
+                    FeatIds = new List<string> { "feat:entry_key" },
+                },
+            })
+            .ToList();
+        var character = new Character
+        {
+            Name = "Same-HD Entry",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 14, DEX = 10, CON = 12, INT = 10, WIS = 10, CHA = 10,
+            },
+            Ticks = ticks,
+        };
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        Assert.Contains("feat:entry_key", state.Feats);
+        Assert.DoesNotContain(state.Warnings, warning =>
+            warning.Message.Contains("prerequisite not met for Test Prestige", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void MissingFeatDriverPrerequisite_IsReportedOnceAtClassEntry()
+    {
+        var registry = CreateContentRegistry();
+        registry.RegisterDriver(new HDDriver
+        {
+            Kind = DriverKind.Class,
+            Id = "class:test_prestige",
+            Name = "Test Prestige",
+            HitDie = 6,
+            BABProgression = BABProgression.Average,
+            SaveProgression = new SaveProgression
+            {
+                Fort = ProgressionRate.Poor,
+                Ref = ProgressionRate.Poor,
+                Will = ProgressionRate.Good,
+            },
+            Prerequisites = new List<Prerequisite>
+            {
+                new HasFeat { FeatId = "feat:missing_entry_key" },
+            },
+        });
+        var character = new Character
+        {
+            Name = "Missing Entry Feat",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 14, DEX = 10, CON = 12, INT = 10, WIS = 10, CHA = 10,
+            },
+            Ticks = new List<Tick>
+            {
+                new() { DriverId = "class:fighter" },
+                new() { DriverId = "class:test_prestige" },
+                new() { DriverId = "class:test_prestige" },
+            },
+        };
+
+        var warnings = new ReplayStudio(registry).Evaluate(character).Warnings
+            .Where(warning => warning.Message.Contains(
+                "prerequisite not met for Test Prestige",
+                StringComparison.Ordinal))
+            .ToList();
+
+        var warning = Assert.Single(warnings);
+        Assert.Equal(2, warning.TickIndex);
+        Assert.Contains("feat:missing_entry_key", warning.Message);
+    }
+
+    [Fact]
     public void PermanentEvent_TomeOfINT_AffectsSubsequentSkills()
     {
         var registry = CreateContentRegistry();
@@ -1421,5 +1527,41 @@ public class ReplayStudioTests
         Assert.Contains("skill:listen", state.ClassSkills);
         Assert.Contains("skill:spot", state.ClassSkills);
         Assert.Contains("skill:survival", state.ClassSkills);
+    }
+
+    [Fact]
+    public void GrantMovement_ImprovesLesserFlightWithoutStackingOrDowngradingBetterFlight()
+    {
+        var grant = new GrantMovement
+        {
+            Mode = MovementMode.Fly,
+            Speed = 50,
+            FlyManeuverability = FlightManeuverability.Average,
+        };
+
+        var lesserFlight = new CharacterState
+        {
+            BaseSpeeds = new Dictionary<MovementMode, int> { [MovementMode.Fly] = 30 },
+            Speeds = new Dictionary<MovementMode, int> { [MovementMode.Fly] = 30 },
+            FlyManeuverability = FlightManeuverability.Poor,
+        };
+        var betterFlight = new CharacterState
+        {
+            BaseSpeeds = new Dictionary<MovementMode, int> { [MovementMode.Fly] = 80 },
+            Speeds = new Dictionary<MovementMode, int> { [MovementMode.Fly] = 80 },
+            FlyManeuverability = FlightManeuverability.Good,
+        };
+
+        grant.Apply(lesserFlight);
+        grant.Apply(lesserFlight); // Class and imported template must not stack to 100.
+        grant.Apply(betterFlight);
+        grant.Apply(betterFlight);
+
+        Assert.Equal(50, lesserFlight.BaseSpeeds[MovementMode.Fly]);
+        Assert.Equal(50, lesserFlight.Speeds[MovementMode.Fly]);
+        Assert.Equal(FlightManeuverability.Average, lesserFlight.FlyManeuverability);
+        Assert.Equal(80, betterFlight.BaseSpeeds[MovementMode.Fly]);
+        Assert.Equal(80, betterFlight.Speeds[MovementMode.Fly]);
+        Assert.Equal(FlightManeuverability.Good, betterFlight.FlyManeuverability);
     }
 }

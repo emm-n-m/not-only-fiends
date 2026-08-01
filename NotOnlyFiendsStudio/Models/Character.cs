@@ -22,6 +22,12 @@ public class Character
     /// </summary>
     public List<string> BonusLanguageIds { get; set; } = new();
 
+    /// <summary>
+    /// Languages asserted by an imported source character. These are preserved independently
+    /// of starting-Intelligence picks because the source may not record how each was acquired.
+    /// </summary>
+    public List<string> SourceLanguageIds { get; set; } = new();
+
     // HD Timeline — the build
     public List<Tick> Ticks { get; set; } = new();
 
@@ -60,6 +66,7 @@ public class Character
             CHA = BaseAbilityScores.CHA
         },
         BonusLanguageIds = new List<string>(BonusLanguageIds),
+        SourceLanguageIds = new List<string>(SourceLanguageIds),
         Ticks = Ticks.Select(t => new Tick
         {
             DriverId = t.DriverId,
@@ -97,9 +104,18 @@ public class Character
             Quantity = item.Quantity,
             WeightLbsOverride = item.WeightLbsOverride,
             PriceCpOverride = item.PriceCpOverride,
+            EnhancementBonusOverride = item.EnhancementBonusOverride,
             Permabuffs = new List<Permabuff>(item.Permabuffs),
         }).ToList(),
-        CompanionLinks = new List<CompanionLink>(CompanionLinks),
+        CompanionLinks = CompanionLinks.Select(link => new CompanionLink
+        {
+            LinkType = link.LinkType,
+            CompanionId = link.CompanionId,
+            SelectedSpecies = link.SelectedSpecies,
+            EffectiveLevelFormula = link.EffectiveLevelFormula,
+            FollowerLevel = link.FollowerLevel,
+            Notes = link.Notes,
+        }).ToList(),
         CompanionOrigin = CompanionOrigin,
         Sheet = null
     };
@@ -107,7 +123,8 @@ public class Character
 
 public class CompanionLink
 {
-    // "animal_companion" | "familiar" | "special_mount" | "improved_familiar" | "wild_cohort" | "leadership_cohort"
+    // "animal_companion" | "familiar" | "special_mount" | "improved_familiar" |
+    // "wild_cohort" | "shadow_companion" | "leadership_cohort" | "leadership_follower"
     public string LinkType { get; set; } = string.Empty;
     // Stable ID or relative file path; resolved by the host.
     public string CompanionId { get; set; } = string.Empty;
@@ -115,6 +132,8 @@ public class CompanionLink
     public string? SelectedSpecies { get; set; }
     // Formula evaluated against master state to produce EffectiveMasterLevel.
     public Formula EffectiveLevelFormula { get; set; } = new();
+    // Leadership follower tier (1-6). Zero means an imported source did not record it.
+    public int FollowerLevel { get; set; }
     public string? Notes { get; set; }
 }
 
@@ -212,8 +231,9 @@ public class SpellcastingSummary
     public CastingType CastingType { get; set; }
     public Ability CastingStat { get; set; }
     /// <summary>
-    /// Whether this caster has its whole list available, works from a spellbook, or knows a fixed
-    /// number of spells. Consumers must not offer a spell *choice* for <c>FullList</c>.
+    /// Whether this caster has its whole list available, works from a spellbook, knows a fixed
+    /// number of spells, or develops epic spells individually. Consumers must not offer a spell
+    /// <em>choice</em> for <c>FullList</c>.
     /// </summary>
     public SpellAcquisition Acquisition { get; set; }
     public int CasterLevel { get; set; }
@@ -330,5 +350,7 @@ public class EquipmentEntry
     public double? WeightLbsOverride { get; set; }
     /// <summary>PCGen character-specific size/customization price; null uses catalog price.</summary>
     public long? PriceCpOverride { get; set; }
+    /// <summary>PCGen custom weapon enhancement; null uses the catalog definition.</summary>
+    public int? EnhancementBonusOverride { get; set; }
     public List<Permabuff> Permabuffs { get; set; } = new(); // inline permabuffs (homebrew, or overrides on top of content)
 }

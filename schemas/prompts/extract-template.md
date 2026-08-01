@@ -29,6 +29,7 @@ Applied once at character creation:
 - `abilityModifiers` — permanent ability score changes (`{ "str": 4, "dex": 4, "con": 2, "int": 4, "wis": 0, "cha": 2 }`)
 - `naturalArmor` — additive natural armor bonus
 - `speedModifiers` — movement changes (`{ "fly": 60 }`)
+- `flyManeuverability` — flight grade (`clumsy`, `poor`, `average`, `good`, or `perfect`)
 - `naturalAttacks` — natural weapons
 - `creationPermabuffs` — any other one-time effects (darkvision, immunities, resistances, special abilities)
 

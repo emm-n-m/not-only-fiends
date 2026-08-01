@@ -499,6 +499,7 @@ public class ContentRegistry : IContentLookup
                 GrantRacialSpellcasting racialSpellcasting => racialSpellcasting.LevelFormula,
                 GrantCompanionSlot companionSlot => companionSlot.EffectiveLevelFormula,
                 GrantTypedBonus typedBonus => typedBonus.Value,
+                GrantEquipmentSkillBonus skillBonus => skillBonus.Value,
                 _ => null
             };
             if (formula != null)
@@ -529,7 +530,7 @@ public class ContentRegistry : IContentLookup
                     $"Spell '{spell.Id}' references unknown spell list '{spellListId}'"));
             }
 
-            if (level < 0)
+            if (level is < 0 or > EpicSpellcasting.SpellLevel)
             {
                 _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
                     $"Spell '{spell.Id}' has invalid level {level} for spell list '{spellListId}'"));
@@ -539,6 +540,9 @@ public class ContentRegistry : IContentLookup
 
     private bool IsKnownSpellList(string spellListId)
     {
+        if (EpicSpellcasting.IsSpellList(spellListId))
+            return true;
+
         if (_domains.ContainsKey(spellListId))
             return true;
 

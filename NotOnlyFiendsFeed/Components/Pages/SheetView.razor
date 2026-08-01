@@ -133,9 +133,13 @@ else if (_state != null && _character != null)
                 <div class="card mb-3">
                     <div class="card-header">Movement</div>
                     <div class="card-body">
-                        @foreach (var (mode, speed) in _state.Speeds)
+                        @foreach (var (mode, speed) in _state.Speeds.OrderBy(entry => entry.Key))
                         {
-                            <p>@mode: @speed ft.</p>
+                            <p>
+                                @mode: @speed ft.@(mode == MovementMode.Fly && _state.FlyManeuverability.HasValue
+                                    ? $" ({_state.FlyManeuverability.Value})"
+                                    : "")
+                            </p>
                         }
                     </div>
                 </div>
@@ -238,6 +242,32 @@ else if (_state != null && _character != null)
         </div>
 
         <div class="row">
+            @if (_state.Domains.Any())
+            {
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header">Domains</div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var domainId in _state.Domains.OrderBy(id => id, StringComparer.Ordinal))
+                                {
+                                    _registry.TryGetDomain(domainId, out var domain);
+                                    var owner = _state.DomainOwners.GetValueOrDefault(domainId);
+                                    <li>
+                                        <strong>@(domain?.Name ?? domainId.Replace("domain:", ""))</strong>
+                                        <span class="text-muted">— @(string.IsNullOrEmpty(owner) ? "race/template" : owner.Replace("class:", ""))</span>
+                                        @if (!string.IsNullOrWhiteSpace(domain?.Description))
+                                        {
+                                            <div class="small">@domain.Description</div>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+
             @if (_state.SLAs.Any())
             {
                 <div class="col-md-6">
@@ -383,6 +413,12 @@ else if (_state != null && _character != null)
                                         — gave up @string.Join(", ", givenUp.Select(Titleise).OrderBy(s => s, StringComparer.OrdinalIgnoreCase))
                                     </span>
                                 }
+                            </p>
+                        }
+                        else if (sc.Acquisition == SpellAcquisition.Developed)
+                        {
+                            <p class="text-muted mb-1">
+                                <em>Epic spells are acquired individually through development and use open epic spell slots.</em>
                             </p>
                         }
                         @if (sc.SelectedSpells.Any())

@@ -92,6 +92,15 @@
           "name": "Summon Shadow",
           "description": "Summon a shadow companion from the Plane of Shadow. If destroyed, cannot be summoned for 30 days."
         }
+      },
+      {
+        "$type": "GrantCompanionSlot",
+        "linkType": "shadow_companion",
+        "classFeatureType": "",
+        "selectedSpecies": "race:companion_shadow",
+        "effectiveLevelFormula": {
+          "expression": "3 + 2 * max(0, (ClassLevel(shadowdancer) - 3) / 3)"
+        }
       }
     ],
     "4": [

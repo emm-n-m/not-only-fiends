@@ -72,6 +72,17 @@ public class PcgEquipmentImportTests
     }
 
     [Fact]
+    public void Parser_CustomEquipment_PreservesCustomizationAndBaseItem()
+    {
+        const string pcg = "EQUIPNAME:Belly Chain|CUSTOMIZATION:[BASEITEM:Belt|DATA:NAME=Belly Chain$EQMOD=EPIC_ABILITY_BONUS_ENHANCE&pipe;CHA=+12.BNS_SKL_CMP&pipe;Bluff=+5$SPROP=custom]";
+
+        var item = Assert.Single(PcgParser.ParseText(pcg).Equipment);
+
+        Assert.Equal("Belt", item.BaseItemName);
+        Assert.Contains("EPIC_ABILITY_BONUS_ENHANCE", item.Customization);
+    }
+
+    [Fact]
     public void Parser_EquipSet_AssignsSlotAndMarksActiveSet()
     {
         var pcg = """
@@ -382,5 +393,96 @@ public class PcgEquipmentImportTests
 
         var entry = Assert.Single(result.Character.Equipment);
         Assert.Equal("carried", entry.Slot);
+    }
+
+    [Fact]
+    public void Converter_CustomLillyItems_ApplyTypedBonusesWithoutStackingCompetence()
+    {
+        var registry = TestContentHelper.LoadBundledPacks();
+        registry.RegisterEquipment(new EquipmentDefinition
+        {
+            Id = "test:belly_chain", Name = "Belly Chain", Category = EquipmentCategory.Wondrous,
+        });
+        registry.RegisterEquipment(new EquipmentDefinition
+        {
+            Id = "test:emeralds_best_creation", Name = "Emerald's Best Creation", Category = EquipmentCategory.Wondrous,
+        });
+        var data = MinimalCharacter(
+            new PcgEquipmentRaw
+            {
+                Name = "Belly Chain", BaseItemName = "Belt", SlotName = "Waist", InActiveSet = true,
+                Customization = "BASEITEM:Belt$EQMOD=EPIC_ABILITY_BONUS_ENHANCE&pipe;CHA=+12.BNS_SKL_CMP&pipe;Bluff=+5$SPROP=custom",
+            },
+            new PcgEquipmentRaw
+            {
+                Name = "Emerald's Best Creation", BaseItemName = "Robe of Useful Items", SlotName = "Body", InActiveSet = true,
+                Customization = "BASEITEM:Robe of Useful Items$EQMOD=EPIC_NATURAL_ARMR_ENHANCE&pipe;+10.BNS_SKL_CMP&pipe;Perform ~ Dance=+20&pipe;Bluff=+5&pipe;Disguise=+5&pipe;Gather Information=+5&pipe;Diplomacy=+5$SPROP=custom",
+            });
+        foreach (var stat in new[] { "STR", "DEX", "CON", "INT", "WIS", "CHA" })
+            data.BaseStats[stat] = 10;
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+        var state = new ReplayStudio(registry).Evaluate(result.Character);
+
+        Assert.Equal(22, state.AbilityScores.CHA);
+        Assert.Equal(10, state.AC.Components[BonusType.NaturalEnhancement]);
+        Assert.Equal(5, state.SkillBonuses["skill:bluff"]); // two +5 competence bonuses do not stack
+        Assert.Equal(20, state.SkillBonuses["skill:perform_dance"]);
+        Assert.Equal(5, state.SkillBonuses["skill:disguise"]);
+        Assert.Equal(5, state.SkillBonuses["skill:gather_information"]);
+        Assert.Equal(5, state.SkillBonuses["skill:diplomacy"]);
+        Assert.Empty(result.UnsupportedCustomEquipmentModifiers);
+    }
+
+    [Fact]
+    public void Converter_CustomWeapon_UsesMechanicalBaseAndPreservesEnhancementOverride()
+    {
+        var registry = TestContentHelper.LoadBundledPacks();
+        registry.RegisterEquipment(new EquipmentDefinition
+        {
+            Id = "test:infernal_sting", Name = "Infernal Sting", Category = EquipmentCategory.Weapon,
+        });
+        var data = MinimalCharacter(new PcgEquipmentRaw
+        {
+            Name = "Infernal Sting", BaseItemName = "Whip", SlotName = "Primary Hand", InActiveSet = true,
+            Customization = "BASEITEM:Whip$EQMOD=PLUS_10_WEAP.DREAD_MELEE$SPROP=custom",
+        });
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+        var entry = Assert.Single(result.Character.Equipment);
+
+        Assert.Equal("weapon:whip", entry.ContentId);
+        Assert.Equal(10, entry.EnhancementBonusOverride);
+        Assert.Contains(result.UnsupportedCustomEquipmentModifiers, warning => warning.EndsWith(": DREAD_MELEE"));
+    }
+
+    [RequiresPcgenCharactersFact]
+    public void ArchfiendLilly_CustomItemsLanguagesShadowAndFollowers_ArePreserved()
+    {
+        var sourceRoot = TestContentHelper.GetOptionalPcgenCharactersPath()!;
+        var path = Directory.GetFiles(sourceRoot, "Archfiend Lilly.pcg", SearchOption.AllDirectories).Single();
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        var data = PcgParser.ParseText(File.ReadAllText(path), Path.GetFileName(path));
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+        var state = new ReplayStudio(registry).Evaluate(result.Character);
+
+        Assert.Equal(11, result.Character.SourceLanguageIds.Count);
+        Assert.Contains("template:archfiend_ascended", result.Character.TemplateIds);
+        Assert.Contains("domain:charm", state.Domains);
+        Assert.Equal("", state.DomainOwners["domain:charm"]);
+        Assert.Equal(9, state.SLAs.Count(sla => sla.Id.StartsWith("domain_sla_", StringComparison.Ordinal)));
+        Assert.Equal(43, state.AbilityScores.CHA); // 31 before equipment, +12 from Belly Chain
+        Assert.Equal(10, state.AC.Components[BonusType.NaturalEnhancement]);
+        Assert.Equal(45, state.SkillTotals["skill:bluff"]);
+        Assert.Equal(60, state.SkillTotals["skill:perform_dance"]);
+        Assert.Equal(90, state.Speeds[MovementMode.Fly]);
+        Assert.Equal(FlightManeuverability.Good, state.FlyManeuverability);
+
+        var shadowSlot = state.CompanionSlots.Single(slot => slot.LinkType == "shadow_companion");
+        Assert.Equal("race:companion_shadow", shadowSlot.SelectedSpecies);
+        Assert.Equal(7, shadowSlot.EffectiveLevel);
+        Assert.Equal(6, result.Character.CompanionLinks.Count(link => link.LinkType == "leadership_follower"));
+        Assert.True(state.Followers.Level1 > 0);
     }
 }

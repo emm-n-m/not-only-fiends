@@ -13,6 +13,8 @@ public enum CreatureType
 
 public enum MovementMode { Land, Fly, Swim, Burrow, Climb }
 
+public enum FlightManeuverability { Clumsy, Poor, Average, Good, Perfect }
+
 public enum Alignment { LG, LN, LE, NG, N, NE, CG, CN, CE }
 
 public enum CastingType { Arcane, Divine }
@@ -43,6 +45,12 @@ public enum SpellAcquisition
     /// assassin. The count comes from the class's <c>spellsKnown</c> progression.
     /// </summary>
     SpellsKnown,
+
+    /// <summary>
+    /// Epic spells acquired individually through development. They are permanent build choices,
+    /// but are neither constrained by a spells-known table nor written in a spellbook.
+    /// </summary>
+    Developed,
 }
 
 public enum BABProgression { Good, Average, Poor }

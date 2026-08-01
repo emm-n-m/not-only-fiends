@@ -104,6 +104,19 @@
                 </div>
             }
 
+            @if (_result.UnsupportedCustomEquipmentModifiers.Count > 0)
+            {
+                <div class="alert alert-info mt-2">
+                    <h6>Retained custom item powers not yet modeled (@_result.UnsupportedCustomEquipmentModifiers.Count)</h6>
+                    <div style="max-height: 200px; overflow-y: auto;">
+                        @foreach (var modifier in _result.UnsupportedCustomEquipmentModifiers)
+                        {
+                            <div><small>@modifier</small></div>
+                        }
+                    </div>
+                </div>
+            }
+
             <!-- Actions -->
             <div class="d-flex gap-2 mt-3">
                 <button class="btn btn-success" @onclick="DownloadCharacter">Download as JSON</button>

@@ -21,6 +21,7 @@ public class TemplateDriver
     public AbilityScoreSet? AbilityModifiers { get; set; }
     public int? NaturalArmor { get; set; }
     public Dictionary<MovementMode, int> SpeedModifiers { get; set; } = new();
+    public FlightManeuverability? FlyManeuverability { get; set; }
     public List<DerivedSpeedRule> DerivedSpeedRules { get; set; } = new();
     public int RacialHitDieSizeAdjustment { get; set; }
     public int? RacialHitDieMaximum { get; set; }

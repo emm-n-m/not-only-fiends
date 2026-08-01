@@ -79,7 +79,7 @@
         "$type": "GrantCompanionSlot",
         "linkType": "familiar",
         "classFeatureType": "class_feature:familiar_options",
-        "effectiveLevelFormula": { "expression": "CasterLevel(wizard) + CasterLevel(sorcerer)" }
+        "effectiveLevelFormula": { "expression": "ClassLevel(wizard) + ClassLevel(sorcerer)" }
       }
     ]
   },

@@ -63,6 +63,8 @@ public class ReplayStudio
         var effectiveHighWater = new Dictionary<string, int>();
         var racialSpellcastingSeeded = false;
         var maxTick = Math.Min(upToHD ?? character.Ticks.Count, character.Ticks.Count);
+        var deferredDriverFeatPrerequisites =
+            new List<(int TickIndex, string DriverName, Prerequisite Prerequisite)>();
 
         for (int i = 0; i < maxTick; i++)
         {
@@ -106,6 +108,18 @@ public class ReplayStudio
                 state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"{driver.Name} level {driverLevel} exceeds max level {hdDriver.MaxLevel.Value}" });
             foreach (var prereq in driver.Prerequisites)
             {
+                // Imported PCG files do not record feat acquisition levels, so their feats are
+                // intentionally stored on the final tick. Feat-based class-entry requirements
+                // must therefore be checked after the evaluated timeline has applied its feat
+                // choices. This also lets a feat chosen at the entry HD qualify the class.
+                // Other requirements remain chronological and are checked immediately.
+                if (IsFeatBasedPrerequisite(prereq))
+                {
+                    if (driverLevel == 1)
+                        deferredDriverFeatPrerequisites.Add((state.TotalHD, driver.Name, prereq));
+                    continue;
+                }
+
                 if (!prereq.IsMet(state))
                     state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"prerequisite not met for {driver.Name}: {prereq.Description}" });
             }
@@ -253,6 +267,16 @@ public class ReplayStudio
             }
         }
 
+        foreach (var (tickIndex, driverName, prerequisite) in deferredDriverFeatPrerequisites)
+        {
+            if (!prerequisite.IsMet(state))
+                state.Warnings.Add(new Warning
+                {
+                    TickIndex = tickIndex,
+                    Message = $"prerequisite not met for {driverName}: {prerequisite.Description}"
+                });
+        }
+
         ctx.CurrentDriverId = null;
         ctx.CurrentDriverKind = null;
         ctx.CurrentRacialHitDieMaximum = null;
@@ -306,6 +330,17 @@ public class ReplayStudio
 
         return state;
     }
+
+    private static bool IsFeatBasedPrerequisite(Prerequisite prerequisite) => prerequisite switch
+    {
+        HasFeat => true,
+        HasFeatOfType => true,
+        HasFeatWithTag => true,
+        HasFeatSelections => true,
+        HasFeatOfAnyType => true,
+        AnyOf anyOf => anyOf.Options.Any(IsFeatBasedPrerequisite),
+        _ => false,
+    };
 
     private static void RefreshDynamicSLAs(CharacterState state)
     {
@@ -634,6 +669,7 @@ public class ReplayStudio
             state.BaseSpeeds[mode] = speed;
             state.Speeds[mode] = speed;
         }
+        state.FlyManeuverability = race.FlyManeuverability;
 
         if (race.AbilityModifiers != null)
         {
@@ -663,8 +699,6 @@ public class ReplayStudio
     private void ApplyBonusLanguages(PermabuffContext ctx, Character character, RaceDefinition? race)
     {
         var state = ctx.State;
-        if (character.BonusLanguageIds.Count == 0) return;
-
         var allowance = LanguageCatalog.Allowance(state.AbilityScores.INT);
         var offered = LanguageCatalog.OfferedBonusLanguages(race, _content.GetAllLanguages())
             .Select(l => l.Id)
@@ -705,6 +739,9 @@ public class ReplayStudio
             state.Languages.Add(languageId);
             spent++;
         }
+
+        foreach (var languageId in character.SourceLanguageIds.Distinct(StringComparer.Ordinal))
+            state.Languages.Add(languageId);
     }
 
     private void ApplyTemplateCreation(PermabuffContext ctx, TemplateDriver template)
@@ -745,6 +782,8 @@ public class ReplayStudio
                 state.BaseSpeeds[mode] = speed;
             state.Speeds[mode] = state.BaseSpeeds[mode];
         }
+        if (template.FlyManeuverability.HasValue)
+            state.FlyManeuverability = template.FlyManeuverability;
 
         state.LevelAdjustment += template.LevelAdjustment;
 
@@ -817,6 +856,19 @@ public class ReplayStudio
         return state.PendingDomainSelections.FirstOrDefault(kv => kv.Value > 0).Key;
     }
 
+    private static string SourceAuthorizedDomainOwner(CharacterState state, string? currentDriverId)
+    {
+        // PCGen records the class level at which the user made the selection, which is not
+        // necessarily the feature that granted the slot. Prefer a real pending slot on that
+        // class, then a race/template (orphan) slot, before falling back to the recorded class.
+        if (currentDriverId != null
+            && state.PendingDomainSelections.GetValueOrDefault(currentDriverId) > 0)
+            return currentDriverId;
+        if (state.PendingDomainSelections.GetValueOrDefault(GrantDomainSelection.OrphanOwner) > 0)
+            return GrantDomainSelection.OrphanOwner;
+        return currentDriverId ?? GrantDomainSelection.OrphanOwner;
+    }
+
     private void ApplyDomainSelections(PermabuffContext ctx, IEnumerable<string> domainIds,
         bool sourceAuthorized)
     {
@@ -830,7 +882,7 @@ public class ReplayStudio
             }
 
             var ownerClassId = sourceAuthorized
-                ? ctx.CurrentDriverId ?? GrantDomainSelection.OrphanOwner
+                ? SourceAuthorizedDomainOwner(state, ctx.CurrentDriverId)
                 : ChooseDomainOwner(state, ctx.CurrentDriverId);
             if (ownerClassId == null)
             {
@@ -846,7 +898,7 @@ public class ReplayStudio
 
             state.Domains.Add(domainId);
             state.DomainOwners[domainId] = ownerClassId;
-            if (!sourceAuthorized)
+            if (state.PendingDomainSelections.GetValueOrDefault(ownerClassId) > 0)
             {
                 state.PendingDomainSelections[ownerClassId]--;
                 if (state.PendingDomainSelections[ownerClassId] == 0)
@@ -967,6 +1019,11 @@ public class ReplayStudio
     {
         var state = ctx.State;
 
+        // Level advancement buys skill ranks before selecting feats. A feat gained at this HD may
+        // therefore use ranks bought at this HD to satisfy its prerequisites (PHB advancement
+        // order). This is observable on imported builds because both choices can share a tick.
+        ApplySkillAllocations(state, choices.SkillAllocations);
+
         if (choices.FeatIds != null)
         {
             foreach (var featId in choices.FeatIds)
@@ -1052,32 +1109,6 @@ public class ReplayStudio
             }
         }
 
-        if (choices.SkillAllocations != null)
-        {
-            foreach (var alloc in choices.SkillAllocations)
-            {
-                // Unknown ids would otherwise silently consume skill points and materialise
-                // a phantom skill on the sheet, so surface them the way unknown feats are.
-                if (!_content.TryGetSkill(alloc.SkillId, out _))
-                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown skill '{alloc.SkillId}'" });
-
-                state.SkillHalfRanks.TryAdd(alloc.SkillId, 0);
-                var newTotal = state.SkillHalfRanks[alloc.SkillId] + alloc.HalfRanks;
-
-                if (newTotal > state.MaxHalfRanks)
-                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"skill '{alloc.SkillId}' would have {newTotal / 2.0} ranks, exceeding max {state.MaxHalfRanks / 2.0}" });
-
-                state.SkillHalfRanks[alloc.SkillId] = newTotal;
-                var cost = state.CurrentTickClassSkills.Contains(alloc.SkillId)
-                    ? (alloc.HalfRanks + 1) / 2
-                    : alloc.HalfRanks;
-                state.UnspentSkillPoints -= cost;
-            }
-
-            if (state.UnspentSkillPoints < 0)
-                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"spent {-state.UnspentSkillPoints} more skill points than available" });
-        }
-
         // Domain selections — each pick consumes a pending slot from the granting class
         // (preferring the current tick's class) and grants its bonus slot only to that class.
         // NOTE: must process before SpellSelections so domain spell picks can resolve their owner class.
@@ -1086,6 +1117,10 @@ public class ReplayStudio
         if (choices.ClassFeatureChoices?.TryGetValue("imported_source_domains", out var importedDomainIds) == true
             && importedDomainIds != null)
             ApplyDomainSelections(ctx, importedDomainIds, sourceAuthorized: true);
+
+        // Epic spell lists are PCGen pseudo classes rather than HD drivers. Materialize their
+        // computed slot pool after feats and skills have landed, and before selections replay.
+        EnsureEpicSpellcasting(state, choices.SpellSelections);
 
         if (choices.SpellSelections != null)
         {
@@ -1247,6 +1282,115 @@ public class ReplayStudio
         }
     }
 
+    private void ApplySkillAllocations(
+        CharacterState state,
+        IReadOnlyCollection<SkillAllocation>? allocations)
+    {
+        if (allocations == null)
+            return;
+
+        foreach (var alloc in allocations)
+        {
+            // Unknown ids would otherwise silently consume skill points and materialise
+            // a phantom skill on the sheet, so surface them the way unknown feats are.
+            if (!_content.TryGetSkill(alloc.SkillId, out _))
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown skill '{alloc.SkillId}'" });
+
+            state.SkillHalfRanks.TryAdd(alloc.SkillId, 0);
+            var newTotal = state.SkillHalfRanks[alloc.SkillId] + alloc.HalfRanks;
+
+            if (newTotal > state.MaxHalfRanks)
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"skill '{alloc.SkillId}' would have {newTotal / 2.0} ranks, exceeding max {state.MaxHalfRanks / 2.0}" });
+
+            state.SkillHalfRanks[alloc.SkillId] = newTotal;
+            var cost = state.CurrentTickClassSkills.Contains(alloc.SkillId)
+                ? (alloc.HalfRanks + 1) / 2
+                : alloc.HalfRanks;
+            state.UnspentSkillPoints -= cost;
+        }
+
+        if (state.UnspentSkillPoints < 0)
+            state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"spent {-state.UnspentSkillPoints} more skill points than available" });
+    }
+
+    private static void EnsureEpicSpellcasting(
+        CharacterState state,
+        IReadOnlyCollection<SpellSelection>? currentSelections)
+    {
+        if (!state.Feats.Contains("feat:epic_spellcasting"))
+            return;
+
+        var requestedLists = (currentSelections ?? Array.Empty<SpellSelection>())
+            .Select(selection => selection.ClassId)
+            .Concat(state.Spellcasting.Keys.Where(EpicSpellcasting.IsSpellList))
+            .Where(EpicSpellcasting.IsSpellList)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        // A newly built character has no imported pseudo-class selection to identify the casting
+        // stat. If all qualifying 9th-level sources agree, expose that list automatically.
+        if (requestedLists.Count == 0)
+        {
+            var inferredAbilities = state.Spellcasting.Values
+                .Where(caster => !EpicSpellcasting.IsSpellList(caster.ClassId)
+                    && caster.MaxSpellLevel >= 9)
+                .Select(caster => caster.CastingStat)
+                .Where(ability => ability is Ability.INT or Ability.WIS or Ability.CHA)
+                .Distinct()
+                .ToList();
+            if (inferredAbilities.Count == 1)
+                requestedLists.Add(EpicSpellcasting.ListIdFor(inferredAbilities[0]));
+        }
+
+        foreach (var listId in requestedLists)
+        {
+            if (!EpicSpellcasting.TryGetCastingAbility(listId, out var castingAbility))
+                continue;
+
+            var eligibleCasters = state.Spellcasting.Values
+                .Where(caster => !EpicSpellcasting.IsSpellList(caster.ClassId)
+                    && caster.CastingStat == castingAbility
+                    && caster.MaxSpellLevel >= 9)
+                .ToList();
+            if (eligibleCasters.Count == 0)
+                continue;
+
+            var spellcraftRanks = WholeSkillRanks(state, "skill:spellcraft");
+            var arcanaRanks = WholeSkillRanks(state, "skill:knowledge_arcana");
+            var religionRanks = WholeSkillRanks(state, "skill:knowledge_religion");
+            var natureRanks = WholeSkillRanks(state, "skill:knowledge_nature");
+
+            var arcaneSlots = eligibleCasters.Any(caster => caster.CastingType == CastingType.Arcane)
+                && spellcraftRanks >= 24 && arcanaRanks >= 24
+                    ? arcanaRanks / 10
+                    : 0;
+            var divineSlots = eligibleCasters.Any(caster => caster.CastingType == CastingType.Divine)
+                && spellcraftRanks >= 24
+                    ? Math.Max(religionRanks >= 24 ? religionRanks / 10 : 0,
+                        natureRanks >= 24 ? natureRanks / 10 : 0)
+                    : 0;
+            var slots = arcaneSlots + divineSlots;
+
+            if (!state.Spellcasting.TryGetValue(listId, out var epicCaster))
+            {
+                epicCaster = new SpellcastingState { ClassId = listId };
+                state.Spellcasting[listId] = epicCaster;
+            }
+
+            epicCaster.CastingType = eligibleCasters.Any(caster => caster.CastingType == CastingType.Arcane)
+                ? CastingType.Arcane
+                : CastingType.Divine;
+            epicCaster.CastingStat = castingAbility;
+            epicCaster.CasterLevel = eligibleCasters.Max(caster => caster.CasterLevel);
+            epicCaster.MaxSpellLevel = EpicSpellcasting.SpellLevel;
+            epicCaster.SpellsPerDay = new Dictionary<int, int> { [EpicSpellcasting.SpellLevel] = slots };
+            epicCaster.AcquisitionOverride = SpellAcquisition.Developed;
+        }
+    }
+
+    private static int WholeSkillRanks(CharacterState state, string skillId) =>
+        state.SkillHalfRanks.GetValueOrDefault(skillId) / 2;
+
     private static IEnumerable<string> GetClassFeatureOptionViolations(
         CharacterState state,
         string featureType,
@@ -1339,7 +1483,7 @@ public class ReplayStudio
                         var weapon = new WeaponContribution
                         {
                             Profile = def.Weapon,
-                            EnhancementBonus = def.EnhancementBonus,
+                            EnhancementBonus = item.EnhancementBonusOverride ?? def.EnhancementBonus,
                             MainHand = item.MainHand,
                             TwoHanded = item.TwoHanded,
                             DisplayName = def.Name
@@ -1351,7 +1495,7 @@ public class ReplayStudio
                             pass.Weapons.Add(new WeaponContribution
                             {
                                 Profile = def.Weapon,
-                                EnhancementBonus = def.EnhancementBonus,
+                                EnhancementBonus = item.EnhancementBonusOverride ?? def.EnhancementBonus,
                                 MainHand = false,
                                 TwoHanded = false,
                                 DisplayName = def.Name,
@@ -1381,6 +1525,15 @@ public class ReplayStudio
 
     private void FinalizeEquipment(CharacterState state, EquipmentPass pass)
     {
+        // --- Skill bonuses (typed per skill; two competence bonuses do not stack) ---
+        foreach (var (key, values) in pass.SkillContributions)
+        {
+            var (skillId, type) = key;
+            var aggregate = BonusStack.Aggregate(type, values);
+            state.SkillBonuses.TryAdd(skillId, 0);
+            state.SkillBonuses[skillId] += aggregate;
+        }
+
         // --- Ability score bonuses (typed; e.g., +4 enhancement STR from gauntlets) ---
         foreach (var (key, values) in pass.Contributions)
         {

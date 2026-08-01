@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using NotOnlyFiendsStudio.Studio;
 using NotOnlyFiendsStudio.Models;
 
@@ -14,6 +15,7 @@ public class PcgConversionResult
     public List<string> DroppedDomains { get; set; } = new();
     public List<string> DroppedSpells { get; set; } = new();
     public List<string> DroppedEquipment { get; set; } = new();
+    public List<string> UnsupportedCustomEquipmentModifiers { get; set; } = new();
     public List<string> IgnoredTemporaryBonuses { get; set; } = new();
     public bool RaceDropped { get; set; }
 
@@ -78,6 +80,14 @@ public static class PcgConverter
             },
         };
 
+        // A PCG language row is a source assertion about the completed character, not
+        // necessarily a creation-time Intelligence purchase. This matters for imported
+        // high-level characters whose languages came from skills, classes, magic, or play.
+        character.SourceLanguageIds = data.Languages
+            .Select(PcgIdMapper.MapLanguage)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
         foreach (var follower in data.Followers)
         {
             var sourceReference = string.IsNullOrWhiteSpace(follower.File) ? follower.Name : follower.File;
@@ -88,6 +98,7 @@ public static class PcgConverter
                 CompanionId = ToCharacterId(follower.Name, sourceReference),
                 SelectedSpecies = mapper.MapRace(follower.Race),
                 EffectiveLevelFormula = CompanionLevelFormula(linkType),
+                FollowerLevel = linkType == "leadership_follower" ? follower.HitDice : 0,
                 Notes = $"Imported from PCGen {follower.Type}; source file: {sourceReference}; source race: {follower.Race}",
             });
 
@@ -144,6 +155,17 @@ public static class PcgConverter
             {
                 character.TemplateIds.Add(templateId);
             }
+        }
+
+        // PCGen represents the familiar rules through internal companion modifiers such as
+        // "Familiar Race Change" and "Non-Animal Base". Those implementation-only templates
+        // are deliberately excluded above, but the MASTER record still tells us that this
+        // character is a familiar. Restore the engine's universal familiar progression here;
+        // Improved Familiar changes the eligible creature, not the progression or master level.
+        if (IsFamiliarLinkType(character.CompanionOrigin?.LinkType)
+            && !character.TemplateIds.Contains("template:familiar_standard", StringComparer.Ordinal))
+        {
+            character.TemplateIds.Add("template:familiar_standard");
         }
 
         // Build skill purchases (distributed across ticks later, by bought-class — see below).
@@ -212,30 +234,6 @@ public static class PcgConverter
                     featIds.Add(featId);
                 }
             }
-        }
-
-        // Languages arrive as a pipe-delimited LANGUAGE: line and have nowhere else to live on a
-        // Character: there is no language field and no Int-based selection mechanism, so the only
-        // writer to CharacterState.Languages is the GrantLanguage permabuff. A permanent event
-        // scheduled before the first tick is the existing extension point for exactly this — the
-        // tick loop applies BeforeTick == 0 events before anything else runs, so a class taken at
-        // 1st level can already see them (class:dragon_disciple's HasLanguage{draconic} being the
-        // case that matters).
-        if (data.Languages.Count > 0)
-        {
-            var languageGrants = data.Languages
-                .Select(PcgIdMapper.MapLanguage)
-                .Where(id => id.Length > 0)
-                .Distinct(StringComparer.Ordinal)
-                .Select(id => (Permabuff)new GrantLanguage { LanguageId = id })
-                .ToList();
-
-            if (languageGrants.Count > 0)
-                character.PermanentEvents.Add(new PermanentEvent
-                {
-                    BeforeTick = 0,
-                    Permabuffs = languageGrants,
-                });
         }
 
         // Build domain selections with their PCGen owner tick. A domain can be granted after HD 1
@@ -391,7 +389,11 @@ public static class PcgConverter
             }
 
             SpellAcquisition? acquisition = null;
-            if (registry != null)
+            if (EpicSpellcasting.IsSpellList(classId))
+            {
+                acquisition = SpellAcquisition.Developed;
+            }
+            else if (registry != null)
             {
                 var driver = registry.GetAllDrivers().OfType<HDDriver>()
                     .FirstOrDefault(d => d.Id == classId);
@@ -412,6 +414,7 @@ public static class PcgConverter
 
             if ((acquisition == SpellAcquisition.Spellbook && !isSpellbook)
                 || (acquisition == SpellAcquisition.SpellsKnown && !isKnownBook)
+                || (acquisition == SpellAcquisition.Developed && !isKnownBook)
                 || acquisition == SpellAcquisition.FullList)
             {
                 continue;
@@ -509,6 +512,26 @@ public static class PcgConverter
                 PriceCpOverride = raw.PriceCp,
             };
 
+            // Prefer a mechanically modeled base item over a name-only private-pack stub.
+            // Inline PCGen customization below then layers the custom magic onto that base.
+            if (registry != null
+                && !string.IsNullOrWhiteSpace(raw.BaseItemName)
+                && registry.TryGetEquipment(id, out var mappedDefinition)
+                && mappedDefinition != null
+                && !HasEquipmentMechanics(mappedDefinition))
+            {
+                var baseId = mapper.MapEquipment(raw.BaseItemName, registry);
+                if (baseId != null
+                    && registry.TryGetEquipment(baseId, out var baseDefinition)
+                    && baseDefinition != null
+                    && HasEquipmentMechanics(baseDefinition))
+                {
+                    entry.ContentId = baseId;
+                }
+            }
+
+            ApplyCustomEquipmentModifiers(raw, entry, mapper, registry, result);
+
             if (raw.InActiveSet && raw.SlotName != null && mapper.IsWeaponSlot(raw.SlotName))
             {
                 var (mh, th, doubleWeapon) = mapper.InferHand(raw.SlotName);
@@ -531,6 +554,110 @@ public static class PcgConverter
 
         result.Character = character;
         return result;
+    }
+
+    private static bool HasEquipmentMechanics(EquipmentDefinition definition) =>
+        definition.Weapon != null
+        || definition.Armor != null
+        || definition.EnhancementBonus != 0
+        || definition.GrantedPermabuffs.Count > 0;
+
+    private static void ApplyCustomEquipmentModifiers(
+        PcgEquipmentRaw raw,
+        EquipmentEntry entry,
+        PcgIdMapper mapper,
+        ContentRegistry? registry,
+        PcgConversionResult result)
+    {
+        if (string.IsNullOrWhiteSpace(raw.Customization))
+            return;
+
+        var eqmod = Regex.Match(raw.Customization, @"(?:^|\$)EQMOD=(?<value>[^$]+)");
+        if (!eqmod.Success)
+            return;
+
+        var text = eqmod.Groups["value"].Value;
+        var supported = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "EPIC_ABILITY_BONUS_ENHANCE",
+            "EPIC_NATURAL_ARMR_ENHANCE",
+            "BNS_SKL_CMP",
+            "PLUS_10_WEAP",
+        };
+
+        foreach (Match match in Regex.Matches(text,
+                     @"EPIC_ABILITY_BONUS_ENHANCE&pipe;(?<ability>STR|DEX|CON|INT|WIS|CHA)=\+(?<value>\d+)",
+                     RegexOptions.IgnoreCase))
+        {
+            var target = match.Groups["ability"].Value.ToUpperInvariant() switch
+            {
+                "STR" => BonusTarget.AbilityStr,
+                "DEX" => BonusTarget.AbilityDex,
+                "CON" => BonusTarget.AbilityCon,
+                "INT" => BonusTarget.AbilityInt,
+                "WIS" => BonusTarget.AbilityWis,
+                _ => BonusTarget.AbilityCha,
+            };
+            entry.Permabuffs.Add(new GrantTypedBonus
+            {
+                Target = target,
+                BonusType = BonusType.Enhancement,
+                Value = new Formula(match.Groups["value"].Value),
+            });
+        }
+
+        foreach (Match match in Regex.Matches(text,
+                     @"EPIC_NATURAL_ARMR_ENHANCE&pipe;\+(?<value>\d+)",
+                     RegexOptions.IgnoreCase))
+        {
+            entry.Permabuffs.Add(new GrantTypedBonus
+            {
+                Target = BonusTarget.AC,
+                BonusType = BonusType.NaturalEnhancement,
+                Value = new Formula(match.Groups["value"].Value),
+            });
+        }
+
+        foreach (Match modifier in Regex.Matches(text,
+                     @"BNS_SKL_CMP&pipe;(?<choices>.*?)(?=\.[A-Z][A-Z0-9_]*(?:&pipe;|\.|$)|$)",
+                     RegexOptions.IgnoreCase))
+        {
+            foreach (var choice in modifier.Groups["choices"].Value.Split("&pipe;", StringSplitOptions.RemoveEmptyEntries))
+            {
+                var skillBonus = Regex.Match(choice, @"^(?<skill>.+?)=\+(?<value>\d+)$");
+                if (!skillBonus.Success)
+                    continue;
+
+                var skillId = mapper.MapSkill(skillBonus.Groups["skill"].Value.Trim());
+                if (registry != null && !registry.TryGetSkill(skillId, out _))
+                {
+                    var warning = $"{raw.Name}: BNS_SKL_CMP ({skillBonus.Groups["skill"].Value.Trim()})";
+                    result.UnsupportedCustomEquipmentModifiers.Add(warning);
+                    continue;
+                }
+
+                entry.Permabuffs.Add(new GrantEquipmentSkillBonus
+                {
+                    SkillId = skillId,
+                    BonusType = BonusType.Competence,
+                    Value = new Formula(skillBonus.Groups["value"].Value),
+                });
+            }
+        }
+
+        if (Regex.IsMatch(text, @"(?:^|\.)PLUS_10_WEAP(?:&pipe;|\.|$)", RegexOptions.IgnoreCase))
+            entry.EnhancementBonusOverride = 10;
+
+        var unsupported = Regex.Matches(text, @"(?:^|\.)(?<key>[A-Z][A-Z0-9_]+)(?=&pipe;|\.|$)")
+            .Select(match => match.Groups["key"].Value)
+            .Where(key => !supported.Contains(key))
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+        foreach (var key in unsupported)
+        {
+            var warning = $"{raw.Name}: {key}";
+            result.UnsupportedCustomEquipmentModifiers.Add(warning);
+        }
     }
 
     private static bool DriverGrantsDomainSlots(ContentRegistry? registry, string driverId)
@@ -607,19 +734,23 @@ public static class PcgConverter
     {
         "animal companion" => "animal_companion",
         "familiar" => "familiar",
+        "improved familiar" => "improved_familiar",
         "shadow companion" => "shadow_companion",
         "cohort" => "leadership_cohort",
-        "follower" => "follower",
+        "follower" => "leadership_follower",
         _ => PcgIdMapper.DefaultIdTransform(pcgenType),
     };
 
     private static Formula CompanionLevelFormula(string linkType) => linkType switch
     {
         "animal_companion" => new Formula("max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)"),
-        "familiar" => new Formula("CasterLevel(wizard) + CasterLevel(sorcerer)"),
+        "familiar" or "improved_familiar" => new Formula("ClassLevel(wizard) + ClassLevel(sorcerer)"),
         "leadership_cohort" => new Formula("min(TotalHD - 2, LeadershipScore - 2)"),
         _ => new Formula("TotalHD"),
     };
+
+    private static bool IsFamiliarLinkType(string? linkType) =>
+        linkType is "familiar" or "improved_familiar";
 
     private static string ToCharacterId(string name, string fallback)
     {

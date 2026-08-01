@@ -38,6 +38,7 @@ Only user-facing class features:
 - **GrantBonusFeat** — for automatic feats (e.g., Track for rangers)
 - **GrantFeatSlot** — for bonus feat selection slots (e.g., fighter bonus feats at even levels)
 - **ModifyAttribute** / **SetAttribute** — for permanent stat changes at specific levels
+- **GrantMovement** — for a class feature that grants a movement mode; include `flyManeuverability` when granting flight
 - **AdvanceSpellcasting** — for prestige classes that advance existing spellcasting
 
 ### Ability Scaling Pattern

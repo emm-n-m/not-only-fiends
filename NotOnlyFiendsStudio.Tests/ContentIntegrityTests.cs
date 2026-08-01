@@ -235,7 +235,8 @@ public class ContentIntegrityTests
         {
             foreach (var (listId, _) in spell.ClassLevels)
             {
-                var resolves = domainIds.Contains(listId)
+                var resolves = EpicSpellcasting.IsSpellList(listId)
+                               || domainIds.Contains(listId)
                                || (driverIds.Contains(listId)
                                    && registry.GetAllDrivers().OfType<HDDriver>()
                                        .Any(d => d.Id == listId && d.Kind == DriverKind.Class));

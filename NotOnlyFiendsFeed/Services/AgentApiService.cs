@@ -237,6 +237,7 @@ public sealed class AgentApiService
             DroppedDomains = result.DroppedDomains,
             DroppedSpells = result.DroppedSpells,
             DroppedEquipment = result.DroppedEquipment,
+            UnsupportedCustomEquipmentModifiers = result.UnsupportedCustomEquipmentModifiers,
             IgnoredTemporaryBonuses = result.IgnoredTemporaryBonuses,
             RaceDropped = result.RaceDropped
         };
@@ -481,6 +482,7 @@ public sealed class AgentApiService
                 ClassId = spellcasting.ClassId,
                 CastingType = spellcasting.CastingType,
                 CastingStat = spellcasting.CastingStat,
+                Acquisition = spellcasting.Acquisition,
                 CasterLevel = spellcasting.CasterLevel,
                 MaxSpellLevel = spellcasting.MaxSpellLevel,
                 SpellsPerDay = new Dictionary<int, int>(spellcasting.SpellsPerDay),

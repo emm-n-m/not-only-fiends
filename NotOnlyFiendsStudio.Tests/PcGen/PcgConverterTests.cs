@@ -332,7 +332,79 @@ public class PcgConverterTests
         Assert.Equal(2, data.Master.HitDice);
         Assert.Equal(-3, data.Master.Adjustment);
         Assert.Equal("Witch's companion", Assert.Single(data.Followers).Name);
+        Assert.Equal(0, Assert.Single(data.Followers).HitDice);
         Assert.Equal("SPELL=Fox's Cunning", Assert.Single(data.TemporaryBonuses).Split('|')[0]);
+    }
+
+    [Fact]
+    public void Convert_LeadershipFollower_UsesDedicatedLinkTypeAndRecordedTier()
+    {
+        var data = CreateClericData();
+        data.Followers.Add(new PcgFollowerEntry
+        {
+            Name = "Scout", Type = "Follower", Race = "Human", File = "Scout.pcg", HitDice = 3,
+        });
+
+        var link = Assert.Single(PcgConverter.Convert(data, new PcgIdMapper()).Character.CompanionLinks);
+
+        Assert.Equal("leadership_follower", link.LinkType);
+        Assert.Equal(3, link.FollowerLevel);
+    }
+
+    [Fact]
+    public void Convert_Familiar_UsesFamiliarGrantingClassLevels_NotCasterLevel()
+    {
+        var data = CreateClericData();
+        data.Followers.Add(new PcgFollowerEntry
+        {
+            Name = "Familiar", Type = "Familiar", Race = "Companion ~ Cat", File = "Familiar.pcg",
+        });
+
+        var link = Assert.Single(PcgConverter.Convert(data, new PcgIdMapper()).Character.CompanionLinks);
+        var masterState = new CharacterState
+        {
+            ClassLevels = new Dictionary<string, int>
+            {
+                ["class:sorcerer"] = 6,
+                ["class:arcane_trickster"] = 10,
+                ["class:dark_temptress"] = 10,
+            },
+            Spellcasting = new Dictionary<string, SpellcastingState>
+            {
+                ["class:sorcerer"] = new() { CasterLevel = 23 }
+            }
+        };
+
+        Assert.Equal("ClassLevel(wizard) + ClassLevel(sorcerer)", link.EffectiveLevelFormula.Expression);
+        Assert.Equal(6, link.EffectiveLevelFormula.Evaluate(masterState));
+    }
+
+    [Theory]
+    [InlineData("Familiar", "familiar")]
+    [InlineData("Improved Familiar", "improved_familiar")]
+    public void Convert_ImportedFamiliar_GetsUniversalFamiliarProgressionTemplate(
+        string pcgenType,
+        string expectedLinkType)
+    {
+        var data = CreateClericData();
+        data.Master = new PcgMasterEntry
+        {
+            Name = "Master",
+            Type = pcgenType,
+            File = "Master.pcg",
+        };
+        data.Templates.Add(new PcgTemplateEntry
+        {
+            Name = "Familiar Race Change",
+            IsInternal = true,
+        });
+
+        var character = PcgConverter.Convert(data, new PcgIdMapper()).Character;
+
+        Assert.Equal(expectedLinkType, character.CompanionOrigin!.LinkType);
+        Assert.Equal(
+            new[] { "template:familiar_standard" },
+            character.TemplateIds);
     }
 
     [Fact]
@@ -839,19 +911,16 @@ public class PcgConverterTests
     }
 
     [Fact]
-    public void Convert_Languages_BecomeGrantLanguagePermabuffsBeforeTheFirstTick()
+    public void Convert_Languages_BecomeVisibleSourceLanguageInputs()
     {
         var data = PcgParser.ParseText(PcgWithLanguages(LanguageLine), "polyglot.pcg");
 
         var result = PcgConverter.Convert(data, new PcgIdMapper());
 
-        var evt = Assert.Single(result.Character.PermanentEvents);
-        Assert.Equal(0, evt.BeforeTick);
-
-        var granted = evt.Permabuffs.OfType<GrantLanguage>().Select(g => g.LanguageId).ToList();
         Assert.Equal(
             new[] { "abyssal", "auran", "celestial", "common", "draconic", "infernal" },
-            granted);
+            result.Character.SourceLanguageIds);
+        Assert.Empty(result.Character.PermanentEvents);
     }
 
     [Fact]
@@ -865,20 +934,15 @@ public class PcgConverterTests
     [Fact]
     public void Convert_LanguagesSurviveARoundTripThroughCharacterJson()
     {
-        // GrantLanguage has to keep its $type discriminator through save/load, or an imported
-        // character loses its languages the first time it is written to disk.
+        // SourceLanguageIds is persisted input, so an imported character keeps its languages
+        // after the first save/load and the Builder can show them explicitly.
         var data = PcgParser.ParseText(PcgWithLanguages(LanguageLine), "polyglot.pcg");
         var character = PcgConverter.Convert(data, new PcgIdMapper()).Character;
 
         var json = System.Text.Json.JsonSerializer.Serialize(character, JsonOptions.Default);
         var reloaded = System.Text.Json.JsonSerializer.Deserialize<Character>(json, JsonOptions.Default)!;
 
-        var granted = reloaded.PermanentEvents
-            .SelectMany(e => e.Permabuffs)
-            .OfType<GrantLanguage>()
-            .Select(g => g.LanguageId)
-            .ToList();
-        Assert.Contains("draconic", granted);
-        Assert.Equal(6, granted.Count);
+        Assert.Contains("draconic", reloaded.SourceLanguageIds);
+        Assert.Equal(6, reloaded.SourceLanguageIds.Count);
     }
 }

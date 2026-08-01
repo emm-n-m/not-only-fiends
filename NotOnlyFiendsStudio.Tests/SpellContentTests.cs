@@ -12,7 +12,7 @@ public class SpellContentTests
 
         var allSpells = registry.GetAllSpells().ToList();
 
-        Assert.Equal(617, allSpells.Count);
+        Assert.Equal(618, allSpells.Count);
         Assert.True(registry.TryGetSpell("spell:acid_arrow", out var acidArrow));
         Assert.Equal("Acid Arrow", acidArrow!.Name);
         Assert.Equal("conjuration", acidArrow.School);
@@ -22,6 +22,26 @@ public class SpellContentTests
         Assert.True(registry.TryGetSpell("spell:holy_smite", out var holySmite));
         Assert.Equal(4, holySmite!.ClassLevels["domain:good"]);
         Assert.Contains(registry.GetSpellsForList("domain:chaos"), s => s.Id == "spell:chaos_hammer");
+    }
+
+    [Fact]
+    public void MassFrog_IsADevelopableLevelTenEpicSpell()
+    {
+        var registry = TestContentHelper.LoadBundledPacks();
+        var spell = registry.GetSpell("spell:frog_mass");
+
+        Assert.Equal("Mass Frog", spell.Name);
+        Assert.Equal("transmutation", spell.School);
+        Assert.Equal("300 ft.", spell.Range);
+        Assert.Equal("40-ft.-radius hemisphere", spell.Area);
+        Assert.Equal("permanent", spell.Duration);
+        Assert.Equal("Fortitude negates", spell.SavingThrow);
+        Assert.Equal("yes", spell.SpellResistance);
+        Assert.True(spell.Components.Verbal);
+        Assert.True(spell.Components.Somatic);
+        Assert.Equal(10, spell.ClassLevels[EpicSpellcasting.CharismaListId]);
+        Assert.Equal(10, spell.ClassLevels[EpicSpellcasting.IntelligenceListId]);
+        Assert.Equal(10, spell.ClassLevels[EpicSpellcasting.WisdomListId]);
     }
 
     [Fact]
@@ -86,8 +106,10 @@ public class SpellContentTests
             e.Message.Contains("list:nonexistent"));
     }
 
-    [Fact]
-    public void NegativeSpellLevel_ProducesError()
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(11)]
+    public void SpellLevelOutsideNormalAndEpicRange_ProducesError(int invalidLevel)
     {
         var registry = new ContentRegistry();
         registry.RegisterDriver(new HDDriver
@@ -109,7 +131,7 @@ public class SpellContentTests
             Id = "spell:bad_spell",
             Name = "Bad Spell",
             School = "evocation",
-            ClassLevels = new Dictionary<string, int> { ["class:wizard"] = -1 },
+            ClassLevels = new Dictionary<string, int> { ["class:wizard"] = invalidLevel },
             Components = new SpellComponents { Verbal = true, Somatic = true },
             CastingTime = "1 standard action",
             Range = "close",
@@ -123,6 +145,6 @@ public class SpellContentTests
 
         Assert.Contains(registry.Errors, e =>
             e.Kind == ContentErrorKind.InvalidValue &&
-            e.Message.Contains("invalid level -1"));
+            e.Message.Contains($"invalid level {invalidLevel}"));
     }
 }

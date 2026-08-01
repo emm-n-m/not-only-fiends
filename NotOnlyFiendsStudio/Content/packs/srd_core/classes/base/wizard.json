@@ -244,7 +244,7 @@
         "linkType": "familiar",
         "classFeatureType": "class_feature:familiar_options",
         "effectiveLevelFormula": {
-          "expression": "CasterLevel(wizard) + CasterLevel(sorcerer)"
+          "expression": "ClassLevel(wizard) + ClassLevel(sorcerer)"
         }
       },
       {

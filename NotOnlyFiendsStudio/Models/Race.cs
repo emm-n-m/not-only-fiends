@@ -11,6 +11,7 @@ public class RaceDefinition
     public bool IsLiving { get; set; } = true;
     public bool IsCorporeal { get; set; } = true;
     public Dictionary<MovementMode, int> Speeds { get; set; } = new();
+    public FlightManeuverability? FlyManeuverability { get; set; }
     public AbilityScoreSet? AbilityModifiers { get; set; }
     // Nullable so that "playable at no cost" (0, e.g. Human) is distinguishable from
     // "the source never priced this as a PC race" (null, e.g. the Fiendish Codex demons —

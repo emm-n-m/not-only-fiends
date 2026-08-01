@@ -157,7 +157,8 @@ else
     var languageAllowance = LanguageCatalog.Allowance(GetStartingIntelligence());
     var languagePicksUsed = _character.BonusLanguageIds.Count;
 
-    @if (raceForLanguages is not null && (raceForLanguages.AutomaticLanguages.Count > 0 || offeredLanguages.Count > 0))
+    @if ((raceForLanguages is not null && (raceForLanguages.AutomaticLanguages.Count > 0 || offeredLanguages.Count > 0))
+        || _character.SourceLanguageIds.Count > 0)
     {
         <div class="card mb-3">
             <div class="card-header">
@@ -167,7 +168,7 @@ else
                 </span>
             </div>
             <div class="card-body">
-                @if (raceForLanguages.AutomaticLanguages.Count > 0)
+                @if (raceForLanguages is not null && raceForLanguages.AutomaticLanguages.Count > 0)
                 {
                     <div class="mb-2">
                         <strong class="small">Automatic:</strong>
@@ -175,6 +176,19 @@ else
                         {
                             <span class="badge bg-secondary me-1">@LanguageName(id)</span>
                         }
+                    </div>
+                }
+                @if (_character.SourceLanguageIds.Count > 0)
+                {
+                    <div class="mb-2">
+                        <strong class="small">Imported/source:</strong>
+                        @foreach (var id in _character.SourceLanguageIds)
+                        {
+                            <span class="badge bg-info text-dark me-1">@LanguageName(id)</span>
+                        }
+                    </div>
+                    <div class="form-text mb-2">
+                        Preserved from the imported character; the source does not say which were starting-Intelligence picks.
                     </div>
                 }
                 @if (languageAllowance == 0)
@@ -203,7 +217,7 @@ else
                             </div>
                         }
                     </div>
-                    @if (raceForLanguages.BonusLanguagesAny)
+                    @if (raceForLanguages?.BonusLanguagesAny == true)
                     {
                         <div class="form-text mt-2">
                             @raceForLanguages.Name may take any language except secret ones such as Druidic.
@@ -389,20 +403,31 @@ else
                             </div>
                         </div>
                     }
-                    var tickDomains = tick.Choices.ClassFeatureChoices?.GetValueOrDefault("domains");
-                    @if (tickDomains?.Any() == true)
+                    var tickDomainChoices = new List<(string DomainId, string ChoiceKey)>();
+                    tickDomainChoices.AddRange((tick.Choices.ClassFeatureChoices?.GetValueOrDefault("domains") ?? new())
+                        .Select(domainId => (domainId, "domains")));
+                    tickDomainChoices.AddRange((tick.Choices.ClassFeatureChoices?.GetValueOrDefault("imported_source_domains") ?? new())
+                        .Select(domainId => (domainId, "imported_source_domains")));
+                    @if (tickDomainChoices.Count > 0)
                     {
                         <div class="mt-1">
                             <small class="text-muted">Domains:</small>
-                            @foreach (var domainId in tickDomains.ToList())
+                            @foreach (var domainChoice in tickDomainChoices)
                             {
-                                var did = domainId;
+                                var did = domainChoice.DomainId;
                                 var domainDef = _domains.FirstOrDefault(d => d.Id == did);
-                                <span class="badge bg-primary me-1" title="@(domainDef?.Description ?? did)">@(domainDef?.Name ?? did.Replace("domain:", "")) <button class="btn-close btn-close-white btn-sm" @onclick="() => RemoveDomainFromTick(index, did)"></button></span>
+                                <span class="badge bg-primary me-1" title="@(domainDef?.Description ?? did)">
+                                    @(domainDef?.Name ?? did.Replace("domain:", ""))
+                                    @if (domainChoice.ChoiceKey == "imported_source_domains")
+                                    {
+                                        <span> (source-granted)</span>
+                                    }
+                                    <button class="btn-close btn-close-white btn-sm" @onclick="() => RemoveDomainFromTick(index, did, domainChoice.ChoiceKey)"></button>
+                                </span>
                             }
                         </div>
                     }
-                    @if (tickDomains?.Contains("domain:war") == true)
+                    @if (tickDomainChoices.Any(choice => choice.DomainId == "domain:war"))
                     {
                         var warWeapon = tick.Choices.ClassFeatureChoices?.GetValueOrDefault("war_favored_weapon")?.FirstOrDefault() ?? "";
                         <div class="mt-2">
@@ -676,7 +701,10 @@ else
 
                                                 @* Level 0 is skipped for a spellbook caster: every cantrip is in the book from
                                                    1st level, so there is nothing to pick. *@
-                                                @for (int lvl = isSpellbook ? 1 : 0; lvl <= sc.MaxSpellLevel; lvl++)
+                                                var firstSelectableLevel = sc.Acquisition == SpellAcquisition.Developed
+                                                    ? EpicSpellcasting.SpellLevel
+                                                    : isSpellbook ? 1 : 0;
+                                                @for (int lvl = firstSelectableLevel; lvl <= sc.MaxSpellLevel; lvl++)
                                                 {
                                                     var capturedLvl = lvl;
                                                     var spellsAtLevel = _spells
@@ -1245,9 +1273,17 @@ else
                                 <div class="small">
                                     <div><strong>@_state.Encumbrance.TotalWeightLbs lb</strong> — @_state.Encumbrance.Load</div>
                                     <div class="text-muted">Light ≤ @_state.Encumbrance.LightMax · Med ≤ @_state.Encumbrance.MediumMax · Heavy ≤ @_state.Encumbrance.HeavyMax</div>
-                                    @if (_state.Speeds.TryGetValue(MovementMode.Land, out var landSpeed))
+                                    @if (_state.Speeds.Any())
                                     {
-                                        <div>Speed: @landSpeed ft</div>
+                                        <div class="text-muted">Movement</div>
+                                        @foreach (var (mode, speed) in _state.Speeds.OrderBy(entry => entry.Key))
+                                        {
+                                            <div>
+                                                @mode: @speed ft.@(mode == MovementMode.Fly && _state.FlyManeuverability.HasValue
+                                                    ? $" ({_state.FlyManeuverability.Value})"
+                                                    : "")
+                                            </div>
+                                        }
                                     }
                                 </div>
                             </div>
@@ -1372,8 +1408,73 @@ else
                         </div>
                     }
 
+                    @if (_state.Feats.Contains("feat:leadership")
+                        || _character.CompanionLinks.Any(link => link.LinkType is "leadership_follower" or "follower"))
+                    {
+                        var followerLinks = _character.CompanionLinks
+                            .Where(link => link.LinkType is "leadership_follower" or "follower")
+                            .ToArray();
+                        var followerCapacity = FollowerCapacity(_leadershipFollowerLevel);
+                        var followersAtLevel = followerLinks.Count(link => link.FollowerLevel == _leadershipFollowerLevel);
+                        <div class="border rounded p-2 mb-2">
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                <strong>Leadership followers</strong>
+                                <span class="badge bg-secondary">score @_state.LeadershipScore</span>
+                                @for (var level = 1; level <= 6; level++)
+                                {
+                                    <span class="badge bg-light text-dark">L@level: @FollowerCapacity(level)</span>
+                                }
+                            </div>
+                            <div class="d-flex flex-wrap align-items-center gap-1 mb-2">
+                                <label class="small" for="leadership-follower-level">Follower level</label>
+                                <select id="leadership-follower-level" class="form-select form-select-sm" style="width:auto"
+                                        @bind="_leadershipFollowerLevel">
+                                    @for (var level = 1; level <= 6; level++)
+                                    {
+                                        <option value="@level">@level (capacity @FollowerCapacity(level))</option>
+                                    }
+                                </select>
+                                <span class="small text-muted">@followersAtLevel / @followerCapacity linked</span>
+                                <button class="btn btn-sm btn-success"
+                                        disabled="@(followerCapacity <= followersAtLevel)"
+                                        @onclick="() => CreateLeadershipFollower(_leadershipFollowerLevel)">Create blank follower</button>
+                            </div>
+                            @if (_availableCharacters.Any(c => c.Id != _characterStoreId))
+                            {
+                                <div class="d-flex flex-wrap align-items-center gap-1 mb-2">
+                                    <small class="text-muted">or link existing:</small>
+                                    <select class="form-select form-select-sm" style="max-width:280px" @bind="_leadershipFollowerCandidate">
+                                        <option value="">Pick a character...</option>
+                                        @foreach (var c in _availableCharacters.Where(c => c.Id != _characterStoreId))
+                                        {
+                                            <option value="@c.Id">@c.Name</option>
+                                        }
+                                    </select>
+                                    <button class="btn btn-sm btn-outline-primary"
+                                            disabled="@(string.IsNullOrEmpty(_leadershipFollowerCandidate) || followerCapacity <= followersAtLevel)"
+                                            @onclick="LinkExistingLeadershipFollower">Link</button>
+                                </div>
+                            }
+                            @foreach (var followerLink in followerLinks)
+                            {
+                                var capturedFollower = followerLink;
+                                var followerCharacter = TryLoadCompanion(capturedFollower.CompanionId);
+                                <div class="small d-flex flex-wrap align-items-center gap-2 mb-1">
+                                    <span class="badge bg-info">@(capturedFollower.FollowerLevel > 0 ? $"level {capturedFollower.FollowerLevel}" : "level unknown")</span>
+                                    <span>@(followerCharacter?.Name ?? capturedFollower.CompanionId)</span>
+                                    @if (followerCharacter != null)
+                                    {
+                                        <a href="/builder/@capturedFollower.CompanionId" class="btn btn-sm btn-outline-primary">Open &rarr;</a>
+                                    }
+                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => UnlinkCompanion(capturedFollower)">Unlink</button>
+                                </div>
+                            }
+                        </div>
+                    }
+
                     @* Existing links whose LinkType no longer appears as an active slot. *@
-                    @foreach (var orphan in _character.CompanionLinks.Where(l => !_state.CompanionSlots.Any(s => s.LinkType == l.LinkType)))
+                    @foreach (var orphan in _character.CompanionLinks.Where(l => l.LinkType is not ("leadership_follower" or "follower")
+                                 && !_state.CompanionSlots.Any(s => s.LinkType == l.LinkType)))
                     {
                         var capturedOrphan = orphan;
                         var companionChar = TryLoadCompanion(capturedOrphan.CompanionId);
@@ -1486,6 +1587,8 @@ else
     private string? _characterStoreId;
     private List<CharacterFileInfo> _availableCharacters = new();
     private readonly Dictionary<string, string> _linkCandidateByLinkType = new();
+    private int _leadershipFollowerLevel = 1;
+    private string _leadershipFollowerCandidate = string.Empty;
 
     private static readonly string[] _spellSchools = { "Abjuration", "Conjuration", "Divination", "Enchantment", "Evocation", "Illusion", "Necromancy", "Transmutation" };
     private int? _pendingWishEvent;
@@ -2300,10 +2403,10 @@ else
         }
     }
 
-    private void RemoveDomainFromTick(int tickIndex, string domainId)
+    private void RemoveDomainFromTick(int tickIndex, string domainId, string choiceKey = "domains")
     {
         var tick = _character.Ticks[tickIndex];
-        var domains = tick.Choices.ClassFeatureChoices?["domains"];
+        var domains = tick.Choices.ClassFeatureChoices?.GetValueOrDefault(choiceKey);
         if (domains == null) return;
         domains.Remove(domainId);
         OnCharacterChanged();
@@ -2369,6 +2472,11 @@ else
         ["special_mount"] = "template:special_mount_standard",
     };
 
+    private static readonly Dictionary<string, string> CompanionRacialHdByLinkType = new()
+    {
+        ["shadow_companion"] = "racial_hd:undead",
+    };
+
     private void CreateCompanionFromSlot(CompanionSlotState slot)
     {
         if (!CharacterStore.IsConfigured)
@@ -2398,6 +2506,12 @@ else
             && _templates.Any(t => t.Id == templateId))
         {
             companion.TemplateIds.Add(templateId);
+        }
+
+        if (CompanionRacialHdByLinkType.TryGetValue(slot.LinkType, out var racialHdDriverId))
+        {
+            for (var hd = 0; hd < Math.Max(0, slot.EffectiveLevel); hd++)
+                companion.Ticks.Add(new Tick { DriverId = racialHdDriverId });
         }
 
         var baseId = CharacterStore.DeriveId(companion);
@@ -2462,6 +2576,86 @@ else
         CharacterStore.Replace(_characterStoreId, _character);
         _linkCandidateByLinkType.Remove(slot.LinkType);
         SetStatus($"Linked \"{candidate.Name}\" as {slot.LinkType}.", false);
+        OnCharacterChanged();
+    }
+
+    private int FollowerCapacity(int level) => level switch
+    {
+        1 => _state?.Followers.Level1 ?? 0,
+        2 => _state?.Followers.Level2 ?? 0,
+        3 => _state?.Followers.Level3 ?? 0,
+        4 => _state?.Followers.Level4 ?? 0,
+        5 => _state?.Followers.Level5 ?? 0,
+        6 => _state?.Followers.Level6 ?? 0,
+        _ => 0,
+    };
+
+    private void CreateLeadershipFollower(int level)
+    {
+        if (!CharacterStore.IsConfigured)
+        {
+            SetStatus("Character storage not configured on server.", true);
+            return;
+        }
+        if (string.IsNullOrEmpty(_characterStoreId))
+        {
+            SetStatus("Save the leader first so the follower can link back.", true);
+            return;
+        }
+
+        var follower = new Character
+        {
+            Name = $"{_character.Name}'s level {level} follower",
+            Alignment = _character.Alignment,
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+        };
+        var baseId = CharacterStore.DeriveId(follower);
+        var id = baseId;
+        for (var suffix = 2; CharacterStore.Exists(id); suffix++)
+            id = $"{baseId}_{suffix}";
+
+        CharacterStore.Replace(id, follower);
+        _character.CompanionLinks.Add(new CompanionLink
+        {
+            LinkType = "leadership_follower",
+            CompanionId = id,
+            FollowerLevel = level,
+            EffectiveLevelFormula = new Formula(level.ToString()),
+        });
+        CharacterStore.Replace(_characterStoreId, _character);
+        RefreshAvailableCharacters();
+        Navigation.NavigateTo($"/builder/{id}");
+    }
+
+    private void LinkExistingLeadershipFollower()
+    {
+        if (!CharacterStore.IsConfigured || string.IsNullOrEmpty(_characterStoreId))
+        {
+            SetStatus("Save the leader first so the follower can link back.", true);
+            return;
+        }
+        if (string.IsNullOrEmpty(_leadershipFollowerCandidate)
+            || _leadershipFollowerCandidate == _characterStoreId)
+        {
+            SetStatus("Pick another character to link first.", true);
+            return;
+        }
+
+        Character candidate;
+        try { candidate = CharacterStore.Get(_leadershipFollowerCandidate); }
+        catch (CharacterStoreException ex) { SetStatus(ex.Message, true); return; }
+
+        _character.CompanionLinks.Add(new CompanionLink
+        {
+            LinkType = "leadership_follower",
+            CompanionId = _leadershipFollowerCandidate,
+            SelectedSpecies = string.IsNullOrEmpty(candidate.RaceId) ? null : candidate.RaceId,
+            FollowerLevel = _leadershipFollowerLevel,
+            EffectiveLevelFormula = new Formula(_leadershipFollowerLevel.ToString()),
+        });
+        CharacterStore.Replace(_characterStoreId, _character);
+        _leadershipFollowerCandidate = string.Empty;
+        SetStatus($"Linked \"{candidate.Name}\" as a level {_leadershipFollowerLevel} Leadership follower.", false);
         OnCharacterChanged();
     }
 
@@ -2633,6 +2827,7 @@ else
             GrantTypedBonus tb => FormatTypedBonus(tb),
             GrantArmorProfile ap => $"{(ap.AsShield ? "Shield" : "Armor")} +{ap.Profile.ArmorBonus}{(ap.Profile.MaxDex.HasValue ? $" (max dex {ap.Profile.MaxDex})" : "")}",
             GrantWeaponLine w => string.IsNullOrEmpty(w.DisplayName) ? w.Profile.Damage : $"{w.DisplayName} ({w.Profile.Damage})",
+            GrantMovement movement => $"{movement.Mode} {movement.Speed} ft.{(movement.Mode == MovementMode.Fly && movement.FlyManeuverability.HasValue ? $" ({movement.FlyManeuverability})" : "")}",
             _ => buff.GetType().Name
         };
     }

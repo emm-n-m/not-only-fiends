@@ -42,6 +42,8 @@ Only include movement modes the race actually has:
 "speeds": { "land": 30, "swim": 30 }
 "speeds": { "land": 20, "fly": 60 }
 ```
+When a fly speed has a maneuverability grade, also author `flyManeuverability` using one of
+`clumsy`, `poor`, `average`, `good`, or `perfect`. Do not infer a grade when the source omits it.
 
 ### Racial HD
 - If the race has racial Hit Dice (e.g., Outsider with 2 HD, Dragon with 12 HD):
