@@ -64,9 +64,66 @@ else
         </div>
     }
 
+    @* Must stay outside every tab: BrowserFileService looks this element up by id, so
+       hiding it behind a pane would break "Open from file" on every other tab. *@
     <!-- Hidden file input for Open -->
     <input type="file" id="file-open-input" accept=".json" style="display:none" />
 
+    <div class="tab-toolbar">
+        <div class="summary-strip d-flex flex-wrap align-items-center gap-3 small border rounded bg-light px-2 py-1 mb-2">
+            @if (_state == null)
+            {
+                <span class="text-muted">Not evaluated yet.</span>
+            }
+            else
+            {
+                <span class="fw-bold">@_character.Name</span>
+                <span>HD <strong>@_state.TotalHD</strong></span>
+                <span>ECL <strong>@_state.ECL</strong></span>
+                <span>HP <strong>@_state.HP</strong></span>
+                <span>
+                    AC <strong>@_state.AC.Total</strong>
+                    <span class="text-muted">(T @_state.AC.Touch / FF @_state.AC.FlatFooted)</span>
+                </span>
+                <span>BAB <strong>@FormatSigned(_state.EffectiveBAB)</strong></span>
+                <span>
+                    Saves
+                    <strong>@FormatSigned(_state.EffectiveSaves.Fort) /
+                    @FormatSigned(_state.EffectiveSaves.Ref) /
+                    @FormatSigned(_state.EffectiveSaves.Will)</strong>
+                </span>
+                @* The pending counts are buttons, not text: the strip doubles as the to-do
+                   list, so each unfinished decision links to the tab that resolves it. *@
+                @if (_state.PendingFeatSlots + _state.PendingBonusFeatSlots > 0)
+                {
+                    <button class="btn btn-link btn-sm p-0 align-baseline text-warning"
+                            @onclick="() => SetActiveTab(CharacterTab.Feats)">
+                        @(_state.PendingFeatSlots + _state.PendingBonusFeatSlots) unspent feat(s)
+                    </button>
+                }
+                @if (_state.UnspentSkillPoints > 0)
+                {
+                    <button class="btn btn-link btn-sm p-0 align-baseline text-warning"
+                            @onclick="() => SetActiveTab(CharacterTab.Skills)">
+                        @_state.UnspentSkillPoints unspent skill point(s)
+                    </button>
+                }
+                @if (_state.Warnings.Any())
+                {
+                    <button class="btn btn-link btn-sm p-0 align-baseline text-danger"
+                            @onclick="() => SetActiveTab(CharacterTab.Summary)">
+                        @_state.Warnings.Count warning(s)
+                    </button>
+                }
+            }
+        </div>
+
+        <TabStrip Tabs="VisibleTabs()" ActiveTab="_activeTab" ActiveTabChanged="SetActiveTab" />
+    </div>
+
+    @* ======================= TAB: Summary & Progression ======================= *@
+    @if (_activeTab == CharacterTab.Summary)
+    {
     <!-- Step 1: Character Name & Race -->
     <div class="card mb-3">
         <div class="card-header">Character Setup</div>
@@ -228,15 +285,31 @@ else
         </div>
     }
 
+    }
+    @* ===================== end TAB: Summary & Progression ===================== *@
+
+    @* ===================== HD TIMELINE — shared by five tabs =====================
+       One loop, not five. Each tab renders the same tick list but shows only its own
+       facet, and skips the ticks that have nothing to show for it. *@
+    @if (IsTimelineTab(_activeTab))
+    {
     <!-- Step 3: HD Timeline -->
     <div class="card mb-3">
         <div class="card-header">
-            HD Timeline (@_character.Ticks.Count HD)
+            @TimelineHeading(_activeTab)
+            (@VisibleTickCount(_activeTab) of @_character.Ticks.Count HD)
             <div class="float-end d-flex align-items-center gap-1">
+                @* The safety valve for every skip heuristic above — any tick a facet filter
+                   wrongly hides is one checkbox away. *@
+                <div class="form-check form-check-inline mb-0 me-1">
+                    <input class="form-check-input" type="checkbox" id="show-all-hd"
+                           checked="@_showAllTicks" @onchange="ToggleShowAllTicks" />
+                    <label class="form-check-label small text-muted" for="show-all-hd">Show all HD</label>
+                </div>
                 @if (_character.Ticks.Count > 0)
                 {
                     <button class="btn btn-sm btn-outline-secondary" @onclick="ToggleAllHdTicks">
-                        @(_expandedHdTicks.Count == _character.Ticks.Count ? "Collapse All" : "Expand All")
+                        @(_expandedTicks.Count == _character.Ticks.Count ? "Collapse All" : "Expand All")
                     </button>
                 }
                 <input type="number" class="form-control form-control-sm" style="width:60px" min="1" max="20" @bind="_addHdCount" />
@@ -255,11 +328,18 @@ else
                 var index = i;
                 var tick = _character.Ticks[index];
                 var hdNum = index + 1;
-                <div class="border rounded p-2 mb-2">
+                // Captures first, skip second: the loop variable must be captured before any
+                // continue so the closure-capture pattern below stays obvious.
+                if (!_showAllTicks && !TickShowsFacet(index, _activeTab)) { continue; }
+
+                @* @key on the Tick itself, not the index: once ticks can be skipped the n-th
+                   rendered row is no longer tick n, and positional matching would carry a
+                   SearchSelect's typed text from one HD to another. *@
+                <div class="border rounded p-2 mb-2" @key="tick">
                     <div class="row align-items-center">
                         <div class="col-auto">
-                            <button class="btn btn-sm btn-outline-secondary py-0 px-1" @onclick="() => ToggleHdTick(index)" title="@(_expandedHdTicks.Contains(index) ? "Collapse" : "Expand")">
-                                @(_expandedHdTicks.Contains(index) ? "\u25BC" : "\u25B6")
+                            <button class="btn btn-sm btn-outline-secondary py-0 px-1" @onclick="() => ToggleHdTick(index)" title="@(_expandedTicks.Contains(index) ? "Collapse" : "Expand")">
+                                @(_expandedTicks.Contains(index) ? "\u25BC" : "\u25B6")
                             </button>
                         </div>
                         <div class="col-auto">
@@ -276,7 +356,7 @@ else
                                 }
                             }
                         </div>
-                        @if (_expandedHdTicks.Contains(index))
+                        @if (_expandedTicks.Contains(index))
                         {
                             <div class="col-md-3">
                                 <SearchSelect TItem="Driver"
@@ -308,17 +388,18 @@ else
                         }
                         else
                         {
-                                var driverDef = _drivers.FirstOrDefault(d => d.Id == tick.DriverId);
-                                var collapsedParts = new List<string> { driverDef?.Name ?? tick.DriverId };
-                                if (tick.Choices.AbilityIncrease != null)
-                                    collapsedParts.Add($"+1 {tick.Choices.AbilityIncrease}");
-                                if (tick.Choices.FeatIds?.Any() == true)
-                                    collapsedParts.Add($"{tick.Choices.FeatIds.Count} feat(s)");
-                            <div class="col text-muted small">@string.Join(" | ", collapsedParts)</div>
+                            <div class="col text-muted small">@CollapsedSummary(index, _activeTab)</div>
                         }
                     </div>
 
-                    @if (_expandedHdTicks.Contains(index))
+                    @if (_expandedTicks.Contains(index))
+                    {
+                    @* Declared before the facet blocks: the Summary facet's domain and
+                       Advance-Spellcasting panels and the Spells facet both read it. *@
+                    var casterInfo = GetTickCasterInfo(index);
+
+                    @* ----------------------------- facet: Feats ----------------------------- *@
+                    @if (_activeTab == CharacterTab.Feats)
                     {
                     <!-- Feat selection for this tick -->
                     @if (tick.Choices.FeatIds != null && tick.Choices.FeatIds.Any())
@@ -338,8 +419,8 @@ else
                         <div class="d-flex align-items-center gap-1" style="max-width: 600px;">
                             <SearchSelect TItem="FeatDefinition"
                                           Items="GetTickFeats(index)"
-                                          Value="@_featInput"
-                                          ValueChanged="@((v) => { _featInput = v ?? string.Empty; _featSelectionInput = ""; })"
+                                          Value="@FeatInput(index)"
+                                          ValueChanged="@((v) => { _featInputs[index] = v ?? string.Empty; _featSelectionInputs.Remove(index); })"
                                           DisplaySelector="@(f => f.Name + (f.SelectionRequired != null ? $" ({f.SelectionRequired}...)" : ""))"
                                           ValueSelector="@(f => f.Id)"
                                           TitleSelector="@(f => f.Description)"
@@ -347,11 +428,12 @@ else
                                           CssClass="form-control-sm"
                                           Placeholder="Search feats..." />
                             @{
-                                var selectedFeatDef = _feats.FirstOrDefault(f => f.Id == _featInput);
+                                var selectedFeatDef = _feats.FirstOrDefault(f => f.Id == FeatInput(index));
                             }
                             @if (selectedFeatDef?.SelectionRequired == "school")
                             {
-                                <select class="form-select form-select-sm" style="width:auto" @bind="_featSelectionInput">
+                                <select class="form-select form-select-sm" style="width:auto"
+                                        value="@FeatSelectionInput(index)" @onchange="(e) => SetFeatSelectionInput(index, e)">
                                     <option value="">School...</option>
                                     @foreach (var school in _spellSchools)
                                     {
@@ -361,7 +443,8 @@ else
                             }
                             else if (selectedFeatDef?.SelectionRequired == "skill")
                             {
-                                <select class="form-select form-select-sm" style="width:auto" @bind="_featSelectionInput">
+                                <select class="form-select form-select-sm" style="width:auto"
+                                        value="@FeatSelectionInput(index)" @onchange="(e) => SetFeatSelectionInput(index, e)">
                                     <option value="">Skill...</option>
                                     @foreach (var skill in _skills)
                                     {
@@ -372,17 +455,24 @@ else
                             else if (selectedFeatDef?.SelectionRequired == "weapon")
                             {
                                 <input type="text" class="form-control form-control-sm" style="width:150px"
-                                       placeholder="Weapon..." @bind="_featSelectionInput" />
+                                       placeholder="Weapon..."
+                                       value="@FeatSelectionInput(index)" @onchange="(e) => SetFeatSelectionInput(index, e)" />
                             }
                             else if (selectedFeatDef?.SelectionRequired != null)
                             {
                                 <input type="text" class="form-control form-control-sm" style="width:180px"
-                                       placeholder="@($"{selectedFeatDef.SelectionRequired.Replace('_', ' ')}...")" @bind="_featSelectionInput" />
+                                       placeholder="@($"{selectedFeatDef.SelectionRequired.Replace('_', ' ')}...")"
+                                       value="@FeatSelectionInput(index)" @onchange="(e) => SetFeatSelectionInput(index, e)" />
                             }
                             <button class="btn btn-sm btn-outline-secondary" @onclick="() => AddFeatToTick(index)">Add</button>
                         </div>
                     </div>
-                    var casterInfo = GetTickCasterInfo(index);
+                    }
+                    @* --------------------------- end facet: Feats --------------------------- *@
+
+                    @* -------- facet: Summary (level-up decisions made at this HD) -------- *@
+                    @if (_activeTab == CharacterTab.Summary)
+                    {
                     @* Domain Selection *@
                     @if (casterInfo?.PendingDomainSelections > 0)
                     {
@@ -391,15 +481,15 @@ else
                             <div class="d-flex align-items-center gap-1 mt-1" style="max-width: 400px;">
                                 <SearchSelect TItem="DomainDefinition"
                                               Items="_domains"
-                                              Value="@_domainInput"
-                                              ValueChanged="@((v) => { _domainInput = v ?? string.Empty; })"
+                                              Value="@DomainInput(index)"
+                                              ValueChanged="@((v) => { _domainInputs[index] = v ?? string.Empty; })"
                                               DisplaySelector="@(d => d.Name)"
                                               ValueSelector="@(d => d.Id)"
                                               TitleSelector="@(d => d.Description)"
                                               DescriptionSelector="@(d => d.Description)"
                                               CssClass="form-control-sm"
                                               Placeholder="Search domains..." />
-                                <button class="btn btn-sm btn-outline-secondary" @onclick="() => AddDomainToTick(index, _domainInput)">Add</button>
+                                <button class="btn btn-sm btn-outline-secondary" @onclick="() => AddDomainToTick(index, DomainInput(index))">Add</button>
                             </div>
                         </div>
                     }
@@ -557,7 +647,12 @@ else
                             </div>
                         }
                     }
+                    }
+                    @* -------------------------- end facet: Summary -------------------------- *@
 
+                    @* -------------------------- facet: Companions -------------------------- *@
+                    @if (_activeTab == CharacterTab.Companions)
+                    {
                     @* Companion slots granted at this tick — pick species *@
                     var tickSlots = _tickNewCompanionSlots.GetValueOrDefault(index);
                     @if (tickSlots != null)
@@ -603,12 +698,17 @@ else
                             </div>
                         }
                     }
+                    }
+                    @* ------------------------ end facet: Companions ------------------------ *@
 
+                    @* ---------------------------- facet: Spells ---------------------------- *@
+                    @if (_activeTab == CharacterTab.Spells)
+                    {
                     @* Spellcasting: spell summaries and spell selection *@
                     @if (casterInfo?.Spellcasting.Any() == true)
                     {
                         <div class="mt-2">
-                            <button class="btn btn-sm btn-outline-primary" @onclick="() => ToggleSpellPanel(index)">
+                            <div class="small text-muted mb-1">
                                 Spells
                                 @foreach (var (listId, sc) in casterInfo.Spellcasting)
                                 {
@@ -618,9 +718,9 @@ else
                                 {
                                     <span class="badge bg-secondary ms-1">@tick.Choices.SpellSelections.Count selected</span>
                                 }
-                            </button>
-                            @if (_expandedSpellTicks.Contains(index))
-                            {
+                            </div>
+                            @* No nested collapse — the tick expander already bounds how much of
+                               the spell catalogue gets scanned per render. *@
                                 <div class="mt-1 border rounded p-2" style="max-height: 400px; overflow-y: auto;">
                                     @foreach (var (listId, sc) in casterInfo.Spellcasting.OrderBy(kv => kv.Key))
                                     {
@@ -782,25 +882,26 @@ else
                                             </div>
                                         </div>
                                     }
-                                    <div class="text-end mt-1">
-                                        <button class="btn btn-sm btn-outline-secondary py-0" @onclick="() => ToggleSpellPanel(index)">Collapse Spells</button>
-                                    </div>
                                 </div>
-                            }
                         </div>
                     }
+                    }
+                    @* -------------------------- end facet: Spells -------------------------- *@
 
+                    @* ---------------------------- facet: Skills ---------------------------- *@
+                    @if (_activeTab == CharacterTab.Skills)
+                    {
                     var skillInfo = GetTickSkillInfo(index);
                     var tickAllocCount = tick.Choices.SkillAllocations?.Sum(a => a.HalfRanks) ?? 0;
                     @if (skillInfo != null && _skills.Any())
                     {
                         <div class="mt-2">
-                            <button class="btn btn-sm btn-outline-info" @onclick="() => ToggleSkillPanel(index)">
+                            <div class="small text-muted mb-1">
                                 Skills (@(skillInfo.UnspentPoints) pts remaining, max @(skillInfo.MaxHalfRanks / 2.0) ranks)
                                 @if (tickAllocCount > 0) { <span class="badge bg-secondary ms-1">@(tickAllocCount / 2.0) allocated</span> }
-                            </button>
-                            @if (_expandedSkillTicks.Contains(index))
-                            {
+                            </div>
+                            @* No nested collapse: on the Skills tab this table is the whole point
+                               of the pane, so hiding it behind a second toggle is pure friction. *@
                                 <div class="mt-1 border rounded p-2" style="max-height: 300px; overflow-y: auto;">
                                     <table class="table table-sm table-hover mb-0">
                                         <thead>
@@ -840,19 +941,26 @@ else
                                             }
                                         </tbody>
                                     </table>
-                                    <div class="text-end mt-1">
-                                        <button class="btn btn-sm btn-outline-secondary py-0" @onclick="() => ToggleSkillPanel(index)">Collapse Skills</button>
-                                    </div>
                                 </div>
-                            }
                         </div>
                     }
+                    }
+                    @* -------------------------- end facet: Skills -------------------------- *@
                     } @* end expanded HD details *@
                 </div>
             }
+            @if (VisibleTickCount(_activeTab) == 0)
+            {
+                <p class="text-muted mb-0">@EmptyFacetMessage(_activeTab)</p>
+            }
         </div>
     </div>
+    }
+    @* =================== end HD TIMELINE — shared by five tabs =================== *@
 
+    @* ============================= TAB: Equipment ============================= *@
+    @if (_activeTab == CharacterTab.Equipment)
+    {
     <!-- Step 4: Permanent Events -->
     <div class="card mb-3">
         <div class="card-header">
@@ -1107,9 +1215,15 @@ else
         </div>
     </div>
 
-    <!-- Evaluation Result -->
+    }
+    @* =========================== end TAB: Equipment =========================== *@
+
+    @* The old single "Evaluation Result" card is split across the tabs its blocks belong to,
+       so each pane shows the readout for the decisions made on that pane. *@
     @if (_state != null)
     {
+        @if (_activeTab == CharacterTab.Summary)
+        {
         <div class="card mb-3">
             <div class="card-header">Evaluation Result</div>
             <div class="card-body">
@@ -1130,16 +1244,63 @@ else
                         }
                     </div>
                     <div class="col-md-3">
+                        <h5>Info</h5>
+                        <p>HD: @_state.TotalHD | ECL: @_state.ECL | Skills: @_state.UnspentSkillPoints pts</p>
+                    </div>
+                    @* Speeds are racial/class facts, so they sit here rather than with the gear
+                       readout they used to share a column with. *@
+                    @if (_state.Speeds.Any())
+                    {
+                        <div class="col-md-3">
+                            <h5>Movement</h5>
+                            <div class="small">
+                                @foreach (var (mode, speed) in _state.Speeds.OrderBy(entry => entry.Key))
+                                {
+                                    <div>
+                                        @mode: @speed ft.@(mode == MovementMode.Fly && _state.FlyManeuverability.HasValue
+                                            ? $" ({_state.FlyManeuverability.Value})"
+                                            : "")
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+                @if (_state.Warnings.Any())
+                {
+                    <div class="alert alert-warning mt-2">
+                        @foreach (var w in _state.Warnings)
+                        {
+                            @* Render the message, not the object. CharacterState.Warnings became
+                               List<Warning> and this read site kept interpolating the instance, so
+                               every warning printed as its type name. *@
+                            <div>
+                                @if (w.TickIndex.HasValue)
+                                {
+                                    <span class="badge bg-warning text-dark me-1">HD @w.TickIndex</span>
+                                }
+                                @w.Message
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        }
+
+        @if (_activeTab == CharacterTab.Feats)
+        {
+        <div class="card mb-3">
+            <div class="card-header">Resulting Feats &amp; Special Abilities</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
                         <h5>Feats (@_state.Feats.Count)</h5>
                         @foreach (var f in _state.Feats) {
                             var fd = _feats.FirstOrDefault(x => x.Id == f);
                             <span class="badge bg-secondary me-1" title="@(fd?.Description ?? f)">@(fd?.Name ?? f)</span>
                         }
                         @if (_state.PendingFeatSlots > 0) { <span class="badge bg-warning">@_state.PendingFeatSlots unspent</span> }
-                    </div>
-                    <div class="col-md-3">
-                        <h5>Info</h5>
-                        <p>HD: @_state.TotalHD | ECL: @_state.ECL | Skills: @_state.UnspentSkillPoints pts</p>
                     </div>
                 </div>
                 @if (_state.Abilities.Any() || _state.Counters.Any() || _state.SLAs.Any() || _state.SpecialAttacks.Any())
@@ -1165,6 +1326,8 @@ else
                                 }
                             </div>
                         }
+                        @* Spell-like abilities are granted, not chosen, so they belong with the
+                           other special abilities rather than on the Spells tab. *@
                         @if (_state.SLAs.Any())
                         {
                             <div class="col-md-4">
@@ -1209,7 +1372,7 @@ else
                                 <h5>Immunities</h5>
                                 @foreach (var i in _state.Immunities.OrderBy(i => i))
                                 {
-                                    <span class="badge bg-success me-1">@i</span>
+                                    <span class="badge bg-danger me-1">Immune to @Titleise(i)</span>
                                 }
                             </div>
                         }
@@ -1232,97 +1395,80 @@ else
                         }
                     </div>
                 }
-                @if (_state.AC.Components.Any() || _state.AttackLines.Any() || _state.Encumbrance.TotalWeightLbs > 0)
-                {
-                    <div class="row mt-3">
-                        @if (_state.AC.Components.Any())
-                        {
-                            <div class="col-md-4">
-                                <h5>AC Breakdown</h5>
-                                <div class="small">
-                                    <div>Total: <strong>@_state.AC.Total</strong></div>
-                                    <div>Touch: @_state.AC.Touch | Flat-Footed: @_state.AC.FlatFooted</div>
-                                    @foreach (var c in _state.AC.Components.OrderByDescending(kv => kv.Value))
-                                    {
-                                        <div>+@c.Value @c.Key</div>
-                                    }
-                                    @if (_state.AC.DexContribution != 0)
-                                    {
-                                        <div>@(_state.AC.DexContribution >= 0 ? "+" : "")@_state.AC.DexContribution Dex@(_state.AC.MaxDexCap.HasValue ? $" (cap {_state.AC.MaxDexCap})" : "")</div>
-                                    }
-                                </div>
-                            </div>
-                        }
-                        @if (_state.AttackLines.Any())
-                        {
-                            <div class="col-md-4">
-                                <h5>Attacks</h5>
-                                @foreach (var line in _state.AttackLines)
-                                {
-                                    var bonusStr = string.Join("/", line.Bonuses.Select(b => (b >= 0 ? "+" : "") + b));
-                                    <div class="small">
-                                        <strong>@line.Name@(line.IsOffHand ? " (off-hand)" : "")</strong>: @bonusStr, @line.Damage, @line.Crit
-                                    </div>
-                                }
-                            </div>
-                        }
-                        @if (_state.Encumbrance.TotalWeightLbs > 0 || _state.Encumbrance.HeavyMax > 0)
-                        {
-                            <div class="col-md-4">
-                                <h5>Encumbrance</h5>
-                                <div class="small">
-                                    <div><strong>@_state.Encumbrance.TotalWeightLbs lb</strong> — @_state.Encumbrance.Load</div>
-                                    <div class="text-muted">Light ≤ @_state.Encumbrance.LightMax · Med ≤ @_state.Encumbrance.MediumMax · Heavy ≤ @_state.Encumbrance.HeavyMax</div>
-                                    @if (_state.Speeds.Any())
-                                    {
-                                        <div class="text-muted">Movement</div>
-                                        @foreach (var (mode, speed) in _state.Speeds.OrderBy(entry => entry.Key))
-                                        {
-                                            <div>
-                                                @mode: @speed ft.@(mode == MovementMode.Fly && _state.FlyManeuverability.HasValue
-                                                    ? $" ({_state.FlyManeuverability.Value})"
-                                                    : "")
-                                            </div>
-                                        }
-                                    }
-                                </div>
-                            </div>
-                        }
-                    </div>
-                }
-                @if (_state.Warnings.Any())
-                {
-                    <div class="alert alert-warning mt-2">
-                        @foreach (var w in _state.Warnings)
-                        {
-                            @* Render the message, not the object. CharacterState.Warnings became
-                               List<Warning> and this read site kept interpolating the instance, so
-                               every warning printed as its type name. *@
-                            <div>
-                                @if (w.TickIndex.HasValue)
-                                {
-                                    <span class="badge bg-warning text-dark me-1">HD @w.TickIndex</span>
-                                }
-                                @w.Message
-                            </div>
-                        }
-                    </div>
-                }
             </div>
         </div>
+        }
 
-        var masterLinks = string.IsNullOrEmpty(_characterStoreId)
-            ? Array.Empty<CharacterFileInfo>()
-            : CharacterStore.FindMasters(_characterStoreId).ToArray();
-        @if (_state.CompanionSlots.Any() || _character.CompanionLinks.Any() || masterLinks.Length > 0)
+        @* AC, attacks and encumbrance are the readout that says whether the gear choices
+           worked, so they live with the gear. The Summary keeps the topline AC/HP/BAB. *@
+        @if (_activeTab == CharacterTab.Equipment)
+        {
+            @if (_state.AC.Components.Any() || _state.AttackLines.Any() || _state.Encumbrance.TotalWeightLbs > 0
+                 || _state.Encumbrance.HeavyMax > 0)
+            {
+                <div class="card mb-3">
+                    <div class="card-header">Gear Result</div>
+                    <div class="card-body">
+                        <div class="row">
+                            @if (_state.AC.Components.Any())
+                            {
+                                <div class="col-md-4">
+                                    <h5>AC Breakdown</h5>
+                                    <div class="small">
+                                        <div>Total: <strong>@_state.AC.Total</strong></div>
+                                        <div>Touch: @_state.AC.Touch | Flat-Footed: @_state.AC.FlatFooted</div>
+                                        @foreach (var c in _state.AC.Components.OrderByDescending(kv => kv.Value))
+                                        {
+                                            <div>+@c.Value @c.Key</div>
+                                        }
+                                        @if (_state.AC.DexContribution != 0)
+                                        {
+                                            <div>@(_state.AC.DexContribution >= 0 ? "+" : "")@_state.AC.DexContribution Dex@(_state.AC.MaxDexCap.HasValue ? $" (cap {_state.AC.MaxDexCap})" : "")</div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            @if (_state.AttackLines.Any())
+                            {
+                                <div class="col-md-4">
+                                    <h5>Attacks</h5>
+                                    @foreach (var line in _state.AttackLines)
+                                    {
+                                        var bonusStr = string.Join("/", line.Bonuses.Select(b => (b >= 0 ? "+" : "") + b));
+                                        <div class="small">
+                                            <strong>@line.Name@(line.IsOffHand ? " (off-hand)" : "")</strong>: @bonusStr, @line.Damage, @line.Crit
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            @if (_state.Encumbrance.TotalWeightLbs > 0 || _state.Encumbrance.HeavyMax > 0)
+                            {
+                                <div class="col-md-4">
+                                    <h5>Encumbrance</h5>
+                                    <div class="small">
+                                        <div><strong>@_state.Encumbrance.TotalWeightLbs lb</strong> — @_state.Encumbrance.Load</div>
+                                        <div class="text-muted">Light ≤ @_state.Encumbrance.LightMax · Med ≤ @_state.Encumbrance.MediumMax · Heavy ≤ @_state.Encumbrance.HeavyMax</div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        @* ============================ TAB: Companions ============================ *@
+        @* Visibility is decided by HasCompanions() in VisibleTabs(); if the tab is active
+           it is because that union already held. *@
+        @if (_activeTab == CharacterTab.Companions)
         {
             <div class="card mb-3">
                 <div class="card-header">Companions</div>
                 <div class="card-body">
-                    @if (masterLinks.Length > 0)
+                    @if (_masterLinks.Length > 0)
                     {
                         <div class="mb-2">
-                            @foreach (var m in masterLinks)
+                            @foreach (var m in _masterLinks)
                             {
                                 <a href="/builder/@m.Id" class="btn btn-sm btn-outline-secondary me-1">&larr; Back to @m.Name</a>
                             }
@@ -1516,1375 +1662,4 @@ else
             </div>
         }
     }
-}
-
-@code {
-    private string FormatCounter(string key, int value) => key switch
-    {
-        "sneak_attack_dice" => $"Sneak Attack +{value}d6",
-        "trap_sense_bonus" => $"Trap Sense +{value}",
-        "rage_uses" => $"Rage {value}/day",
-        "smite_evil_uses" => $"Smite Evil {value}/day",
-        "smite_good_uses" => $"Smite Good {value}/day",
-        "remove_disease_uses" => $"Remove Disease {value}/week",
-        "impromptu_sneak_attack_uses" => $"Impromptu Sneak Attack {value}/day",
-        "wild_shape_uses" => $"Wild Shape {value}/day",
-        "bardic_music_uses" => $"Bardic Music {value}/day",
-        "shadow_jump_distance" => $"Shadow Jump {value} ft.",
-        _ => $"{key}: {value}"
-    };
-
-    [Parameter] public string? Id { get; set; }
-
-    private bool _loading = true;
-    private string? _error;
-    private Character _character = new()
-    {
-        Name = "New Character",
-        RaceId = "race:human",
-        BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 }
-    };
-    private CharacterState? _state;
-    private List<CompanionBuild>? _companionBuilds;
-    private ReplayStudio _engine = null!;
-    private List<RaceDefinition> _races = new();
-    private List<LanguageDefinition> _languages = new();
-    // Monster, companion and creature races the source never priced as PC options are hidden by
-    // default — they were previously offered as character choices with nothing marking them, which
-    // is a discoverability trap on the first step of character creation. Not removed outright:
-    // the builder is also used to construct companions and monsters.
-    private bool _showNonPcRaces;
-    private int _nonPcRaceCount;
-    private List<TemplateDriver> _templates = new();
-    private List<Driver> _drivers = new();
-    private List<FeatDefinition> _feats = new();
-    private List<SpellDefinition> _spells = new();
-    private List<SkillDefinition> _skills = new();
-    private readonly Dictionary<int, List<TickSpellSummary>> _tickSpellSummaries = new();
-    private readonly Dictionary<int, TickSkillInfo> _tickSkillInfos = new();
-    private readonly Dictionary<int, List<FeatDefinition>> _tickAvailableFeats = new();
-    private readonly Dictionary<int, TickCasterInfo> _tickCasterInfos = new();
-    private readonly Dictionary<int, List<CompanionSlotState>> _tickNewCompanionSlots = new();
-    private readonly Dictionary<int, TickWizardSchoolPicks> _tickWizardSchoolPicks = new();
-    private readonly Dictionary<int, List<TickClassFeaturePick>> _tickClassFeaturePicks = new();
-    // Schools given up as of each tick, so the spell dropdowns can exclude them.
-    private readonly Dictionary<int, HashSet<string>> _tickProhibitedSchools = new();
-    // 0-level spells a spellbook caster holds for free at each tick — "all of them" only for a
-    // universalist; a specialist loses the cantrips of its given-up schools too.
-    private readonly Dictionary<int, int> _tickAutomaticCantrips = new();
-    private List<DomainDefinition> _domains = new();
-    private List<ClassFeatureDefinition> _classFeatures = new();
-    private List<EquipmentDefinition> _equipmentCatalog = new();
-    private string _equipmentPickerCategory = "weapon";
-    private string _equipmentPickerSelection = "";
-    private readonly HashSet<int> _expandedHdTicks = new();
-    private readonly HashSet<int> _expandedSkillTicks = new();
-    private readonly HashSet<int> _expandedSpellTicks = new();
-    private string _selectedTemplate = "";
-    private string _featInput = "";
-    private string _featSelectionInput = "";
-    private string _domainInput = "";
-    private string? _characterStoreId;
-    private List<CharacterFileInfo> _availableCharacters = new();
-    private readonly Dictionary<string, string> _linkCandidateByLinkType = new();
-    private int _leadershipFollowerLevel = 1;
-    private string _leadershipFollowerCandidate = string.Empty;
-
-    private static readonly string[] _spellSchools = { "Abjuration", "Conjuration", "Divination", "Enchantment", "Evocation", "Illusion", "Necromancy", "Transmutation" };
-    private int? _pendingWishEvent;
-    private string? _statusMessage;
-    private bool _statusIsError;
-    private bool _showOpenPicker;
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            var registry = Content.Registry;
-            _engine = Content.ReplayStudio;
-            _races = registry.GetAllRaces().ToList();
-            _languages = registry.GetAllLanguages().ToList();
-            _nonPcRaceCount = _races.Count(r => !RaceCatalog.IsSanctionedPcRace(r));
-            _templates = registry.GetAllTemplates().ToList();
-            _drivers = registry.GetAllDrivers().ToList();
-            _addHdDriverId = _drivers.FirstOrDefault()?.Id ?? "class:fighter";
-            _feats = registry.GetAllFeats().OrderBy(f => f.Name).ToList();
-            _spells = registry.GetAllSpells().OrderBy(s => s.Name).ToList();
-            _skills = registry.GetAllSkills().OrderBy(s => s.Name).ToList();
-            _domains = registry.GetAllDomains().OrderBy(d => d.Name).ToList();
-            _classFeatures = registry.GetAllClassFeatures().ToList();
-            _equipmentCatalog = registry.GetAllEquipment().OrderBy(e => e.Category).ThenBy(e => e.Name).ToList();
-            RefreshAvailableCharacters();
-
-            // Route param: /builder/{id} loads an existing character from the store.
-            if (!string.IsNullOrWhiteSpace(Id) && CharacterStore.IsConfigured)
-            {
-                try
-                {
-                    _character = CharacterStore.Get(Id);
-                    _characterStoreId = Id;
-                    ExpandAllHdTicks();
-                }
-                catch (CharacterStoreException ex)
-                {
-                    _error = ex.Message;
-                }
-            }
-
-            // Check for imported character from /import page
-            var uri = new Uri(Navigation.Uri);
-            if (uri.Query.Contains("imported=true"))
-            {
-                var importedJson = await JS.InvokeAsync<string?>("sessionStorage.getItem", "importedCharacter");
-                if (!string.IsNullOrEmpty(importedJson))
-                {
-                    var imported = System.Text.Json.JsonSerializer.Deserialize<Character>(importedJson, JsonOptions.Default);
-                    if (imported != null)
-                    {
-                        _character = imported;
-                        _characterStoreId = null;
-                        ExpandAllHdTicks();
-                        await JS.InvokeVoidAsync("sessionStorage.removeItem", "importedCharacter");
-                        SetStatus($"Imported \"{imported.Name}\" from PCGen.", false);
-                    }
-                }
-            }
-
-            OnCharacterChanged();
-        }
-        catch (Exception ex)
-        {
-            _error = ex.Message;
-        }
-        finally
-        {
-            _loading = false;
-        }
-    }
-
-    private void OnCharacterChanged()
-    {
-        RefreshPerTickData();
-        EvaluateCharacter();
-    }
-
-    private void RefreshPerTickData()
-    {
-        _tickSpellSummaries.Clear();
-        _tickSkillInfos.Clear();
-        _tickAvailableFeats.Clear();
-        _tickCasterInfos.Clear();
-        _tickNewCompanionSlots.Clear();
-        _tickWizardSchoolPicks.Clear();
-        _tickClassFeaturePicks.Clear();
-        _tickProhibitedSchools.Clear();
-        _tickAutomaticCantrips.Clear();
-
-        if (_engine == null || !_character.Ticks.Any())
-            return;
-
-        var prevSlotKeys = new HashSet<(string, string)>();
-        for (int i = 0; i < _character.Ticks.Count; i++)
-        {
-            CharacterState state;
-            try
-            {
-                state = _engine.Evaluate(_character, upToHD: i + 1);
-            }
-            catch
-            {
-                continue;
-            }
-
-            var summaries = new List<TickSpellSummary>();
-            foreach (var (spellListId, sc) in state.Spellcasting.OrderBy(kv => kv.Key))
-            {
-                var availableCount = _spells.Count(spell =>
-                    Content.Registry.TryGetSpellLevelForList(spell, spellListId, out var level)
-                    && level <= sc.MaxSpellLevel);
-                summaries.Add(new TickSpellSummary(spellListId, sc.MaxSpellLevel, availableCount, IsDomainList: false));
-            }
-            foreach (var domainId in state.Domains.OrderBy(d => d))
-            {
-                var domainMaxSpellLevel = 0;
-                if (state.DomainOwners.TryGetValue(domainId, out var ownerClassId)
-                    && state.Spellcasting.TryGetValue(ownerClassId, out var ownerSc))
-                    domainMaxSpellLevel = ownerSc.MaxSpellLevel;
-                var availableCount = _spells.Count(spell =>
-                    spell.ClassLevels.TryGetValue(domainId, out var level)
-                    && level <= domainMaxSpellLevel);
-                summaries.Add(new TickSpellSummary(domainId, domainMaxSpellLevel, availableCount, IsDomainList: true));
-            }
-            if (summaries.Count > 0)
-                _tickSpellSummaries[i] = summaries;
-
-            _tickSkillInfos[i] = new TickSkillInfo(
-                state.UnspentSkillPoints,
-                state.MaxHalfRanks,
-                new HashSet<string>(state.CurrentTickClassSkills),
-                new HashSet<string>(state.ClassSkills),
-                new Dictionary<string, int>(state.SkillHalfRanks));
-
-            _tickAvailableFeats[i] = _engine.GetAvailableFeats(state)
-                .OrderBy(f => f.Name).ToList();
-
-            // Wizard school pickers belong on the tick that granted them. Once a school is chosen
-            // the pending count drops to zero, so the tick's own recorded choices have to be added
-            // back in or the dropdowns would vanish the moment they were used.
-            var chosenHere = _character.Ticks[i].Choices.ClassFeatureChoices;
-            var specialisationPending = state.PendingClassFeatureSelections
-                .GetValueOrDefault(WizardSchools.SpecializationFeature);
-            var prohibitedPending = state.PendingClassFeatureSelections
-                .GetValueOrDefault(WizardSchools.ProhibitedFeature);
-            var specialisationHere = chosenHere?.GetValueOrDefault(WizardSchools.SpecializationFeature)?.Count ?? 0;
-            var prohibitedHere = chosenHere?.GetValueOrDefault(WizardSchools.ProhibitedFeature)?.Count ?? 0;
-
-            if (specialisationPending + specialisationHere > 0 || prohibitedPending + prohibitedHere > 0)
-                _tickWizardSchoolPicks[i] = new TickWizardSchoolPicks(
-                    PendingSpecialization: specialisationPending + specialisationHere > 0,
-                    PendingProhibited: prohibitedPending + prohibitedHere);
-
-            var staticFeaturePicks = _classFeatures
-                .Where(f => f.Id != WizardSchools.SpecializationFeature
-                    && f.Id != WizardSchools.ProhibitedFeature
-                    && !state.CompanionSlots.Any(slot => slot.ClassFeatureType == f.Id)
-                    && f.Options.Count > 0)
-                .Select(f => new TickClassFeaturePick(
-                    f,
-                    state.PendingClassFeatureSelections.GetValueOrDefault(f.Id)
-                        + (chosenHere?.GetValueOrDefault(f.Id)?.Count ?? 0)))
-                .Where(p => p.SlotCount > 0)
-                .ToList();
-            if (staticFeaturePicks.Count > 0)
-                _tickClassFeaturePicks[i] = staticFeaturePicks;
-
-            _tickProhibitedSchools[i] = WizardSchools.ProhibitedSchools(state).ToHashSet(StringComparer.OrdinalIgnoreCase);
-            _tickAutomaticCantrips[i] = state.Spellcasting
-                .Where(kv => kv.Value.Acquisition == SpellAcquisition.Spellbook)
-                .Sum(kv => WizardSchools.AutomaticCantrips(_spells, kv.Key, state).Count());
-
-            // Companion slots granted at this tick = slots present now that weren't
-            // present in the previous tick's snapshot.
-            var newSlots = state.CompanionSlots
-                .Where(s => prevSlotKeys.Add((s.LinkType, s.Granter)))
-                .ToList();
-            if (newSlots.Count > 0)
-                _tickNewCompanionSlots[i] = newSlots;
-
-            var advanceWarning = state.Warnings.FirstOrDefault(w => w.Message.Contains("AdvanceSpellcasting") && w.Message.Contains("multiple matching"));
-            var pendingTotal = state.PendingDomainSelections.Values.Sum();
-            if (pendingTotal > 0 || state.Spellcasting.Any() || advanceWarning != null)
-            {
-                _tickCasterInfos[i] = new TickCasterInfo(
-                    pendingTotal,
-                    new List<string>(state.Domains),
-                    new Dictionary<string, string>(state.DomainOwners),
-                    state.Spellcasting.ToDictionary(
-                        kv => kv.Key,
-                        kv => new TickSpellcastingInfo(
-                            kv.Value.CastingType,
-                            kv.Value.CastingStat,
-                            kv.Value.CasterLevel,
-                            kv.Value.MaxSpellLevel,
-                            new Dictionary<int, int>(kv.Value.SpellsPerDay),
-                            kv.Value.SpellsKnown != null ? new Dictionary<int, int>(kv.Value.SpellsKnown) : null,
-                            new Dictionary<int, int>(kv.Value.DomainBonusSlots),
-                            new Dictionary<int, int>(kv.Value.SpecialtyBonusSlots),
-                            kv.Value.Acquisition,
-                            ReplayStudio.SpellbookSpellsAllowed(
-                                state.ClassLevels.GetValueOrDefault(kv.Key),
-                                AbilityScoreSet.Modifier(state.AbilityScores.GetScore(kv.Value.CastingStat))))),
-                    NeedsAdvanceSpellcastingChoice: advanceWarning != null);
-            }
-        }
-    }
-
-    private void AddTemplate()
-    {
-        if (!string.IsNullOrEmpty(_selectedTemplate) && !_character.TemplateIds.Contains(_selectedTemplate))
-        {
-            _character.TemplateIds.Add(_selectedTemplate);
-            OnCharacterChanged();
-        }
-    }
-
-    private void RemoveTemplate(string templateId)
-    {
-        if (_character.TemplateIds.Remove(templateId))
-            OnCharacterChanged();
-    }
-
-    private void SetAbilityScore(Ability ability, ChangeEventArgs e)
-    {
-        if (int.TryParse(e.Value?.ToString(), out var val))
-        {
-            _character.BaseAbilityScores.SetScore(ability, val);
-            OnCharacterChanged();
-        }
-    }
-
-    private int _addHdCount = 1;
-    private string _addHdDriverId = "";
-
-    private void AddTick()
-    {
-        var driverId = string.IsNullOrEmpty(_addHdDriverId)
-            ? _drivers.FirstOrDefault()?.Id ?? "class:fighter"
-            : _addHdDriverId;
-        var count = Math.Clamp(_addHdCount, 1, 20);
-        for (int n = 0; n < count; n++)
-        {
-            var tickIndex = _character.Ticks.Count;
-            _character.Ticks.Add(new Tick { DriverId = driverId });
-            _expandedHdTicks.Add(tickIndex);
-        }
-        _addHdCount = 1;
-        OnCharacterChanged();
-    }
-
-    private void RemoveTick(int index)
-    {
-        if (index >= 0 && index < _character.Ticks.Count)
-        {
-            _character.Ticks.RemoveAt(index);
-            var updated = new HashSet<int>();
-            foreach (var i in _expandedHdTicks)
-            {
-                if (i < index) updated.Add(i);
-                else if (i > index) updated.Add(i - 1);
-            }
-            _expandedHdTicks.Clear();
-            foreach (var i in updated) _expandedHdTicks.Add(i);
-            OnCharacterChanged();
-        }
-    }
-
-    private void SetAbilityIncrease(int index, ChangeEventArgs e)
-    {
-        var val = e.Value?.ToString();
-        if (string.IsNullOrEmpty(val))
-            _character.Ticks[index].Choices.AbilityIncrease = null;
-        else if (Enum.TryParse<Ability>(val, out var ability))
-            _character.Ticks[index].Choices.AbilityIncrease = ability;
-        OnCharacterChanged();
-    }
-
-    private void SetTickDriver(int index, string? driverId)
-    {
-        if (string.IsNullOrEmpty(driverId)) return;
-        _character.Ticks[index].DriverId = driverId;
-        if (!IsAbilityIncreaseDue(index))
-            _character.Ticks[index].Choices.AbilityIncrease = null;
-        OnCharacterChanged();
-    }
-
-    private bool IsAbilityIncreaseDue(int index)
-    {
-        if (index < 0 || index >= _character.Ticks.Count) return false;
-        var driver = _drivers.FirstOrDefault(d => d.Id == _character.Ticks[index].DriverId) as HDDriver;
-        return driver != null && GameRules.Standard35e().GrantsAbilityIncrease(index + 1, driver.Kind);
-    }
-
-    private void AddFeatToTick(int index)
-    {
-        if (string.IsNullOrWhiteSpace(_featInput)) return;
-        var featDef = _feats.FirstOrDefault(f => f.Id == _featInput);
-        var featId = _featInput.Trim();
-
-        if (featDef?.SelectionRequired != null)
-        {
-            if (string.IsNullOrWhiteSpace(_featSelectionInput)) return;
-            var suffix = _featSelectionInput.Trim().ToLowerInvariant().Replace(' ', '_');
-            featId = $"{featId}_{suffix}";
-        }
-
-        _character.Ticks[index].Choices.FeatIds ??= new List<string>();
-        _character.Ticks[index].Choices.FeatIds!.Add(featId);
-        _featInput = "";
-        _featSelectionInput = "";
-        OnCharacterChanged();
-    }
-
-    private void RemoveFeatFromTick(int index, string featId)
-    {
-        var ids = _character.Ticks[index].Choices.FeatIds;
-        if (ids == null) return;
-        ids.Remove(featId);
-        OnCharacterChanged();
-    }
-
-    private void EvaluateCharacter()
-    {
-        if (_engine == null) return;
-        try
-        {
-            if (_character.CompanionLinks.Count > 0 && CharacterStore.IsConfigured)
-            {
-                var resolver = new CompanionResolver(_engine, TryLoadCompanion);
-                var composite = resolver.Build(_character);
-                _state = composite.MasterState;
-                _companionBuilds = composite.Companions;
-            }
-            else
-            {
-                _state = _engine.Evaluate(_character);
-                _companionBuilds = null;
-            }
-            _error = null;
-        }
-        catch (Exception ex)
-        {
-            _error = ex.Message;
-            _state = null;
-            _companionBuilds = null;
-        }
-    }
-
-    private Character? TryLoadCompanion(string id)
-    {
-        try { return CharacterStore.Get(id); }
-        catch (CharacterStoreException) { return null; }
-    }
-
-    private void RefreshAvailableCharacters()
-    {
-        _availableCharacters = CharacterStore.IsConfigured
-            ? CharacterStore.List().OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase).ToList()
-            : new();
-    }
-
-    private async Task ViewSheet()
-    {
-        var json = System.Text.Json.JsonSerializer.Serialize(_character, JsonOptions.Default);
-        await JS.InvokeVoidAsync("sessionStorage.setItem", "currentCharacter", json);
-        Navigation.NavigateTo("/sheet");
-    }
-
-    private void SaveCharacter()
-    {
-        try
-        {
-            if (_state != null)
-                _character.Sheet = CharacterSheet.FromState(_state);
-            if (CharacterStore.IsConfigured)
-            {
-                var id = string.IsNullOrEmpty(_characterStoreId)
-                    ? CharacterStore.DeriveId(_character)
-                    : _characterStoreId;
-                CharacterStore.Replace(id, _character);
-                _characterStoreId = id;
-                SetStatus($"Saved \"{_character.Name}\" to server.", false);
-            }
-            else
-            {
-                SetStatus("Character storage not configured on server.", true);
-            }
-        }
-        catch (Exception ex)
-        {
-            SetStatus($"Save failed: {ex.Message}", true);
-        }
-    }
-
-    private async Task DownloadCharacter()
-    {
-        try
-        {
-            if (_state != null)
-                _character.Sheet = CharacterSheet.FromState(_state);
-            await FileService.DownloadCharacterAsync(_character);
-            SetStatus($"Downloaded \"{_character.Name}\".", false);
-        }
-        catch (Exception ex)
-        {
-            SetStatus($"Download failed: {ex.Message}", true);
-        }
-    }
-
-    private async Task OpenFile()
-    {
-        try
-        {
-            var loaded = await FileService.OpenCharacterAsync();
-            if (loaded != null)
-            {
-                _character = loaded;
-                _characterStoreId = null;
-                _error = null;
-                _showOpenPicker = false;
-                ExpandAllHdTicks();
-                OnCharacterChanged();
-                SetStatus($"Opened \"{loaded.Name}\".", false);
-            }
-        }
-        catch (Exception ex)
-        {
-            SetStatus($"Open failed: {ex.Message}", true);
-        }
-    }
-
-    private void ToggleOpenPicker()
-    {
-        _showOpenPicker = !_showOpenPicker;
-        if (_showOpenPicker)
-            RefreshAvailableCharacters();
-    }
-
-    private void OpenFromStore(string? id)
-    {
-        if (string.IsNullOrEmpty(id))
-            return;
-        try
-        {
-            _character = CharacterStore.Get(id);
-            _characterStoreId = id;
-            _error = null;
-            _showOpenPicker = false;
-            ExpandAllHdTicks();
-            OnCharacterChanged();
-            // Keep the URL in sync so a refresh reloads the same character. Same-component
-            // navigation only updates the route parameter; state is already set above.
-            Navigation.NavigateTo($"/builder/{Uri.EscapeDataString(id)}");
-            SetStatus($"Opened \"{_character.Name}\" from server.", false);
-        }
-        catch (Exception ex)
-        {
-            SetStatus($"Open failed: {ex.Message}", true);
-        }
-    }
-
-    private void SetStatus(string message, bool isError)
-    {
-        _statusMessage = message;
-        _statusIsError = isError;
-    }
-
-    private int GetRaceAbilityModifier(Ability ability)
-    {
-        var race = _races.FirstOrDefault(r => r.Id == _character.RaceId);
-        return race?.AbilityModifiers?.GetScore(ability) ?? 0;
-    }
-
-    /// <summary>
-    /// Intelligence at creation — base plus racial and template modifiers, deliberately excluding
-    /// level-up increases, because 3.5 prices bonus languages once from starting Int. Mirrors what
-    /// <c>ReplayStudio</c> sees when it spends the picks.
-    /// </summary>
-    private int GetStartingIntelligence() =>
-        _character.BaseAbilityScores.INT
-        + GetRaceAbilityModifier(Ability.INT)
-        + GetTemplateAbilityModifier(Ability.INT);
-
-    private string LanguageName(string id) =>
-        _languages.FirstOrDefault(l => l.Id == id)?.Name ?? id;
-
-    private RaceDefinition? SelectedRace() =>
-        _races.FirstOrDefault(r => r.Id == _character.RaceId);
-
-    private List<LanguageDefinition> OfferedBonusLanguages() =>
-        LanguageCatalog.OfferedBonusLanguages(SelectedRace(), _languages).ToList();
-
-    private void ToggleBonusLanguage(string languageId)
-    {
-        if (!_character.BonusLanguageIds.Remove(languageId))
-        {
-            if (_character.BonusLanguageIds.Count >= LanguageCatalog.Allowance(GetStartingIntelligence()))
-                return;
-            _character.BonusLanguageIds.Add(languageId);
-        }
-        OnCharacterChanged();
-    }
-
-    private int GetTemplateAbilityModifier(Ability ability) =>
-        _character.TemplateIds
-            .Select(id => _templates.FirstOrDefault(t => t.Id == id))
-            .Where(template => template?.AbilityModifiers != null)
-            .Sum(template => template!.AbilityModifiers!.GetScore(ability));
-
-    private static string FormatSigned(int value) => value >= 0 ? $"+{value}" : value.ToString();
-
-    private string FormatFeatLabel(string featId, FeatDefinition? featDef)
-    {
-        if (featDef != null)
-            return featDef.Name;
-
-        foreach (var f in _feats)
-        {
-            if (f.SelectionRequired != null && featId.StartsWith(f.Id + "_", StringComparison.Ordinal))
-            {
-                var suffix = featId[(f.Id.Length + 1)..];
-                var selection = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(suffix.Replace('_', ' '));
-                return $"{f.Name} ({selection})";
-            }
-        }
-        return featId;
-    }
-
-    // How many spells a full-list caster has available at its current maximum spell level. Shown
-    // instead of a picker, so the panel still says something useful about the class's reach.
-    private int AvailableSpellCount(string spellListId, int maxSpellLevel) =>
-        _spells.Count(s => Content.Registry.TryGetSpellLevelForList(s, spellListId, out var lvl)
-            && lvl <= maxSpellLevel);
-
-    // --- Specialist wizard schools ---
-
-    private List<ClassFeatureOption> SchoolOptions(string featureType) =>
-        _classFeatures.FirstOrDefault(f => f.Id == featureType)?.Options ?? new List<ClassFeatureOption>();
-
-    private static string? SelectedSchool(Tick tick, string featureType, int slot)
-    {
-        var picks = tick.Choices.ClassFeatureChoices?.GetValueOrDefault(featureType);
-        return picks != null && slot < picks.Count ? picks[slot] : null;
-    }
-
-    /// <summary>
-    /// The schools a given prohibited-school slot may offer: never the wizard's own specialty, and
-    /// never one already given up in another slot. (Divination is absent from the option pool in
-    /// content, since it can never be given up at all.)
-    /// </summary>
-    private List<ClassFeatureOption> ProhibitedSchoolOptions(Tick tick, string? specialtyPick, int slot)
-    {
-        var picks = tick.Choices.ClassFeatureChoices?.GetValueOrDefault(WizardSchools.ProhibitedFeature);
-        var takenElsewhere = picks is null
-            ? new HashSet<string>(StringComparer.Ordinal)
-            : picks.Where((_, i) => i != slot).Where(p => !string.IsNullOrEmpty(p))
-                   .ToHashSet(StringComparer.Ordinal);
-
-        return SchoolOptions(WizardSchools.ProhibitedFeature)
-            .Where(o => o.Id != specialtyPick && !takenElsewhere.Contains(o.Id))
-            .ToList();
-    }
-
-    /// <summary>How many of the required prohibited slots actually hold a school.</summary>
-    private static int ChosenProhibitedCount(Tick tick, int required)
-    {
-        var picks = tick.Choices.ClassFeatureChoices?.GetValueOrDefault(WizardSchools.ProhibitedFeature);
-        if (picks is null) return 0;
-        return picks.Take(required).Count(p => !string.IsNullOrEmpty(p));
-    }
-
-    /// <summary>
-    /// Writes one school slot. Slots are positional so the two prohibited-school dropdowns stay
-    /// independent; clearing one leaves the other in place. Empty entries are dropped, so an
-    /// unmade choice never reaches the engine as a selection.
-    /// </summary>
-    private void SetWizardSchool(int tickIndex, string featureType, int slot, string? optionId)
-    {
-        var tick = _character.Ticks[tickIndex];
-        tick.Choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
-        var picks = tick.Choices.ClassFeatureChoices.TryGetValue(featureType, out var existing)
-            ? new List<string>(existing)
-            : new List<string>();
-
-        while (picks.Count <= slot)
-            picks.Add(string.Empty);
-        picks[slot] = optionId ?? string.Empty;
-
-        var cleaned = picks.Where(p => !string.IsNullOrEmpty(p)).ToList();
-        if (cleaned.Count > 0)
-            tick.Choices.ClassFeatureChoices[featureType] = cleaned;
-        else
-            tick.Choices.ClassFeatureChoices.Remove(featureType);
-
-        // Changing the specialty changes how many schools are owed, and which are legal. Switching
-        // to divination (2 → 1) or to universalist (→ 0) would otherwise strand picks that the
-        // picker no longer shows, leaving an illegal character that looked correct on screen.
-        if (featureType == WizardSchools.SpecializationFeature)
-            TrimProhibitedSchools(tick, optionId);
-
-        OnCharacterChanged();
-    }
-
-    private static void TrimProhibitedSchools(Tick tick, string? specialtyPick)
-    {
-        var choices = tick.Choices.ClassFeatureChoices;
-        if (choices is null || !choices.TryGetValue(WizardSchools.ProhibitedFeature, out var picks))
-            return;
-
-        var specialtyName = string.IsNullOrEmpty(specialtyPick)
-            ? null
-            : WizardSchools.ToSchoolName(specialtyPick);
-
-        var kept = picks
-            .Where(p => !string.IsNullOrEmpty(p) && p != specialtyPick)
-            .Take(WizardSchools.RequiredProhibitedCount(specialtyName))
-            .ToList();
-
-        if (kept.Count > 0)
-            choices[WizardSchools.ProhibitedFeature] = kept;
-        else
-            choices.Remove(WizardSchools.ProhibitedFeature);
-    }
-
-    private sealed record TickWizardSchoolPicks(bool PendingSpecialization, int PendingProhibited);
-    private sealed record TickClassFeaturePick(ClassFeatureDefinition Feature, int SlotCount);
-
-    private static string? SelectedClassFeatureOption(Tick tick, string featureType, int slot)
-    {
-        var picks = tick.Choices.ClassFeatureChoices?.GetValueOrDefault(featureType);
-        return picks != null && slot < picks.Count ? picks[slot] : null;
-    }
-
-    private List<ClassFeatureOption> ClassFeatureOptionsForTick(int tickIndex, string featureType, int slot)
-    {
-        var selectedElsewhere = _character.Ticks
-            .SelectMany((tick, index) => tick.Choices.ClassFeatureChoices?.GetValueOrDefault(featureType)
-                ?.Where((_, pickIndex) => index != tickIndex || pickIndex != slot)
-                ?? Enumerable.Empty<string>())
-            .ToHashSet(StringComparer.Ordinal);
-
-        return _classFeatures.FirstOrDefault(f => f.Id == featureType)?.Options
-            .Where(option => !selectedElsewhere.Contains(option.Id))
-            .ToList() ?? new List<ClassFeatureOption>();
-    }
-
-    private void SetClassFeatureChoice(int tickIndex, string featureType, int slot, string? optionId)
-    {
-        var tick = _character.Ticks[tickIndex];
-        tick.Choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
-        var picks = tick.Choices.ClassFeatureChoices.TryGetValue(featureType, out var existing)
-            ? new List<string>(existing)
-            : new List<string>();
-
-        while (picks.Count <= slot)
-            picks.Add(string.Empty);
-        picks[slot] = optionId ?? string.Empty;
-
-        var cleaned = picks.Where(p => !string.IsNullOrEmpty(p)).ToList();
-        if (cleaned.Count > 0)
-            tick.Choices.ClassFeatureChoices[featureType] = cleaned;
-        else
-            tick.Choices.ClassFeatureChoices.Remove(featureType);
-
-        OnCharacterChanged();
-    }
-
-    // Purely a display toggle — it widens the picker's list and does not touch the character,
-    // so it deliberately does not call OnCharacterChanged.
-    private void OnShowNonPcRacesChanged(ChangeEventArgs e) =>
-        _showNonPcRaces = e.Value is true;
-
-    private void OnAlignmentChanged(ChangeEventArgs e)
-    {
-        if (Enum.TryParse<Alignment>(e.Value?.ToString(), out var a))
-        {
-            _character.Alignment = a;
-            OnCharacterChanged();
-        }
-    }
-
-    private static string FormatAlignment(Alignment a) => a switch
-    {
-        Alignment.LG => "Lawful Good",
-        Alignment.LN => "Lawful Neutral",
-        Alignment.LE => "Lawful Evil",
-        Alignment.NG => "Neutral Good",
-        Alignment.N  => "True Neutral",
-        Alignment.NE => "Neutral Evil",
-        Alignment.CG => "Chaotic Good",
-        Alignment.CN => "Chaotic Neutral",
-        Alignment.CE => "Chaotic Evil",
-        _ => a.ToString()
-    };
-
-    private IReadOnlyList<TickSpellSummary> GetTickSpellSummaries(int index) =>
-        _tickSpellSummaries.TryGetValue(index, out var summaries)
-            ? summaries
-            : Array.Empty<TickSpellSummary>();
-
-    private static string FormatSpellSummary(TickSpellSummary summary)
-    {
-        var name = summary.SpellListId.Replace("class:", "").Replace("domain:", "");
-        var listType = summary.IsDomainList ? "domain" : "class";
-        return $"{name} {listType} L{summary.MaxSpellLevel} ({summary.AvailableSpellCount} spells)";
-    }
-
-    private static string FormatSpellSelection(SpellSelection selection)
-    {
-        var listId = selection.ClassId.Replace("class:", "").Replace("domain:", "");
-        return $"{listId} {selection.SpellLevel}th: {selection.SpellId}";
-    }
-
-    private static string SpellTooltip(SpellDefinition spell)
-    {
-        var school = string.IsNullOrEmpty(spell.Subschool)
-            ? spell.School
-            : $"{spell.School} ({spell.Subschool})";
-        var descriptors = spell.Descriptors.Any() ? $" [{string.Join(", ", spell.Descriptors)}]" : string.Empty;
-        var rules = $"{school}{descriptors}. {spell.CastingTime}; {spell.Range}; {spell.Duration}. Save: {spell.SavingThrow}. SR: {spell.SpellResistance}.";
-        return string.IsNullOrWhiteSpace(spell.Description) ? rules : $"{rules} {spell.Description}";
-    }
-
-    private List<FeatDefinition> GetTickFeats(int index) =>
-        _tickAvailableFeats.TryGetValue(index, out var feats) ? feats : _feats;
-
-    private TickSkillInfo? GetTickSkillInfo(int index) =>
-        _tickSkillInfos.TryGetValue(index, out var info) ? info : null;
-
-    private void AddSkillAllocation(int tickIndex, string skillId, bool isClassSkill)
-    {
-        var tick = _character.Ticks[tickIndex];
-        tick.Choices.SkillAllocations ??= new List<SkillAllocation>();
-
-        var halfRanks = isClassSkill ? 2 : 1;
-        var existing = tick.Choices.SkillAllocations.FirstOrDefault(a => a.SkillId == skillId);
-        if (existing != null)
-            existing.HalfRanks += halfRanks;
-        else
-            tick.Choices.SkillAllocations.Add(new SkillAllocation { SkillId = skillId, HalfRanks = halfRanks });
-
-        OnCharacterChanged();
-    }
-
-    private void RemoveSkillAllocation(int tickIndex, string skillId, bool isClassSkill)
-    {
-        var tick = _character.Ticks[tickIndex];
-        if (tick.Choices.SkillAllocations == null) return;
-
-        var existing = tick.Choices.SkillAllocations.FirstOrDefault(a => a.SkillId == skillId);
-        if (existing == null) return;
-
-        var halfRanks = isClassSkill ? 2 : 1;
-        existing.HalfRanks -= halfRanks;
-        if (existing.HalfRanks <= 0)
-            tick.Choices.SkillAllocations.Remove(existing);
-
-        OnCharacterChanged();
-    }
-
-    private void ToggleAllHdTicks()
-    {
-        if (_expandedHdTicks.Count == _character.Ticks.Count)
-            _expandedHdTicks.Clear();
-        else
-            ExpandAllHdTicks();
-    }
-
-    private void ExpandAllHdTicks()
-    {
-        _expandedHdTicks.Clear();
-        for (int i = 0; i < _character.Ticks.Count; i++)
-            _expandedHdTicks.Add(i);
-    }
-
-    private void ToggleHdTick(int index)
-    {
-        if (!_expandedHdTicks.Add(index))
-            _expandedHdTicks.Remove(index);
-    }
-
-    private void ToggleSkillPanel(int index)
-    {
-        if (!_expandedSkillTicks.Add(index))
-            _expandedSkillTicks.Remove(index);
-    }
-
-    private int GetTickSkillAllocation(int tickIndex, string skillId)
-    {
-        var allocs = _character.Ticks[tickIndex].Choices.SkillAllocations;
-        return allocs?.FirstOrDefault(a => a.SkillId == skillId)?.HalfRanks ?? 0;
-    }
-
-    private TickCasterInfo? GetTickCasterInfo(int index) =>
-        _tickCasterInfos.TryGetValue(index, out var info) ? info : null;
-
-    private void AddDomainToTick(int tickIndex, string domainId)
-    {
-        if (string.IsNullOrEmpty(domainId)) return;
-        var tick = _character.Ticks[tickIndex];
-        tick.Choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
-        if (!tick.Choices.ClassFeatureChoices.ContainsKey("domains"))
-            tick.Choices.ClassFeatureChoices["domains"] = new List<string>();
-        var domains = tick.Choices.ClassFeatureChoices["domains"];
-        if (!domains.Contains(domainId))
-        {
-            domains.Add(domainId);
-            OnCharacterChanged();
-        }
-    }
-
-    private void RemoveDomainFromTick(int tickIndex, string domainId, string choiceKey = "domains")
-    {
-        var tick = _character.Ticks[tickIndex];
-        var domains = tick.Choices.ClassFeatureChoices?.GetValueOrDefault(choiceKey);
-        if (domains == null) return;
-        domains.Remove(domainId);
-        OnCharacterChanged();
-    }
-
-    private void SetWarFavoredWeapon(int tickIndex, string? weaponId)
-    {
-        var choices = _character.Ticks[tickIndex].Choices;
-        choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
-        choices.ClassFeatureChoices[GrantWarDomainWeaponFeats.ChoiceKey] =
-            string.IsNullOrWhiteSpace(weaponId) ? new List<string>() : new List<string> { weaponId };
-        OnCharacterChanged();
-    }
-
-    private void ToggleSpellPanel(int index)
-    {
-        if (!_expandedSpellTicks.Add(index))
-            _expandedSpellTicks.Remove(index);
-    }
-
-    private void AddSpellSelection(int tickIndex, string classId, int spellLevel, string spellId)
-    {
-        if (string.IsNullOrEmpty(spellId)) return;
-        var tick = _character.Ticks[tickIndex];
-        tick.Choices.SpellSelections ??= new List<SpellSelection>();
-        tick.Choices.SpellSelections.Add(new SpellSelection
-        {
-            ClassId = classId,
-            SpellLevel = spellLevel,
-            SpellId = spellId
-        });
-        OnCharacterChanged();
-    }
-
-    private void RemoveSpellSelection(int tickIndex, SpellSelection selection)
-    {
-        var tick = _character.Ticks[tickIndex];
-        tick.Choices.SpellSelections?.Remove(selection);
-        OnCharacterChanged();
-    }
-
-    private void SetAdvanceSpellcastingChoice(int tickIndex, string classId)
-    {
-        var tick = _character.Ticks[tickIndex];
-        tick.Choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
-        tick.Choices.ClassFeatureChoices["advance_spellcasting"] = new List<string> { classId };
-        OnCharacterChanged();
-    }
-
-    private void SetCompanionSpeciesOnTick(int tickIndex, string classFeatureType, string raceId)
-    {
-        var tick = _character.Ticks[tickIndex];
-        tick.Choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
-        tick.Choices.ClassFeatureChoices[classFeatureType] = new List<string> { raceId };
-        OnCharacterChanged();
-    }
-
-    private static readonly Dictionary<string, string> CompanionDefaultTemplateByLinkType = new()
-    {
-        ["animal_companion"] = "template:animal_companion_standard",
-        ["familiar"] = "template:familiar_standard",
-        ["improved_familiar"] = "template:familiar_standard",
-        ["special_mount"] = "template:special_mount_standard",
-    };
-
-    private static readonly Dictionary<string, string> CompanionRacialHdByLinkType = new()
-    {
-        ["shadow_companion"] = "racial_hd:undead",
-    };
-
-    private void CreateCompanionFromSlot(CompanionSlotState slot)
-    {
-        if (!CharacterStore.IsConfigured)
-        {
-            SetStatus("Character storage not configured on server.", true);
-            return;
-        }
-        if (string.IsNullOrEmpty(_characterStoreId))
-        {
-            SetStatus("Save the master character first so the companion can link back.", true);
-            return;
-        }
-
-        var species = slot.SelectedSpecies;
-        var raceDef = string.IsNullOrEmpty(species) ? null : _races.FirstOrDefault(r => r.Id == species);
-        var displayName = raceDef?.Name ?? species ?? slot.LinkType.Replace('_', ' ');
-
-        var companion = new Character
-        {
-            Name = $"{_character.Name}'s {displayName}",
-            Alignment = _character.Alignment,
-            RaceId = species ?? string.Empty,
-            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 }
-        };
-
-        if (CompanionDefaultTemplateByLinkType.TryGetValue(slot.LinkType, out var templateId)
-            && _templates.Any(t => t.Id == templateId))
-        {
-            companion.TemplateIds.Add(templateId);
-        }
-
-        if (CompanionRacialHdByLinkType.TryGetValue(slot.LinkType, out var racialHdDriverId))
-        {
-            for (var hd = 0; hd < Math.Max(0, slot.EffectiveLevel); hd++)
-                companion.Ticks.Add(new Tick { DriverId = racialHdDriverId });
-        }
-
-        var baseId = CharacterStore.DeriveId(companion);
-        var id = baseId;
-        var suffix = 1;
-        while (CharacterStore.Exists(id))
-        {
-            suffix++;
-            id = $"{baseId}_{suffix}";
-        }
-
-        CharacterStore.Replace(id, companion);
-
-        _character.CompanionLinks.Add(new CompanionLink
-        {
-            LinkType = slot.LinkType,
-            CompanionId = id,
-            SelectedSpecies = species,
-            EffectiveLevelFormula = slot.EffectiveLevelFormula
-        });
-        CharacterStore.Replace(_characterStoreId!, _character);
-        RefreshAvailableCharacters();
-
-        Navigation.NavigateTo($"/builder/{id}");
-    }
-
-    private void LinkExistingCompanion(CompanionSlotState slot)
-    {
-        if (!CharacterStore.IsConfigured)
-        {
-            SetStatus("Character storage not configured on server.", true);
-            return;
-        }
-        if (string.IsNullOrEmpty(_characterStoreId))
-        {
-            SetStatus("Save the master character first so it can own the link.", true);
-            return;
-        }
-        if (!_linkCandidateByLinkType.TryGetValue(slot.LinkType, out var candidateId)
-            || string.IsNullOrEmpty(candidateId))
-        {
-            SetStatus("Pick a character to link first.", true);
-            return;
-        }
-        if (candidateId == _characterStoreId)
-        {
-            SetStatus("A character cannot be linked to itself.", true);
-            return;
-        }
-
-        Character candidate;
-        try { candidate = CharacterStore.Get(candidateId); }
-        catch (CharacterStoreException ex) { SetStatus(ex.Message, true); return; }
-
-        _character.CompanionLinks.Add(new CompanionLink
-        {
-            LinkType = slot.LinkType,
-            CompanionId = candidateId,
-            SelectedSpecies = string.IsNullOrEmpty(candidate.RaceId) ? null : candidate.RaceId,
-            EffectiveLevelFormula = slot.EffectiveLevelFormula
-        });
-        CharacterStore.Replace(_characterStoreId, _character);
-        _linkCandidateByLinkType.Remove(slot.LinkType);
-        SetStatus($"Linked \"{candidate.Name}\" as {slot.LinkType}.", false);
-        OnCharacterChanged();
-    }
-
-    private int FollowerCapacity(int level) => level switch
-    {
-        1 => _state?.Followers.Level1 ?? 0,
-        2 => _state?.Followers.Level2 ?? 0,
-        3 => _state?.Followers.Level3 ?? 0,
-        4 => _state?.Followers.Level4 ?? 0,
-        5 => _state?.Followers.Level5 ?? 0,
-        6 => _state?.Followers.Level6 ?? 0,
-        _ => 0,
-    };
-
-    private void CreateLeadershipFollower(int level)
-    {
-        if (!CharacterStore.IsConfigured)
-        {
-            SetStatus("Character storage not configured on server.", true);
-            return;
-        }
-        if (string.IsNullOrEmpty(_characterStoreId))
-        {
-            SetStatus("Save the leader first so the follower can link back.", true);
-            return;
-        }
-
-        var follower = new Character
-        {
-            Name = $"{_character.Name}'s level {level} follower",
-            Alignment = _character.Alignment,
-            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
-        };
-        var baseId = CharacterStore.DeriveId(follower);
-        var id = baseId;
-        for (var suffix = 2; CharacterStore.Exists(id); suffix++)
-            id = $"{baseId}_{suffix}";
-
-        CharacterStore.Replace(id, follower);
-        _character.CompanionLinks.Add(new CompanionLink
-        {
-            LinkType = "leadership_follower",
-            CompanionId = id,
-            FollowerLevel = level,
-            EffectiveLevelFormula = new Formula(level.ToString()),
-        });
-        CharacterStore.Replace(_characterStoreId, _character);
-        RefreshAvailableCharacters();
-        Navigation.NavigateTo($"/builder/{id}");
-    }
-
-    private void LinkExistingLeadershipFollower()
-    {
-        if (!CharacterStore.IsConfigured || string.IsNullOrEmpty(_characterStoreId))
-        {
-            SetStatus("Save the leader first so the follower can link back.", true);
-            return;
-        }
-        if (string.IsNullOrEmpty(_leadershipFollowerCandidate)
-            || _leadershipFollowerCandidate == _characterStoreId)
-        {
-            SetStatus("Pick another character to link first.", true);
-            return;
-        }
-
-        Character candidate;
-        try { candidate = CharacterStore.Get(_leadershipFollowerCandidate); }
-        catch (CharacterStoreException ex) { SetStatus(ex.Message, true); return; }
-
-        _character.CompanionLinks.Add(new CompanionLink
-        {
-            LinkType = "leadership_follower",
-            CompanionId = _leadershipFollowerCandidate,
-            SelectedSpecies = string.IsNullOrEmpty(candidate.RaceId) ? null : candidate.RaceId,
-            FollowerLevel = _leadershipFollowerLevel,
-            EffectiveLevelFormula = new Formula(_leadershipFollowerLevel.ToString()),
-        });
-        CharacterStore.Replace(_characterStoreId, _character);
-        _leadershipFollowerCandidate = string.Empty;
-        SetStatus($"Linked \"{candidate.Name}\" as a level {_leadershipFollowerLevel} Leadership follower.", false);
-        OnCharacterChanged();
-    }
-
-    private void UnlinkCompanion(CompanionLink link)
-    {
-        _character.CompanionLinks.Remove(link);
-        if (!string.IsNullOrEmpty(_characterStoreId) && CharacterStore.IsConfigured)
-            CharacterStore.Replace(_characterStoreId, _character);
-        OnCharacterChanged();
-    }
-
-    private void AddPermanentEvent()
-    {
-        _character.PermanentEvents.Add(new PermanentEvent
-        {
-            BeforeTick = _character.Ticks.Count
-        });
-    }
-
-    private void RemovePermanentEvent(int index)
-    {
-        _character.PermanentEvents.RemoveAt(index);
-        OnCharacterChanged();
-    }
-
-    private void AddPresetToEvent(int evtIndex, string preset)
-    {
-        var evt = _character.PermanentEvents[evtIndex];
-
-        if (preset.StartsWith("tome_"))
-        {
-            var parts = preset.Split('_');
-            if (parts.Length == 3 && int.TryParse(parts[1], out var bonus) && Enum.TryParse<Ability>(parts[2], out var ab))
-            {
-                AddAbilityModToEvent(evtIndex, ab, bonus);
-            }
-        }
-        else if (preset == "wish_inherent")
-        {
-            _pendingWishEvent = evtIndex;
-        }
-        else if (preset.StartsWith("nat_armor_"))
-        {
-            if (int.TryParse(preset.Replace("nat_armor_", ""), out var val))
-            {
-                evt.Permabuffs.Add(new ModifyAttribute { Target = AttributeTarget.NaturalArmor, Value = val });
-                OnCharacterChanged();
-            }
-        }
-        else if (preset.StartsWith("sr_"))
-        {
-            if (int.TryParse(preset.Replace("sr_", ""), out var val))
-            {
-                evt.Permabuffs.Add(new ModifyAttribute { Target = AttributeTarget.SpellResistance, Value = val });
-                OnCharacterChanged();
-            }
-        }
-    }
-
-    private void AddAbilityModToEvent(int evtIndex, Ability ability, int value)
-    {
-        var evt = _character.PermanentEvents[evtIndex];
-        evt.Permabuffs.Add(new ModifyAttribute
-        {
-            Target = AttributeTarget.AbilityScore,
-            AbilityScore = ability,
-            Value = value
-        });
-        OnCharacterChanged();
-    }
-
-    private void AddCustomEquipmentEntry()
-    {
-        _character.Equipment.Add(new EquipmentEntry { ItemId = "New Item", Slot = "slotless" });
-        OnCharacterChanged();
-    }
-
-    private void AddCatalogItem()
-    {
-        if (string.IsNullOrEmpty(_equipmentPickerSelection)) return;
-        var def = _equipmentCatalog.FirstOrDefault(e => e.Id == _equipmentPickerSelection);
-        if (def == null) return;
-        _character.Equipment.Add(new EquipmentEntry
-        {
-            ContentId = def.Id,
-            ItemId = def.Name,
-            Slot = def.Slot ?? string.Empty,
-            MainHand = def.Category == EquipmentCategory.Weapon,
-            TwoHanded = def.Weapon?.TwoHanded ?? false
-        });
-        _equipmentPickerSelection = "";
-        OnCharacterChanged();
-    }
-
-    private void ResetEquipmentSelection()
-    {
-        _equipmentPickerSelection = "";
-    }
-
-    private void RemoveEquipmentEntry(int index)
-    {
-        _character.Equipment.RemoveAt(index);
-        OnCharacterChanged();
-    }
-
-    private void AddEquipmentEffect(int eqIndex, string effect)
-    {
-        var item = _character.Equipment[eqIndex];
-
-        if (effect.StartsWith("ability_"))
-        {
-            var parts = effect.Split('_');
-            if (parts.Length == 3 && int.TryParse(parts[1], out var bonus) && Enum.TryParse<Ability>(parts[2], out var ab))
-            {
-                item.Permabuffs.Add(new ModifyAttribute
-                {
-                    Target = AttributeTarget.AbilityScore,
-                    AbilityScore = ab,
-                    Value = bonus
-                });
-                OnCharacterChanged();
-            }
-        }
-        else if (effect.StartsWith("nat_armor_"))
-        {
-            if (int.TryParse(effect.Replace("nat_armor_", ""), out var val))
-            {
-                item.Permabuffs.Add(new ModifyAttribute { Target = AttributeTarget.NaturalArmor, Value = val });
-                OnCharacterChanged();
-            }
-        }
-        else if (effect.StartsWith("save_resist_"))
-        {
-            if (int.TryParse(effect.Replace("save_resist_", ""), out var val))
-            {
-                item.Permabuffs.Add(new ModifyAttribute { Target = AttributeTarget.AllSaves, Value = val });
-                OnCharacterChanged();
-            }
-        }
-        else if (effect.StartsWith("sr_"))
-        {
-            if (int.TryParse(effect.Replace("sr_", ""), out var val))
-            {
-                item.Permabuffs.Add(new SetAttribute { Target = AttributeTarget.SpellResistance, Value = val });
-                OnCharacterChanged();
-            }
-        }
-    }
-
-    private static string FormatPermabuff(Permabuff buff)
-    {
-        return buff switch
-        {
-            ModifyAttribute ma => ma.Target switch
-            {
-                AttributeTarget.AbilityScore => $"{(ma.Value >= 0 ? "+" : "")}{ma.Value} {ma.AbilityScore}",
-                AttributeTarget.NaturalArmor => $"+{ma.Value} Natural Armor",
-                AttributeTarget.SpellResistance => $"+{ma.Value} SR",
-                AttributeTarget.LevelAdjustment => $"+{ma.Value} LA",
-                AttributeTarget.Resistance => $"+{ma.Value} {ma.ResistanceElement} Resistance",
-                _ => $"Modify {ma.Target} {ma.Value}"
-            },
-            SetAttribute sa => sa.Target switch
-            {
-                AttributeTarget.SpellResistance => $"SR {sa.Value}",
-                AttributeTarget.AbilityScore => $"Set {sa.AbilityScore} = {sa.Value}",
-                _ => $"Set {sa.Target} = {sa.Value}"
-            },
-            GrantTypedBonus tb => FormatTypedBonus(tb),
-            GrantArmorProfile ap => $"{(ap.AsShield ? "Shield" : "Armor")} +{ap.Profile.ArmorBonus}{(ap.Profile.MaxDex.HasValue ? $" (max dex {ap.Profile.MaxDex})" : "")}",
-            GrantWeaponLine w => string.IsNullOrEmpty(w.DisplayName) ? w.Profile.Damage : $"{w.DisplayName} ({w.Profile.Damage})",
-            GrantMovement movement => $"{movement.Mode} {movement.Speed} ft.{(movement.Mode == MovementMode.Fly && movement.FlyManeuverability.HasValue ? $" ({movement.FlyManeuverability})" : "")}",
-            _ => buff.GetType().Name
-        };
-    }
-
-    private static string FormatTypedBonus(GrantTypedBonus tb)
-    {
-        var sign = tb.Value.Expression.StartsWith("-") ? "" : "+";
-        var target = tb.Target switch
-        {
-            BonusTarget.AC => "AC",
-            BonusTarget.AllSaves => "Saves",
-            BonusTarget.SaveFort => "Fort",
-            BonusTarget.SaveRef => "Ref",
-            BonusTarget.SaveWill => "Will",
-            BonusTarget.AbilityStr => "Str",
-            BonusTarget.AbilityDex => "Dex",
-            BonusTarget.AbilityCon => "Con",
-            BonusTarget.AbilityInt => "Int",
-            BonusTarget.AbilityWis => "Wis",
-            BonusTarget.AbilityCha => "Cha",
-            BonusTarget.NaturalArmor => "Natural Armor",
-            BonusTarget.SR => "SR",
-            _ => tb.Target.ToString()
-        };
-        return $"{sign}{tb.Value.Expression} {tb.BonusType} to {target}";
-    }
-
-    private sealed record TickSpellSummary(
-        string SpellListId,
-        int MaxSpellLevel,
-        int AvailableSpellCount,
-        bool IsDomainList);
-
-    private sealed record TickSkillInfo(
-        int UnspentPoints,
-        int MaxHalfRanks,
-        HashSet<string> CurrentTickClassSkills,
-        HashSet<string> ClassSkills,
-        Dictionary<string, int> SkillHalfRanks);
-
-    private sealed record TickCasterInfo(
-        int PendingDomainSelections,
-        List<string> Domains,
-        Dictionary<string, string> DomainOwners,
-        Dictionary<string, TickSpellcastingInfo> Spellcasting,
-        bool NeedsAdvanceSpellcastingChoice = false);
-
-    private sealed record TickSpellcastingInfo(
-        CastingType CastingType,
-        Ability CastingStat,
-        int CasterLevel,
-        int MaxSpellLevel,
-        Dictionary<int, int> SpellsPerDay,
-        Dictionary<int, int>? SpellsKnown,
-        Dictionary<int, int> DomainBonusSlots,
-        Dictionary<int, int> SpecialtyBonusSlots,
-        SpellAcquisition Acquisition,
-        // Spellbook casters only: how many spells of 1st level or higher the book may hold.
-        int SpellbookLimit);
 }

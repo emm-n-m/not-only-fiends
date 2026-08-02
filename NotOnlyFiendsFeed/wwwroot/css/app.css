@@ -69,6 +69,25 @@ code {
     color: #c02d76;
 }
 
+/* Tabbed pages (builder, sheet): summary strip + tab bar, pinned above the panes so the
+   headline numbers and the tab you are on stay visible while scrolling a long pane. */
+.tab-toolbar {
+    position: sticky;
+    top: 0;
+    /* Above MainLayout's sticky .top-row (z-index 1), far below .search-select-dropdown
+       (1050) so pickers in the panes still overlay the toolbar rather than sliding under. */
+    z-index: 3;
+    background: white;
+    padding-top: 0.5rem;
+}
+
+@media (min-width: 641px) {
+    /* .top-row only becomes sticky at this breakpoint, and is 3.5rem tall. */
+    .tab-toolbar {
+        top: 3.5rem;
+    }
+}
+
 /* SearchSelect component */
 .search-select {
     position: relative;

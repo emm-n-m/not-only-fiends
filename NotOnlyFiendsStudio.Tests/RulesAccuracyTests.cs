@@ -23,6 +23,25 @@ public class RulesAccuracyTests
     private static CharacterState Evaluate(Character character) =>
         new ReplayStudio(Content.Value).Evaluate(character);
 
+    [Fact]
+    public void DevilErinyes_ReplayAndSheet_ExposeFireImmunityAlongsideResistances()
+    {
+        var state = Evaluate(new Character
+        {
+            Name = "Erinyes",
+            RaceId = "race:devil_erinyes",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = "racial_hd:outsider" } }
+        });
+
+        Assert.Contains("fire", state.Immunities);
+        Assert.Equal(10, state.Resistances["acid"]);
+        Assert.Equal(10, state.Resistances["cold"]);
+
+        var sheet = CharacterSheet.FromState(state);
+        Assert.Contains("fire", sheet.Immunities);
+    }
+
     // ---- validation gaps -------------------------------------------------
 
     [Fact]

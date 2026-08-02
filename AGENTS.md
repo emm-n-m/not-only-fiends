@@ -42,7 +42,9 @@ The engine (Layers 1+2) has zero knowledge of any specific character or UI.
 - **`NotOnlyFiendsStudio/Models/Formula.cs`** — String DSL (`"10 + TotalHD / 2 + Mod(CON)"`) parsed at content load, tree-walked at evaluation.
 - **`NotOnlyFiendsStudio/Models/Character.cs`** — Character save format, TickChoices (ability increases, feats, skills, spells, class feature choices), PermanentEvent, EquipmentEntry.
 - **`NotOnlyFiendsStudio/Models/Pack.cs`** — PackManifest (pack metadata, dependencies, priority), PackConfig, PackEntry.
-- **`NotOnlyFiendsFeed/Components/Pages/BuilderView.razor`** — Full character builder UI: race/template/ability setup, HD timeline with per-tick feat/skill/spell/domain selection, permanent events, equipment.
+- **`NotOnlyFiendsFeed/Components/Pages/BuilderView.razor`** (+ `.razor.cs` code-behind) — Full character builder UI, organised into six tabs: Summary & Progression, Feats & Special Abilities, Skills, Spells, Equipment, Companions. Markup lives in the `.razor`, all logic in the partial class beside it.
+- **`NotOnlyFiendsFeed/Components/Pages/SheetView.razor`** (+ `.razor.cs`) — Read-only character sheet on the same tab vocabulary. Level slider and summary strip stay pinned above the tabs.
+- **`NotOnlyFiendsFeed/Components/TabStrip.razor`** + **`CharacterTabs.cs`** — Shared tab bar and the `CharacterTab` enum both pages use. Tabs are driven by a C# field and `@onclick`; `bootstrap.bundle.js` is **not** loaded, so `data-bs-toggle` does nothing and `.tab-content`/`.tab-pane` must be avoided (they carry `display: none` with no JS to undo it).
 - **`NotOnlyFiendsFeed/Components/Pages/SettingsView.razor`** — Read-only view of loaded packs and content summary.
 - **`NotOnlyFiendsFeed/Services/ServerContentService.cs`** — Singleton content loader. Dual-mode: local dev (finds solution root, reads `content-public.json` + `.env`) or Docker (env vars `Content__BundledPacksPath`, `Content__ExtraPacksPath`, `Content__CharactersPath`).
 - **`NotOnlyFiendsFeed/Services/CharacterStore.cs`** — Server-side character persistence. Atomic writes (File.Move pattern) for cloud-drive sync safety.
@@ -70,6 +72,7 @@ The engine (Layers 1+2) has zero knowledge of any specific character or UI.
 - **Per-tick data consolidation**: Single `RefreshPerTickData()` loop evaluates character at each HD once and populates spell summaries, skill info, available feats, and caster info.
 - **PermabuffContext.CurrentTickChoices**: Passes per-tick user choices into permabuff execution so `AdvanceSpellcasting` can consume `ClassFeatureChoices["advance_spellcasting"]`.
 - **Prerequisite-filtered feats**: `GetAvailableFeats(state)` returns only feats whose prerequisites are met at each HD. UI calls this per-tick.
+- **Tabs are facets over the HD timeline**, not just groupings of cards. The builder renders *one* tick loop shared by five tabs; each tab shows only its own facet of a tick (Summary: driver/ability increase/domains/wizard schools/class-feature picks; Feats; Skills; Spells; Companions) and `TickShowsFacet()` skips ticks with nothing to show for it. A "Show all HD" checkbox is the escape hatch for any tick a facet filter wrongly hides.
 - **Docker support**: Multi-stage Dockerfile. Bundled packs baked into image. Characters and extra packs volume-mounted. `docker-compose.yml` at repo root.
 
 See `ARCHITECTURE.md` for the full class hierarchy, replay algorithm, and formula DSL grammar.

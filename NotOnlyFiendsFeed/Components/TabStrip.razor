@@ -1,0 +1,35 @@
+@*
+    Presentational tab bar. The strip renders the nav; each page owns its panes as ordinary
+    @if blocks, so a tab can be absent (Companions) without any child-to-parent registration.
+
+    Deliberately only .nav-tabs / .nav-link.active — bootstrap.bundle.js is not loaded
+    (App.razor), so data-bs-toggle would do nothing and .tab-content/.tab-pane would apply
+    `display: none` with no JS to undo it.
+*@
+<ul class="nav nav-tabs mb-3" role="tablist">
+    @foreach (var tab in Tabs)
+    {
+        var captured = tab;
+        var isActive = captured.Id == ActiveTab;
+        <li class="nav-item" role="presentation">
+            <button type="button" role="tab" aria-selected="@isActive"
+                    class="nav-link @(isActive ? "active" : "")"
+                    @onclick="() => ActiveTabChanged.InvokeAsync(captured.Id)">
+                @captured.Label
+                @if (!string.IsNullOrEmpty(captured.Badge))
+                {
+                    <span class="badge @captured.BadgeClass ms-1">@captured.Badge</span>
+                }
+            </button>
+        </li>
+    }
+</ul>
+
+@code {
+    [Parameter, EditorRequired]
+    public IReadOnlyList<CharacterTabItem> Tabs { get; set; } = Array.Empty<CharacterTabItem>();
+
+    [Parameter] public CharacterTab ActiveTab { get; set; }
+
+    [Parameter] public EventCallback<CharacterTab> ActiveTabChanged { get; set; }
+}
