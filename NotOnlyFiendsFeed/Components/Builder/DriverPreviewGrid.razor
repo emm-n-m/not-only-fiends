@@ -1,0 +1,61 @@
+@using NotOnlyFiendsStudio.Models
+@using NotOnlyFiendsFeed.Contracts
+@*
+    Driver previews (design screen 1b) — every legal next hit die, projected against
+    the current build. Numbers come straight from the engine's replay via
+    AgentApiService.GetNextStep; picking a card commits that HD.
+*@
+<div>
+    <div class="reg-dpv-intro">
+        Every legal driver for HD @NextHd, previewed against the current build. Deltas are
+        versus your standing now — nothing is committed until you pick one.
+    </div>
+    <div class="reg-dpv-grid">
+        @foreach (var p in Previews)
+        {
+            var hpDelta = p.Preview.Hp - Current.HP;
+            var babDelta = p.Preview.Bab - Current.EffectiveBAB;
+            var choiceCount = ChoiceCount(p.PendingChoices);
+            <button class="reg-dpv-card" @onclick="() => OnChoose.InvokeAsync(p.Driver.Id)">
+                <div>
+                    <div class="reg-dpv-name">@p.Driver.Name</div>
+                    <div class="reg-dpv-meta">@p.Driver.Kind · d@(p.Driver.HitDie) · @(p.Driver.SkillPointsPerLevel)+Int</div>
+                </div>
+                <div class="reg-dpv-stats">
+                    <div class="reg-dpv-stat"><span class="k">HP</span><span class="v @(hpDelta > 0 ? "up" : "")">@Signed(hpDelta)</span></div>
+                    <div class="reg-dpv-stat"><span class="k">BAB</span><span class="v @(babDelta > 0 ? "up" : "")">@Signed(babDelta)</span></div>
+                    <div class="reg-dpv-stat"><span class="k">ECL</span><span class="v">@p.Preview.Ecl</span></div>
+                    <div class="reg-dpv-stat"><span class="k">Skill points</span><span class="v">@p.Preview.UnspentSkillPoints</span></div>
+                </div>
+                <div class="reg-dpv-badges">
+                    @if (p.AbilityIncreaseDue)
+                    {
+                        <span class="reg-badge reg-badge--accent">ABILITY +1</span>
+                    }
+                    @if (choiceCount > 0)
+                    {
+                        <span class="reg-badge reg-badge--owed">@choiceCount CHOICE@(choiceCount == 1 ? "" : "S")</span>
+                    }
+                    @if (p.Driver.HasSpellcasting)
+                    {
+                        <span class="reg-badge reg-badge--prestige">CASTER</span>
+                    }
+                </div>
+            </button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public int NextHd { get; set; }
+    [Parameter, EditorRequired] public IReadOnlyList<DriverPreviewDto> Previews { get; set; } = Array.Empty<DriverPreviewDto>();
+    [Parameter, EditorRequired] public CharacterState Current { get; set; } = default!;
+    [Parameter] public EventCallback<string> OnChoose { get; set; }
+
+    private static string Signed(int v) => v >= 0 ? $"+{v}" : v.ToString();
+
+    private static int ChoiceCount(PendingChoicesDto pc) =>
+        pc.FeatChoices.Sum(f => f.Count)
+        + pc.DomainChoices.Sum(d => d.Count)
+        + pc.ClassFeatureChoices.Sum(c => c.Count);
+}

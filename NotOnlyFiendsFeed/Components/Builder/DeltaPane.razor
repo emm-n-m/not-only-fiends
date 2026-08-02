@@ -1,0 +1,86 @@
+@using NotOnlyFiendsStudio.Models
+@*
+    Right rail of the builder (design screen 4a). Current standing, spells-per-day
+    for the primary caster, and the engine warnings, with the commit actions at the
+    foot. The mock frames this as "if committed" deltas; because the builder keeps a
+    fully editable timeline (no single pending tick to diff against), it shows the
+    live standing instead — same information, honestly labelled.
+*@
+<div class="reg-delta">
+    <div>
+        <div class="reg-delta-label">CURRENT STANDING</div>
+        <div>
+            @Row("Hit points", State.HP.ToString())
+            @if (_primaryCaster is not null)
+            {
+                @Row("Caster level", _primaryCaster.CasterLevel.ToString())
+            }
+            @Row("Base attack", FormatSigned(State.EffectiveBAB))
+            @Row("Fort / Ref / Will", $"{FormatSigned(State.EffectiveSaves.Fort)} / {FormatSigned(State.EffectiveSaves.Ref)} / {FormatSigned(State.EffectiveSaves.Will)}")
+            @Row("Armor class", $"{State.AC.Total} (T {State.AC.Touch} / FF {State.AC.FlatFooted})")
+            @Row("ECL", State.ECL.ToString())
+        </div>
+    </div>
+
+    @if (_primaryCaster is not null && _primaryCaster.SpellsPerDay.Count > 0)
+    {
+        <div>
+            <div class="reg-delta-label">SPELLS PER DAY</div>
+            <div class="reg-spd-grid">
+                @foreach (var lvl in Enumerable.Range(0, _maxSpellLevel + 1))
+                {
+                    var has = _primaryCaster.SpellsPerDay.TryGetValue(lvl, out var n) && n > 0;
+                    <div class="reg-spd-cell @(has ? "" : "empty")">
+                        <div class="reg-spd-lvl">@(lvl == 0 ? "0" : $"{lvl}")</div>
+                        <div class="reg-spd-n">@(has ? n.ToString() : "—")</div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (State.Warnings.Any())
+    {
+        <div>
+            <div class="reg-delta-label">ENGINE WARNINGS · @State.Warnings.Count</div>
+            @foreach (var w in State.Warnings)
+            {
+                <div class="reg-delta-warn">@w.Message</div>
+            }
+        </div>
+    }
+
+    <div class="d-flex gap-2 mt-1">
+        <button class="btn btn-success flex-fill btn-sm" @onclick="() => OnSave.InvokeAsync()">Save</button>
+        <button class="btn btn-outline-secondary btn-sm" @onclick="() => OnEvaluate.InvokeAsync()">Re-evaluate</button>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public CharacterState State { get; set; } = default!;
+    [Parameter] public EventCallback OnSave { get; set; }
+    [Parameter] public EventCallback OnEvaluate { get; set; }
+
+    private SpellcastingState? _primaryCaster;
+    private int _maxSpellLevel;
+
+    protected override void OnParametersSet()
+    {
+        _primaryCaster = State.Spellcasting.Values
+            .OrderByDescending(s => s.CasterLevel)
+            .FirstOrDefault();
+        _maxSpellLevel = _primaryCaster is null
+            ? 0
+            : _primaryCaster.SpellsPerDay.Keys.DefaultIfEmpty(0).Max();
+    }
+
+    private static string FormatSigned(int value) => value >= 0 ? $"+{value}" : value.ToString();
+
+    private RenderFragment Row(string key, string value) => __builder =>
+    {
+        <div class="reg-delta-row">
+            <span class="k">@key</span>
+            <span class="v">@value</span>
+        </div>
+    };
+}

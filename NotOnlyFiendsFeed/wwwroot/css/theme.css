@@ -1,0 +1,665 @@
+/* ===========================================================================
+   Registrar theme — design-token layer for the character tool.
+
+   Adapted from the "DECEIT levelling UI" design handoff. The mock's campaign
+   flavor is intentionally NOT baked in; only its visual language (palette,
+   typography, the scroll/writ panel chrome) lives here, driven by real data.
+
+   All colours resolve through tokens defined on :root[data-theme="..."], so a
+   light "parchment" theme is a later drop-in: add a :root[data-theme="parchment"]
+   block that re-points the same variable names. Today only "dark" exists and
+   App.razor pins data-theme="dark" on <html>.
+   =========================================================================== */
+
+/* --- Structural tokens (theme-independent) ------------------------------- */
+:root {
+    --font-display: 'Cinzel', 'Times New Roman', serif;
+    --font-serif:   'IM Fell English', 'Times New Roman', serif;
+    --font-body:    'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --font-mono:    'IBM Plex Mono', ui-monospace, monospace;
+
+    --r-sm: 5px;
+    --r:    7px;
+    --r-lg: 10px;
+
+    --rail-w: 220px;
+    --delta-w: 348px;
+}
+
+/* --- Dark theme ---------------------------------------------------------- */
+:root[data-theme="dark"] {
+    --surface-0: #0f0d12;   /* app / main canvas            */
+    --surface-1: #141118;   /* left rail                    */
+    --surface-2: #16131c;   /* panels, cards                */
+    --surface-3: #1c1823;   /* stat tiles, raised chips     */
+    --surface-inset: #100e15;/* search inputs, wells        */
+    --surface-header: #131017;
+
+    --border:        rgba(255, 255, 255, .08);
+    --border-strong: rgba(255, 255, 255, .14);
+    --hair:          rgba(255, 255, 255, .055);
+
+    --text:    #ece7f0;
+    --text-1:  #c4bcce;
+    --text-2:  #a49bae;
+    --text-3:  #8a8194;
+    --text-4:  #6f6879;
+    --text-faint: #5c5566;
+
+    --acc:      #e2699a;   /* primary accent  */
+    --acc-ink:  #8b174d;   /* text sat on an accent fill */
+    --warn:     #d0879f;   /* "owed / unspent" */
+    --positive: #7fbf8f;   /* gains */
+    --prestige: #c8a2d4;   /* homebrew / sponsored / epic */
+
+    --shadow-panel: 0 2px 10px rgba(0, 0, 0, .10);
+    --shadow-raised: 0 4px 12px rgba(0, 0, 0, .55);
+
+    /* scroll/writ chrome (used by PendingChoicePanel in Phase 2) */
+    --scroll-roll: linear-gradient(180deg, #332a3d 0%, #191420 58%, #251d2e 100%);
+    --scroll-body: linear-gradient(90deg, #100d15 0%, #17141d 7%, #17141d 93%, #100d15 100%);
+    --scroll-roll-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), 0 4px 12px rgba(0, 0, 0, .55);
+}
+
+/* --- Base ---------------------------------------------------------------- */
+:root[data-theme="dark"] body {
+    background: var(--surface-0);
+    color: var(--text);
+    font-family: var(--font-body);
+}
+
+:root[data-theme="dark"] a {
+    color: var(--acc);
+    text-decoration: none;
+}
+
+:root[data-theme="dark"] a:hover {
+    color: var(--prestige);
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar { width: 10px; height: 10px; }
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: var(--surface-3);
+    border-radius: 6px;
+    border: 2px solid var(--surface-0);
+}
+:root[data-theme="dark"] ::-webkit-scrollbar-track { background: transparent; }
+
+/* The tabbed pages' sticky toolbar predates the theme and hard-coded a white
+   background + a 3.5rem offset for the old top-row (gone in RegistrarLayout).
+   Re-point both to the dark surface, pinned to the top of the content column. */
+:root[data-theme="dark"] .tab-toolbar {
+    background: var(--surface-0);
+    top: 0;
+    padding-top: 0;
+}
+
+/* Utility: monospace numeral runs used throughout the stat readouts. */
+.reg-mono { font-family: var(--font-mono); }
+.reg-display { font-family: var(--font-display); letter-spacing: .045em; }
+
+/* ==========================================================================
+   App shell — left rail + content
+   ========================================================================== */
+.reg-shell {
+    display: grid;
+    grid-template-columns: var(--rail-w) 1fr;
+    min-height: 100vh;
+}
+
+.reg-rail {
+    background: var(--surface-1);
+    border-right: 1px solid var(--border);
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    min-height: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.reg-brand {
+    padding: 18px 18px 15px;
+    border-bottom: 1px solid var(--hair);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .035);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.reg-sigil {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in oklab, var(--acc) 55%, transparent);
+    display: grid; place-items: center; flex: none;
+    box-shadow: 0 0 14px color-mix(in oklab, var(--acc) 22%, transparent),
+                inset 0 0 10px color-mix(in oklab, var(--acc) 12%, transparent);
+}
+.reg-sigil > span {
+    width: 11px; height: 11px;
+    transform: rotate(45deg);
+    border: 1px solid color-mix(in oklab, var(--acc) 80%, transparent);
+    background: color-mix(in oklab, var(--acc) 18%, transparent);
+}
+
+.reg-brand-name {
+    font: 700 15px/1.1 var(--font-display);
+    letter-spacing: .14em;
+}
+.reg-brand-sub {
+    font: 400 9.5px/1.4 var(--font-mono);
+    color: var(--text-3);
+    letter-spacing: .06em;
+    margin-top: 3px;
+}
+
+.reg-nav {
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.reg-nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    border-radius: var(--r);
+    font: 500 13px/1 var(--font-body);
+    color: var(--text-2);
+    text-decoration: none;
+}
+.reg-nav-item:hover { color: var(--text-1); background: var(--hair); }
+.reg-nav-item .reg-nav-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #4a4453; flex: none;
+}
+.reg-nav-item.active {
+    background: color-mix(in oklab, var(--acc) 14%, transparent);
+    color: #f0d5d2;
+    font-weight: 600;
+}
+.reg-nav-item.active .reg-nav-dot { background: var(--acc); }
+
+.reg-rail-open {
+    padding: 14px 16px;
+    border-top: 1px solid var(--hair);
+    overflow-y: auto;
+    min-height: 0;
+}
+.reg-rail-label {
+    font: 600 10px/1 var(--font-display);
+    letter-spacing: .2em;
+    color: var(--text-4);
+    margin-bottom: 10px;
+}
+.reg-open-list { display: flex; flex-direction: column; gap: 3px; }
+.reg-open-item {
+    padding: 7px 9px;
+    border-radius: var(--r);
+    text-decoration: none;
+    display: block;
+}
+.reg-open-item:hover { background: var(--hair); }
+.reg-open-item.active {
+    background: rgba(255, 255, 255, .05);
+    border-left: 2px solid var(--acc);
+}
+.reg-open-name {
+    font: 600 12px/1.2 var(--font-body);
+    color: var(--text);
+}
+.reg-open-item:not(.active) .reg-open-name { font-weight: 500; color: var(--text-1); }
+.reg-open-meta {
+    font: 400 10px/1.3 var(--font-mono);
+    color: var(--text-3);
+    margin-top: 2px;
+}
+
+.reg-rail-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--hair);
+}
+.reg-rail-footer .reg-packs {
+    font: 400 10px/1.5 var(--font-mono);
+    color: var(--text-faint);
+    word-break: break-word;
+}
+
+.reg-content {
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Narrow screens: collapse the rail to a top strip. */
+@media (max-width: 900px) {
+    .reg-shell { grid-template-columns: 1fr; }
+    .reg-rail {
+        position: static;
+        height: auto;
+        grid-template-rows: none;
+        grid-auto-flow: row;
+    }
+    .reg-rail-open { display: none; }
+}
+
+/* ==========================================================================
+   Reusable registrar component classes
+   (seeded here; consumed by the builder components in later phases)
+   ========================================================================== */
+
+/* Numbered status badges — CHOSEN / n OWED / n UNSPENT etc. */
+.reg-badge {
+    font: 600 9.5px/1 var(--font-mono);
+    padding: 3px 6px;
+    border-radius: 4px;
+    letter-spacing: .04em;
+    display: inline-block;
+}
+.reg-badge--owed   { background: color-mix(in oklab, var(--warn) 18%, transparent);     color: var(--warn); }
+.reg-badge--chosen { color: var(--positive); }
+.reg-badge--accent { background: var(--acc); color: var(--acc-ink); }
+.reg-badge--muted  { background: var(--hair); color: var(--text-3); }
+.reg-badge--prestige { background: rgba(200, 162, 212, .18); color: var(--prestige); }
+
+/* Stat tile — small labelled numeric readout (ECL / HD / HP / BAB …). */
+.reg-stattile {
+    padding: 7px 12px;
+    border-radius: var(--r);
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    text-align: center;
+}
+.reg-stattile-label {
+    font: 500 9px/1 var(--font-mono);
+    color: var(--text-3);
+    letter-spacing: .08em;
+}
+.reg-stattile-value {
+    font: 600 16px/1.2 var(--font-mono);
+    margin-top: 3px;
+    color: var(--text);
+}
+
+/* Generic dark panel. */
+.reg-panel {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-panel);
+}
+
+/* ==========================================================================
+   Bootstrap primitives — dark adaptation.
+
+   The builder/sheet/import pages are built from stock Bootstrap components. Rather
+   than rewrite every element, re-point the primitives to the theme surfaces so the
+   whole app reads as one dark system. Registrar components layer on top of this.
+   ========================================================================== */
+:root[data-theme="dark"] .content { color: var(--text); }
+
+:root[data-theme="dark"] .card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: var(--r-lg);
+}
+:root[data-theme="dark"] .card-header {
+    background: var(--surface-3);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-1);
+}
+:root[data-theme="dark"] .card-footer {
+    background: var(--surface-3);
+    border-top: 1px solid var(--border);
+}
+:root[data-theme="dark"] .bg-light { background: var(--surface-2) !important; color: var(--text); }
+:root[data-theme="dark"] .bg-white { background: var(--surface-2) !important; }
+:root[data-theme="dark"] .border { border-color: var(--border) !important; }
+:root[data-theme="dark"] .text-muted { color: var(--text-3) !important; }
+:root[data-theme="dark"] .text-secondary { color: var(--text-2) !important; }
+:root[data-theme="dark"] hr { border-color: var(--border); }
+
+:root[data-theme="dark"] .table { color: var(--text); border-color: var(--border); }
+:root[data-theme="dark"] .table > :not(caption) > * > * {
+    background: transparent;
+    border-bottom-color: var(--hair);
+    box-shadow: none;
+}
+:root[data-theme="dark"] .table thead th { color: var(--text-3); border-bottom-color: var(--border); }
+:root[data-theme="dark"] .table-hover > tbody > tr:hover > * { background: var(--hair); color: var(--text); }
+
+:root[data-theme="dark"] .form-control,
+:root[data-theme="dark"] .form-select {
+    background: var(--surface-inset);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+:root[data-theme="dark"] .form-control::placeholder { color: var(--text-4); }
+:root[data-theme="dark"] .form-control:focus,
+:root[data-theme="dark"] .form-select:focus {
+    background: var(--surface-inset);
+    border-color: color-mix(in oklab, var(--acc) 55%, transparent);
+    color: var(--text);
+    box-shadow: 0 0 0 0.2rem color-mix(in oklab, var(--acc) 18%, transparent);
+}
+:root[data-theme="dark"] .form-select option { background: var(--surface-2); color: var(--text); }
+:root[data-theme="dark"] .input-group-text {
+    background: var(--surface-3);
+    border-color: var(--border);
+    color: var(--text-2);
+}
+:root[data-theme="dark"] .form-check-input {
+    background-color: var(--surface-inset);
+    border-color: var(--border-strong);
+}
+:root[data-theme="dark"] .form-check-input:checked {
+    background-color: var(--acc);
+    border-color: var(--acc);
+}
+
+:root[data-theme="dark"] .list-group-item {
+    background: var(--surface-2);
+    border-color: var(--border);
+    color: var(--text);
+}
+
+/* Buttons: keep filled variants (they read fine), retint the outline/link ones. */
+:root[data-theme="dark"] .btn-outline-secondary { color: var(--text-1); border-color: var(--border-strong); }
+:root[data-theme="dark"] .btn-outline-secondary:hover { background: var(--hair); color: var(--text); border-color: var(--border-strong); }
+:root[data-theme="dark"] .btn-outline-success { color: var(--positive); border-color: color-mix(in oklab, var(--positive) 50%, transparent); }
+:root[data-theme="dark"] .btn-outline-success:hover { background: color-mix(in oklab, var(--positive) 16%, transparent); color: var(--positive); }
+:root[data-theme="dark"] .btn-outline-info { color: var(--prestige); border-color: color-mix(in oklab, var(--prestige) 50%, transparent); }
+:root[data-theme="dark"] .btn-outline-info:hover { background: color-mix(in oklab, var(--prestige) 16%, transparent); color: var(--prestige); }
+:root[data-theme="dark"] .btn-outline-danger { color: var(--warn); border-color: color-mix(in oklab, var(--warn) 50%, transparent); }
+:root[data-theme="dark"] .btn-link { color: var(--acc); }
+
+/* Alerts: tinted washes instead of Bootstrap's pastel fills. */
+:root[data-theme="dark"] .alert-success { background: color-mix(in oklab, var(--positive) 12%, transparent); border-color: color-mix(in oklab, var(--positive) 30%, transparent); color: #bfe6c8; }
+:root[data-theme="dark"] .alert-danger  { background: color-mix(in oklab, var(--warn) 12%, transparent);     border-color: color-mix(in oklab, var(--warn) 30%, transparent);     color: #e9c4cf; }
+:root[data-theme="dark"] .alert-warning { background: color-mix(in oklab, var(--warn) 10%, transparent);     border-color: color-mix(in oklab, var(--warn) 28%, transparent);     color: #e6d4a9; }
+:root[data-theme="dark"] .alert-info    { background: color-mix(in oklab, var(--prestige) 10%, transparent); border-color: color-mix(in oklab, var(--prestige) 28%, transparent); color: #dbc7e6; }
+:root[data-theme="dark"] .btn-close { filter: invert(1) grayscale(1) brightness(1.4); }
+
+/* SearchSelect dropdown (defined light in app.css). */
+:root[data-theme="dark"] .search-select-dropdown {
+    background: var(--surface-2);
+    border-color: var(--border);
+}
+:root[data-theme="dark"] .search-select-item { color: var(--text-1); }
+:root[data-theme="dark"] .search-select-item:hover,
+:root[data-theme="dark"] .search-select-item.highlighted {
+    background: color-mix(in oklab, var(--acc) 22%, transparent);
+    color: var(--text);
+}
+:root[data-theme="dark"] .search-select-description { color: var(--text-3); }
+
+/* ==========================================================================
+   Character header bar (CharacterHeaderBar.razor)
+   ========================================================================== */
+.reg-header {
+    padding: 16px 24px 14px;
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .04);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: radial-gradient(120% 180% at 12% 0%, color-mix(in oklab, var(--acc) 9%, transparent) 0%, rgba(0, 0, 0, 0) 62%), var(--surface-header);
+    flex-wrap: wrap;
+}
+.reg-portrait {
+    width: 46px; height: 46px;
+    border-radius: var(--r);
+    background: repeating-linear-gradient(135deg, #241d2b 0 6px, #1b1621 6px 12px);
+    border: 1px solid color-mix(in oklab, var(--acc) 30%, transparent);
+    flex: none; display: grid; place-items: center;
+}
+.reg-portrait > span { font: 400 9px/1 var(--font-mono); color: var(--text-4); }
+.reg-header-name { font: 600 19px/1.15 var(--font-display); letter-spacing: .045em; }
+.reg-header-sub { font: 400 11.5px/1.4 var(--font-body); color: var(--text-3); margin-top: 3px; }
+.reg-header-stats { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.reg-header-owed { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.reg-owed-chip {
+    background: none; border: none; padding: 0; cursor: pointer;
+    font: 500 10.5px/1.4 var(--font-mono);
+    color: var(--warn);
+}
+.reg-owed-chip:hover { color: var(--acc); text-decoration: underline; }
+.reg-owed-chip--warn { color: var(--prestige); }
+
+/* ==========================================================================
+   Registrar tab strip — restyles the shared TabStrip inside .reg-tabs
+   ========================================================================== */
+.reg-tabs .nav-tabs {
+    border-bottom: 1px solid var(--border);
+    gap: 4px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+.reg-tabs .nav-tabs .nav-link {
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    background: none;
+    color: var(--text-3);
+    font: 500 12.5px/1 var(--font-body);
+    padding: 11px 14px 10px;
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 7px;
+}
+.reg-tabs .nav-tabs .nav-link:hover { color: var(--text-1); }
+.reg-tabs .nav-tabs .nav-link.active {
+    color: #f0d5d2;
+    background: none;
+    border-bottom: 2px solid var(--acc);
+    font-weight: 600;
+}
+.reg-tabs .nav-tabs .nav-link .badge {
+    font: 600 9.5px/1 var(--font-mono);
+    padding: 3px 5px;
+    border-radius: 4px;
+    background: color-mix(in oklab, var(--warn) 18%, transparent) !important;
+    color: var(--warn) !important;
+}
+.reg-tabs .nav-tabs .nav-link.active .badge {
+    background: var(--acc) !important;
+    color: var(--acc-ink) !important;
+}
+
+/* ==========================================================================
+   Pending-choice panel — the "unrolled writ / scroll" chrome
+   (PendingChoicePanel.razor)
+   ========================================================================== */
+.reg-scroll { position: relative; }
+.reg-scroll-roll {
+    height: 15px;
+    border-radius: 9px;
+    background: var(--scroll-roll);
+    border: 1px solid rgba(255, 255, 255, .10);
+    box-shadow: var(--scroll-roll-shadow);
+}
+.reg-scroll-body {
+    margin: 0 7px;
+    background: var(--scroll-body);
+    border-left: 1px solid var(--hair);
+    border-right: 1px solid var(--hair);
+}
+.reg-scroll-head {
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--hair);
+}
+.reg-scroll-head.is-empty { border-bottom: none; }
+.reg-scroll-num {
+    width: 18px; height: 18px; border-radius: 50%; flex: none;
+    background: color-mix(in oklab, var(--acc) 16%, transparent);
+    color: var(--acc);
+    font: 600 10px/18px var(--font-mono);
+    text-align: center;
+}
+.reg-scroll-title {
+    font: 600 11.5px/1 var(--font-display);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+.reg-scroll-sub { font: 400 11px/1 var(--font-body); color: var(--text-3); }
+.reg-scroll-status { margin-left: auto; font: 500 10px/1 var(--font-mono); }
+.reg-scroll-status--owed { color: var(--warn); }
+.reg-scroll-status--chosen { color: var(--positive); }
+.reg-scroll-status--accent { color: var(--acc); }
+.reg-scroll-content { padding: 14px 16px; }
+
+/* Per-HD tick row drawn as a writ: rolled ends top and bottom, shaded body.
+   Applied to the existing timeline row so the pile of ticks reads as unrolled
+   scrolls without rewriting each facet inside. */
+.reg-tick {
+    position: relative;
+    background: var(--scroll-body);
+    border-left: 1px solid var(--hair);
+    border-right: 1px solid var(--hair);
+    margin: 0 7px 16px;
+    padding: 14px 14px 12px;
+}
+.reg-tick::before,
+.reg-tick::after {
+    content: "";
+    position: absolute;
+    left: -7px; right: -7px;
+    height: 13px;
+    border-radius: 9px;
+    background: var(--scroll-roll);
+    border: 1px solid rgba(255, 255, 255, .10);
+    box-shadow: var(--scroll-roll-shadow);
+}
+.reg-tick::before { top: -7px; }
+.reg-tick::after { bottom: -7px; }
+
+/* ==========================================================================
+   Builder shell grid — spine · timeline · delta pane (on timeline tabs)
+   ========================================================================== */
+.reg-builder-grid {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr) var(--delta-w);
+    gap: 18px;
+    align-items: start;
+}
+.reg-builder-spine { position: sticky; top: 52px; }
+.reg-builder-main { min-width: 0; }
+.reg-builder-delta { position: sticky; top: 52px; }
+
+@media (max-width: 1200px) {
+    .reg-builder-grid { grid-template-columns: minmax(0, 1fr) var(--delta-w); }
+    .reg-builder-spine { display: none; }
+}
+@media (max-width: 900px) {
+    .reg-builder-grid { grid-template-columns: 1fr; }
+    .reg-builder-delta { position: static; }
+}
+
+/* ==========================================================================
+   HD spine (HdSpine.razor) — vertical progression overview / jump-nav
+   ========================================================================== */
+.reg-spine-title { font: 600 14px/1.2 var(--font-display); letter-spacing: .045em; margin-bottom: 2px; }
+.reg-spine-sub { font: 400 11px/1.4 var(--font-body); color: var(--text-3); margin-bottom: 14px; }
+.reg-spine-row { display: grid; grid-template-columns: 30px 1fr; gap: 10px; }
+.reg-spine-num { font: 500 10px/1 var(--font-mono); color: var(--text-4); text-align: center; padding-top: 1px; }
+.reg-spine-num.is-pending { color: var(--warn); }
+.reg-spine-num.is-current { color: var(--acc); font-weight: 600; }
+.reg-spine-body { padding-bottom: 12px; border-left: 1px solid var(--border); margin-left: -6px; padding-left: 14px; }
+.reg-spine-row:last-child .reg-spine-body { border-left-color: transparent; }
+.reg-spine-name { font: 500 12.5px/1.2 var(--font-body); color: var(--text-1); }
+.reg-spine-meta { font: 400 10.5px/1.4 var(--font-mono); color: var(--text-faint); margin-top: 3px; }
+.reg-spine-current {
+    padding: 10px 12px; border-radius: var(--r-lg);
+    border: 1px solid var(--acc);
+    background: color-mix(in oklab, var(--acc) 9%, transparent);
+    box-shadow: 0 0 22px color-mix(in oklab, var(--acc) 12%, transparent);
+}
+.reg-spine-decision { display: flex; align-items: center; gap: 8px; font: 400 11px/1.6 var(--font-body); }
+.reg-spine-decision .dot { width: 5px; height: 5px; border-radius: 50%; flex: none; }
+.reg-spine-decision .dot.owed { background: var(--warn); }
+.reg-spine-decision .dot.ok { background: var(--positive); }
+.reg-spine-decision .val { margin-left: auto; font-family: var(--font-mono); }
+.reg-spine-decision .val.owed { color: var(--warn); }
+.reg-spine-decision .val.ok { color: var(--positive); }
+
+/* ==========================================================================
+   Delta pane (DeltaPane.razor) — right rail: standing, spells/day, warnings
+   ========================================================================== */
+.reg-delta { display: flex; flex-direction: column; gap: 18px; }
+.reg-delta-label { font: 600 10px/1 var(--font-display); letter-spacing: .2em; color: var(--text-4); margin-bottom: 10px; }
+.reg-delta-row {
+    display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 8px;
+    padding: 7px 0; border-bottom: 1px solid var(--hair);
+    font: 400 12px/1 var(--font-body);
+}
+.reg-delta-row .k { color: var(--text-1); }
+.reg-delta-row .v { font-family: var(--font-mono); font-weight: 600; }
+.reg-spd-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; text-align: center; }
+.reg-spd-cell { padding: 6px 0; border-radius: var(--r-sm); background: var(--surface-3); }
+.reg-spd-cell.empty { background: var(--surface-1); }
+.reg-spd-lvl { font: 500 9px/1 var(--font-mono); color: var(--text-4); }
+.reg-spd-cell.empty .reg-spd-lvl { color: #413b4b; }
+.reg-spd-n { font: 600 12px/1.3 var(--font-mono); }
+.reg-spd-cell.empty .reg-spd-n { color: #413b4b; }
+.reg-delta-warn {
+    padding: 9px 11px; border-radius: var(--r);
+    background: color-mix(in oklab, var(--warn) 9%, transparent);
+    border-left: 2px solid var(--warn);
+    font: 400 11.5px/1.45 var(--font-body); color: #d9cfa9;
+    margin-bottom: 7px;
+}
+
+/* ==========================================================================
+   Driver preview grid (DriverPreviewGrid.razor) — "what does the next HD buy"
+   ========================================================================== */
+.reg-dpv-intro { font: 400 11.5px/1.5 var(--font-body); color: var(--text-3); margin-bottom: 14px; max-width: 620px; }
+.reg-dpv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+.reg-dpv-card {
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--surface-2);
+    padding: 15px;
+    display: flex; flex-direction: column; gap: 11px;
+    cursor: pointer;
+    text-align: left;
+    color: inherit;
+}
+.reg-dpv-card:hover { border-color: var(--acc); box-shadow: 0 0 24px color-mix(in oklab, var(--acc) 14%, transparent); }
+.reg-dpv-name { font: 600 14px/1.2 var(--font-body); }
+.reg-dpv-meta { font: 400 10.5px/1.4 var(--font-mono); color: var(--text-4); margin-top: 3px; text-transform: uppercase; letter-spacing: .04em; }
+.reg-dpv-stats { display: flex; flex-direction: column; gap: 4px; font: 400 11.5px/1 var(--font-body); }
+.reg-dpv-stat { display: flex; justify-content: space-between; }
+.reg-dpv-stat .k { color: var(--text-3); }
+.reg-dpv-stat .v { font-family: var(--font-mono); color: var(--text-2); }
+.reg-dpv-stat .v.up { color: var(--positive); }
+.reg-dpv-note { padding-top: 10px; border-top: 1px solid var(--border); font: 400 11px/1.45 var(--font-body); color: var(--text-2); }
+.reg-dpv-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ==========================================================================
+   Roster (RosterView.razor) — the cohort, sorted by who owes decisions
+   ========================================================================== */
+.reg-roster-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.reg-roster-title { font: 600 20px/1.2 var(--font-display); letter-spacing: .045em; }
+.reg-roster-sub { font: 400 12px/1 var(--font-body); color: var(--text-3); }
+.reg-roster-table { width: 100%; border-collapse: collapse; }
+.reg-roster-table thead th {
+    font: 500 9.5px/1 var(--font-mono); color: var(--text-4); letter-spacing: .08em;
+    text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border);
+}
+.reg-roster-table thead th.num { text-align: right; }
+.reg-roster-table tbody td { padding: 13px 12px; border-bottom: 1px solid var(--hair); font: 400 12px/1.3 var(--font-body); vertical-align: middle; }
+.reg-roster-table tbody td.num { text-align: right; font-family: var(--font-mono); }
+.reg-roster-table tbody tr { text-decoration: none; }
+.reg-roster-table tbody tr.owed { background: color-mix(in oklab, var(--acc) 5%, transparent); }
+.reg-roster-table tbody tr.linked:hover { background: var(--hair); cursor: pointer; }
+.reg-roster-char { display: flex; align-items: center; gap: 10px; }
+.reg-roster-swatch { width: 26px; height: 26px; border-radius: var(--r-sm); flex: none; background: repeating-linear-gradient(135deg, #241d2b 0 5px, #1b1621 5px 10px); }
+.reg-roster-name { font: 600 12.5px/1.2 var(--font-body); color: var(--text); }
+.reg-roster-build { color: var(--text-2); }
+.reg-state { font: 500 10px/1 var(--font-mono); padding: 5px 8px; border-radius: var(--r-sm); white-space: nowrap; }
+.reg-state--owed  { background: color-mix(in oklab, var(--acc) 16%, transparent);  color: var(--acc); }
+.reg-state--warn  { background: color-mix(in oklab, var(--warn) 16%, transparent); color: var(--warn); }
+.reg-state--clean { background: rgba(127, 191, 143, .12); color: var(--positive); }
+.reg-state--unknown { background: var(--hair); color: var(--text-4); }

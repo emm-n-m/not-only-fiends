@@ -65,7 +65,11 @@ public class SpellContentTests
         var corruptionSpells = registry.GetSpellsForList("domain:corruption").ToList();
 
         Assert.NotEmpty(corruptionSpells);
-        Assert.All(corruptionSpells, spell => Assert.True(spell.ClassLevels.ContainsKey("domain:corruption")));
+        // A domain's spell list is its definition's bonusSpells (level → spell); spells may also
+        // carry a redundant domain:* key. Either way, every returned spell belongs to the domain.
+        var domainSpellIds = registry.GetDomain("domain:corruption").BonusSpells.Values.ToHashSet();
+        Assert.All(corruptionSpells, spell => Assert.True(
+            domainSpellIds.Contains(spell.Id) || spell.ClassLevels.ContainsKey("domain:corruption")));
         Assert.Contains(corruptionSpells, s => s.Id == "spell:befoul");
     }
 

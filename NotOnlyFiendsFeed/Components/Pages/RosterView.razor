@@ -1,0 +1,159 @@
+@page "/"
+@page "/roster"
+@using NotOnlyFiendsStudio.Studio
+@using NotOnlyFiendsStudio.Models
+@using NotOnlyFiendsFeed.Services
+@inject ServerContentService Content
+@inject CharacterStore CharacterStore
+@inject NavigationManager Navigation
+
+<PageTitle>Roster</PageTitle>
+
+<div class="reg-roster-head">
+    <div class="reg-roster-title">Roster</div>
+    <div class="reg-roster-sub">
+        @if (!CharacterStore.IsConfigured)
+        {
+            <text>Character store not configured (set CHARACTERS_PATH in .env).</text>
+        }
+        else
+        {
+            <text>@_entries.Count character@(_entries.Count == 1 ? "" : "s") · @_owedCount with decisions owed</text>
+        }
+    </div>
+    <div class="ms-auto">
+        <a href="builder" class="btn btn-sm btn-success">+ New character</a>
+    </div>
+</div>
+
+@if (CharacterStore.IsConfigured && _entries.Count > 0)
+{
+    <div class="reg-panel" style="overflow-x:auto">
+        <table class="reg-roster-table">
+            <thead>
+                <tr>
+                    <th>CHARACTER</th>
+                    <th>BUILD</th>
+                    <th class="num">ECL</th>
+                    <th class="num">HD</th>
+                    <th class="num">HP</th>
+                    <th class="num">STATE</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in _entries)
+                {
+                    <tr class="@RowClass(e)" @onclick="() => Open(e)">
+                        <td>
+                            <div class="reg-roster-char">
+                                <span class="reg-roster-swatch"></span>
+                                <span class="reg-roster-name">@e.Name</span>
+                            </div>
+                        </td>
+                        <td class="reg-roster-build">@e.Build</td>
+                        <td class="num">@(e.Ecl?.ToString() ?? "—")</td>
+                        <td class="num">@(e.Hd?.ToString() ?? "—")</td>
+                        <td class="num">@(e.Hp?.ToString() ?? "—")</td>
+                        <td class="num">
+                            <span class="reg-state @StateClass(e)">@StateLabel(e)</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else if (CharacterStore.IsConfigured)
+{
+    <p class="text-muted">No saved characters yet. <a href="builder">Build one</a>.</p>
+}
+
+@code {
+    private sealed record RosterEntry(
+        string Id, string Name, string Build,
+        int? Ecl, int? Hd, int? Hp,
+        int Owed, int Warnings, bool Loadable);
+
+    private readonly List<RosterEntry> _entries = new();
+    private int _owedCount;
+
+    protected override void OnInitialized()
+    {
+        if (!CharacterStore.IsConfigured)
+            return;
+
+        var driverNames = Content.Registry.GetAllDrivers()
+            .GroupBy(d => d.Id, StringComparer.Ordinal)
+            .ToDictionary(g => g.Key, g => g.First().Name, StringComparer.Ordinal);
+        var raceNames = Content.Registry.GetAllRaces()
+            .GroupBy(r => r.Id, StringComparer.Ordinal)
+            .ToDictionary(g => g.Key, g => g.First().Name, StringComparer.Ordinal);
+
+        foreach (var info in CharacterStore.List())
+        {
+            RosterEntry entry;
+            try
+            {
+                var character = CharacterStore.Get(info.Id);
+                var state = Content.ReplayStudio.Evaluate(character);
+                var owed = state.PendingFeatSlots + state.PendingBonusFeatSlots
+                    + state.UnspentSkillPoints
+                    + state.PendingDomainSelections.Values.Sum()
+                    + state.PendingClassFeatureSelections.Values.Sum();
+                var race = character.RaceId is not null && raceNames.TryGetValue(character.RaceId, out var rn) ? rn : character.RaceId;
+                var classes = string.Join(" / ", state.ClassLevels
+                    .Where(kv => kv.Value > 0)
+                    .Select(kv => $"{(driverNames.TryGetValue(kv.Key, out var dn) ? dn : kv.Key)} {kv.Value}"));
+                var build = string.Join(" · ", new[] { race, classes }.Where(s => !string.IsNullOrEmpty(s)));
+                entry = new RosterEntry(info.Id, info.Name, build, state.ECL, state.TotalHD, state.HP,
+                    owed, state.Warnings.Count, Loadable: true);
+            }
+            catch
+            {
+                // Not loadable by the store (e.g. a filename that isn't a valid id): show what
+                // the persisted sheet already knows, and mark its decision state unknown.
+                entry = new RosterEntry(info.Id, info.Name,
+                    info.Sheet?.Race ?? "", info.Sheet?.ECL, info.Sheet?.TotalHD, null,
+                    Owed: 0, Warnings: 0, Loadable: false);
+            }
+            _entries.Add(entry);
+        }
+
+        _entries.Sort((a, b) =>
+        {
+            var byOwed = b.Owed.CompareTo(a.Owed);
+            if (byOwed != 0) return byOwed;
+            var byWarn = b.Warnings.CompareTo(a.Warnings);
+            if (byWarn != 0) return byWarn;
+            return string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase);
+        });
+
+        _owedCount = _entries.Count(e => e.Owed > 0);
+    }
+
+    private static string RowClass(RosterEntry e)
+    {
+        var classes = new List<string>();
+        if (e.Owed > 0) classes.Add("owed");
+        if (e.Loadable) classes.Add("linked");
+        return string.Join(" ", classes);
+    }
+
+    private void Open(RosterEntry e)
+    {
+        if (e.Loadable)
+            Navigation.NavigateTo($"builder/{Uri.EscapeDataString(e.Id)}");
+    }
+
+    private static string StateClass(RosterEntry e) =>
+        !e.Loadable ? "reg-state--unknown"
+        : e.Owed > 0 ? "reg-state--owed"
+        : e.Warnings > 0 ? "reg-state--warn"
+        : "reg-state--clean";
+
+    private static string StateLabel(RosterEntry e) =>
+        !e.Loadable ? "UNREADABLE"
+        : e.Owed > 0 ? $"{e.Owed} DECISION{(e.Owed == 1 ? "" : "S")} OWED"
+        : e.Warnings > 0 ? $"{e.Warnings} WARNING{(e.Warnings == 1 ? "" : "S")}"
+        : "CLEAN";
+}

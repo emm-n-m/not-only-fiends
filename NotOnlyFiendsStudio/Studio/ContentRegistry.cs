@@ -210,17 +210,47 @@ public class ContentRegistry : IContentLookup
     public IEnumerable<SkillDefinition> GetAllSkills() => _skills.Values;
     public IEnumerable<LanguageDefinition> GetAllLanguages() => _languages.Values;
     public IEnumerable<EquipmentDefinition> GetAllEquipment() => _equipment.Values;
+    /// <summary>
+    /// The level at which a single source grants a spell. A class source reads the spell's own
+    /// <see cref="SpellDefinition.ClassLevels"/>; a <c>domain:*</c> source reads the domain
+    /// definition's <see cref="DomainDefinition.BonusSpells"/> (level → spell), so a caster who
+    /// draws a domain as a spell-list source gets its spells at the domain's levels — matching
+    /// how domain spells are actually catalogued, not requiring a redundant key on every spell.
+    /// </summary>
+    public bool TryGetSpellLevelForSource(SpellDefinition spell, string sourceId, out int level)
+    {
+        if (spell.ClassLevels.TryGetValue(sourceId, out level))
+            return true;
+
+        if (sourceId.StartsWith("domain:", StringComparison.Ordinal)
+            && _domains.TryGetValue(sourceId, out var domain))
+        {
+            foreach (var (domainLevel, spellId) in domain.BonusSpells)
+            {
+                if (string.Equals(spellId, spell.Id, StringComparison.Ordinal))
+                {
+                    level = domainLevel;
+                    return true;
+                }
+            }
+        }
+
+        level = 0;
+        return false;
+    }
+
     public bool TryGetSpellLevelForList(SpellDefinition spell, string spellListId, out int level)
     {
-        if (spell.ClassLevels.TryGetValue(spellListId, out level))
+        if (TryGetSpellLevelForSource(spell, spellListId, out level))
             return true;
 
         if (_drivers.TryGetValue(spellListId, out var driver) && driver is HDDriver hd &&
             hd.Spellcasting?.SpellListSources.Count > 0)
         {
             var levels = hd.Spellcasting.SpellListSources
-                .Where(spell.ClassLevels.ContainsKey)
-                .Select(source => spell.ClassLevels[source])
+                .Select(source => TryGetSpellLevelForSource(spell, source, out var l) ? (int?)l : null)
+                .Where(l => l.HasValue)
+                .Select(l => l!.Value)
                 .ToList();
             if (levels.Count > 0)
             {

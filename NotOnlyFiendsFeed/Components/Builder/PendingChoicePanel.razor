@@ -1,0 +1,57 @@
+@*
+    A single level-up decision, drawn as an unrolled writ/scroll (per the design
+    handoff). Chrome only — the caller supplies the decision UI as ChildContent,
+    so the existing engine-wired inputs drop straight in.
+
+        <PendingChoicePanel Number="2" Title="Standard feat"
+                            Subtitle="1 slot · 214 of 486 qualified"
+                            Status="PanelStatus.Owed" StatusText="1 OWED">
+            ... feat picker ...
+        </PendingChoicePanel>
+*@
+<div class="reg-scroll">
+    <div class="reg-scroll-roll"></div>
+    <div class="reg-scroll-body">
+        <div class="reg-scroll-head @(ChildContent == null ? "is-empty" : "")">
+            @if (Number.HasValue)
+            {
+                <span class="reg-scroll-num">@Number.Value</span>
+            }
+            <span class="reg-scroll-title">@Title</span>
+            @if (!string.IsNullOrEmpty(Subtitle))
+            {
+                <span class="reg-scroll-sub">@Subtitle</span>
+            }
+            @if (!string.IsNullOrEmpty(StatusText))
+            {
+                <span class="reg-scroll-status @StatusClass">@StatusText</span>
+            }
+        </div>
+        @if (ChildContent != null)
+        {
+            <div class="reg-scroll-content">
+                @ChildContent
+            </div>
+        }
+    </div>
+    <div class="reg-scroll-roll"></div>
+</div>
+
+@code {
+    public enum PanelStatus { None, Owed, Chosen, Accent }
+
+    [Parameter] public int? Number { get; set; }
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public string? StatusText { get; set; }
+    [Parameter] public PanelStatus Status { get; set; } = PanelStatus.None;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private string StatusClass => Status switch
+    {
+        PanelStatus.Owed => "reg-scroll-status--owed",
+        PanelStatus.Chosen => "reg-scroll-status--chosen",
+        PanelStatus.Accent => "reg-scroll-status--accent",
+        _ => ""
+    };
+}

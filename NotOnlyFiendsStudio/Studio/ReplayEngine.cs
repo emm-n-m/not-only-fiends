@@ -905,6 +905,20 @@ public class ReplayStudio
                     state.PendingDomainSelections.Remove(ownerClassId);
             }
 
+            // Spell-list-source domains (Archfiend / Red Dragon): the domain contributes its
+            // spell list to the caster's known pool, nothing else — no granted power, and no
+            // cleric-style prepared bonus slot. The player picks the domain; the caster simply
+            // gets to know its spells.
+            if (state.SpellListSourceDomainOwners.Contains(ownerClassId))
+            {
+                state.ExtraSpellListSources.Add(new SpellListSourceRule
+                {
+                    ClassId = ownerClassId,
+                    ListId = domainId
+                });
+                continue;
+            }
+
             foreach (var buff in domainDef.GrantedPermabuffs)
                 buff.Apply(ctx);
 
@@ -1184,10 +1198,17 @@ public class ReplayStudio
                 {
                     // Domain picks come from the domain's own list, so only class picks are
                     // checked against the class spell list.
-                    var listSources = sc.ProgressionData?.SpellListSources ?? new List<string>();
+                    var listSources = (sc.ProgressionData?.SpellListSources ?? Enumerable.Empty<string>())
+                        .Concat(state.ExtraSpellListSources
+                            .Where(rule => (rule.ClassId == null || rule.ClassId == sc.ClassId)
+                                        && (!rule.CastingType.HasValue || rule.CastingType == sc.CastingType))
+                            .Select(rule => rule.ListId));
+                    // Resolve each source through the registry so class sources (spell.ClassLevels)
+                    // and domain sources (the domain's bonusSpells) both count.
                     var matchingLevels = new[] { routedClassId }.Concat(listSources)
-                        .Where(source => spellDef.ClassLevels.ContainsKey(source))
-                        .Select(source => spellDef.ClassLevels[source])
+                        .Select(source => _content.TryGetSpellLevelForSource(spellDef, source, out var lvl) ? (int?)lvl : null)
+                        .Where(lvl => lvl.HasValue)
+                        .Select(lvl => lvl!.Value)
                         .ToList();
                     if (matchingLevels.Count == 0)
                     {

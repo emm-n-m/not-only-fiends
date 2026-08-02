@@ -1,0 +1,75 @@
+@using NotOnlyFiendsStudio.Models
+@*
+    Persistent character stat header for the builder (design screen 4a/1a).
+    Presentational: the caller passes the evaluated CharacterState and a
+    precomputed subtitle (race · classes · alignment). Pending counts double as
+    a to-do list — each owed chip navigates to the tab that resolves it.
+*@
+<div class="reg-header">
+    <div class="reg-portrait"><span>PORTRAIT</span></div>
+    <div style="min-width:0">
+        <div class="reg-header-name">@DisplayName</div>
+        @if (!string.IsNullOrEmpty(Subtitle))
+        {
+            <div class="reg-header-sub">@Subtitle</div>
+        }
+        @if (HasOwed)
+        {
+            <div class="reg-header-owed">
+                @if (PendingFeats > 0)
+                {
+                    <button class="reg-owed-chip" @onclick="() => OnNavigate.InvokeAsync(CharacterTab.Feats)">
+                        @PendingFeats feat@(PendingFeats == 1 ? "" : "s") owed
+                    </button>
+                }
+                @if (State.UnspentSkillPoints > 0)
+                {
+                    <button class="reg-owed-chip" @onclick="() => OnNavigate.InvokeAsync(CharacterTab.Skills)">
+                        @State.UnspentSkillPoints skill point@(State.UnspentSkillPoints == 1 ? "" : "s") unspent
+                    </button>
+                }
+                @if (State.Warnings.Any())
+                {
+                    <button class="reg-owed-chip reg-owed-chip--warn" @onclick="() => OnNavigate.InvokeAsync(CharacterTab.Summary)">
+                        @State.Warnings.Count warning@(State.Warnings.Count == 1 ? "" : "s")
+                    </button>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="reg-header-stats">
+        @Tile("ECL", State.ECL.ToString())
+        @Tile("HD", State.TotalHD.ToString())
+        @Tile("HP", State.HP.ToString())
+        @Tile("AC", $"{State.AC.Total}")
+        @Tile("BAB", FormatSigned(State.EffectiveBAB))
+        @Tile("F / R / W", $"{FormatSigned(State.EffectiveSaves.Fort)} / {FormatSigned(State.EffectiveSaves.Ref)} / {FormatSigned(State.EffectiveSaves.Will)}")
+        @if (CasterLevel > 0)
+        {
+            @Tile("CL", CasterLevel.ToString())
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public CharacterState State { get; set; } = default!;
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public EventCallback<CharacterTab> OnNavigate { get; set; }
+
+    private string DisplayName => string.IsNullOrWhiteSpace(Name) ? "Unnamed character" : Name!;
+    private int PendingFeats => State.PendingFeatSlots + State.PendingBonusFeatSlots;
+    private bool HasOwed => PendingFeats > 0 || State.UnspentSkillPoints > 0 || State.Warnings.Any();
+    private int CasterLevel => State.Spellcasting.Values.Select(s => s.CasterLevel).DefaultIfEmpty(0).Max();
+
+    private static string FormatSigned(int value) => value >= 0 ? $"+{value}" : value.ToString();
+
+    private RenderFragment Tile(string label, string value) => __builder =>
+    {
+        <div class="reg-stattile">
+            <div class="reg-stattile-label">@label</div>
+            <div class="reg-stattile-value">@value</div>
+        </div>
+    };
+}

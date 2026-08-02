@@ -21,6 +21,7 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(SetAttribute), "SetAttribute")]
 [JsonDerivedType(typeof(GrantFeatSlot), "GrantFeatSlot")]
 [JsonDerivedType(typeof(AdvanceSpellcasting), "AdvanceSpellcasting")]
+[JsonDerivedType(typeof(AddSpellListSource), "AddSpellListSource")]
 [JsonDerivedType(typeof(UpdateSpellcasting), "UpdateSpellcasting")]
 [JsonDerivedType(typeof(GrantRacialSpellcasting), "GrantRacialSpellcasting")]
 [JsonDerivedType(typeof(GrantDomainSelection), "GrantDomainSelection")]
@@ -469,6 +470,41 @@ public class GrantFeatSlot : Permabuff
     }
 }
 
+/// <summary>
+/// Grants a caster access to an additional spell list beyond the one its HD driver declares —
+/// e.g. an Archfiend's "choose your list" template borrowing the sorcerer, cleric, or druid list.
+/// Records a <see cref="SpellListSourceRule"/> onto the character state; the spell-selection
+/// validator then treats spells on <see cref="ListId"/> as legal for the matched caster.
+///
+/// Recording onto the state (rather than mutating a <see cref="SpellcastingState"/> directly) keeps
+/// this order-independent: a creation-time template permabuff can register the list before the
+/// caster's class levels — and its spellcasting state — even exist.
+/// </summary>
+public class AddSpellListSource : Permabuff
+{
+    /// <summary>Target caster by class id (e.g. <c>class:archfiend</c>). Null matches any caster.</summary>
+    public string? ClassId { get; set; }
+
+    /// <summary>Target caster by casting type. Null matches any. Combined with <see cref="ClassId"/> (both must match).</summary>
+    public CastingType? CastingType { get; set; }
+
+    /// <summary>The spell list to borrow, e.g. <c>class:sorcerer</c>.</summary>
+    public string ListId { get; set; } = string.Empty;
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        if (string.IsNullOrEmpty(ListId))
+            return;
+
+        ctx.State.ExtraSpellListSources.Add(new SpellListSourceRule
+        {
+            ClassId = ClassId,
+            CastingType = CastingType,
+            ListId = ListId
+        });
+    }
+}
+
 public class AdvanceSpellcasting : Permabuff
 {
     /// <summary>
@@ -537,9 +573,14 @@ public class AdvanceSpellcasting : Permabuff
 
     internal static void RecomputeDomainBonusSlots(PermabuffContext ctx, SpellcastingState sc)
     {
+        sc.DomainBonusSlots.Clear();
+        // A spell-list-source caster (Archfiend / Red Dragon) draws its domains into its known
+        // spells and never gets cleric-style prepared domain slots — even though the domains are
+        // still recorded as owned for display.
+        if (ctx.State.SpellListSourceDomainOwners.Contains(sc.ClassId))
+            return;
         // Only count domains owned by THIS class — multiclass casters don't share domain slots.
         var ownedCount = ctx.State.DomainOwners.Count(kv => kv.Value == sc.ClassId);
-        sc.DomainBonusSlots.Clear();
         if (ownedCount == 0) return;
         foreach (var lvl in sc.SpellsPerDay.Keys.Where(l => l >= 1))
             sc.DomainBonusSlots[lvl] = ownedCount;
@@ -604,11 +645,21 @@ public class GrantDomainSelection : Permabuff
     // if that's also null (race/template-level fire), domains are orphaned.
     public string? ClassId { get; set; }
 
+    /// <summary>
+    /// When true, the selected domains add their spell list to this caster's known-spell pool
+    /// rather than granting cleric-style prepared domain slots and granted powers. Used by the
+    /// Archfiend (an arcane spontaneous caster who draws from two domains, like the Red Dragon):
+    /// the player still picks the domains, but they become spell-list sources, not bonus slots.
+    /// </summary>
+    public bool AsSpellListSources { get; set; }
+
     public override void Apply(PermabuffContext ctx)
     {
         var owner = ClassId ?? ctx.CurrentDriverId ?? OrphanOwner;
         ctx.State.PendingDomainSelections[owner] =
             ctx.State.PendingDomainSelections.GetValueOrDefault(owner) + Count;
+        if (AsSpellListSources)
+            ctx.State.SpellListSourceDomainOwners.Add(owner);
     }
 }
 

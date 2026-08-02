@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using NotOnlyFiendsFeed.Contracts;
 using NotOnlyFiendsFeed.Services;
 using NotOnlyFiendsStudio.Models;
 using NotOnlyFiendsStudio.Studio;
@@ -46,6 +47,13 @@ public partial class BuilderView
     private int _nonPcRaceCount;
     private List<TemplateDriver> _templates = new();
     private List<Driver> _drivers = new();
+    private Dictionary<string, string> _driverNames = new();
+
+    // Driver previews ("what does the next HD buy me") — computed on demand from the
+    // same in-process engine the REST API uses, so the builder and agents agree.
+    private bool _showDriverPreviews;
+    private List<DriverPreviewDto> _driverPreviews = new();
+    private int _previewNextHd;
     private List<FeatDefinition> _feats = new();
     private List<SpellDefinition> _spells = new();
     private List<SkillDefinition> _skills = new();
@@ -100,6 +108,10 @@ public partial class BuilderView
         _domainInputs.Clear();
     }
     private string? _characterStoreId;
+    // The store id last loaded via the /builder/{id} route. Tracked so navigating between
+    // characters (rail / roster links) reloads even though the component instance is reused.
+    private string? _loadedId;
+    private bool _catalogsLoaded;
     private List<CharacterFileInfo> _availableCharacters = new();
 
     // Which stored characters list this one as their companion. Cached rather than computed
@@ -128,6 +140,9 @@ public partial class BuilderView
             _nonPcRaceCount = _races.Count(r => !RaceCatalog.IsSanctionedPcRace(r));
             _templates = registry.GetAllTemplates().ToList();
             _drivers = registry.GetAllDrivers().ToList();
+            _driverNames = _drivers
+                .GroupBy(d => d.Id, StringComparer.Ordinal)
+                .ToDictionary(g => g.Key, g => g.First().Name, StringComparer.Ordinal);
             _addHdDriverId = _drivers.FirstOrDefault()?.Id ?? "class:fighter";
             _feats = registry.GetAllFeats().OrderBy(f => f.Name).ToList();
             _spells = registry.GetAllSpells().OrderBy(s => s.Name).ToList();
@@ -144,6 +159,7 @@ public partial class BuilderView
                 {
                     _character = CharacterStore.Get(Id);
                     _characterStoreId = Id;
+                    _loadedId = Id;
                     ResetForLoadedCharacter();
                 }
                 catch (CharacterStoreException ex)
@@ -172,6 +188,7 @@ public partial class BuilderView
             }
 
             OnCharacterChanged();
+            _catalogsLoaded = true;
         }
         catch (Exception ex)
         {
@@ -180,6 +197,36 @@ public partial class BuilderView
         finally
         {
             _loading = false;
+        }
+    }
+
+    /// <summary>
+    /// Reloads the character when the <c>/builder/{id}</c> route parameter changes. Blazor reuses
+    /// this component instance across such navigations, so <see cref="OnInitializedAsync"/> — which
+    /// loads the catalogs and the first character — does not run again. Without this, clicking a
+    /// different character in the rail or roster while already on the builder did nothing.
+    /// </summary>
+    protected override void OnParametersSet()
+    {
+        if (!_catalogsLoaded)
+            return; // first load is handled by OnInitializedAsync
+        if (string.IsNullOrWhiteSpace(Id) || Id == _loadedId)
+            return;
+        if (!CharacterStore.IsConfigured)
+            return;
+
+        _error = null;
+        try
+        {
+            _character = CharacterStore.Get(Id);
+            _characterStoreId = Id;
+            _loadedId = Id;
+            ResetForLoadedCharacter();
+            OnCharacterChanged();
+        }
+        catch (CharacterStoreException ex)
+        {
+            _error = ex.Message;
         }
     }
 
@@ -371,6 +418,33 @@ public partial class BuilderView
         }
         _addHdCount = 1;
         OnCharacterChanged();
+    }
+
+    /// <summary>
+    /// Toggles the driver-preview grid. Opening it replays the current character one
+    /// hit die forward against every legal driver via <see cref="AgentApiService.GetNextStep"/>
+    /// (option lists omitted — the grid only shows counts and deltas).
+    /// </summary>
+    private void ToggleDriverPreviews()
+    {
+        _showDriverPreviews = !_showDriverPreviews;
+        if (!_showDriverPreviews)
+            return;
+
+        var response = Api.GetNextStep(
+            new NextStepRequest { Character = _character },
+            OptionDetail.None);
+        _driverPreviews = response.DriverPreviews;
+        _previewNextHd = response.NextHd;
+    }
+
+    /// <summary>Commits a single hit die of the chosen driver, then closes the preview grid.</summary>
+    private void ChooseDriverFromPreview(string driverId)
+    {
+        _addHdDriverId = driverId;
+        _addHdCount = 1;
+        AddTick();
+        _showDriverPreviews = false;
     }
 
     private void RemoveTick(int index)
@@ -639,6 +713,32 @@ public partial class BuilderView
             .Sum(template => template!.AbilityModifiers!.GetScore(ability));
 
     private static string FormatSigned(int value) => value >= 0 ? $"+{value}" : value.ToString();
+
+    /// <summary>
+    /// "Race · Class levels · Alignment" line shown under the character name in the
+    /// builder header. Class ids resolve to driver display names via <c>_drivers</c>.
+    /// </summary>
+    private string HeaderSubtitle()
+    {
+        if (_state == null)
+            return "";
+
+        var parts = new List<string>();
+
+        var race = _races.FirstOrDefault(r => r.Id == _character.RaceId)?.Name;
+        if (!string.IsNullOrEmpty(race))
+            parts.Add(race);
+
+        var classes = string.Join(" / ", _state.ClassLevels
+            .Where(kv => kv.Value > 0)
+            .Select(kv => $"{_drivers.FirstOrDefault(d => d.Id == kv.Key)?.Name ?? kv.Key} {kv.Value}"));
+        if (!string.IsNullOrEmpty(classes))
+            parts.Add(classes);
+
+        parts.Add(FormatAlignment(_character.Alignment));
+
+        return string.Join(" · ", parts);
+    }
 
     private string FormatFeatLabel(string featId, FeatDefinition? featDef)
     {

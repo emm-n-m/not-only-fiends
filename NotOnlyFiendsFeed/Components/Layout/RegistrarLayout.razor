@@ -1,0 +1,107 @@
+@inherits LayoutComponentBase
+@using NotOnlyFiendsFeed.Services
+@inject CharacterStore CharacterStore
+@inject ServerContentService Content
+
+@*
+    App shell for the registrar theme. A fixed left rail (brand + nav + open
+    characters + loaded packs) beside the routed content. Replaces MainLayout /
+    NavMenu. Campaign flavor from the design mock is genericized: the rail is
+    driven by the real character store and loaded content packs.
+*@
+<div class="reg-shell">
+    <aside class="reg-rail">
+        <div class="reg-brand">
+            <div class="reg-sigil"><span></span></div>
+            <div style="min-width:0">
+                <div class="reg-brand-name">NOT ONLY FIENDS</div>
+                <div class="reg-brand-sub">CHARACTER REGISTRY</div>
+            </div>
+        </div>
+
+        <nav class="reg-nav">
+            <NavLink class="reg-nav-item" href="" Match="NavLinkMatch.All">
+                <span class="reg-nav-dot"></span> Roster
+            </NavLink>
+            <NavLink class="reg-nav-item" href="builder">
+                <span class="reg-nav-dot"></span> Builder
+            </NavLink>
+            <NavLink class="reg-nav-item" href="sheet">
+                <span class="reg-nav-dot"></span> Sheet
+            </NavLink>
+            <NavLink class="reg-nav-item" href="import">
+                <span class="reg-nav-dot"></span> Import .pcg
+            </NavLink>
+            <NavLink class="reg-nav-item" href="settings">
+                <span class="reg-nav-dot"></span> Settings
+            </NavLink>
+        </nav>
+
+        <div class="reg-rail-open">
+            <div class="reg-rail-label">OPEN CHARACTERS</div>
+            @if (_openCharacters.Count == 0)
+            {
+                <div class="reg-open-meta">@(_storeConfigured ? "None saved yet" : "Store not configured")</div>
+            }
+            else
+            {
+                <div class="reg-open-list">
+                    @foreach (var c in _openCharacters)
+                    {
+                        <NavLink class="reg-open-item" href="@($"builder/{Uri.EscapeDataString(c.Id)}")" Match="NavLinkMatch.All">
+                            <div class="reg-open-name">@c.Name</div>
+                            <div class="reg-open-meta">@c.Meta</div>
+                        </NavLink>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="reg-rail-footer">
+            <div class="reg-rail-label">@($"PACKS · {Content.LoadedPacks.Count}")</div>
+            <div class="reg-packs">@_packsSummary</div>
+        </div>
+    </aside>
+
+    <main class="reg-content">
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    private sealed record OpenCharacter(string Id, string Name, string Meta);
+
+    private readonly List<OpenCharacter> _openCharacters = new();
+    private bool _storeConfigured;
+    private string _packsSummary = "";
+
+    protected override void OnInitialized()
+    {
+        var packIds = Content.LoadedPacks.Select(p => p.Manifest.Id).ToList();
+        _packsSummary = packIds.Count <= 4
+            ? string.Join(", ", packIds)
+            : $"{string.Join(", ", packIds.Take(3))} +{packIds.Count - 3} more";
+
+        _storeConfigured = CharacterStore.IsConfigured;
+        if (!_storeConfigured)
+            return;
+
+        try
+        {
+            foreach (var info in CharacterStore.List()
+                .OrderByDescending(i => i.ModifiedUtc)
+                .Take(6))
+            {
+                var ecl = info.Sheet?.ECL;
+                var meta = ecl.HasValue ? $"ECL {ecl.Value}" : "unbuilt";
+                _openCharacters.Add(new OpenCharacter(info.Id, info.Name, meta));
+            }
+        }
+        catch
+        {
+            // A malformed characters directory should never take the whole shell down.
+        }
+    }
+}

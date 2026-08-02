@@ -1,0 +1,79 @@
+@using NotOnlyFiendsStudio.Models
+@*
+    Vertical hit-die progression overview (design screen 1c). A scannable spine
+    beside the full timeline: consecutive levels in the same driver collapse into a
+    range, and the owed decisions on the character surface at the foot. Read-only
+    overview — editing still happens in the timeline itself.
+*@
+<div>
+    <div class="reg-spine-title">Transcript</div>
+    <div class="reg-spine-sub">
+        @Character.Ticks.Count hit @(Character.Ticks.Count == 1 ? "die" : "dice") recorded
+    </div>
+
+    @foreach (var run in Runs())
+    {
+        <div class="reg-spine-row">
+            <div class="reg-spine-num">@run.Label</div>
+            <div class="reg-spine-body">
+                <div class="reg-spine-name">@run.Name</div>
+            </div>
+        </div>
+    }
+
+    @if (HasOwed)
+    {
+        <div class="reg-spine-row">
+            <div class="reg-spine-num is-current">@(Character.Ticks.Count)</div>
+            <div class="reg-spine-body" style="border-left-color:transparent">
+                <div class="reg-spine-current">
+                    <div class="reg-spine-name" style="margin-bottom:8px">Decisions owed</div>
+                    @if (PendingFeats > 0)
+                    {
+                        <div class="reg-spine-decision"><span class="dot owed"></span>Feats<span class="val owed">@PendingFeats owed</span></div>
+                    }
+                    @if (State.UnspentSkillPoints > 0)
+                    {
+                        <div class="reg-spine-decision"><span class="dot owed"></span>Skill ranks<span class="val owed">@State.UnspentSkillPoints unspent</span></div>
+                    }
+                    @if (State.Warnings.Any())
+                    {
+                        <div class="reg-spine-decision"><span class="dot owed"></span>Warnings<span class="val owed">@State.Warnings.Count</span></div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public Character Character { get; set; } = default!;
+    [Parameter, EditorRequired] public CharacterState State { get; set; } = default!;
+    /// <summary>Driver id → display name, supplied by the builder's catalog.</summary>
+    [Parameter] public IReadOnlyDictionary<string, string>? DriverNames { get; set; }
+
+    private int PendingFeats => State.PendingFeatSlots + State.PendingBonusFeatSlots;
+    private bool HasOwed => PendingFeats > 0 || State.UnspentSkillPoints > 0 || State.Warnings.Any();
+
+    private sealed record Run(string Label, string Name);
+
+    private string NameOf(string driverId) =>
+        DriverNames is not null && DriverNames.TryGetValue(driverId, out var n) ? n : driverId;
+
+    private IEnumerable<Run> Runs()
+    {
+        var ticks = Character.Ticks;
+        int i = 0;
+        while (i < ticks.Count)
+        {
+            var driverId = ticks[i].DriverId;
+            int start = i;
+            while (i < ticks.Count && ticks[i].DriverId == driverId) i++;
+            var name = NameOf(driverId);
+            var count = i - start;
+            // "01" for a single HD, "02–05" for a collapsed run.
+            var label = count == 1 ? $"{start + 1:00}" : $"{start + 1:00}–{i:00}";
+            yield return new Run(label, count == 1 ? name : $"{name} ×{count}");
+        }
+    }
+}

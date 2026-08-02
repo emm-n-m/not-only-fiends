@@ -136,6 +136,10 @@ public partial class SheetView
     private int _viewHD = 1;
     private RaceDefinition? _raceDefinition;
 
+    [Parameter] public string? Id { get; set; }
+
+    private readonly List<CharacterFileInfo> _savedCharacters = new();
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -143,14 +147,36 @@ public partial class SheetView
             _registry = Content.Registry;
             _engine = Content.ReplayStudio;
 
-            // Try to load character from sessionStorage (passed from Builder)
-            var sessionJson = await JS.InvokeAsync<string?>("sessionStorage.getItem", "currentCharacter");
-            if (!string.IsNullOrEmpty(sessionJson))
-                _character = System.Text.Json.JsonSerializer.Deserialize<Character>(sessionJson, JsonOptions.Default);
+            if (!string.IsNullOrWhiteSpace(Id))
+            {
+                // Direct link: /sheet/{id} loads straight from the store. Works during
+                // prerender (no JS interop needed), so no error flashes.
+                if (!CharacterStore.IsConfigured)
+                {
+                    _error = "Character store is not configured (set CHARACTERS_PATH in .env).";
+                    _loading = false;
+                    return;
+                }
+
+                _character = CharacterStore.Get(Id);
+            }
+            else
+            {
+                // No id: the character is handed off from the Builder via sessionStorage,
+                // which is only reachable once the circuit is interactive. During the
+                // prerender pass, defer — OnInitializedAsync runs again when interactive.
+                if (!RendererInfo.IsInteractive)
+                    return;
+
+                var sessionJson = await JS.InvokeAsync<string?>("sessionStorage.getItem", "currentCharacter");
+                if (!string.IsNullOrEmpty(sessionJson))
+                    _character = System.Text.Json.JsonSerializer.Deserialize<Character>(sessionJson, JsonOptions.Default);
+            }
 
             if (_character == null)
             {
-                _error = "No character loaded. Use the Builder to create a character, then click View Sheet.";
+                // Not an error — offer the saved characters to pick from.
+                LoadSavedCharacters();
                 _loading = false;
                 return;
             }
@@ -159,14 +185,26 @@ public partial class SheetView
             _state = _engine.Evaluate(_character, upToHD: _viewHD);
             _raceDefinition = _registry.GetAllRaces().FirstOrDefault(r => r.Id == _character.RaceId);
             NormalizeActiveTab();
+            _loading = false;
         }
         catch (Exception ex)
         {
             _error = ex.Message;
-        }
-        finally
-        {
             _loading = false;
+        }
+    }
+
+    private void LoadSavedCharacters()
+    {
+        if (!CharacterStore.IsConfigured)
+            return;
+        try
+        {
+            _savedCharacters.AddRange(CharacterStore.List().OrderByDescending(c => c.ModifiedUtc));
+        }
+        catch
+        {
+            // A malformed store should just leave the picker empty, not crash the page.
         }
     }
 

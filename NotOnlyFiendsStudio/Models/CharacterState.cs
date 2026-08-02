@@ -92,6 +92,23 @@ public class CharacterState
     public List<CasterLevelModifier> CasterLevelModifiers { get; set; } = new();
     public List<ItemActivationLevelRule> ItemActivationLevelRules { get; set; } = new();
 
+    /// <summary>
+    /// Extra spell lists a caster may draw from beyond the list its HD driver declares. Populated
+    /// by <see cref="AddSpellListSource"/> permabuffs (e.g. an Archfiend's choose-your-list
+    /// template borrowing the sorcerer/cleric/druid list). Read by the spell-selection validator
+    /// in addition to the driver-level <see cref="SpellcastingProgression.SpellListSources"/>.
+    /// </summary>
+    public List<SpellListSourceRule> ExtraSpellListSources { get; set; } = new();
+
+    /// <summary>
+    /// Domain owners (class ids) whose domain selections add the domain's spell list to the
+    /// caster's known-spell pool instead of granting cleric-style prepared domain slots and
+    /// granted powers. Set by <see cref="GrantDomainSelection"/> with <c>AsSpellListSources</c>
+    /// — the Archfiend / Red Dragon pattern: an arcane spontaneous caster who simply *knows*
+    /// its domain spells rather than preparing them from a bonus slot.
+    /// </summary>
+    public HashSet<string> SpellListSourceDomainOwners { get; set; } = new();
+
     public int EffectiveCasterLevel(string classId, SpellDefinition spell) =>
         Spellcasting.GetValueOrDefault(classId)?.CasterLevel is int baseLevel
             ? baseLevel + CasterLevelModifiers.Where(m => m.Matches(spell)).Sum(m => m.Value)
@@ -359,6 +376,18 @@ public class SpellcastingState
             SpellsKnown = new Dictionary<int, int>(sk);
         }
     }
+}
+
+/// <summary>
+/// A rule granting a caster access to an additional spell list. Matched against a
+/// <see cref="SpellcastingState"/> by <see cref="ClassId"/> and/or <see cref="CastingType"/>
+/// (null means "any"); <see cref="ListId"/> is the borrowed list, e.g. <c>class:sorcerer</c>.
+/// </summary>
+public class SpellListSourceRule
+{
+    public string? ClassId { get; set; }
+    public CastingType? CastingType { get; set; }
+    public string ListId { get; set; } = string.Empty;
 }
 
 public class FeatSlot

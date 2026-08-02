@@ -6,12 +6,11 @@
 @inject ServerContentService Content
 @inject CharacterStore CharacterStore
 @inject BrowserFileService FileService
+@inject AgentApiService Api
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 
 <PageTitle>Character Builder</PageTitle>
-
-<h2>Character Builder</h2>
 
 @if (_loading)
 {
@@ -69,55 +68,19 @@ else
     <!-- Hidden file input for Open -->
     <input type="file" id="file-open-input" accept=".json" style="display:none" />
 
-    <div class="tab-toolbar">
-        <div class="summary-strip d-flex flex-wrap align-items-center gap-3 small border rounded bg-light px-2 py-1 mb-2">
-            @if (_state == null)
-            {
-                <span class="text-muted">Not evaluated yet.</span>
-            }
-            else
-            {
-                <span class="fw-bold">@_character.Name</span>
-                <span>HD <strong>@_state.TotalHD</strong></span>
-                <span>ECL <strong>@_state.ECL</strong></span>
-                <span>HP <strong>@_state.HP</strong></span>
-                <span>
-                    AC <strong>@_state.AC.Total</strong>
-                    <span class="text-muted">(T @_state.AC.Touch / FF @_state.AC.FlatFooted)</span>
-                </span>
-                <span>BAB <strong>@FormatSigned(_state.EffectiveBAB)</strong></span>
-                <span>
-                    Saves
-                    <strong>@FormatSigned(_state.EffectiveSaves.Fort) /
-                    @FormatSigned(_state.EffectiveSaves.Ref) /
-                    @FormatSigned(_state.EffectiveSaves.Will)</strong>
-                </span>
-                @* The pending counts are buttons, not text: the strip doubles as the to-do
-                   list, so each unfinished decision links to the tab that resolves it. *@
-                @if (_state.PendingFeatSlots + _state.PendingBonusFeatSlots > 0)
-                {
-                    <button class="btn btn-link btn-sm p-0 align-baseline text-warning"
-                            @onclick="() => SetActiveTab(CharacterTab.Feats)">
-                        @(_state.PendingFeatSlots + _state.PendingBonusFeatSlots) unspent feat(s)
-                    </button>
-                }
-                @if (_state.UnspentSkillPoints > 0)
-                {
-                    <button class="btn btn-link btn-sm p-0 align-baseline text-warning"
-                            @onclick="() => SetActiveTab(CharacterTab.Skills)">
-                        @_state.UnspentSkillPoints unspent skill point(s)
-                    </button>
-                }
-                @if (_state.Warnings.Any())
-                {
-                    <button class="btn btn-link btn-sm p-0 align-baseline text-danger"
-                            @onclick="() => SetActiveTab(CharacterTab.Summary)">
-                        @_state.Warnings.Count warning(s)
-                    </button>
-                }
-            }
-        </div>
+    @if (_state == null)
+    {
+        <div class="text-muted small mb-2">Not evaluated yet.</div>
+    }
+    else
+    {
+        <CharacterHeaderBar State="_state"
+                            Name="@_character.Name"
+                            Subtitle="@HeaderSubtitle()"
+                            OnNavigate="SetActiveTab" />
+    }
 
+    <div class="tab-toolbar reg-tabs">
         <TabStrip Tabs="VisibleTabs()" ActiveTab="_activeTab" ActiveTabChanged="SetActiveTab" />
     </div>
 
@@ -293,6 +256,14 @@ else
        facet, and skips the ticks that have nothing to show for it. *@
     @if (IsTimelineTab(_activeTab))
     {
+    <div class="reg-builder-grid">
+        <aside class="reg-builder-spine">
+            @if (_state != null)
+            {
+                <HdSpine Character="_character" State="_state" DriverNames="_driverNames" />
+            }
+        </aside>
+        <div class="reg-builder-main">
     <!-- Step 3: HD Timeline -->
     <div class="card mb-3">
         <div class="card-header">
@@ -319,10 +290,22 @@ else
                         <option value="@d.Id">@d.Name</option>
                     }
                 </select>
+                <button class="btn btn-sm btn-outline-secondary" @onclick="ToggleDriverPreviews">
+                    @(_showDriverPreviews ? "Hide previews" : "Preview next HD")
+                </button>
                 <button class="btn btn-sm btn-success" @onclick="AddTick">+ Add HD</button>
             </div>
         </div>
         <div class="card-body">
+            @if (_showDriverPreviews && _state != null)
+            {
+                <div class="mb-3">
+                    <DriverPreviewGrid NextHd="_previewNextHd"
+                                       Previews="_driverPreviews"
+                                       Current="_state"
+                                       OnChoose="ChooseDriverFromPreview" />
+                </div>
+            }
             @for (int i = 0; i < _character.Ticks.Count; i++)
             {
                 var index = i;
@@ -335,7 +318,7 @@ else
                 @* @key on the Tick itself, not the index: once ticks can be skipped the n-th
                    rendered row is no longer tick n, and positional matching would carry a
                    SearchSelect's typed text from one HD to another. *@
-                <div class="border rounded p-2 mb-2" @key="tick">
+                <div class="reg-tick" @key="tick">
                     <div class="row align-items-center">
                         <div class="col-auto">
                             <button class="btn btn-sm btn-outline-secondary py-0 px-1" @onclick="() => ToggleHdTick(index)" title="@(_expandedTicks.Contains(index) ? "Collapse" : "Expand")">
@@ -955,6 +938,14 @@ else
             }
         </div>
     </div>
+        </div>@* end .reg-builder-main *@
+        <aside class="reg-builder-delta">
+            @if (_state != null)
+            {
+                <DeltaPane State="_state" OnSave="SaveCharacter" OnEvaluate="EvaluateCharacter" />
+            }
+        </aside>
+    </div>@* end .reg-builder-grid *@
     }
     @* =================== end HD TIMELINE — shared by five tabs =================== *@
 
