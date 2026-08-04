@@ -464,6 +464,74 @@ public class SpellcastingTests
     }
 
     [Fact]
+    public void DomainSelection_DuplicateDomain_WarnsAndConsumesOnlyOnce()
+    {
+        var (_, engine) = CreateStudio();
+
+        var character = new Character
+        {
+            Name = "Cleric Duplicate Domain",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 10, CON = 14, INT = 10, WIS = 16, CHA = 8 },
+            Ticks = new List<Tick>
+            {
+                new()
+                {
+                    DriverId = "class:cleric",
+                    Choices = new TickChoices
+                    {
+                        ClassFeatureChoices = new Dictionary<string, List<string>>
+                        {
+                            ["domains"] = new() { "domain:good", "domain:good" }
+                        }
+                    }
+                }
+            }
+        };
+
+        var state = engine.Evaluate(character);
+
+        Assert.Single(state.Domains);
+        Assert.Contains("domain:good", state.Domains);
+        Assert.Equal(1, state.PendingDomainSelections["class:cleric"]);
+        Assert.Contains(state.Warnings, w => w.Message.Contains("duplicate domain selection 'domain:good'"));
+    }
+
+    [Fact]
+    public void SpellSelection_BlankAndNegativeLevel_WarnAndAreIgnored()
+    {
+        var (_, engine) = CreateStudio();
+
+        var character = new Character
+        {
+            Name = "Invalid Spell Selections",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 8, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 18 },
+            Ticks = new List<Tick>
+            {
+                new()
+                {
+                    DriverId = "class:sorcerer",
+                    Choices = new TickChoices
+                    {
+                        SpellSelections = new List<SpellSelection>
+                        {
+                            new(),
+                            new() { ClassId = "class:sorcerer", SpellLevel = -1, SpellId = "spell:magic_missile" }
+                        }
+                    }
+                }
+            }
+        };
+
+        var state = engine.Evaluate(character);
+
+        Assert.Empty(state.Spellcasting["class:sorcerer"].SelectedSpells);
+        Assert.Contains(state.Warnings, w => w.Message.Contains("incomplete spell selection ignored"));
+        Assert.Contains(state.Warnings, w => w.Message.Contains("invalid spell level -1"));
+    }
+
+    [Fact]
     public void SpellSelection_AboveMaxLevel_Warns()
     {
         var (_, engine) = CreateStudio();

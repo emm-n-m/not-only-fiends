@@ -12,7 +12,7 @@ public class SpellContentTests
 
         var allSpells = registry.GetAllSpells().ToList();
 
-        Assert.Equal(618, allSpells.Count);
+        Assert.Equal(665, allSpells.Count);
         Assert.True(registry.TryGetSpell("spell:acid_arrow", out var acidArrow));
         Assert.Equal("Acid Arrow", acidArrow!.Name);
         Assert.Equal("conjuration", acidArrow.School);

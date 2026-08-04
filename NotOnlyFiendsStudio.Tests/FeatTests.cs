@@ -175,6 +175,33 @@ public class FeatTests
     }
 
     [Fact]
+    public void InvalidFeatId_ProducesWarning()
+    {
+        var (_, engine) = CreateStudio();
+        var character = new Character
+        {
+            Name = "Invalid Feat Test",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 14, CON = 14, INT = 16, WIS = 12, CHA = 8
+            },
+            Ticks = new List<Tick>
+            {
+                new()
+                {
+                    DriverId = "class:wizard",
+                    Choices = new TickChoices { FeatIds = new List<string> { "feat:not_in_catalog" } }
+                }
+            }
+        };
+
+        var state = engine.Evaluate(character);
+
+        Assert.Contains(state.Warnings, w => w.Message.Contains("unknown feat 'feat:not_in_catalog'"));
+    }
+
+    [Fact]
     public void Fighter6_CorrectFeatSlots()
     {
         var (registry, engine) = CreateStudio();

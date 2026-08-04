@@ -1,83 +1,123 @@
 # Test Coverage Backlog
 
-Concrete backlog and test targets for moving the repository toward full feature coverage.
+Current status of the repository's test coverage and the concrete work still
+needed to move toward full feature coverage.
 
-## Studio Replay Correctness
+## Current snapshot
 
-- Add tests for feat slot consumption precedence in `ReplayStudio`: standard slot use, bonus slot fallback, and over-selection behavior.
-- Add tests for ability increases at valid and invalid HDs.
-- Add tests for `upToHD` replay with templates, permanent events, domains, and spellcasting active at partial progression.
-- Add tests for warning generation when driver prerequisites fail across multiclass and prestige-class entry paths.
-- Add tests for racial HD mixed with class HD and template scaling in the same build.
-- Add tests for equipment application semantics in `ReplayStudio`: stacked permabuffs and post-tick-only effects.
+- `dotnet test --no-restore`: **749 passed, 14 skipped, 0 failed, 763 total**.
+- The stale `SpellContentTests.ContentRegistry_LoadsSpells` catalog assertion
+  was updated from 618 to the current 665 entries.
+- The 14 skips are PCGen/private-content tests gated by missing configured
+  external data, not passing coverage. They should be rerun when
+  `PCGEN_DATA_PATH` and/or `PCGEN_CHARACTERS_PATH` are available.
+- No UI component tests were found. No line/branch coverage report is checked
+  in, so this document tracks behavioral coverage rather than a percentage.
 
-## Permabuff Coverage
+## Covered since the previous backlog
 
-- Add direct unit tests for every `Permabuff` subtype in `NotOnlyFiendsStudio/Models/Permabuff.cs`.
-- Replace the stale `GrantBonusFeat` test in `NotOnlyFiendsStudio.Tests/FeatTests.cs` with assertions for actual cascade behavior.
-- Add tests for `ModifyAttribute` and `SetAttribute` against each supported `AttributeTarget`.
-- Add tests for `AdvanceSpellcasting` when there are zero, one, and multiple eligible spellcasting classes.
-- Add tests for `UpdateSpellcasting` domain bonus slot recalculation after domains already exist.
-- Add tests for `GrantDomainSelection` accumulation and downstream consumption.
+The following original backlog targets now have direct tests and should not be
+treated as active work:
 
-## Feat System
+- Replay: valid and invalid ability increases, partial `upToHD` replay,
+  multiclass prerequisite warnings, racial HD, template scaling, permanent
+  events, and post-tick equipment (including stacking).
+- Feats and permabuffs: feat-slot precedence/enforcement, bonus slots,
+  `GrantBonusFeat` cascades, supported attribute targets, repeatable/selected
+  feat handling, available-feat prerequisite filtering, and the prerequisite
+  helper families (`HasFeatOfType`, `HasFeatWithTag`, and related checks).
+- Spellcasting and domains: prepared versus spontaneous state, unknown-class
+  and above-max spell warnings, multiple-class `AdvanceSpellcasting` choices,
+  unknown-domain warnings, domain accumulation, domain spell lists, and class
+  spell lists.
+- Formula/model behavior: arithmetic and truncation, unary operators,
+  parentheses, nested `min`/`max`, live state lookups, invalid syntax, and core
+  model helpers.
+- Content and packs: content validation errors, multiple-root overrides,
+  conflict modes, pack discovery/order/dependencies, cycles, missing
+  dependencies, disabled packs, per-pack conflict behavior, and manifest
+  serialization.
+- PCGen: parser/converter coverage, a fixed High Priestess reconstruction, and
+  buildability/gap-analysis entry points. The external-data cases remain
+  environment-gated.
 
-- Add tests for repeatable feats and selected-feat variants using `SelectionRequired` and `Tags`.
-- Add tests for `HasFeatOfType`, `HasFeatWithTag`, and `HasFeatSelections` prerequisites.
-- Add tests for `GetAvailableFeats` filtering with repeatable feats already taken, typed restrictions, and selectable variants.
-- Add tests for invalid feat IDs in tick choices and verify warning behavior.
-- Add tests for feats granted by classes, templates, and races versus feats explicitly chosen by the player.
+## Active backlog
 
-## Spellcasting And Domains
+### Test-suite maintenance
 
-- Add tests for prepared versus spontaneous spellcasting state transitions.
-- Add tests for spell selection warnings: unknown class, invalid level, above-max level, and blank selections.
-- Add tests for domain selection warnings on unknown domains and duplicate domain picks.
-- Add tests for prestige-class spell advancement selection workflows once `advance_spellcasting` choices are implemented.
-- Add tests for domain spell list availability via `GetSpellsForList` and class spell list availability via `GetSpellsForClass`.
-- Add scenario tests for multiclass divine plus arcane characters with domains and prestige advancement.
+- [x] Resolve the spell catalog count failure in
+  `SpellContentTests.ContentRegistry_LoadsSpells`.
+- [ ] Run the skipped PCGen/private-pack tests with configured external data
+  and capture the resulting baseline or failures.
 
-## Formula And Model Behavior
+### Studio replay and permabuffs
 
-- Add tests for formula parsing edge cases, invalid syntax, divide and truncation behavior, nested `min` and `max`, and class and caster lookups against live `CharacterState`.
-- Add tests for `AbilityScoreSet`, `SaveSet`, `SpellcastingState`, and `FeatSlot` helper behavior where not already covered.
-- Add tests for enum-backed model serialization round-trips where behavior depends on JSON options.
+- [ ] Add explicit tests for feat-slot consumption precedence when standard and
+  restricted bonus slots compete, including over-selection and invalid-slot
+  cases not covered by current enforcement tests.
+- [ ] Add direct tests for the remaining `Permabuff` subtypes and edge cases,
+  especially `RevokeAbility`, `RevokeSLA`, immunity/DR replacement behavior,
+  level adjustment, and resistance stacking.
+- [ ] Add `UpdateSpellcasting` coverage for domain bonus-slot recalculation
+  after domains already exist.
+- [ ] Add mixed racial-HD/class-HD/template scenarios that assert the complete
+  final state, not only individual template or effective-level behavior.
 
-## Content Registry And Validation
+### Feats, spells, and domains
 
-- Add tests for `LoadJsonForDirectory` with every registered content type in `ContentRegistry`.
-- Add tests for unknown directory handling in `LoadJsonForDirectory`.
-- Add tests for spell validation failures: unknown spell list and negative spell level.
-- Add tests for selectable feat variant validation in `IsSelectableFeatVariant`.
-- Add tests for `Warn` and `Error` conflict modes across domains, spells, races, templates, and drivers, not just feats.
-- Add tests for multiple-root override behavior using real content types other than feats.
+- [x] Add invalid feat-ID tick-choice tests and assert warning text/behavior.
+- [ ] Add explicit tests for feats granted by races, templates, and classes,
+  distinguished from feats selected by the player.
+- [x] Cover blank spell selections and invalid spell levels in an end-to-end
+  warning test. Unknown class and spell-list paths are covered separately.
+- [x] Cover duplicate domain selections.
+- [ ] Cover the full multi-domain downstream spell-slot recalculation path.
+- [ ] Add a multiclass divine-plus-arcane scenario combining domains and
+  prestige spell advancement.
 
-## Pack Loading
+### Content registry and pack loading
 
-- Add tests for `PackConfig` override precedence over manifest conflict settings in `PackLoader`.
-- Add tests for disabled dependency chains and resulting failure modes.
-- Add tests for manifest-only load-order resolution matching filesystem-discovered order.
-- Add tests for duplicate pack IDs and malformed `pack.json`.
-- Add smoke tests that load each shipped pack and validate the resulting registry.
+- [ ] Test `LoadJsonForDirectory` for every registered content type and for an
+  unknown directory.
+- [ ] Add spell validation tests for unknown spell lists and negative spell
+  levels, plus selectable-feat-variant validation.
+- [ ] Exercise `Warn` and `Error` conflicts across representative non-feat
+  content types (domains, spells, races, templates, and drivers).
+- [ ] Test pack-config conflict overrides, disabled dependency chains,
+  manifest-only load-order resolution, duplicate pack IDs, malformed
+  `pack.json`, and loading every shipped pack as a smoke test.
 
-## Golden Scenarios
+### Golden scenarios and PCGen
 
-- Expand `NotOnlyFiendsStudio.Tests/PcGen/PcgReconstructionTests.cs` into a fixed regression suite with expected outputs for a curated set of characters.
-- Add one golden build each for a straight martial, straight divine caster with domains, straight arcane caster, multiclass martial and skill build, prestige spell advancement build, racial HD creature, templated creature, and epic progression build.
+- [ ] Expand `PcgReconstructionTests` into a fixed regression corpus with
+  expected outputs rather than only parser/buildability checks.
+- [ ] Add golden builds for straight martial, straight divine caster with
+  domains, straight arcane caster, multiclass skill build, prestige
+  spell-advancement build, racial-HD creature, templated creature, and epic
+  progression.
+- [ ] Add explicit assertions for reconstruction warnings, dropped content,
+  and intentional unsupported PCGen features.
 
-## UI Coverage
+### UI and API coverage
 
-- Add bUnit tests for `NotOnlyFiendsFeed/Components/Pages/BuilderView.razor`: initial load, add and remove HD, template add and remove, feat add, evaluate, and save and open status handling.
-- Add bUnit tests for `NotOnlyFiendsFeed/Components/Pages/SheetView.razor`: initial character load, slider-driven re-evaluation, spellcasting display, and warning display.
-- Add backlog items for missing UI features: skill allocation editing, spell selection editing, domain selection editing, permanent events editing, equipment editing, and pack and config selection.
+- [ ] Add bUnit tests for `BuilderView`: initial load, HD/template mutations,
+  feat changes, auto-evaluation, and save/open status handling.
+- [ ] Add bUnit tests for `SheetView`: initial load, slider re-evaluation,
+  spellcasting display, and warning display.
+- [ ] Add integration tests for the UI-facing content loader and the remaining
+  character mutation/API error paths.
+- [ ] Track missing editor workflows separately: skill allocation, spell and
+  domain selection, permanent events, equipment, and pack/config selection.
 
-## Test Targets
+## Ongoing test targets
 
-- `ReplayStudio`: all branches in `Evaluate`, `ApplyTickChoices`, and `ApplyEquipment`.
-- `Permabuff`: every subtype in `NotOnlyFiendsStudio/Models/Permabuff.cs`.
-- `Prerequisite`: every subtype in `NotOnlyFiendsStudio/Models/Prerequisite.cs`, including negative and edge cases.
-- `ContentRegistry`: each content type, each validation rule, and each conflict mode.
-- `PackLoader`: discovery, ordering, filtering, dependency validation, and per-pack conflict behavior.
-- `Formula`: parser success, parser failure, and live evaluation against real state.
-- `PcGen`: parser correctness, mapping completeness, and reconstruction regression cases.
-- `Blazor UI`: builder workflow, sheet workflow, and content loader workflow.
+- `ReplayStudio`: branch and warning coverage in `Evaluate`,
+  `ApplyTickChoices`, and `ApplyEquipment`.
+- `Permabuff` and `Prerequisite`: every subtype, including negative and edge
+  cases.
+- `ContentRegistry` and `PackLoader`: every content type, validation rule,
+  conflict mode, discovery path, ordering rule, and failure mode.
+- `Formula`: parser success/failure and live evaluation against real state.
+- `PcGen`: parser correctness, mapping completeness, and stable reconstruction
+  regressions with external data enabled.
+- `Blazor UI`: builder, sheet, content-loader, and API workflows.
