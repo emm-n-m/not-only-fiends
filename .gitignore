@@ -51,6 +51,9 @@ pcgen_deceit
 pcgen_data
 pcgen_characters
 
+# Local history backups
+*.bundle
+
 # Local content wiring
 .env
 .claude/settings.local.json

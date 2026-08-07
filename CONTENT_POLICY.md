@@ -40,7 +40,7 @@ Current public pack set:
 
 Any pack not listed in `content-public.json` is treated as private or unreviewed and is only loaded when configured via `EXTRA_PACKS_PATH` in `.env`.
 
-Examples currently present in the repo that are therefore private by default include:
+Private packs are not stored in this repository — they live in a separate private repository and are only loaded from the path configured in `EXTRA_PACKS_PATH`. Examples include:
 
 - `12_to_midnight`
 - `deceit_homebrew`
