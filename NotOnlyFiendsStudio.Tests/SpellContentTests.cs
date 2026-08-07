@@ -162,6 +162,62 @@ public class SpellContentTests
         }
     }
 
+    [Fact]
+    public void PaladinVariants_ApplyAlignmentAndSpellListDeltas()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+
+        var freedom = Assert.IsType<HDDriver>(registry.GetDriver("class:paladin_of_freedom"));
+        Assert.Contains(freedom.Prerequisites.OfType<AlignmentReq>(), req =>
+            req.Allowed.SetEquals(new[] { Alignment.CG }));
+        Assert.Contains("skill:bluff", freedom.ClassSkills);
+        Assert.DoesNotContain("skill:diplomacy", freedom.ClassSkills);
+
+        Assert.True(registry.TryGetSpell("spell:death_ward", out var deathWard));
+        Assert.False(registry.TryGetSpellLevelForList(deathWard!, freedom.Id, out _));
+        Assert.True(registry.TryGetSpell("spell:protection_from_law", out var protectionFromLaw));
+        Assert.True(registry.TryGetSpellLevelForList(protectionFromLaw!, freedom.Id, out var freedomLevel));
+        Assert.Equal(1, freedomLevel);
+        Assert.Contains(registry.GetSpellsForList(freedom.Id), spell => spell.Id == "spell:freedom_of_movement");
+
+        var excludedSelection = new Character
+        {
+            Name = "Freedom Spell List Validation",
+            Alignment = Alignment.CG,
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 16, CHA = 10 },
+            Ticks = Enumerable.Range(0, 4).Select((_, index) => new Tick
+            {
+                DriverId = freedom.Id,
+                Choices = index == 3
+                    ? new TickChoices
+                    {
+                        SpellSelections = new List<SpellSelection>
+                        {
+                            new() { ClassId = freedom.Id, SpellId = "spell:death_ward", SpellLevel = 4 }
+                        }
+                    }
+                    : new TickChoices()
+            }).ToList()
+        };
+        var excludedState = new ReplayStudio(registry).Evaluate(excludedSelection);
+        Assert.Contains(excludedState.Warnings, warning =>
+            warning.Message.Contains("spell:death_ward") && warning.Message.Contains("not on the class:paladin_of_freedom spell list"));
+
+        var slaughter = Assert.IsType<HDDriver>(registry.GetDriver("class:paladin_of_slaughter"));
+        Assert.Contains(slaughter.Prerequisites.OfType<AlignmentReq>(), req =>
+            req.Allowed.SetEquals(new[] { Alignment.CE }));
+        Assert.Contains("skill:intimidate", slaughter.ClassSkills);
+        Assert.DoesNotContain("skill:diplomacy", slaughter.ClassSkills);
+
+        Assert.True(registry.TryGetSpell("spell:hold_person", out var holdPerson));
+        Assert.False(registry.TryGetSpellLevelForList(holdPerson!, slaughter.Id, out _));
+        Assert.True(registry.TryGetSpell("spell:cause_fear", out var causeFear));
+        Assert.True(registry.TryGetSpellLevelForList(causeFear!, slaughter.Id, out var slaughterLevel));
+        Assert.Equal(1, slaughterLevel);
+        Assert.Contains(registry.GetSpellsForList(slaughter.Id), spell => spell.Id == "spell:poison");
+    }
+
     [RequiresPrivatePacksFact]
     public void GetSpellsForList_SupportsDomainSpellLists()
     {

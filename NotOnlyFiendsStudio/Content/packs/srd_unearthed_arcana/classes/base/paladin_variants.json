@@ -1,0 +1,171 @@
+[
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:paladin_of_freedom",
+    "name": "Paladin of Freedom",
+    "hitDie": 10,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "skill:bluff", "skill:concentration", "skill:craft", "skill:handle_animal", "skill:heal",
+      "skill:knowledge_nobility", "skill:knowledge_religion", "skill:profession", "skill:ride",
+      "skill:sense_motive"
+    ],
+    "babProgression": "good",
+    "saveProgression": { "fort": "good", "ref": "poor", "will": "poor" },
+    "spellcasting": {
+      "castingType": "divine",
+      "castingStat": "wis",
+      "spellListSources": ["class:paladin"],
+      "spellListExclusions": [
+        "spell:death_ward", "spell:discern_lies", "spell:dispel_chaos",
+        "spell:magic_circle_against_chaos", "spell:protection_from_chaos"
+      ],
+      "spellsPerDay": {
+        "4": { "0": 0, "1": 0 }, "5": { "0": 0, "1": 0 },
+        "6": { "0": 0, "1": 1 }, "7": { "0": 0, "1": 1 },
+        "8": { "0": 0, "1": 1, "2": 0 }, "9": { "0": 0, "1": 1, "2": 0 },
+        "10": { "0": 0, "1": 1, "2": 1 }, "11": { "0": 0, "1": 1, "2": 1, "3": 0 },
+        "12": { "0": 0, "1": 1, "2": 1, "3": 1 },
+        "13": { "0": 0, "1": 1, "2": 1, "3": 1 },
+        "14": { "0": 0, "1": 2, "2": 1, "3": 1, "4": 0 },
+        "15": { "0": 0, "1": 2, "2": 1, "3": 1, "4": 1 },
+        "16": { "0": 0, "1": 2, "2": 2, "3": 1, "4": 1 },
+        "17": { "0": 0, "1": 2, "2": 2, "3": 2, "4": 1 },
+        "18": { "0": 0, "1": 3, "2": 2, "3": 2, "4": 1 },
+        "19": { "0": 0, "1": 3, "2": 3, "3": 3, "4": 2 },
+        "20": { "0": 0, "1": 3, "2": 3, "3": 3, "4": 3 }
+      }
+    },
+    "levelPermabuffs": {
+      "1": [
+        { "$type": "GrantBonusFeat", "featId": "feat:simple_weapon_proficiency" },
+        { "$type": "GrantBonusFeat", "featId": "feat:weapon_proficiency_martial" },
+        { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_light" },
+        { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_medium" },
+        { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_heavy" },
+        { "$type": "GrantBonusFeat", "featId": "feat:shield_proficiency" },
+        { "$type": "GrantAbility", "ability": { "id": "pof_aura_good", "name": "Aura of Good", "description": "Radiates an aura of good with power equal to paladin of freedom level." } },
+        { "$type": "GrantAbility", "ability": { "id": "pof_detect_evil", "name": "Detect Evil", "description": "Can use detect evil at will as a spell-like ability." } },
+        { "$type": "GrantAbility", "ability": { "id": "pof_smite_evil", "name": "Smite Evil", "description": "Smite evil as the standard paladin." } },
+        { "$type": "ModifyCounter", "counterId": "pof_smite_evil_uses" }
+      ],
+      "2": [
+        { "$type": "GrantAbility", "ability": { "id": "pof_divine_grace", "name": "Divine Grace", "description": "Add Charisma bonus to all saving throws." } },
+        { "$type": "GrantAbility", "ability": { "id": "pof_lay_on_hands", "name": "Lay on Hands", "description": "Heal damage by touch as the standard paladin." } }
+      ],
+      "3": [
+        { "$type": "GrantAbility", "ability": { "id": "pof_aura_resolve", "name": "Aura of Resolve", "description": "Immune to compulsion; allies within 10 feet gain +4 morale on saves against compulsion." } },
+        { "$type": "GrantAbility", "ability": { "id": "pof_divine_health", "name": "Divine Health", "description": "Immune to all diseases, including supernatural and magical diseases." } }
+      ],
+      "4": [
+        { "$type": "GrantAbility", "ability": { "id": "pof_turn_undead", "name": "Turn Undead", "description": "Turn undead as a cleric of three levels lower." } },
+        { "$type": "GrantAbility", "ability": { "id": "pof_spells", "name": "Spells", "description": "Casts divine spells beginning at 4th level using Wisdom." } }
+      ],
+      "5": [
+        { "$type": "GrantAbility", "ability": { "id": "pof_special_mount", "name": "Special Mount", "description": "Gain a special paladin mount." } },
+        { "$type": "GrantCompanionSlot", "linkType": "special_mount", "classFeatureType": "class_feature:paladin_mount_options", "effectiveLevelFormula": { "expression": "ClassLevel(paladin_of_freedom)" } }
+      ],
+      "6": [
+        { "$type": "GrantAbility", "ability": { "id": "pof_remove_disease", "name": "Remove Disease", "description": "Can use remove disease as a spell-like ability." } },
+        { "$type": "ModifyCounter", "counterId": "pof_remove_disease_uses" }
+      ],
+      "9": [ { "$type": "ModifyCounter", "counterId": "pof_remove_disease_uses" } ],
+      "10": [ { "$type": "ModifyCounter", "counterId": "pof_smite_evil_uses" } ],
+      "12": [ { "$type": "ModifyCounter", "counterId": "pof_remove_disease_uses" } ],
+      "15": [
+        { "$type": "ModifyCounter", "counterId": "pof_smite_evil_uses" },
+        { "$type": "ModifyCounter", "counterId": "pof_remove_disease_uses" }
+      ],
+      "18": [ { "$type": "ModifyCounter", "counterId": "pof_remove_disease_uses" } ],
+      "20": [ { "$type": "ModifyCounter", "counterId": "pof_smite_evil_uses" } ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [ { "$type": "AlignmentReq", "allowed": ["cG"] } ]
+  },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:paladin_of_slaughter",
+    "name": "Paladin of Slaughter",
+    "hitDie": 10,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "skill:concentration", "skill:craft", "skill:handle_animal", "skill:heal", "skill:intimidate",
+      "skill:knowledge_nobility", "skill:knowledge_religion", "skill:profession", "skill:ride",
+      "skill:sense_motive"
+    ],
+    "babProgression": "good",
+    "saveProgression": { "fort": "good", "ref": "poor", "will": "poor" },
+    "spellcasting": {
+      "castingType": "divine",
+      "castingStat": "wis",
+      "spellListSources": ["class:paladin_of_tyranny"],
+      "spellListExclusions": [
+        "spell:doom", "spell:protection_from_chaos", "spell:hold_person",
+        "spell:bestow_curse", "spell:discern_lies", "spell:magic_circle_against_chaos",
+        "spell:dispel_chaos", "spell:dominate_person"
+      ],
+      "spellsPerDay": {
+        "4": { "0": 0, "1": 0 }, "5": { "0": 0, "1": 0 },
+        "6": { "0": 0, "1": 1 }, "7": { "0": 0, "1": 1 },
+        "8": { "0": 0, "1": 1, "2": 0 }, "9": { "0": 0, "1": 1, "2": 0 },
+        "10": { "0": 0, "1": 1, "2": 1 }, "11": { "0": 0, "1": 1, "2": 1, "3": 0 },
+        "12": { "0": 0, "1": 1, "2": 1, "3": 1 },
+        "13": { "0": 0, "1": 1, "2": 1, "3": 1 },
+        "14": { "0": 0, "1": 2, "2": 1, "3": 1, "4": 0 },
+        "15": { "0": 0, "1": 2, "2": 1, "3": 1, "4": 1 },
+        "16": { "0": 0, "1": 2, "2": 2, "3": 1, "4": 1 },
+        "17": { "0": 0, "1": 2, "2": 2, "3": 2, "4": 1 },
+        "18": { "0": 0, "1": 3, "2": 2, "3": 2, "4": 1 },
+        "19": { "0": 0, "1": 3, "2": 3, "3": 3, "4": 2 },
+        "20": { "0": 0, "1": 3, "2": 3, "4": 3, "3": 3 }
+      }
+    },
+    "levelPermabuffs": {
+      "1": [
+        { "$type": "GrantBonusFeat", "featId": "feat:simple_weapon_proficiency" },
+        { "$type": "GrantBonusFeat", "featId": "feat:weapon_proficiency_martial" },
+        { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_light" },
+        { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_medium" },
+        { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_heavy" },
+        { "$type": "GrantBonusFeat", "featId": "feat:shield_proficiency" },
+        { "$type": "GrantAbility", "ability": { "id": "pos_aura_evil", "name": "Aura of Evil", "description": "Radiates an aura of evil with power equal to paladin of slaughter level." } },
+        { "$type": "GrantAbility", "ability": { "id": "pos_detect_good", "name": "Detect Good", "description": "Can use detect good at will as a spell-like ability." } },
+        { "$type": "GrantAbility", "ability": { "id": "pos_smite_good", "name": "Smite Good", "description": "Smite good as the standard paladin smites evil." } },
+        { "$type": "ModifyCounter", "counterId": "pos_smite_good_uses" }
+      ],
+      "2": [
+        { "$type": "GrantAbility", "ability": { "id": "pos_divine_grace", "name": "Divine Grace", "description": "Add Charisma bonus to all saving throws." } },
+        { "$type": "GrantAbility", "ability": { "id": "pos_deadly_touch", "name": "Deadly Touch", "description": "Deal or cure damage by touch as the standard paladin of slaughter feature." } }
+      ],
+      "3": [
+        { "$type": "GrantAbility", "ability": { "id": "pos_debilitating_aura", "name": "Debilitating Aura", "description": "Enemies within 10 feet take a -1 penalty to Armor Class." } },
+        { "$type": "GrantAbility", "ability": { "id": "pos_divine_health", "name": "Divine Health", "description": "Immune to all diseases, including supernatural and magical diseases." } }
+      ],
+      "4": [
+        { "$type": "GrantAbility", "ability": { "id": "pos_rebuke_undead", "name": "Rebuke Undead", "description": "Rebuke undead as an evil cleric of three levels lower." } },
+        { "$type": "GrantAbility", "ability": { "id": "pos_spells", "name": "Spells", "description": "Casts divine spells beginning at 4th level using Wisdom." } }
+      ],
+      "5": [
+        { "$type": "GrantAbility", "ability": { "id": "pos_special_mount", "name": "Special Mount", "description": "Gain a special paladin mount." } },
+        { "$type": "GrantCompanionSlot", "linkType": "special_mount", "classFeatureType": "class_feature:paladin_mount_options", "effectiveLevelFormula": { "expression": "ClassLevel(paladin_of_slaughter)" } }
+      ],
+      "6": [
+        { "$type": "GrantAbility", "ability": { "id": "pos_cause_disease", "name": "Cause Disease", "description": "Can inflict disease as contagion by touch." } },
+        { "$type": "ModifyCounter", "counterId": "pos_cause_disease_uses" }
+      ],
+      "9": [ { "$type": "ModifyCounter", "counterId": "pos_cause_disease_uses" } ],
+      "10": [ { "$type": "ModifyCounter", "counterId": "pos_smite_good_uses" } ],
+      "12": [ { "$type": "ModifyCounter", "counterId": "pos_cause_disease_uses" } ],
+      "15": [
+        { "$type": "ModifyCounter", "counterId": "pos_smite_good_uses" },
+        { "$type": "ModifyCounter", "counterId": "pos_cause_disease_uses" }
+      ],
+      "18": [ { "$type": "ModifyCounter", "counterId": "pos_cause_disease_uses" } ],
+      "20": [ { "$type": "ModifyCounter", "counterId": "pos_smite_good_uses" } ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [ { "$type": "AlignmentReq", "allowed": ["cE"] } ]
+  }
+]

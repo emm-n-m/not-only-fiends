@@ -27,6 +27,35 @@ public class FeatTests
     }
 
     [Fact]
+    public void GrantedFeats_FromRaceTemplateAndClass_AreNotPlayerSelections()
+    {
+        var (_, engine) = CreateStudio();
+        var character = new Character
+        {
+            Name = "Granted Feats",
+            RaceId = "race:pixie",
+            TemplateIds = new List<string> { "template:vampire" },
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 16, CON = 10, INT = 14, WIS = 12, CHA = 14
+            },
+            Ticks = new List<Tick>
+            {
+                new() { DriverId = "class:wizard" }
+            }
+        };
+
+        var state = engine.Evaluate(character);
+
+        // Pixie's racial permabuffs, vampire's template permabuffs, and wizard's class feature
+        // all grant feats directly. None should appear as a player choice on the tick.
+        Assert.Contains("feat:weapon_finesse", state.Feats);
+        Assert.Contains("feat:alertness", state.Feats);
+        Assert.Contains("feat:scribe_scroll", state.Feats);
+        Assert.Empty(character.Ticks[0].Choices.FeatIds ?? new List<string>());
+    }
+
+    [Fact]
     public void PrerequisiteChain_PowerAttack_Cleave_GreatCleave()
     {
         var (registry, engine) = CreateStudio();
@@ -172,6 +201,36 @@ public class FeatTests
         Assert.Contains("feat:weapon_focus", state.Feats);
         // 3 slots granted at HD 1, 2 picked → 1 remaining.
         Assert.Single(state.FeatSlots);
+    }
+
+    [Fact]
+    public void FeatSlotEnforcement_UsesRestrictedSlotBeforeUnrestrictedSlot()
+    {
+        var (_, engine) = CreateStudio();
+        var character = new Character
+        {
+            Name = "Restricted Precedence",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 16, DEX = 14, CON = 14, INT = 10, WIS = 12, CHA = 8
+            },
+            Ticks = new List<Tick>
+            {
+                new() { DriverId = "class:fighter", Choices = new TickChoices
+                {
+                    FeatIds = new List<string> { "feat:improved_initiative", "feat:power_attack" }
+                } }
+            }
+        };
+
+        var state = engine.Evaluate(character);
+
+        // The general feat must use an unrestricted slot; Power Attack is a fighter-bonus feat
+        // and should consume the restricted slot. The remaining slot proves the precedence.
+        Assert.Single(state.FeatSlots);
+        Assert.Null(state.FeatSlots[0].Restriction);
+        Assert.Empty(state.Warnings);
     }
 
     [Fact]

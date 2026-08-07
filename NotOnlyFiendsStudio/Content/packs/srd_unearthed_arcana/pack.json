@@ -1,7 +1,7 @@
 {
   "id": "srd_unearthed_arcana",
   "name": "Unearthed Arcana",
-  "description": "Variant classes from Unearthed Arcana: Cloistered Cleric, Paladin of Tyranny, Planar Ranger.",
+  "description": "Variant classes from Unearthed Arcana: Cloistered Cleric, Paladins of Freedom, Slaughter, and Tyranny, and Planar Ranger.",
   "author": "Wizards of the Coast",
   "version": "1.0.0",
   "priority": 5,

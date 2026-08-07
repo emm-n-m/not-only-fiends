@@ -448,6 +448,19 @@ public class PermabuffTests
         Assert.Equal(2, state.DamageReduction.Count);
     }
 
+    [Fact]
+    public void GrantDR_SameBypassConditionKeepsTheHigherValue()
+    {
+        var state = CreateState();
+        new GrantDR { Value = 10, BypassedBy = "silver" }.Apply(state);
+        new GrantDR { Value = 5, BypassedBy = "SILVER" }.Apply(state);
+        new GrantDR { Value = 15, BypassedBy = "silver" }.Apply(state);
+
+        var dr = Assert.Single(state.DamageReduction);
+        Assert.Equal(15, dr.Value);
+        Assert.Equal("silver", dr.BypassedBy);
+    }
+
     // --- GrantSkillBonus ---
 
     [Fact]

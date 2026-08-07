@@ -85,4 +85,38 @@ public class ContentConflictTests
             Assert.Equal(2, registry.GetAllFeats().Count());
         }
     }
+
+    [Fact]
+    public void WarnAndError_ApplyToRepresentativeNonFeatContent()
+    {
+        var warningRegistry = new ContentRegistry { OnConflict = ConflictResolution.Warn };
+        warningRegistry.RegisterRace(new RaceDefinition { Id = "race:duplicate" });
+        warningRegistry.RegisterRace(new RaceDefinition { Id = "race:duplicate", Name = "Later" });
+        warningRegistry.RegisterTemplate(new TemplateDriver { Id = "template:duplicate" });
+        warningRegistry.RegisterTemplate(new TemplateDriver { Id = "template:duplicate", Name = "Later" });
+        warningRegistry.RegisterDomain(new DomainDefinition { Id = "domain:duplicate" });
+        warningRegistry.RegisterDomain(new DomainDefinition { Id = "domain:duplicate", Name = "Later" });
+        warningRegistry.RegisterSpell(new SpellDefinition { Id = "spell:duplicate" });
+        warningRegistry.RegisterSpell(new SpellDefinition { Id = "spell:duplicate", Name = "Later" });
+        warningRegistry.RegisterDriver(new HDDriver { Id = "class:duplicate" });
+        warningRegistry.RegisterDriver(new HDDriver { Id = "class:duplicate", Name = "Later" });
+
+        Assert.False(warningRegistry.HasErrors);
+        Assert.Equal(5, warningRegistry.Errors.Count(error => error.IsWarning));
+
+        var errorRegistry = new ContentRegistry { OnConflict = ConflictResolution.Error };
+        errorRegistry.RegisterRace(new RaceDefinition { Id = "race:duplicate" });
+        errorRegistry.RegisterRace(new RaceDefinition { Id = "race:duplicate", Name = "Later" });
+        errorRegistry.RegisterTemplate(new TemplateDriver { Id = "template:duplicate" });
+        errorRegistry.RegisterTemplate(new TemplateDriver { Id = "template:duplicate", Name = "Later" });
+        errorRegistry.RegisterDomain(new DomainDefinition { Id = "domain:duplicate" });
+        errorRegistry.RegisterDomain(new DomainDefinition { Id = "domain:duplicate", Name = "Later" });
+        errorRegistry.RegisterSpell(new SpellDefinition { Id = "spell:duplicate" });
+        errorRegistry.RegisterSpell(new SpellDefinition { Id = "spell:duplicate", Name = "Later" });
+        errorRegistry.RegisterDriver(new HDDriver { Id = "class:duplicate" });
+        errorRegistry.RegisterDriver(new HDDriver { Id = "class:duplicate", Name = "Later" });
+
+        Assert.True(errorRegistry.HasErrors);
+        Assert.Equal(5, errorRegistry.Errors.Count(error => !error.IsWarning));
+    }
 }

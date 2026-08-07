@@ -43,6 +43,9 @@ public class HDDriver : Driver
     public override List<Permabuff> GetPermabuffs(CharacterState state, int driverLevel, GameRules rules, int? effectiveLevel = null, int previousEffectiveLevel = 0)
     {
         var featureLevel = effectiveLevel ?? driverLevel;
+        var spellcastingLevel = featureLevel + state.EffectiveLevelRules
+            .Where(rule => rule.TargetDriverId == Id && rule.Scope == EffectiveLevelScope.SpellcastingOnly)
+            .Sum(rule => rule.BonusFormula.Evaluate(state));
         // When no effective level override, default high-water to driverLevel-1 (normal single-level behavior)
         if (effectiveLevel == null)
             previousEffectiveLevel = driverLevel - 1;
@@ -59,11 +62,12 @@ public class HDDriver : Driver
             buffs.Add(new AddSaves(SaveProgression, driverLevel));
         }
 
-        // Spellcasting uses featureLevel (boosted by effective level rules)
-        var progressionLevel = featureLevel;
+        // Spellcasting includes rules scoped only to casting in addition to any feature-level
+        // bonuses already present in featureLevel.
+        var progressionLevel = spellcastingLevel;
         var hasMappedProgressionLevel = Spellcasting?.ProgressionLevelByDriverLevel is { Count: > 0 };
         if (hasMappedProgressionLevel &&
-            !Spellcasting!.ProgressionLevelByDriverLevel.TryGetValue(featureLevel, out progressionLevel))
+            !Spellcasting!.ProgressionLevelByDriverLevel.TryGetValue(spellcastingLevel, out progressionLevel))
         {
             progressionLevel = 0;
         }
@@ -75,7 +79,7 @@ public class HDDriver : Driver
             Dictionary<int, int>? sk = null;
             Spellcasting.SpellsKnown?.TryGetValue(progressionLevel, out sk);
             var casterLevel = progressionLevel;
-            if (Spellcasting.CasterLevelByDriverLevel?.TryGetValue(featureLevel, out var mappedCasterLevel) == true)
+            if (Spellcasting.CasterLevelByDriverLevel?.TryGetValue(spellcastingLevel, out var mappedCasterLevel) == true)
                 casterLevel = mappedCasterLevel;
 
             buffs.Add(new UpdateSpellcasting
@@ -121,6 +125,9 @@ public class SpellcastingProgression
 
     /// <summary>Additional class/domain lists this progression may learn spells from.</summary>
     public List<string> SpellListSources { get; set; } = new();
+
+    /// <summary>Spell IDs removed from the inherited list sources for this class.</summary>
+    public List<string> SpellListExclusions { get; set; } = new();
 
     /// <summary>
     /// Set only where the default inference is wrong — in practice only the wizard, which has no

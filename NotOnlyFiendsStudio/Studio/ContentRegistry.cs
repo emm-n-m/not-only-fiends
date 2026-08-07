@@ -241,6 +241,12 @@ public class ContentRegistry : IContentLookup
 
     public bool TryGetSpellLevelForList(SpellDefinition spell, string spellListId, out int level)
     {
+        if (IsSpellExcludedFromList(spell, spellListId))
+        {
+            level = 0;
+            return false;
+        }
+
         if (TryGetSpellLevelForSource(spell, spellListId, out level))
             return true;
 
@@ -262,6 +268,11 @@ public class ContentRegistry : IContentLookup
         level = 0;
         return false;
     }
+
+    public bool IsSpellExcludedFromList(SpellDefinition spell, string spellListId) =>
+        _drivers.TryGetValue(spellListId, out var driver)
+        && driver is HDDriver hd
+        && hd.Spellcasting?.SpellListExclusions.Contains(spell.Id, StringComparer.Ordinal) == true;
 
     public IEnumerable<SpellDefinition> GetSpellsForList(string spellListId, int? maxSpellLevel = null) =>
         _spells.Values

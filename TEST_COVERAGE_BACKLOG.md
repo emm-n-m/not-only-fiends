@@ -53,38 +53,37 @@ treated as active work:
 
 ### Studio replay and permabuffs
 
-- [ ] Add explicit tests for feat-slot consumption precedence when standard and
+- [x] Add explicit tests for feat-slot consumption precedence when standard and
   restricted bonus slots compete, including over-selection and invalid-slot
   cases not covered by current enforcement tests.
-- [ ] Add direct tests for the remaining `Permabuff` subtypes and edge cases,
-  especially `RevokeAbility`, `RevokeSLA`, immunity/DR replacement behavior,
-  level adjustment, and resistance stacking.
-- [ ] Add `UpdateSpellcasting` coverage for domain bonus-slot recalculation
+- [x] Add direct tests for the remaining `Permabuff` subtypes and edge cases,
+  including immunity/DR replacement behavior, level adjustment, and resistance stacking.
+- [x] Add `UpdateSpellcasting` coverage for domain bonus-slot recalculation
   after domains already exist.
-- [ ] Add mixed racial-HD/class-HD/template scenarios that assert the complete
+- [x] Add mixed racial-HD/class-HD/template scenarios that assert the complete
   final state, not only individual template or effective-level behavior.
 
 ### Feats, spells, and domains
 
 - [x] Add invalid feat-ID tick-choice tests and assert warning text/behavior.
-- [ ] Add explicit tests for feats granted by races, templates, and classes,
+- [x] Add explicit tests for feats granted by races, templates, and classes,
   distinguished from feats selected by the player.
 - [x] Cover blank spell selections and invalid spell levels in an end-to-end
   warning test. Unknown class and spell-list paths are covered separately.
 - [x] Cover duplicate domain selections.
-- [ ] Cover the full multi-domain downstream spell-slot recalculation path.
-- [ ] Add a multiclass divine-plus-arcane scenario combining domains and
+- [x] Cover the full multi-domain downstream spell-slot recalculation path.
+- [x] Add a multiclass divine-plus-arcane scenario combining domains and
   prestige spell advancement.
 
 ### Content registry and pack loading
 
-- [ ] Test `LoadJsonForDirectory` for every registered content type and for an
+- [x] Test `LoadJsonForDirectory` for every registered content type and for an
   unknown directory.
-- [ ] Add spell validation tests for unknown spell lists and negative spell
+- [x] Add spell validation tests for unknown spell lists and negative spell
   levels, plus selectable-feat-variant validation.
-- [ ] Exercise `Warn` and `Error` conflicts across representative non-feat
+- [x] Exercise `Warn` and `Error` conflicts across representative non-feat
   content types (domains, spells, races, templates, and drivers).
-- [ ] Test pack-config conflict overrides, disabled dependency chains,
+- [x] Test pack-config conflict overrides, disabled dependency chains,
   manifest-only load-order resolution, duplicate pack IDs, malformed
   `pack.json`, and loading every shipped pack as a smoke test.
 
@@ -109,12 +108,11 @@ treated as active work:
   discarded PCGen temporary modifiers, filtered internal templates, rolls
   outside the driver die, and external companion file references.
 
-Three defects surfaced while writing these and are recorded in
-[KNOWN_ISSUES.md](KNOWN_ISSUES.md) rather than fixed here: `IsLiving` survives
-an undead `typeOverride`, the assassin/blackguard spell lists are empty, and
-PCGen's `Sorcerer/Cleric (Arcane)` spell source is unmapped (29 spells dropped
-from one character). A fourth, domain bonus slots scaling with domain count, is
-a rules bug with an existing test asserting the wrong behaviour.
+The remaining source-data notes are recorded in
+[KNOWN_ISSUES.md](KNOWN_ISSUES.md): War-domain deity/favored-weapon mappings,
+the Nymph Archdruid's over-tier tiger, and two spells whose mirror lacks a
+standalone stat block. The former replay/import/content defects are covered by
+focused regressions.
 
 ### UI and API coverage
 

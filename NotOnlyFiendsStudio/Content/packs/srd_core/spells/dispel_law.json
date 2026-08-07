@@ -4,7 +4,9 @@
   "name": "Dispel Law",
   "school": "abjuration",
   "classLevels": {
-    "class:cleric": 5
+    "class:cleric": 5,
+    "class:paladin_of_slaughter": 4,
+    "class:paladin_of_freedom": 4
   },
   "components": {
     "verbal": true,

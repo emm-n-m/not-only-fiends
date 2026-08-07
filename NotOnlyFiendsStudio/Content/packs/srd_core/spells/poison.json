@@ -7,7 +7,8 @@
     "class:druid": 3,
     "class:cleric": 4,
     "class:assassin": 4,
-    "class:blackguard": 4
+    "class:blackguard": 4,
+    "class:paladin_of_slaughter": 4
   },
   "components": {
     "verbal": true,

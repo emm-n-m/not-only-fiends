@@ -157,6 +157,21 @@ public class PackLoaderTests : IDisposable
         Assert.Equal("top", ordered[3].Manifest.Id);
     }
 
+    [Fact]
+    public void ResolveLoadOrder_ManifestOnlyPreservesDependencyOrder()
+    {
+        var manifests = new List<PackManifest>
+        {
+            new() { Id = "addon", Priority = 0, Depends = new() { "core" } },
+            new() { Id = "core", Priority = 50 }
+        };
+
+        var ordered = _loader.ResolveLoadOrder(manifests);
+
+        Assert.Equal(new[] { "core", "addon" }, ordered.Select(pack => pack.Manifest.Id));
+        Assert.All(ordered, pack => Assert.Null(pack.DirectoryPath));
+    }
+
     // --- Error cases ---
 
     [Fact]
@@ -178,6 +193,44 @@ public class PackLoaderTests : IDisposable
         var packs = _loader.DiscoverPacks(_tempDir);
         var ex = Assert.Throws<InvalidOperationException>(() => _loader.ResolveLoadOrder(packs));
         Assert.Contains("nonexistent", ex.Message);
+    }
+
+    [Fact]
+    public void ResolveLoadOrder_DisabledDependencyIsUnavailable()
+    {
+        CreatePack("core");
+        CreatePack("addon", depends: new() { "core" });
+        var config = new PackConfig
+        {
+            Packs = new() { new PackEntry { Id = "core", Enabled = false } }
+        };
+
+        var packs = _loader.DiscoverPacks(_tempDir);
+        var ex = Assert.Throws<InvalidOperationException>(() => _loader.ResolveLoadOrder(packs, config));
+
+        Assert.Contains("core", ex.Message);
+    }
+
+    [Fact]
+    public void DiscoverPacks_MalformedManifestThrows()
+    {
+        var packDir = Path.Combine(_tempDir, "broken");
+        Directory.CreateDirectory(packDir);
+        File.WriteAllText(Path.Combine(packDir, "pack.json"), "{ not valid json");
+
+        Assert.Throws<JsonException>(() => _loader.DiscoverPacks(_tempDir));
+    }
+
+    [Fact]
+    public void ResolveLoadOrder_DuplicatePackIdsThrows()
+    {
+        var packs = new List<LoadedPack>
+        {
+            new() { Manifest = new PackManifest { Id = "duplicate" } },
+            new() { Manifest = new PackManifest { Id = "duplicate" } }
+        };
+
+        Assert.Throws<ArgumentException>(() => _loader.ResolveLoadOrder(packs));
     }
 
     // --- PackConfig filtering ---
@@ -268,6 +321,30 @@ public class PackLoaderTests : IDisposable
 
         var feat = registry.GetFeat("shared_feat");
         Assert.Equal("Later Version", feat.Name);
+    }
+
+    [Fact]
+    public void LoadPacks_ConfigConflictOverrideTakesPriorityOverManifest()
+    {
+        var coreDir = CreatePack("core", priority: 0);
+        AddFeatContent(coreDir, "shared_feat", "Core Version");
+
+        var laterDir = CreatePack("later", priority: 10, depends: new() { "core" },
+            onConflict: ConflictResolution.Error);
+        AddFeatContent(laterDir, "shared_feat", "Later Version");
+        var config = new PackConfig
+        {
+            Packs = new()
+            {
+                new PackEntry { Id = "later", OnConflict = ConflictResolution.LastWins }
+            }
+        };
+
+        var registry = new ContentRegistry();
+        _loader.LoadPacks(registry, _tempDir, config);
+
+        Assert.Equal("Later Version", registry.GetFeat("shared_feat").Name);
+        Assert.False(registry.HasErrors);
     }
 
     // --- PackManifest serialization ---

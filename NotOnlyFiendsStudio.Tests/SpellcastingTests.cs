@@ -143,6 +143,82 @@ public class SpellcastingTests
     }
 
     [Fact]
+    public void DivineAndArcaneCasters_MysticTheurgeAdvancesBothAndKeepsDomainSlots()
+    {
+        var (_, engine) = CreateStudio();
+        var character = new Character
+        {
+            Name = "Mystic Theurge Domain Test",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 12, CON = 14, INT = 16, WIS = 16, CHA = 10
+            },
+            Ticks = new List<Tick>
+            {
+                new() { DriverId = "class:cleric", Choices = new TickChoices
+                {
+                    ClassFeatureChoices = new Dictionary<string, List<string>>
+                    {
+                        ["domains"] = new() { "domain:knowledge", "domain:war" }
+                    },
+                    SkillAllocations = new List<SkillAllocation>
+                    {
+                        new() { SkillId = "skill:knowledge_religion", HalfRanks = 8 }
+                    }
+                } },
+                new() { DriverId = "class:cleric", Choices = new TickChoices
+                {
+                    SkillAllocations = new List<SkillAllocation>
+                    {
+                        new() { SkillId = "skill:knowledge_religion", HalfRanks = 2 }
+                    }
+                } },
+                new() { DriverId = "class:cleric", Choices = new TickChoices
+                {
+                    SkillAllocations = new List<SkillAllocation>
+                    {
+                        new() { SkillId = "skill:knowledge_religion", HalfRanks = 2 }
+                    }
+                } },
+                new() { DriverId = "class:wizard", Choices = new TickChoices
+                {
+                    SkillAllocations = new List<SkillAllocation>
+                    {
+                        new() { SkillId = "skill:knowledge_arcana", HalfRanks = 8 }
+                    }
+                } },
+                new() { DriverId = "class:wizard", Choices = new TickChoices
+                {
+                    SkillAllocations = new List<SkillAllocation>
+                    {
+                        new() { SkillId = "skill:knowledge_arcana", HalfRanks = 2 }
+                    }
+                } },
+                new() { DriverId = "class:wizard", Choices = new TickChoices
+                {
+                    SkillAllocations = new List<SkillAllocation>
+                    {
+                        new() { SkillId = "skill:knowledge_arcana", HalfRanks = 2 }
+                    }
+                } },
+                new() { DriverId = "class:mystic_theurge" },
+                new() { DriverId = "class:mystic_theurge" }
+            }
+        };
+
+        var state = engine.Evaluate(character);
+
+        Assert.Equal(5, state.Spellcasting["class:cleric"].CasterLevel);
+        Assert.Equal(5, state.Spellcasting["class:wizard"].CasterLevel);
+        var domainSlots = state.Spellcasting["class:cleric"].DomainBonusSlots;
+        Assert.Equal(1, domainSlots[1]);
+        Assert.Equal(1, domainSlots[2]);
+        Assert.Equal(1, domainSlots[3]);
+        Assert.DoesNotContain(state.Warnings, warning => warning.Message.Contains("AdvanceSpellcasting"));
+    }
+
+    [Fact]
     public void Sorcerer1_HasBasicSpellcasting()
     {
         var (_, engine) = CreateStudio();

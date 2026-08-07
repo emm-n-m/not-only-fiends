@@ -9,7 +9,8 @@
     "class:druid": 4,
     "class:ranger": 4,
     "class:assassin": 4,
-    "class:blackguard": 4
+    "class:blackguard": 4,
+    "class:paladin_of_freedom": 4
   },
   "components": {
     "verbal": true,

@@ -133,7 +133,8 @@ public class ReplayStudio
 
             // c. Compute effective level (actual + bonuses from templates/feats)
             var effectiveLevel = driverLevel;
-            foreach (var rule in state.EffectiveLevelRules.Where(r => r.TargetDriverId == tick.DriverId))
+            foreach (var rule in state.EffectiveLevelRules.Where(r =>
+                r.TargetDriverId == tick.DriverId && r.Scope == EffectiveLevelScope.ClassFeatures))
                 effectiveLevel += rule.BonusFormula.Evaluate(state);
             var previousEffective = effectiveHighWater.GetValueOrDefault(tick.DriverId, 0);
             effectiveHighWater[tick.DriverId] = effectiveLevel;
@@ -247,7 +248,8 @@ public class ReplayStudio
                 if (otherDriverId == tick.DriverId) continue;
 
                 var otherEffective = otherActualLevel;
-                foreach (var rule in state.EffectiveLevelRules.Where(r => r.TargetDriverId == otherDriverId))
+                foreach (var rule in state.EffectiveLevelRules.Where(r =>
+                    r.TargetDriverId == otherDriverId && r.Scope == EffectiveLevelScope.ClassFeatures))
                     otherEffective += rule.BonusFormula.Evaluate(state);
 
                 var otherPrev = effectiveHighWater.GetValueOrDefault(otherDriverId, 0);
@@ -1223,15 +1225,17 @@ public class ReplayStudio
                 {
                     // Domain picks come from the domain's own list, so only class picks are
                     // checked against the class spell list.
-                    var listSources = (sc.ProgressionData?.SpellListSources ?? Enumerable.Empty<string>())
-                        .Concat(state.ExtraSpellListSources
-                            .Where(rule => (rule.ClassId == null || rule.ClassId == sc.ClassId)
-                                        && (!rule.CastingType.HasValue || rule.CastingType == sc.CastingType))
-                            .Select(rule => rule.ListId));
-                    // Resolve each source through the registry so class sources (spell.ClassLevels)
-                    // and domain sources (the domain's bonusSpells) both count.
-                    var matchingLevels = new[] { routedClassId }.Concat(listSources)
-                        .Select(source => _content.TryGetSpellLevelForSource(spellDef, source, out var lvl) ? (int?)lvl : null)
+                    var extraListSources = state.ExtraSpellListSources
+                        .Where(rule => (rule.ClassId == null || rule.ClassId == sc.ClassId)
+                                    && (!rule.CastingType.HasValue || rule.CastingType == sc.CastingType))
+                        .Select(rule => rule.ListId);
+                    // Resolve the owning class through the registry so inherited class/domain
+                    // sources and that class's exclusions are applied together. Extra sources
+                    // granted dynamically are additive and resolve directly.
+                    var matchingLevels = new[] { routedClassId }
+                        .Select(source => _content.TryGetSpellLevelForList(spellDef, source, out var lvl) ? (int?)lvl : null)
+                        .Concat(extraListSources
+                            .Select(source => _content.TryGetSpellLevelForSource(spellDef, source, out var lvl) ? (int?)lvl : null))
                         .Where(lvl => lvl.HasValue)
                         .Select(lvl => lvl!.Value)
                         .ToList();

@@ -133,6 +133,19 @@ public class RacialSpellcastingTests
     }
 
     [Fact]
+    public void Nymph_RacialSpellcastingDoesNotAdvanceDruidClassFeatures()
+    {
+        var (_, engine) = CreateStudio();
+        var state = engine.Evaluate(BuildRacial("race:nymph", "racial_hd:fey", 6, "class:druid", 6));
+
+        // The racial grant stacks for casting only. Druid 6 has two wild-shape uses and no
+        // level-7+ class features; treating the grant as a class-feature level would inflate
+        // both values.
+        Assert.Equal(2, state.Counters.GetValueOrDefault("wild_shape_uses_per_day"));
+        Assert.DoesNotContain(state.Abilities, ability => ability.Id == "a_thousand_faces");
+    }
+
+    [Fact]
     public void Couatl_PlusLoremaster_AdvancesRacialSorcasterToCL12()
     {
         // Couatl (sorcerer 9) + 3 Loremaster levels advance the racial arcane casting → CL 12.

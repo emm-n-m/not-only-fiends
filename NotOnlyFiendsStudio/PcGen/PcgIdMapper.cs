@@ -58,6 +58,7 @@ public class PcgIdMapper
         ["Barbarian"] = "class:barbarian",
         ["Cleric"] = "class:cleric",
         ["Sorcerer"] = "class:sorcerer",
+        ["Sorcerer/Cleric (Arcane)"] = "class:sorcerer",
 
         // SRD base classes (from srd.json)
         ["Adept"] = "class:adept",
@@ -102,6 +103,8 @@ public class PcgIdMapper
         // Unearthed Arcana variant classes
         ["Cleric (Cloistered Cleric)"] = "class:cloistered_cleric",
         ["Paladin of Tyranny"] = "class:paladin_of_tyranny",
+        ["Paladin of Freedom"] = "class:paladin_of_freedom",
+        ["Paladin of Slaughter"] = "class:paladin_of_slaughter",
         ["Ranger (Planar Ranger)"] = "class:planar_ranger",
 
         // Third-party prestige classes

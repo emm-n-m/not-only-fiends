@@ -6,6 +6,8 @@
   "classLevels": {
     "class:adept": 1,
     "class:cleric": 1,
+    "class:paladin_of_slaughter": 1,
+    "class:paladin_of_freedom": 1,
     "class:sorcerer": 1,
     "class:wizard": 1
   },

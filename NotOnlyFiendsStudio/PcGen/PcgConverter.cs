@@ -162,10 +162,11 @@ public static class PcgConverter
         // are deliberately excluded above, but the MASTER record still tells us that this
         // character is a familiar. Restore the engine's universal familiar progression here;
         // Improved Familiar changes the eligible creature, not the progression or master level.
-        if (IsFamiliarLinkType(character.CompanionOrigin?.LinkType)
-            && !character.TemplateIds.Contains("template:familiar_standard", StringComparer.Ordinal))
+        var companionTemplateId = CompanionProgressionTemplate(character.CompanionOrigin?.LinkType);
+        if (companionTemplateId != null
+            && !character.TemplateIds.Contains(companionTemplateId, StringComparer.Ordinal))
         {
-            character.TemplateIds.Add("template:familiar_standard");
+            character.TemplateIds.Add(companionTemplateId);
         }
 
         // Build skill purchases (distributed across ticks later, by bought-class — see below).
@@ -751,6 +752,14 @@ public static class PcgConverter
 
     private static bool IsFamiliarLinkType(string? linkType) =>
         linkType is "familiar" or "improved_familiar";
+
+    private static string? CompanionProgressionTemplate(string? linkType) => linkType switch
+    {
+        "animal_companion" => "template:animal_companion_standard",
+        "familiar" or "improved_familiar" => "template:familiar_standard",
+        "special_mount" => "template:special_mount_standard",
+        _ => null,
+    };
 
     private static string ToCharacterId(string name, string fallback)
     {

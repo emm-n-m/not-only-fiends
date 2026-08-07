@@ -407,6 +407,34 @@ public class PcgConverterTests
             character.TemplateIds);
     }
 
+    [Theory]
+    [InlineData("Animal Companion", "animal_companion", "template:animal_companion_standard")]
+    [InlineData("Familiar", "familiar", "template:familiar_standard")]
+    [InlineData("Improved Familiar", "improved_familiar", "template:familiar_standard")]
+    [InlineData("Special Mount", "special_mount", "template:special_mount_standard")]
+    public void Convert_ImportedCompanion_GetsMatchingProgressionTemplate(
+        string pcgenType, string expectedLinkType, string expectedTemplate)
+    {
+        var data = CreateClericData();
+        data.Master = new PcgMasterEntry
+        {
+            Name = "Master",
+            Type = pcgenType,
+            File = "Master.pcg",
+        };
+
+        var character = PcgConverter.Convert(data, new PcgIdMapper()).Character;
+
+        Assert.Equal(expectedLinkType, character.CompanionOrigin!.LinkType);
+        Assert.Contains(expectedTemplate, character.TemplateIds);
+    }
+
+    [Fact]
+    public void IdMapper_MapsCompositeArcaneSorcererSource()
+    {
+        Assert.Equal("class:sorcerer", new PcgIdMapper().MapClass("Sorcerer/Cleric (Arcane)"));
+    }
+
     [Fact]
     public void Convert_MasterFollowersAndTemporaryBonuses_AreExplicit()
     {

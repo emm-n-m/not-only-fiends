@@ -102,6 +102,16 @@
             }
           },
           "additionalProperties": false
+        },
+        "spellListSources": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Additional class or domain lists this progression borrows from."
+        },
+        "spellListExclusions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Spell IDs removed from the inherited spell lists."
         }
       },
       "required": ["castingType", "castingStat", "spellsPerDay"],

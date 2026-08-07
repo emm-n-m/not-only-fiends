@@ -406,6 +406,38 @@ public class ContentValidationTests
     }
 
     [Fact]
+    public void SelectableFeatVariant_IsAcceptedWhenBaseFeatIsRepeatable()
+    {
+        var registry = new ContentRegistry();
+        registry.RegisterFeat(new FeatDefinition
+        {
+            Id = "feat:spell_focus",
+            Name = "Spell Focus",
+            Repeatable = true,
+            SelectionRequired = "school"
+        });
+        registry.RegisterDriver(new HDDriver
+        {
+            Kind = DriverKind.Class,
+            Id = "class:variant_gate",
+            Name = "Variant Gate",
+            HitDie = 6,
+            SkillPointsPerLevel = 2,
+            BABProgression = BABProgression.Poor,
+            SaveProgression = new SaveProgression(),
+            Prerequisites = new List<Prerequisite>
+            {
+                new HasFeat { FeatId = "feat:spell_focus_conjuration" }
+            }
+        });
+
+        registry.Validate();
+
+        Assert.DoesNotContain(registry.Errors, error =>
+            error.Kind == ContentErrorKind.BrokenReference && error.Message.Contains("spell_focus_conjuration"));
+    }
+
+    [Fact]
     public void BrokenMinClassLevel_ProducesError()
     {
         var registry = new ContentRegistry();

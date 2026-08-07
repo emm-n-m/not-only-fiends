@@ -86,14 +86,6 @@ public class PcgReconstructionFidelityTests
     }
 
     /// <summary>
-    /// PCGen labels each spell with the class that granted it. When that label has no engine
-    /// mapping the converter skips every spell under it, so those drops say nothing about whether
-    /// the spell itself exists — they are excluded here and pinned by
-    /// <see cref="Corpus_HasExactlyOneUnmappedSpellSourceLabel"/> instead.
-    /// </summary>
-    private const string UnmappedSourceMarker = "has an unmapped source class";
-
-    /// <summary>
     /// A dropped spell must be a genuine content gap, not a mapping miss. If the name resolves in
     /// the registry then the drop was the mapper's fault and the character silently lost a spell
     /// it could have kept.
@@ -109,12 +101,7 @@ public class PcgReconstructionFidelityTests
         foreach (var path in CorpusFiles())
         {
             var (_, result) = Convert(path);
-            var skippedBySource = result.Warnings
-                .Where(w => w.Contains(UnmappedSourceMarker, StringComparison.Ordinal))
-                .Select(w => w[(w.IndexOf('\'') + 1)..w.IndexOf("' (", StringComparison.Ordinal)])
-                .ToHashSet(StringComparer.Ordinal);
-
-            foreach (var spellName in result.DroppedSpells.Except(skippedBySource, StringComparer.Ordinal))
+            foreach (var spellName in result.DroppedSpells)
             {
                 droppedCount++;
                 if (mapper.MapSpell(spellName, registry) != null
@@ -128,36 +115,6 @@ public class PcgReconstructionFidelityTests
         Assert.True(droppedCount > 0,
             "Expected the corpus to still contain homebrew spells — if this is now zero, delete the test.");
         Assert.Empty(recoverable);
-    }
-
-    /// <summary>
-    /// Known defect, pinned so it cannot grow quietly: PCGen writes a couatl's innate casting
-    /// under the composite label "Sorcerer/Cleric (Arcane)", which the id mapper does not
-    /// recognise, so 29 spells that *do* exist in content are dropped from Fey High Arcanist —
-    /// even though the character ends up with a class:sorcerer caster that could hold them.
-    ///
-    /// When the mapper learns that label this assertion fails. That is the signal to delete both
-    /// this test and the exclusion in <see cref="Corpus_DropsOnlySpellsWithNoCounterpartInContent"/>.
-    /// </summary>
-    [RequiresPcgenGoldenDataFact]
-    public void Corpus_HasExactlyOneUnmappedSpellSourceLabel()
-    {
-        var affected = new List<string>();
-
-        foreach (var path in CorpusFiles())
-        {
-            var (_, result) = Convert(path);
-            if (result.Warnings.Any(w => w.Contains(UnmappedSourceMarker, StringComparison.Ordinal)))
-                affected.Add(Path.GetFileName(path));
-        }
-
-        Assert.Equal(new[] { "Fey High Arcanist.pcg" }, affected);
-
-        var (_, feyArcanist) = ConvertNamed("Fey High Arcanist.pcg");
-        Assert.Contains(
-            "Spell source 'Sorcerer/Cleric (Arcane)' has no engine mapping — spells skipped",
-            feyArcanist.Warnings);
-        Assert.Equal(29, feyArcanist.DroppedSpells.Count);
     }
 
     /// <summary>

@@ -81,6 +81,7 @@
 {
   "id": "template:vampire",
   "name": "Vampire",
+  "typeOverride": "undead",
   "subtypeAdditions": ["augmented"],
   "abilityModifiers": { "str": 6, "dex": 4, "con": 0, "int": 2, "wis": 2, "cha": 4 },
   "naturalArmor": 6,

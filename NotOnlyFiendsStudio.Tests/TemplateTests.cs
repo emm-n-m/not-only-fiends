@@ -122,6 +122,40 @@ public class TemplateTests
     }
 
     [Fact]
+    public void MixedRacialHdClassAndTemplate_ReplaysCompleteFinalState()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var character = new Character
+        {
+            Name = "Mixed Half-Fiend Fighter",
+            RaceId = "race:outsider",
+            TemplateIds = new List<string> { "template:half_fiend" },
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 12, DEX = 12, CON = 12, INT = 12, WIS = 12, CHA = 12
+            },
+            Ticks = new List<Tick>
+            {
+                new() { DriverId = "racial_hd:outsider" },
+                new() { DriverId = "racial_hd:outsider" },
+                new() { DriverId = "class:fighter" },
+                new() { DriverId = "class:fighter" }
+            }
+        };
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        Assert.Equal(4, state.TotalHD);
+        Assert.Equal(2, state.ClassLevels["class:fighter"]);
+        Assert.Equal(4, state.BaseBAB);
+        Assert.Equal(4, state.LevelAdjustment);
+        Assert.Equal(8, state.ECL);
+        Assert.Equal(16, state.AbilityScores.STR);
+        Assert.Contains(state.Abilities, ability => ability.Id == "hf_smite_good");
+        Assert.Contains(state.SLAs, sla => sla.Id == "hf_sla_darkness");
+    }
+
+    [Fact]
     public void HalfFiend_SLAs_CorrectAtVariousHD()
     {
         var registry = TestContentHelper.LoadAllPacks();
@@ -196,8 +230,7 @@ public class TemplateTests
     /// </summary>
     [Theory]
     [InlineData("template:lich", CreatureType.Undead, false)]
-    // template:vampire is deliberately not a case here: it sets no typeOverride, so the type
-    // change comes from applying template:undead alongside it. See KNOWN_ISSUES.md.
+    [InlineData("template:vampire", CreatureType.Undead, false)]
     [InlineData("template:undead", CreatureType.Undead, false)]
     [InlineData("template:half_fiend", CreatureType.Outsider, true)]
     public void TypeChangingTemplate_SetsLifeStateFromTheResultingType(
