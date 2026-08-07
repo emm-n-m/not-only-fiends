@@ -11,6 +11,21 @@ public enum CreatureType
     Plant, Undead, Vermin
 }
 
+public static class CreatureTypes
+{
+    /// <summary>
+    /// SRD: undead and constructs are the two types that are not alive. Derived rather than
+    /// authored because it follows from the type with no exceptions — a template that turns a
+    /// creature undead makes it non-living by that fact alone, and content that had to restate it
+    /// would silently disagree with the type sooner or later.
+    /// </summary>
+    public static bool IsLiving(CreatureType type) =>
+        type is not (CreatureType.Undead or CreatureType.Construct);
+
+    /// <summary>The incorporeal subtype, spelled once so race and template paths agree.</summary>
+    public const string IncorporealSubtype = "incorporeal";
+}
+
 public enum MovementMode { Land, Fly, Swim, Burrow, Climb }
 
 public enum FlightManeuverability { Clumsy, Poor, Average, Good, Perfect }

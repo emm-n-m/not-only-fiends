@@ -118,6 +118,302 @@ public class CompanionTests
         Assert.Equal(10, new Formula("LeadershipScore - 2").Evaluate(state));
     }
 
+    /// <summary>
+    /// SRD: a druid's animal companion advances on her full level; "a ranger's effective druid
+    /// level is one-half his ranger level", and the ability is gained at 4th level, so ranger
+    /// levels below that contribute nothing.
+    /// </summary>
+    [Theory]
+    // Druid: full level.
+    [InlineData(1, 0, 0, 1)]
+    [InlineData(5, 0, 0, 5)]
+    [InlineData(20, 0, 0, 20)]
+    // Ranger: nothing before 4th, half thereafter. The old expression counted ranger levels
+    // one-for-one past 3rd, which put a ranger 20's companion at 17 instead of 10.
+    [InlineData(0, 1, 0, 0)]
+    [InlineData(0, 3, 0, 0)]
+    [InlineData(0, 4, 0, 2)]
+    [InlineData(0, 5, 0, 2)]
+    [InlineData(0, 6, 0, 3)]
+    [InlineData(0, 20, 0, 10)]
+    // Planar ranger is a ranger for this purpose — Vzraella's snake resolved to level 0 and
+    // gained no scaling at all while variant levels went uncounted.
+    [InlineData(0, 0, 3, 0)]
+    [InlineData(0, 0, 4, 2)]
+    [InlineData(0, 0, 12, 6)]
+    // Variants combine with max, not sum — a template that boosts "ranger level" grants its rule
+    // to every ranger id, so summing would count the same bonus once per variant. Levels split
+    // across two ranger variants therefore count only as the larger.
+    [InlineData(0, 2, 2, 0)]
+    [InlineData(0, 6, 4, 3)]
+    // Druid and ranger levels stack.
+    [InlineData(3, 6, 0, 6)]
+    public void AnimalCompanionLevel_FollowsTheDruidAndHalfRangerRule(
+        int druidLevels, int rangerLevels, int planarRangerLevels, int expected)
+    {
+        var master = new CharacterState();
+        if (druidLevels > 0) master.ClassLevels["class:druid"] = druidLevels;
+        if (rangerLevels > 0) master.ClassLevels["class:ranger"] = rangerLevels;
+        if (planarRangerLevels > 0) master.ClassLevels["class:planar_ranger"] = planarRangerLevels;
+
+        var actual = new Formula(CompanionResolver.AnimalCompanionLevelExpression).Evaluate(master);
+
+        Assert.Equal(expected, actual);
+    }
+
+    /// <summary>
+    /// An animal companion is a class ability, so anything that raises the class level *for
+    /// abilities* advances it. Vzraella's shape: planar ranger 3 with the Unseelie Champion
+    /// template adding her 9 outsider HD to ranger level — which is why she has three favoured
+    /// enemies and full combat style mastery. Effective ranger level 12, so the companion
+    /// advances as a 6th-level druid's, not as a 3rd-level ranger's (which grants nothing).
+    /// </summary>
+    [Fact]
+    public void AnimalCompanionLevel_CountsEffectiveLevelsGrantedByTemplates()
+    {
+        var master = new CharacterState();
+        master.ClassLevels["class:planar_ranger"] = 3;
+        // The template grants the bonus to both ranger ids, as the real one does.
+        foreach (var rangerId in new[] { "class:ranger", "class:planar_ranger" })
+        {
+            master.EffectiveLevelRules.Add(new EffectiveLevelRule
+            {
+                TargetDriverId = rangerId,
+                BonusFormula = new Formula("RacialHD()")
+            });
+        }
+        master.HDList.AddRange(Enumerable.Repeat("racial_hd:outsider", 9));
+        master.HDList.AddRange(Enumerable.Repeat("class:planar_ranger", 3));
+
+        var formula = new Formula(CompanionResolver.AnimalCompanionLevelExpression);
+
+        Assert.Equal(12, new Formula("EffectiveClassLevel(planar_ranger)").Evaluate(master));
+        // Raw class level is untouched — only the ability-facing accessor stacks the bonus.
+        Assert.Equal(3, new Formula("ClassLevel(planar_ranger)").Evaluate(master));
+        Assert.Equal(6, formula.Evaluate(master));
+
+        // The template grants its rule to class:ranger as well, since it cannot know which ranger
+        // variant the character took. Combining the two with max keeps that from counting the
+        // nine outsider HD twice, which would advance the companion as a 10th-level druid's.
+        Assert.Equal(9, new Formula("EffectiveClassLevel(ranger)").Evaluate(master));
+    }
+
+    /// <summary>
+    /// Casting as an Nth-level druid is not being one. A nymph casts as a 7th-level druid, and
+    /// that grant registers an effective-level rule so class levels stack onto her caster level —
+    /// but it must not advance her animal companion. The Nymph Archdruid is druid 6, so her
+    /// companion advances as a 6th-level druid's, not a 13th's.
+    /// </summary>
+    [Fact]
+    public void AnimalCompanionLevel_IgnoresRacialSpellcastingGrants()
+    {
+        var master = new CharacterState();
+        master.ClassLevels["class:druid"] = 6;
+        master.EffectiveLevelRules.Add(new EffectiveLevelRule
+        {
+            TargetDriverId = "class:druid",
+            BonusFormula = new Formula("7"),
+            Scope = EffectiveLevelScope.SpellcastingOnly
+        });
+
+        Assert.Equal(6, new Formula("EffectiveClassLevel(druid)").Evaluate(master));
+        Assert.Equal(6, new Formula(CompanionResolver.AnimalCompanionLevelExpression).Evaluate(master));
+    }
+
+    /// <summary>
+    /// The SRD alternative animal companion lists, transcribed from the druid page. The
+    /// adjustment is a property of the species, applied to the master's effective druid level
+    /// before any companion scaling is read.
+    /// </summary>
+    [Theory]
+    [InlineData("race:companion_wolf", 0)]           // base list
+    [InlineData("race:companion_snake_viper_medium", 0)]
+    [InlineData("race:companion_snake_viper_large", -3)]  // 4th level or higher
+    [InlineData("race:companion_leopard", -3)]
+    [InlineData("race:companion_wolverine", -3)]
+    [InlineData("race:companion_dire_wolf", -6)]         // 7th level or higher
+    [InlineData("race:companion_tiger", -6)]
+    [InlineData("race:companion_lion", -6)]
+    [InlineData("race:companion_bear_polar", -9)]        // 10th level or higher
+    [InlineData("race:companion_dire_lion", -9)]
+    [InlineData("race:companion_bear_dire", -12)]        // 13th level or higher
+    [InlineData("race:companion_elephant", -12)]
+    [InlineData("race:companion_tiger_dire", -15)]       // 16th level or higher
+    public void CompanionRaces_CarryTheirAlternativeListAdjustment(string raceId, int expected)
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        Assert.Equal(expected, registry.GetRace(raceId).CompanionLevelModifier);
+    }
+
+    /// <summary>
+    /// Vzraella end to end: planar ranger 3, Unseelie Champion adding her 9 outsider HD, and a
+    /// Large viper. Effective ranger level 12 → effective druid level 6 → fielded at 6 − 3 = 3,
+    /// which is the tier her imported snake was actually built at.
+    /// </summary>
+    [Fact]
+    public void AdvancedCompanion_AppliesSpeciesAdjustmentToTheMastersEffectiveLevel()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        var snake = new Character
+        {
+            Name = "Pet Snake",
+            RaceId = "race:companion_snake_viper_large",
+            TemplateIds = new List<string> { "template:animal_companion_standard" },
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 3).Select(_ => new Tick { DriverId = "racial_hd:animal" }).ToList(),
+            CompanionOrigin = new CompanionOrigin
+            {
+                LinkType = "animal_companion",
+                MasterCharacterId = "vzraella",
+                EffectiveMasterLevel = 6
+            }
+        };
+
+        var state = engine.Evaluate(snake);
+
+        Assert.Equal(3, state.EffectiveMasterLevel);
+        // Tier 3 fires, tier 6 does not.
+        Assert.Contains(state.Abilities, a => a.Id == "ac_evasion");
+        Assert.DoesNotContain(state.Abilities, a => a.Id == "ac_devotion");
+        Assert.Equal(1, state.Counters["ac_bonus_tricks"]);
+    }
+
+    /// <summary>
+    /// A save written before the fix still carries the old expression. It is migrated at replay
+    /// time — the same treatment the legacy familiar formula gets — so existing characters are
+    /// corrected without a re-import.
+    /// </summary>
+    [Fact]
+    public void CompanionResolver_MigratesLegacyAnimalCompanionFormula()
+    {
+        var registry = BuildBasicRegistry();
+        registry.RegisterDriver(BuildDruidDriver());
+
+        var companion = new Character
+        {
+            Name = "Snake",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 2, WIS = 10, CHA = 6 },
+            Ticks = new List<Tick> { new() { DriverId = "class:druid" } }
+        };
+
+        var master = new Character
+        {
+            Name = "Ranger",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 14, CHA = 10 },
+            Ticks = Enumerable.Range(0, 8).Select(_ => new Tick { DriverId = "class:druid" }).ToList(),
+            CompanionLinks = new List<CompanionLink>
+            {
+                new()
+                {
+                    LinkType = "animal_companion",
+                    CompanionId = "snake",
+                    // The pre-fix expression, as written into saves by older imports.
+                    EffectiveLevelFormula = new Formula(
+                        "max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)")
+                }
+            }
+        };
+
+        var resolver = new CompanionResolver(new ReplayStudio(registry), id => id == "snake" ? companion : null);
+        var result = resolver.Build(master);
+
+        // Eight druid levels: both expressions agree at 8, so the migration is safe for druids.
+        Assert.Equal(8, result.Companions[0].State.EffectiveMasterLevel);
+    }
+
+    /// <summary>
+    /// Vzraella's shape: a planar ranger 3 with an animal companion. Rangers gain the ability at
+    /// 4th, so the link resolves to level 0 and the companion gains nothing from it. The companion
+    /// still builds — the save records a character that was played — but the master must say so.
+    /// </summary>
+    [Fact]
+    public void CompanionResolver_LinkTheMasterDoesNotQualifyFor_Warns()
+    {
+        var registry = BuildBasicRegistry();
+        registry.RegisterDriver(BuildDruidDriver());
+
+        var snake = new Character
+        {
+            Name = "Snake",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 2, WIS = 10, CHA = 6 },
+            Ticks = new List<Tick> { new() { DriverId = "class:druid" } }
+        };
+
+        // No druid or ranger levels at all, so the animal companion expression yields 0.
+        var master = new Character
+        {
+            Name = "Vzraella",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick>(),
+            CompanionLinks = new List<CompanionLink>
+            {
+                new()
+                {
+                    LinkType = "animal_companion",
+                    CompanionId = "snake",
+                    EffectiveLevelFormula = new Formula(CompanionResolver.AnimalCompanionLevelExpression)
+                }
+            }
+        };
+
+        var resolver = new CompanionResolver(new ReplayStudio(registry), id => id == "snake" ? snake : null);
+        var result = resolver.Build(master);
+
+        // The companion is still built, not dropped.
+        Assert.Single(result.Companions);
+        Assert.Equal(0, result.Companions[0].State.EffectiveMasterLevel);
+
+        var warning = Assert.Single(
+            result.MasterState.Warnings, w => w.Message.Contains("does not qualify for it"));
+        Assert.Contains("animal_companion", warning.Message);
+        Assert.Contains("snake", warning.Message);
+    }
+
+    /// <summary>A master who does qualify draws no such warning.</summary>
+    [Fact]
+    public void CompanionResolver_QualifyingMaster_DoesNotWarn()
+    {
+        var registry = BuildBasicRegistry();
+        registry.RegisterDriver(BuildDruidDriver());
+
+        var snake = new Character
+        {
+            Name = "Snake",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 2, WIS = 10, CHA = 6 },
+            Ticks = new List<Tick> { new() { DriverId = "class:druid" } }
+        };
+
+        var master = new Character
+        {
+            Name = "Druid",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 14, CHA = 10 },
+            Ticks = Enumerable.Range(0, 4).Select(_ => new Tick { DriverId = "class:druid" }).ToList(),
+            CompanionLinks = new List<CompanionLink>
+            {
+                new()
+                {
+                    LinkType = "animal_companion",
+                    CompanionId = "snake",
+                    EffectiveLevelFormula = new Formula(CompanionResolver.AnimalCompanionLevelExpression)
+                }
+            }
+        };
+
+        var resolver = new CompanionResolver(new ReplayStudio(registry), id => id == "snake" ? snake : null);
+        var result = resolver.Build(master);
+
+        Assert.Equal(4, result.Companions[0].State.EffectiveMasterLevel);
+        Assert.DoesNotContain(result.MasterState.Warnings, w => w.Message.Contains("does not qualify"));
+    }
+
     // ---------- Template CompanionScalingPermabuffs ----------
 
     [Fact]
@@ -1459,11 +1755,9 @@ public class CompanionTests
         var registry = TestContentHelper.LoadAllPacks();
         var engine = new ReplayStudio(registry);
 
-        // Druid 7 picks a tier-7 dire wolf. Effective AC level for a dire wolf
-        // companion would normally be reduced by 6 in PHB scoring, but the engine
-        // treats minEffectiveLevel as a hint only — the slot's effective level is
-        // still ClassLevel(druid) = 7. The companion file is responsible for
-        // adjusting its own ticks to match the intended power tier.
+        // Druid 7 picks a dire wolf, which is on the 7th-level alternative list at –6. The slot
+        // still reports the master's own druid level, but the companion is fielded at 7 − 6 = 1:
+        // link and share spells, and none of the tier-3-and-up scaling.
         var druid = new Character
         {
             Name = "Wynn",
@@ -1511,25 +1805,29 @@ public class CompanionTests
         Assert.Equal(7, result.MasterState.CompanionSlots[0].EffectiveLevel);
 
         var fen = Assert.Single(result.Companions);
-        Assert.Equal(7, fen.State.EffectiveMasterLevel);
-        // Dire wolf base NA = 4; AC tiers 3 (+2) + 6 (+2) = +4 → 8.
-        Assert.Equal(8, fen.State.NaturalArmor);
-        Assert.Contains(fen.State.Abilities, a => a.Id == "ac_devotion"); // tier 6
+        Assert.Equal(7 - 6, fen.State.EffectiveMasterLevel);
+        // Dire wolf base NA = 4, and no tier reaches 3, so nothing is added.
+        Assert.Equal(4, fen.State.NaturalArmor);
+        Assert.Contains(fen.State.Abilities, a => a.Id == "ac_link"); // tier 1
+        Assert.Contains(fen.State.Abilities, a => a.Id == "ac_share_spells"); // tier 1
         Assert.Contains(fen.State.Abilities, a => a.Id == "direwolf_trip"); // racial
-        Assert.DoesNotContain(fen.State.Abilities, a => a.Id == "ac_multiattack"); // tier 9 not yet
+        Assert.DoesNotContain(fen.State.Abilities, a => a.Id == "ac_evasion"); // tier 3
+        Assert.DoesNotContain(fen.State.Abilities, a => a.Id == "ac_devotion"); // tier 6
     }
 
     [Fact]
-    public void Druid12_DireBear_ScalesThroughMidTier()
+    public void Druid18_DireBear_ScalesThroughMidTier()
     {
         var registry = TestContentHelper.LoadAllPacks();
         var engine = new ReplayStudio(registry);
 
+        // A dire bear is on the 13th-level list at –12, so a druid 12 cannot field one at all.
+        // Druid 18 puts it at 18 − 12 = 6 — the mid tier this test is about.
         var druid = new Character
         {
             RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 16, CHA = 10 },
-            Ticks = Enumerable.Range(0, 12).Select(_ => new Tick { DriverId = "class:druid" }).ToList(),
+            Ticks = Enumerable.Range(0, 18).Select(_ => new Tick { DriverId = "class:druid" }).ToList(),
             CompanionLinks = new List<CompanionLink>
             {
                 new()
@@ -1553,15 +1851,15 @@ public class CompanionTests
         var result = new CompanionResolver(engine, _ => direBear).Build(druid);
         var bear = result.Companions[0];
 
-        Assert.Equal(12, bear.State.EffectiveMasterLevel);
-        // Dire bear base NA = 7; AC tiers 3 (+2) + 6 (+2) + 9 (+2) + 12 (+2) = +8 → 15.
-        Assert.Equal(15, bear.State.NaturalArmor);
-        // Bonus tricks counter: 4 tricks at tier 12.
-        Assert.Equal(4, bear.State.Counters["ac_bonus_tricks"]);
-        // Multiattack granted at tier 9.
-        Assert.Contains(bear.State.Abilities, a => a.Id == "ac_multiattack");
-        // Improved evasion (tier 15) NOT yet.
-        Assert.DoesNotContain(bear.State.Abilities, a => a.Id == "ac_improved_evasion");
+        Assert.Equal(18 - 12, bear.State.EffectiveMasterLevel);
+        // Dire bear base NA = 7; AC tiers 3 (+2) + 6 (+2) = +4 → 11.
+        Assert.Equal(11, bear.State.NaturalArmor);
+        // Bonus tricks counter: 2 tricks by tier 6.
+        Assert.Equal(2, bear.State.Counters["ac_bonus_tricks"]);
+        // Devotion arrives at tier 6.
+        Assert.Contains(bear.State.Abilities, a => a.Id == "ac_devotion");
+        // Multiattack (tier 9) NOT yet.
+        Assert.DoesNotContain(bear.State.Abilities, a => a.Id == "ac_multiattack");
         // Racial signature preserved.
         Assert.Contains(bear.State.Abilities, a => a.Id == "direbear_improved_grab");
     }
@@ -1572,7 +1870,9 @@ public class CompanionTests
         var registry = TestContentHelper.LoadAllPacks();
         var engine = new ReplayStudio(registry);
 
-        // Druid 20 — full PHB AC progression should fire (tiers 1, 3, 6, 9, 12, 15, 18).
+        // Druid 20 with a dire tiger, the top alternative list at –15: fielded at 20 − 15 = 5,
+        // so only tiers 1 and 3 fire. The heaviest companions are deliberately the weakest
+        // relative to the druid's level — that is what the alternative lists price.
         var druid = new Character
         {
             RaceId = "race:human",
@@ -1601,18 +1901,18 @@ public class CompanionTests
         var result = new CompanionResolver(engine, _ => direTiger).Build(druid);
         var dt = result.Companions[0];
 
-        Assert.Equal(20, dt.State.EffectiveMasterLevel);
-        // Dire tiger base NA = 6; +2 each at 3/6/9/12/15/18 = +12 → 18.
-        Assert.Equal(18, dt.State.NaturalArmor);
-        // Bonus tricks: 6 at tier 18.
-        Assert.Equal(6, dt.State.Counters["ac_bonus_tricks"]);
-        // All AC abilities granted.
+        Assert.Equal(20 - 15, dt.State.EffectiveMasterLevel);
+        // Dire tiger base NA = 6; only tier 3 adds (+2) → 8.
+        Assert.Equal(8, dt.State.NaturalArmor);
+        // Bonus tricks: 1, from tier 3.
+        Assert.Equal(1, dt.State.Counters["ac_bonus_tricks"]);
         Assert.Contains(dt.State.Abilities, a => a.Id == "ac_link");
         Assert.Contains(dt.State.Abilities, a => a.Id == "ac_share_spells");
         Assert.Contains(dt.State.Abilities, a => a.Id == "ac_evasion");
-        Assert.Contains(dt.State.Abilities, a => a.Id == "ac_devotion");
-        Assert.Contains(dt.State.Abilities, a => a.Id == "ac_multiattack");
-        Assert.Contains(dt.State.Abilities, a => a.Id == "ac_improved_evasion");
+        // Everything from tier 6 up is out of reach even for a 20th-level druid.
+        Assert.DoesNotContain(dt.State.Abilities, a => a.Id == "ac_devotion");
+        Assert.DoesNotContain(dt.State.Abilities, a => a.Id == "ac_multiattack");
+        Assert.DoesNotContain(dt.State.Abilities, a => a.Id == "ac_improved_evasion");
         // Racial signature preserved.
         Assert.Contains(dt.State.Abilities, a => a.Id == "diretiger_pounce");
         Assert.Contains(dt.State.Abilities, a => a.Id == "diretiger_rake");
@@ -1653,8 +1953,10 @@ public class CompanionTests
         var ele = result.Companions[0];
 
         Assert.Equal(Size.Huge, ele.State.Size);
-        // Elephant base Str: 10 + 20 = 30; AC tiers 3,6,9,12,15,18 add +1 each = +6 → 36.
-        Assert.Equal(36, ele.State.AbilityScores.STR);
+        // Elephant is on the 13th-level list at –12, so a druid 20 fields it at 8: tiers 3 and 6
+        // add +1 Str each. Base Str 10 + 20 racial = 30, → 32.
+        Assert.Equal(20 - 12, ele.State.EffectiveMasterLevel);
+        Assert.Equal(32, ele.State.AbilityScores.STR);
         Assert.Contains(ele.State.Abilities, a => a.Id == "elephant_trample");
     }
 

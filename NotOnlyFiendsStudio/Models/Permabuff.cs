@@ -582,8 +582,11 @@ public class AdvanceSpellcasting : Permabuff
         // Only count domains owned by THIS class — multiclass casters don't share domain slots.
         var ownedCount = ctx.State.DomainOwners.Count(kv => kv.Value == sc.ClassId);
         if (ownedCount == 0) return;
+        // SRD: "a cleric can prepare one additional spell per spell level each day, which must be
+        // a domain spell." Holding two domains widens which spell may fill that one slot; it does
+        // not add a second slot. The count is therefore 1 however many domains the class owns.
         foreach (var lvl in sc.SpellsPerDay.Keys.Where(l => l >= 1))
-            sc.DomainBonusSlots[lvl] = ownedCount;
+            sc.DomainBonusSlots[lvl] = 1;
     }
 }
 
@@ -751,7 +754,9 @@ public class GrantRacialSpellcasting : Permabuff
         ctx.State.EffectiveLevelRules.Add(new EffectiveLevelRule
         {
             TargetDriverId = ClassId,
-            BonusFormula = LevelFormula
+            BonusFormula = LevelFormula,
+            // Casting as an Nth-level druid is not being an Nth-level druid.
+            Scope = EffectiveLevelScope.SpellcastingOnly
         });
     }
 }

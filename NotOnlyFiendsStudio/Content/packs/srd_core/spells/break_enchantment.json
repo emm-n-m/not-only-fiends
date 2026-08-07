@@ -9,7 +9,8 @@
     "class:adept": 5,
     "class:cleric": 5,
     "class:sorcerer": 5,
-    "class:wizard": 5
+    "class:wizard": 5,
+    "class:paladin_of_tyranny": 4
   },
   "components": {
     "verbal": true,

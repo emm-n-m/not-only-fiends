@@ -20,6 +20,7 @@
   "spellcasting": {
     "castingType": "divine",
     "castingStat": "wis",
+    "spellListSources": ["class:cleric"],
     "spellsPerDay": {
       "1":  { "0": 3, "1": 1 },
       "2":  { "0": 4, "1": 2 },
@@ -192,6 +193,7 @@
   "spellcasting": {
     "castingType": "divine",
     "castingStat": "wis",
+    "spellListSources": ["class:ranger"],
     "spellsPerDay": {
       "4":  { "1": 0 },
       "5":  { "1": 0 },

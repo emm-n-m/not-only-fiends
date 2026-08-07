@@ -5,7 +5,8 @@
   "school": "enchantment",
   "classLevels": {
     "class:cleric": 3,
-    "class:paladin": 3
+    "class:paladin": 3,
+    "class:paladin_of_tyranny": 3
   },
   "components": {
     "verbal": true,

@@ -4,7 +4,9 @@
   "name": "Inflict Critical Wounds",
   "school": "necromancy",
   "classLevels": {
-    "class:cleric": 4
+    "class:cleric": 4,
+    "class:blackguard": 4,
+    "class:paladin_of_tyranny": 4
   },
   "components": {
     "verbal": true,

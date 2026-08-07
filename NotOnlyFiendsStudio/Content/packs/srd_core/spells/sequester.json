@@ -5,7 +5,8 @@
   "school": "abjuration",
   "classLevels": {
     "class:sorcerer": 7,
-    "class:wizard": 7
+    "class:wizard": 7,
+    "class:cloistered_cleric": 7
   },
   "components": {
     "verbal": true,

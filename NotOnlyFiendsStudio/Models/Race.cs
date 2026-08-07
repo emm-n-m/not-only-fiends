@@ -8,8 +8,16 @@ public class RaceDefinition
     public CreatureType Type { get; set; }
     public List<string> Subtypes { get; set; } = new();
     public Size Size { get; set; }
-    public bool IsLiving { get; set; } = true;
-    public bool IsCorporeal { get; set; } = true;
+    /// <summary>
+    /// Null (the normal case) derives from <see cref="Type"/> via
+    /// <see cref="CreatureTypes.IsLiving"/>. Set it only for a creature that contradicts its type.
+    /// </summary>
+    public bool? IsLiving { get; set; }
+    /// <summary>
+    /// Null (the normal case) derives from the presence of the incorporeal subtype. Set it only
+    /// for a creature that contradicts its subtypes.
+    /// </summary>
+    public bool? IsCorporeal { get; set; }
     public Dictionary<MovementMode, int> Speeds { get; set; } = new();
     public FlightManeuverability? FlyManeuverability { get; set; }
     public AbilityScoreSet? AbilityModifiers { get; set; }
@@ -18,6 +26,17 @@ public class RaceDefinition
     // 3.5 signals PC-legality by printing a Level Adjustment at all). Null contributes 0
     // to ECL; it is a provenance statement, not a different number.
     public int? LevelAdjustment { get; set; }
+
+    /// <summary>
+    /// SRD alternative animal companions: "A druid of sufficiently high level can select her
+    /// animal companion from one of the following lists, applying the indicated adjustment to the
+    /// druid's level (in parentheses) for purposes of determining the companion's characteristics
+    /// and special abilities." A Large viper is on the 4th-level list at –3, so a druid 6 fields
+    /// it as a druid 3 would. Zero (the default) is the base 1st-level list.
+    ///
+    /// Distinct from <see cref="LevelAdjustment"/>, which prices a race as a PC.
+    /// </summary>
+    public int CompanionLevelModifier { get; set; }
     public int BonusFeats { get; set; }
     public int BonusSkillPointsPerHD { get; set; }
 

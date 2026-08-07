@@ -656,8 +656,23 @@ public class ReplayStudio
         state.RaceId = race.Id;
         state.Type = race.Type;
         state.Size = race.Size;
-        state.IsLiving = race.IsLiving;
-        state.IsCorporeal = race.IsCorporeal;
+
+        // An alternative animal companion is fielded at a reduced effective level, and the
+        // reduction belongs to the species, not the master. Applied here so everything downstream
+        // — companion scaling tiers and any MasterLevel formula — sees the one adjusted number.
+        // Never below zero: a master too low-level for this companion gets no progression, not
+        // negative progression.
+        if (state.CompanionOrigin != null && race.CompanionLevelModifier != 0)
+        {
+            state.EffectiveMasterLevel =
+                Math.Max(0, state.EffectiveMasterLevel + race.CompanionLevelModifier);
+        }
+        // Both derive from what the race *is* unless it explicitly contradicts itself. Authoring
+        // them separately is what let race:companion_shadow — undead and incorporeal — report as
+        // a living corporeal creature.
+        state.IsLiving = race.IsLiving ?? CreatureTypes.IsLiving(race.Type);
+        state.IsCorporeal = race.IsCorporeal
+            ?? !race.Subtypes.Contains(CreatureTypes.IncorporealSubtype);
         // Null LA (source never priced this as a PC race) contributes 0 to ECL.
         state.LevelAdjustment = race.LevelAdjustment ?? 0;
 
@@ -756,10 +771,20 @@ public class ReplayStudio
         else if (template.TypeOverridesByBaseType.TryGetValue(baseType, out var conditionalType))
             state.Type = conditionalType;
 
+        // A template that moves the creature to undead or construct has made it non-living by
+        // that fact alone — the lich and vampire templates say so nowhere else. Only recompute
+        // when the type actually moved, so a race's explicit override survives templates that
+        // leave the type alone.
+        if (state.Type != baseType)
+            state.IsLiving = CreatureTypes.IsLiving(state.Type);
+
         state.RacialHitDieSizeAdjustment += template.RacialHitDieSizeAdjustment;
 
         foreach (var subtype in template.SubtypeAdditions)
             state.Subtypes.Add(subtype);
+
+        if (template.SubtypeAdditions.Contains(CreatureTypes.IncorporealSubtype))
+            state.IsCorporeal = false;
 
         if (template.AbilityModifiers != null)
         {

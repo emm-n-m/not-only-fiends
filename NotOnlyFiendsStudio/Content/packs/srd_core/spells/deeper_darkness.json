@@ -5,7 +5,10 @@
   "school": "evocation",
   "classLevels": {
     "class:adept": 3,
-    "class:cleric": 3
+    "class:cleric": 3,
+    "class:assassin": 3,
+    "class:blackguard": 3,
+    "class:paladin_of_tyranny": 3
   },
   "components": {
     "verbal": true,

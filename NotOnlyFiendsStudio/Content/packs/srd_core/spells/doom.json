@@ -4,7 +4,9 @@
   "name": "Doom",
   "school": "necromancy",
   "classLevels": {
-    "class:cleric": 1
+    "class:cleric": 1,
+    "class:blackguard": 1,
+    "class:paladin_of_tyranny": 1
   },
   "components": {
     "verbal": true,

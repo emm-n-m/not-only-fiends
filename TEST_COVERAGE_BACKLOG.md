@@ -5,12 +5,11 @@ needed to move toward full feature coverage.
 
 ## Current snapshot
 
-- `dotnet test --no-restore`: **749 passed, 14 skipped, 0 failed, 763 total**.
-- The stale `SpellContentTests.ContentRegistry_LoadsSpells` catalog assertion
-  was updated from 618 to the current 665 entries.
-- The 14 skips are PCGen/private-content tests gated by missing configured
-  external data, not passing coverage. They should be rerun when
-  `PCGEN_DATA_PATH` and/or `PCGEN_CHARACTERS_PATH` are available.
+- `dotnet test`: **1051 passed, 0 skipped, 0 failed, 1051 total**.
+- Nothing skips any more: `.env` now supplies `CHARACTERS_PATH`,
+  `EXTRA_PACKS_PATH` and `PCGEN_CHARACTERS_PATH`, so the PCGen and
+  private-pack tests all run. Without those the same tests skip rather than
+  fail, so a clean run on an unconfigured machine reports fewer tests.
 - No UI component tests were found. No line/branch coverage report is checked
   in, so this document tracks behavioral coverage rather than a percentage.
 
@@ -47,8 +46,10 @@ treated as active work:
 
 - [x] Resolve the spell catalog count failure in
   `SpellContentTests.ContentRegistry_LoadsSpells`.
-- [ ] Run the skipped PCGen/private-pack tests with configured external data
-  and capture the resulting baseline or failures.
+- [x] Run the skipped PCGen/private-pack tests with configured external data
+  and capture the resulting baseline or failures. All pass with the external
+  paths configured; the PCG import baseline lives in
+  `{EXTRA_PACKS_PATH}/test-reports/pcg_import_report.json`.
 
 ### Studio replay and permabuffs
 
@@ -89,14 +90,31 @@ treated as active work:
 
 ### Golden scenarios and PCGen
 
-- [ ] Expand `PcgReconstructionTests` into a fixed regression corpus with
-  expected outputs rather than only parser/buildability checks.
-- [ ] Add golden builds for straight martial, straight divine caster with
+- [x] Expand `PcgReconstructionTests` into a fixed regression corpus with
+  expected outputs rather than only parser/buildability checks. Added as
+  `PcgGoldenBuildTests`, which states the 3.5e arithmetic (BAB and save
+  progression, level adjustment, caster level, epic bonuses, hit points) so a
+  wrong value fails against the SRD rather than against yesterday's snapshot —
+  the gap `PcgImportRegression` cannot close on its own.
+- [x] Add golden builds for straight martial, straight divine caster with
   domains, straight arcane caster, multiclass skill build, prestige
   spell-advancement build, racial-HD creature, templated creature, and epic
-  progression.
-- [ ] Add explicit assertions for reconstruction warnings, dropped content,
-  and intentional unsupported PCGen features.
+  progression. One fixed `.pcg` per archetype: Fighter 7; Cleric 6 with
+  domains; Drow Wizard 5; Drow Rogue 7/Assassin 10; Cleric 7/Thaumaturgist 2;
+  Nymph (6 fey HD)/Druid 6; Lich Bard 13; Wizard 7/Loremaster 10/Archmage
+  5/Cosmic Descryer 10 at HD 32.
+- [x] Add explicit assertions for reconstruction warnings, dropped content,
+  and intentional unsupported PCGen features — `PcgReconstructionFidelityTests`
+  covers corpus-wide mapping completeness, hit-point-roll preservation,
+  discarded PCGen temporary modifiers, filtered internal templates, rolls
+  outside the driver die, and external companion file references.
+
+Three defects surfaced while writing these and are recorded in
+[KNOWN_ISSUES.md](KNOWN_ISSUES.md) rather than fixed here: `IsLiving` survives
+an undead `typeOverride`, the assassin/blackguard spell lists are empty, and
+PCGen's `Sorcerer/Cleric (Arcane)` spell source is unmapped (29 spells dropped
+from one character). A fourth, domain bonus slots scaling with domain count, is
+a rules bug with an existing test asserting the wrong behaviour.
 
 ### UI and API coverage
 

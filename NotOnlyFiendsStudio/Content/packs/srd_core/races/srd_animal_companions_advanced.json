@@ -19,6 +19,7 @@
       "cha": -3
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -68,6 +69,7 @@
       "cha": -4
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -116,6 +118,7 @@
       "cha": -4
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -165,6 +168,7 @@
       "cha": -8
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -222,6 +226,7 @@
       "cha": 0
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -278,6 +283,7 @@
       "cha": -8
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -334,6 +340,7 @@
       "cha": -4
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -6,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -389,6 +396,7 @@
       "cha": 0
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -6,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -444,6 +452,7 @@
       "cha": -4
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -6,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -515,6 +524,7 @@
       "cha": -4
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -6,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -587,6 +597,7 @@
       "cha": -4
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -9,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -642,6 +653,7 @@
       "cha": 0
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -9,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -713,6 +725,7 @@
       "cha": 0
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -12,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -768,6 +781,7 @@
       "cha": -3
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -12,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -823,6 +837,7 @@
       "cha": 0
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -15,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",

@@ -5,7 +5,8 @@
   "school": "necromancy",
   "classLevels": {
     "class:sorcerer": 2,
-    "class:wizard": 2
+    "class:wizard": 2,
+    "class:assassin": 3
   },
   "components": {
     "verbal": true,

@@ -4,7 +4,9 @@
   "name": "Inflict Moderate Wounds",
   "school": "necromancy",
   "classLevels": {
-    "class:cleric": 2
+    "class:cleric": 2,
+    "class:blackguard": 2,
+    "class:paladin_of_tyranny": 2
   },
   "components": {
     "verbal": true,

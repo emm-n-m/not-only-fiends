@@ -7,7 +7,8 @@
     "class:druid": 1,
     "class:ranger": 1,
     "class:sorcerer": 1,
-    "class:wizard": 1
+    "class:wizard": 1,
+    "class:assassin": 1
   },
   "components": {
     "verbal": true,

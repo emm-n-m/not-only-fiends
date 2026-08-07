@@ -5,7 +5,9 @@
   "school": "necromancy",
   "classLevels": {
     "class:druid": 3,
-    "class:cleric": 4
+    "class:cleric": 4,
+    "class:assassin": 4,
+    "class:blackguard": 4
   },
   "components": {
     "verbal": true,

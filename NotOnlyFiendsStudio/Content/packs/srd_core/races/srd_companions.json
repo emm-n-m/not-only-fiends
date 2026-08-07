@@ -118,6 +118,7 @@
       "cha": -8
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -201,6 +202,7 @@
       "cha": -4
     },
     "levelAdjustment": 0,
+    "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",

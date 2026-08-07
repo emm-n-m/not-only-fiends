@@ -9,7 +9,8 @@
     "class:bard": 2,
     "class:cleric": 2,
     "class:druid": 2,
-    "class:paladin": 2
+    "class:paladin": 2,
+    "class:paladin_of_tyranny": 2
   },
   "components": {
     "verbal": true,

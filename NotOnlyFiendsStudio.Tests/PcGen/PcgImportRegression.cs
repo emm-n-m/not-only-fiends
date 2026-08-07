@@ -90,8 +90,14 @@ public class PcgImportRegression
                     SourceHitPointRolls = data.Levels.Select(level => level.HitPoints).ToList(),
                     ImportedHitPointRolls = result.Character.Ticks
                         .Select(tick => tick.Choices.HitPointsRolled ?? 0).ToList(),
+                    // The effective-level formula is the whole substance of a link — it decides
+                    // how far the companion advances — and nothing else in this report reflects
+                    // it. CompanionResolver is host-side and never runs here, so without the
+                    // expression itself a companion-progression change is invisible to the
+                    // baseline.
                     CompanionLinks = result.Character.CompanionLinks
-                        .Select(link => $"{link.LinkType}|{link.CompanionId}|{link.SelectedSpecies}")
+                        .Select(link => $"{link.LinkType}|{link.CompanionId}|{link.SelectedSpecies}"
+                            + $"|{link.EffectiveLevelFormula.Expression}")
                         .OrderBy(link => link, StringComparer.Ordinal).ToList(),
                     CompanionOrigin = result.Character.CompanionOrigin is { } origin
                         ? $"{origin.LinkType}|{origin.MasterCharacterId}|{origin.EffectiveMasterLevel}"
@@ -123,6 +129,18 @@ public class PcgImportRegression
                             .SelectMany(sc => sc.SelectedSpells)
                             .Select(s => $"{s.ClassId}|{s.SpellLevel}|{s.SpellId}")
                             .Distinct(StringComparer.Ordinal)
+                            .OrderBy(s => s, StringComparer.Ordinal)
+                            .ToList(),
+                    CreatureType = state?.Type.ToString(),
+                    IsLiving = state?.IsLiving ?? true,
+                    IsCorporeal = state?.IsCorporeal ?? true,
+                    DomainBonusSlots = state == null
+                        ? new()
+                        : state.Spellcasting
+                            .Where(kv => kv.Value.DomainBonusSlots.Count > 0)
+                            .Select(kv => $"{kv.Key}|" + string.Join(
+                                ",", kv.Value.DomainBonusSlots.OrderBy(s => s.Key)
+                                    .Select(s => $"{s.Key}:{s.Value}")))
                             .OrderBy(s => s, StringComparer.Ordinal)
                             .ToList(),
                 });
@@ -622,6 +640,9 @@ public class PcgImportRegression
         foreach (var value in c.WizardSpecialization) yield return $"wizard-specialization:{value}";
         foreach (var value in c.WizardProhibitedSchools) yield return $"wizard-prohibited:{value}";
         foreach (var value in c.SpellAdvancementChoices) yield return $"spell-advancement:{value}";
+        yield return $"creature-type:{c.CreatureType}";
+        yield return $"life-state:living={c.IsLiving},corporeal={c.IsCorporeal}";
+        foreach (var value in c.DomainBonusSlots) yield return $"domain-slots:{value}";
     }
 
     private static List<TallyDelta> DiffTally(List<TallyEntry> baseline, List<TallyEntry> fresh)
@@ -905,6 +926,15 @@ public class PcgImportRegression
         public Dictionary<string, int> SkillTotals { get; set; } = new();
         public Dictionary<string, string> SpellAcquisition { get; set; } = new();
         public List<string> SelectedSpells { get; set; } = new();
+
+        // Creature type drives life state, life state gates prerequisites, and domain slots are
+        // the one part of a divine caster's spells per day that no other field here covers. All
+        // three were invisible to this harness, so an undead template that left a character
+        // "living" and a domain slot count that disagreed with the SRD both went unnoticed.
+        public string? CreatureType { get; set; }
+        public bool IsLiving { get; set; }
+        public bool IsCorporeal { get; set; }
+        public List<string> DomainBonusSlots { get; set; } = new();
     }
 
     private sealed class ParseFailure

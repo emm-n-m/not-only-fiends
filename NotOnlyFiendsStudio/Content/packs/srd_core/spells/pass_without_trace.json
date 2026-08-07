@@ -5,7 +5,8 @@
   "school": "transmutation",
   "classLevels": {
     "class:druid": 1,
-    "class:ranger": 1
+    "class:ranger": 1,
+    "class:assassin": 2
   },
   "components": {
     "verbal": true,

@@ -1,0 +1,25 @@
+[
+{
+  "id": "spell:unholy_sword",
+  "name": "Unholy Sword",
+  "school": "evocation",
+  "classLevels": {
+    "class:paladin_of_tyranny": 4
+  },
+  "components": {
+    "verbal": true,
+    "somatic": true,
+    "divineFocus": false
+  },
+  "castingTime": "1 standard action",
+  "range": "touch",
+  "duration": "1/level rounds",
+  "savingThrow": "None",
+  "spellResistance": "no",
+  "description": "Weapon becomes +5, deals +2d6 damage against good.",
+  "descriptors": [
+    "evil"
+  ],
+  "target": "Melee weapon touched"
+}
+]

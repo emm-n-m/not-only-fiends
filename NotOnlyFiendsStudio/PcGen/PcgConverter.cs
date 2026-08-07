@@ -743,7 +743,7 @@ public static class PcgConverter
 
     private static Formula CompanionLevelFormula(string linkType) => linkType switch
     {
-        "animal_companion" => new Formula("max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)"),
+        "animal_companion" => new Formula(CompanionResolver.AnimalCompanionLevelExpression),
         "familiar" or "improved_familiar" => new Formula("ClassLevel(wizard) + ClassLevel(sorcerer)"),
         "leadership_cohort" => new Formula("min(TotalHD - 2, LeadershipScore - 2)"),
         _ => new Formula("TotalHD"),

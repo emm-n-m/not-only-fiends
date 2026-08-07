@@ -5,7 +5,8 @@
   "school": "abjuration",
   "classLevels": {
     "class:paladin": 4,
-    "class:cleric": 5
+    "class:cleric": 5,
+    "class:paladin_of_tyranny": 4
   },
   "components": {
     "verbal": true,

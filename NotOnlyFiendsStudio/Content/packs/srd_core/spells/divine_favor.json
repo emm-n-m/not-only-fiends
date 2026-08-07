@@ -5,7 +5,8 @@
   "school": "evocation",
   "classLevels": {
     "class:cleric": 1,
-    "class:paladin": 1
+    "class:paladin": 1,
+    "class:paladin_of_tyranny": 1
   },
   "components": {
     "verbal": true,

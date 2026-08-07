@@ -4,7 +4,8 @@
   "name": "Death Knell",
   "school": "necromancy",
   "classLevels": {
-    "class:cleric": 2
+    "class:cleric": 2,
+    "class:blackguard": 2
   },
   "components": {
     "verbal": true,

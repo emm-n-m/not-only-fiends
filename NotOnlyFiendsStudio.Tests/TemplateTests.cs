@@ -188,6 +188,72 @@ public class TemplateTests
         Assert.Equal(25, engine.Evaluate(character, upToHD: 15).SpellResistance);  // 15 + 10
     }
 
+    /// <summary>
+    /// Life state follows creature type. A template that turns a creature undead says nothing
+    /// about "living" anywhere in its JSON, so deriving it is the only way the flag can be right —
+    /// and <see cref="Prerequisite"/> gates on it, so a lich that reads as living passes checks
+    /// meant to exclude it.
+    /// </summary>
+    [Theory]
+    [InlineData("template:lich", CreatureType.Undead, false)]
+    // template:vampire is deliberately not a case here: it sets no typeOverride, so the type
+    // change comes from applying template:undead alongside it. See KNOWN_ISSUES.md.
+    [InlineData("template:undead", CreatureType.Undead, false)]
+    [InlineData("template:half_fiend", CreatureType.Outsider, true)]
+    public void TypeChangingTemplate_SetsLifeStateFromTheResultingType(
+        string templateId, CreatureType expectedType, bool expectedLiving)
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        var character = new Character
+        {
+            Name = "Templated Human",
+            RaceId = "race:human",
+            TemplateIds = new List<string> { templateId },
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 12, DEX = 12, CON = 12, INT = 12, WIS = 12, CHA = 12
+            },
+            Ticks = new List<Tick> { new() { DriverId = "class:fighter" } }
+        };
+
+        var state = engine.Evaluate(character);
+
+        Assert.Equal(expectedType, state.Type);
+        Assert.Equal(expectedLiving, state.IsLiving);
+        // None of these templates is incorporeal, so all stay corporeal.
+        Assert.True(state.IsCorporeal);
+    }
+
+    /// <summary>
+    /// The race path has the same rule. race:companion_shadow is undead and carries the
+    /// incorporeal subtype, and authors neither flag — both must still come out right.
+    /// </summary>
+    [Fact]
+    public void UndeadIncorporealRace_IsNeitherLivingNorCorporeal()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        var character = new Character
+        {
+            Name = "Shadow",
+            RaceId = "race:companion_shadow",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 14, CON = 10, INT = 6, WIS = 12, CHA = 13
+            },
+            Ticks = new List<Tick> { new() { DriverId = "racial_hd:undead" } }
+        };
+
+        var state = engine.Evaluate(character);
+
+        Assert.Equal(CreatureType.Undead, state.Type);
+        Assert.False(state.IsLiving);
+        Assert.False(state.IsCorporeal);
+    }
+
     [Fact]
     public void TemplateDriver_Manual_BasicTest()
     {

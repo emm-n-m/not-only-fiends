@@ -10,7 +10,8 @@
     "class:paladin": 1,
     "class:ranger": 1,
     "class:sorcerer": 1,
-    "class:wizard": 1
+    "class:wizard": 1,
+    "class:paladin_of_tyranny": 1
   },
   "components": {
     "verbal": true,

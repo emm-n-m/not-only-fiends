@@ -8,7 +8,10 @@
     "class:bard": 2,
     "class:cleric": 2,
     "class:sorcerer": 2,
-    "class:wizard": 2
+    "class:wizard": 2,
+    "class:assassin": 2,
+    "class:blackguard": 2,
+    "class:paladin_of_tyranny": 2
   },
   "components": {
     "verbal": true,

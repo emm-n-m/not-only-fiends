@@ -399,6 +399,23 @@ public class EffectiveLevelRule
 {
     public string TargetDriverId { get; set; } = string.Empty;
     public Formula BonusFormula { get; set; } = new();
+
+    /// <summary>
+    /// What the bonus levels are good for. Two different rules share this list: "your class level
+    /// counts as higher for class features" (Unseelie Champion, Arcane Hierophant) and "you cast
+    /// as an Nth-level druid" (Nymph, Aranea, Ghaele). The second is spellcasting only — a nymph
+    /// casts as a 7th-level druid but does not gain a 7th-level druid's wild shape or animal
+    /// companion — so anything reasoning about class abilities must exclude it.
+    /// </summary>
+    public EffectiveLevelScope Scope { get; set; } = EffectiveLevelScope.ClassFeatures;
+}
+
+public enum EffectiveLevelScope
+{
+    /// <summary>Counts for class features and for spellcasting.</summary>
+    ClassFeatures,
+    /// <summary>Counts for caster level only, never for class features.</summary>
+    SpellcastingOnly
 }
 
 public class ArmorClass

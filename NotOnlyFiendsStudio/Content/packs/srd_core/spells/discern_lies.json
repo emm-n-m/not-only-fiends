@@ -5,7 +5,8 @@
   "school": "divination",
   "classLevels": {
     "class:paladin": 3,
-    "class:cleric": 4
+    "class:cleric": 4,
+    "class:paladin_of_tyranny": 3
   },
   "components": {
     "verbal": true,

@@ -4,7 +4,8 @@
   "name": "Modify Memory",
   "school": "enchantment",
   "classLevels": {
-    "class:bard": 4
+    "class:bard": 4,
+    "class:assassin": 4
   },
   "components": {
     "verbal": true,

@@ -7,7 +7,8 @@
     "class:adept": 4,
     "class:bard": 4,
     "class:cleric": 4,
-    "class:druid": 5
+    "class:druid": 5,
+    "class:blackguard": 4
   },
   "components": {
     "verbal": true,

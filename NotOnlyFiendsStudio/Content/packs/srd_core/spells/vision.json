@@ -5,7 +5,8 @@
   "school": "divination",
   "classLevels": {
     "class:sorcerer": 7,
-    "class:wizard": 7
+    "class:wizard": 7,
+    "class:cloistered_cleric": 9
   },
   "components": {
     "verbal": true,

@@ -6,7 +6,9 @@
   "classLevels": {
     "class:bard": 3,
     "class:sorcerer": 3,
-    "class:wizard": 3
+    "class:wizard": 3,
+    "class:assassin": 2,
+    "class:cloistered_cleric": 3
   },
   "components": {
     "verbal": true,

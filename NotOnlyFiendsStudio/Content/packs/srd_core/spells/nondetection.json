@@ -6,7 +6,8 @@
   "classLevels": {
     "class:sorcerer": 3,
     "class:wizard": 3,
-    "class:ranger": 4
+    "class:ranger": 4,
+    "class:assassin": 3
   },
   "components": {
     "verbal": true,

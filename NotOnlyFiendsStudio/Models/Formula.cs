@@ -120,6 +120,20 @@ internal class FunctionNode : FormulaNode
                     throw new FormulaException("ClassLevel() requires exactly one class ID argument");
                 return state.ClassLevels.GetValueOrDefault($"class:{classId.Name}");
 
+            // Levels actually taken plus every EffectiveLevelRule targeting the class — what an
+            // Unseelie Champion means by "your ranger level for ranger abilities", or what an
+            // Arcane Hierophant means for druid progression. ClassLevel() deliberately stays
+            // literal: prerequisites and anything counting levels *spent* want the raw number.
+            case "EffectiveClassLevel":
+                if (Args.Count != 1 || Args[0] is not IdentifierNode effectiveClassId)
+                    throw new FormulaException("EffectiveClassLevel() requires exactly one class ID argument");
+                var effectiveTarget = $"class:{effectiveClassId.Name}";
+                return state.ClassLevels.GetValueOrDefault(effectiveTarget)
+                    + state.EffectiveLevelRules
+                        .Where(rule => rule.TargetDriverId == effectiveTarget
+                                    && rule.Scope == EffectiveLevelScope.ClassFeatures)
+                        .Sum(rule => rule.BonusFormula.Evaluate(state));
+
             case "CasterLevel":
                 if (Args.Count != 1 || Args[0] is not IdentifierNode casterId)
                     throw new FormulaException("CasterLevel() requires exactly one class ID argument");
@@ -333,8 +347,8 @@ internal static class FormulaParser
             throw new FormulaException($"Invalid ability name for {funcName}: {argToken}");
         }
 
-        // For ClassLevel/CasterLevel: argument is an identifier
-        if (funcName is "ClassLevel" or "CasterLevel")
+        // For ClassLevel/EffectiveClassLevel/CasterLevel: argument is an identifier
+        if (funcName is "ClassLevel" or "EffectiveClassLevel" or "CasterLevel")
         {
             var argToken = tokens[pos];
             if (char.IsLetter(argToken[0]))

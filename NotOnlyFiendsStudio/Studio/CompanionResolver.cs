@@ -17,6 +17,36 @@ namespace NotOnlyFiendsStudio.Studio;
 /// </summary>
 public class CompanionResolver
 {
+    /// <summary>
+    /// Effective druid level for an animal companion. Druid levels count in full; a ranger's
+    /// count for half ("a ranger's effective druid level is one-half his ranger level"), and only
+    /// from 4th level, which is when the ability is gained. The DSL has no conditional, so the
+    /// 4th-level gate is <c>max(0, ranger - 3) * 2</c> — zero below 4th, and above it always
+    /// larger than the half-level it is min'd against, so the half-level wins.
+    ///
+    /// <see cref="Formula"/>'s EffectiveClassLevel, not ClassLevel: an animal companion is a class
+    /// ability, so anything that raises the class level *for abilities* raises it — the Unseelie
+    /// Champion template adding outsider HD to ranger level, an Arcane Hierophant advancing druid.
+    /// Reading raw levels here made a 12th-level-for-abilities ranger resolve as a 3rd.
+    ///
+    /// The ranger variants are combined with max rather than sum. A template that boosts "ranger
+    /// level" grants its rule to every ranger id, since it cannot know which one the character
+    /// took — summing would then count the same bonus once per variant. The cost is that levels
+    /// split across two ranger variants count only as the larger, which no real build does.
+    /// </summary>
+    public const string AnimalCompanionLevelExpression =
+        "EffectiveClassLevel(druid) " +
+        "+ min(max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) / 2, " +
+        "max(0, max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) - 3) * 2)";
+
+    /// <summary>
+    /// The expression imports used before the half-level rule was applied. It counted a ranger's
+    /// levels one-for-one past 3rd (ranger 20 → 17 instead of 10) and ignored ranger variants
+    /// entirely, so a planar ranger's companion resolved to level 0 and gained no scaling at all.
+    /// </summary>
+    private const string LegacyAnimalCompanionExpression =
+        "max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)";
+
     private readonly ReplayStudio _engine;
     private readonly Func<string, Character?> _lookup;
 
@@ -48,6 +78,21 @@ public class CompanionResolver
             }
 
             var effective = EvaluateEffectiveMasterLevel(link, result.MasterState);
+
+            // Level 0 means the master does not qualify for this companion at all — a ranger
+            // below 4th, a would-be druid with no druid levels. The companion still evaluates,
+            // but it receives none of the scaling the link exists to deliver, so saying nothing
+            // reads as "this companion is fine" when it is inert.
+            if (effective <= 0)
+            {
+                result.MasterState.Warnings.Add(new Warning
+                {
+                    TickIndex = null,
+                    Message = $"Companion link '{link.LinkType}' to '{link.CompanionId}' resolves to "
+                        + $"effective master level {effective} — the master does not qualify for it, "
+                        + "so the companion gains no scaling from the link."
+                });
+            }
 
             // Inject origin so the companion's templates/formulas can read MasterLevel.
             companion.CompanionOrigin = new CompanionOrigin
@@ -96,6 +141,14 @@ public class CompanionResolver
                 == "CasterLevel(wizard) + CasterLevel(sorcerer)")
         {
             return new Formula("ClassLevel(wizard) + ClassLevel(sorcerer)").Evaluate(master);
+        }
+
+        // Same migration for the pre-half-level animal companion expression, so saves written
+        // before the fix stop under-advancing their companions without needing a re-import.
+        if (link.LinkType == "animal_companion"
+            && link.EffectiveLevelFormula.Expression == LegacyAnimalCompanionExpression)
+        {
+            return new Formula(AnimalCompanionLevelExpression).Evaluate(master);
         }
 
         return link.EffectiveLevelFormula.Evaluate(master);

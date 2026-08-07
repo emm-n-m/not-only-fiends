@@ -4,7 +4,8 @@
   "name": "Glibness",
   "school": "transmutation",
   "classLevels": {
-    "class:bard": 3
+    "class:bard": 3,
+    "class:assassin": 4
   },
   "components": {
     "verbal": false,

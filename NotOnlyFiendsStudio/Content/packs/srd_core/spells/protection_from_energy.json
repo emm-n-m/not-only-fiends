@@ -8,7 +8,8 @@
     "class:cleric": 3,
     "class:druid": 3,
     "class:sorcerer": 3,
-    "class:wizard": 3
+    "class:wizard": 3,
+    "class:blackguard": 3
   },
   "components": {
     "verbal": true,

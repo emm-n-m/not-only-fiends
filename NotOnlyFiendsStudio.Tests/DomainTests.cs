@@ -122,11 +122,12 @@ public class DomainTests
         var state = engine.Evaluate(character);
 
         var sc = state.Spellcasting["class:cleric"];
-        // Cleric 5 has spells at levels 0-3
-        // Domain bonus slots: +2 per level 1-3 (2 domains, not at level 0)
-        Assert.Equal(2, sc.DomainBonusSlots[1]);
-        Assert.Equal(2, sc.DomainBonusSlots[2]);
-        Assert.Equal(2, sc.DomainBonusSlots[3]);
+        // Cleric 5 has spells at levels 0-3.
+        // SRD: "a cleric can prepare one additional spell per spell level each day, which must be
+        // a domain spell" — one slot per level however many domains are held, and none at level 0.
+        Assert.Equal(1, sc.DomainBonusSlots[1]);
+        Assert.Equal(1, sc.DomainBonusSlots[2]);
+        Assert.Equal(1, sc.DomainBonusSlots[3]);
         Assert.False(sc.DomainBonusSlots.ContainsKey(0));
     }
 

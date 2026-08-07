@@ -6,7 +6,8 @@
   "classLevels": {
     "class:bard": 4,
     "class:sorcerer": 5,
-    "class:wizard": 5
+    "class:wizard": 5,
+    "class:paladin_of_tyranny": 4
   },
   "components": {
     "verbal": true,

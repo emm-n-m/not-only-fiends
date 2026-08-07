@@ -7,7 +7,8 @@
     "class:adept": 0,
     "class:bard": 0,
     "class:sorcerer": 0,
-    "class:wizard": 0
+    "class:wizard": 0,
+    "class:assassin": 1
   },
   "components": {
     "verbal": true,

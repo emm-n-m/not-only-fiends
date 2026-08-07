@@ -4,7 +4,8 @@
   "name": "Heal Mount",
   "school": "conjuration",
   "classLevels": {
-    "class:paladin": 3
+    "class:paladin": 3,
+    "class:paladin_of_tyranny": 3
   },
   "components": {
     "verbal": true,
