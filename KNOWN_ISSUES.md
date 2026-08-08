@@ -34,3 +34,79 @@ from energy*; the latter is what is tagged.
 Every spellcasting class now reaches its list. `SpellContentTests` pins the assassin, blackguard
 and paladin-of-tyranny lists spell by spell, and pins cloistered cleric and planar ranger to the
 lists they borrow via `spellListSources`.
+
+# Agent-facing API issues
+
+Found by the 2026-08 corpus rebuild test: 55 agents each rebuilt a saved character through
+`/api/*` alone, guided only by its `.pcg` file, and the results were diffed against the PCG
+import golden baseline. 13 of 55 rebuilds matched the baseline exactly (including multiclass
+prestige builds); most incomplete builds were the engine *correctly* refusing prestige classes
+whose prerequisites the source characters never actually met — the import replay applies those
+ticks permissively and logs the same "prerequisite not met" warnings. The issues below are what
+the test surfaced in the API itself, ranked by how badly each misleads an agent.
+Content gaps found by the same test are tracked in [CONTENT_GAPS.md](CONTENT_GAPS.md) (SRD
+packs) and the private materials repo's `CONTENT_GAPS.md` (extra packs).
+
+## Unknown choice keys are silently ignored
+
+`/simulate` and `/ticks` accept unrecognized `TickChoices` keys with HTTP 200, no warning, and
+no effect — `domainSelections` and `domainIds` (both plausible names for the domain pick) no-op
+silently, and an empty `choices:{}` with outstanding feat and domain slots is likewise accepted
+clean. A wrong `classFeatureChoices` key gets only a soft "unknown class feature type" warning
+that doesn't name the valid keys. `PUT /api/characters/{id}` accepted a malformed
+`companionLinks` entry, discarded the meaningful fields, and serialized back an all-empty link.
+Worst case observed: a correctly-shaped `classFeatureChoices` `domains` selection on the
+archfiend class was accepted without warning and never applied. Unknown keys should be rejected
+(or at minimum warned about by name), and the response should make "this choice did nothing"
+impossible to miss.
+
+## `?q=` is dead on the skills and languages endpoints
+
+`GET /api/content/skills?q=…` and `GET /api/content/languages?q=…` ignore the filter and always
+return the full catalog. `spells` and `equipment` filter correctly, which trains callers to
+expect `q` to work. Every agent that trusted it ended up grepping full dumps.
+
+## An ineligible class is indistinguishable from a nonexistent one
+
+`next-step` omits drivers whose prerequisites aren't met, and `?driverIds=` on an ineligible
+driver returns a generic payload that simply doesn't include it — identical to asking for a
+made-up id. Several test agents concluded Shadowdancer, Blackguard, Archmage and Blood Hexer
+"don't exist in the content set"; all of them exist, and a verification probe confirmed
+`next-step` offers Archmage the moment a character genuinely qualifies. The prerequisite data is
+already authored and served by `/api/content/drivers/{id}` — `next-step` should list gated
+drivers with their failed prerequisites (or say "excluded: prerequisite X unmet") instead of
+hiding them.
+
+## Character creation fails with an empty 400
+
+`POST /api/characters` returns 400 with a zero-length body on validation failure. One agent had
+to bisect field by field to discover that True Neutral is alignment `"n"`, not `"tn"`. Every
+validation failure should return the standard `ErrorResponse` with a code and message.
+
+## Familiar selection has no discoverable path
+
+The familiar choice never appears in the level-up loop; it surfaces only in
+`currentPendingChoices` after all HD are committed, with no documented resolution mechanism.
+The working path — `classFeatureChoices` keyed `"class_feature:familiar_options"` on an existing
+tick, submitted via a full-character PUT — had to be reverse-engineered from the `featureType`
+field. The pending choice should say how to answer it, or `next-step` should offer it as a step.
+
+## Wizard spellbook contents cannot be declared
+
+No wizard level ever offers a `spellSelections` choice, so an agent cannot populate specific
+spellbook contents through the API; casters that prepare from a book end up with whatever the
+default grants. (Spontaneous casters' known-spell picks work fine.)
+
+## An invalid skill id is partially applied
+
+`simulate` answers an unknown `skillId` with a soft "unknown skill" warning, but the committed
+sheet still records ranks under the bogus id. Unknown skill ids should reject the allocation
+rather than half-apply it.
+
+## The skill-point pool is opaque
+
+`unspentSkillPoints` did not match a hand computation from `skillPointsPerLevel` + Int modifier
+in at least one build (26 reported vs 21 computed for a sorcerer block), and no response
+explains the difference. Underspending never warns, so a caller who mistrusts the number has no
+way to reconcile it. Expose the accrual breakdown (per-driver pool, racial ×4 first-HD rule,
+whatever applies) in `next-step`.

@@ -21,4 +21,7 @@ Custom subagents in `.claude/agents/` for autonomous content pipeline work:
 - `audit-agent-api` — Builds a character end-to-end using only the REST API, to find discoverability gaps, silently-accepted illegal input, and oversized payloads. Run after API or engine changes.
 - `gap-analysis` — Runs PCGen character reconstruction tests to report buildability status and missing content.
 
-Outstanding work from these audits is tracked in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
+Outstanding work from these audits is tracked in [KNOWN_ISSUES.md](KNOWN_ISSUES.md). Content
+gaps are split by licensing: [CONTENT_GAPS.md](CONTENT_GAPS.md) tracks SRD-pack gaps here;
+the private materials repo's `CONTENT_GAPS.md` tracks extra-pack gaps so non-OGC references
+stay out of this repository.
