@@ -35,6 +35,17 @@ Every spellcasting class now reaches its list. `SpellContentTests` pins the assa
 and paladin-of-tyranny lists spell by spell, and pins cloistered cleric and planar ranger to the
 lists they borrow via `spellListSources`.
 
+## Archfiend spell list is dynamic and unmodeled
+
+The archfiend does not have an authored spell list: the class selects its list (arcane, cleric
+or druid) and folds its two chosen domains' spells into it, casting everything as arcane. The
+engine has no mechanism for a player-selected spell-list source combined with a domain-spell
+merge — `spellListSources` handles fixed borrowing (cloistered cleric, planar ranger) but not a
+choice, and domain spells never join a class list. Until that exists, `class:archfiend` has no
+legal spells: nothing in the catalog is (or can be) tagged to it, and an API build of an
+archfiend caster cannot acquire any of its known spells. This is an engine gap, not a content
+gap — do not author a static archfiend spell list to paper over it.
+
 # Agent-facing API issues
 
 Found by the 2026-08 corpus rebuild test: 55 agents each rebuilt a saved character through
