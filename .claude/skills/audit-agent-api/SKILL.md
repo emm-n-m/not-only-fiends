@@ -12,7 +12,11 @@ character using nothing but the API**, and record every point of friction.
 
 A 2026-07 run of this found an 8.3 MB `next-step` response, a 400 with an empty body, five
 silently-accepted illegal inputs, and — because it forced a real build — the Eldritch Knight
-save-progression bug.
+save-progression bug. The 2026-08 corpus rebuild test (55 agents, see
+[pcg-rebuild-regression](../pcg-rebuild-regression/SKILL.md)) added the findings now listed
+under "Agent-facing API issues" in `KNOWN_ISSUES.md` — read that section first and audit for
+*new* problems rather than rediscovering those; the verified build mechanics live in
+[api-build-character](../api-build-character/SKILL.md).
 
 ## Ground rules
 
@@ -45,8 +49,9 @@ cloud-synced folder). Prefix test characters with `API Test -` and `DELETE` them
 ## Walkthrough
 
 1. **Discovery** — `/api/health`, `/api/rules`, `/api/content/catalog`, `/openapi/v1.json`.
-   Note sizes. Can an agent learn the ID conventions from these alone? (Races are bare `human`;
-   drivers are prefixed `class:wizard`. Guessing `race:human` gives a 404.)
+   Note sizes. Can an agent learn the ID conventions from these alone? (As of 2026-08 all ids
+   are uniformly prefixed — `race:human`, `class:wizard` — and the catalog is ~840KB, so an
+   agent must be able to learn the conventions without dumping it.)
 2. **Create** — `POST /api/characters`. Enum values come from the OpenAPI schema
    (`alignment` is `ng`, not `NeutralGood`).
 3. **Per level**, the loop an agent should follow:
