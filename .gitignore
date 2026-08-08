@@ -54,6 +54,9 @@ pcgen_characters
 # Local history backups
 *.bundle
 
+# Local test-run artifacts (reference private campaign characters — keep out of the public repo)
+test-reports/
+
 # Local content wiring
 .env
 .claude/settings.local.json
