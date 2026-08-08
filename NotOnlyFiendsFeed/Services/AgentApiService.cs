@@ -110,9 +110,19 @@ public sealed class AgentApiService
         IsSecret = language.IsSecret
     };
 
-    public IEnumerable<LanguageSummaryDto> GetLanguages() => _content.GetAllLanguages()
-        .OrderBy(l => l.Name)
-        .Select(MapLanguage);
+    public IEnumerable<LanguageSummaryDto> GetLanguages(string? query = null)
+    {
+        var languages = _content.GetAllLanguages();
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            languages = languages.Where(language =>
+                language.Id.Contains(query, StringComparison.OrdinalIgnoreCase)
+                || language.Name.Contains(query, StringComparison.OrdinalIgnoreCase)
+                || language.Description.Contains(query, StringComparison.OrdinalIgnoreCase));
+        }
+
+        return languages.OrderBy(l => l.Name).Select(MapLanguage);
+    }
 
     public IEnumerable<DriverSummaryDto> GetDrivers() => _content.GetAllDrivers()
         .OfType<HDDriver>()
@@ -132,9 +142,19 @@ public sealed class AgentApiService
         .OrderBy(d => d.Name)
         .Select(d => MapSummary(d.Id, d.Name, d.Description));
 
-    public IEnumerable<ContentSummaryDto> GetSkills() => _content.GetAllSkills()
-        .OrderBy(s => s.Name)
-        .Select(s => MapSummary(s.Id, s.Name, s.Description));
+    public IEnumerable<ContentSummaryDto> GetSkills(string? query = null)
+    {
+        var skills = _content.GetAllSkills();
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            skills = skills.Where(skill =>
+                skill.Id.Contains(query, StringComparison.OrdinalIgnoreCase)
+                || skill.Name.Contains(query, StringComparison.OrdinalIgnoreCase)
+                || skill.Description.Contains(query, StringComparison.OrdinalIgnoreCase));
+        }
+
+        return skills.OrderBy(s => s.Name).Select(s => MapSummary(s.Id, s.Name, s.Description));
+    }
 
     public IEnumerable<ContentSummaryDto> GetClassFeatures() => _content.GetAllClassFeatures()
         .OrderBy(cf => cf.Name)

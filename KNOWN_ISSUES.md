@@ -71,12 +71,6 @@ archfiend class was accepted without warning and never applied. Unknown keys sho
 (or at minimum warned about by name), and the response should make "this choice did nothing"
 impossible to miss.
 
-## `?q=` is dead on the skills and languages endpoints
-
-`GET /api/content/skills?q=…` and `GET /api/content/languages?q=…` ignore the filter and always
-return the full catalog. `spells` and `equipment` filter correctly, which trains callers to
-expect `q` to work. Every agent that trusted it ended up grepping full dumps.
-
 ## An ineligible class is indistinguishable from a nonexistent one
 
 `next-step` omits drivers whose prerequisites aren't met, and `?driverIds=` on an ineligible

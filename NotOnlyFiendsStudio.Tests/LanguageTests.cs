@@ -51,6 +51,19 @@ public class LanguageTests
         Assert.Contains("dwarven", state.Languages);
     }
 
+    [Fact]
+    public void NymphGrantsItsAutomaticLanguages()
+    {
+        var content = Content();
+        var character = HumanWith(10);
+        character.RaceId = "race:nymph";
+
+        var state = new ReplayStudio(content).Evaluate(character);
+
+        Assert.Contains("common", state.Languages);
+        Assert.Contains("sylvan", state.Languages);
+    }
+
     [Theory]
     [InlineData(10, 0)]   // no modifier, no picks
     [InlineData(12, 1)]

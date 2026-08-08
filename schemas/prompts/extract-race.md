@@ -57,6 +57,13 @@ Use for flat abilities applied at creation:
 - `ModifyAttribute` for resistance bonuses (e.g., +2 save vs enchantments)
 - `GrantSLA` for racial spell-like abilities (e.g., drow's dancing lights)
 
+### Natural Attacks
+
+When the source grants natural weapons, add `naturalAttacks` entries with the source damage die,
+the number of attacks in a full attack, and `isPrimary: false` for secondary attacks such as a
+bite accompanying claws or talons. Keep conditional attacks (such as a sahuagin's swimming
+rakes) in the descriptive ability unless the model can represent their condition.
+
 ### Scaling Formulas
 Use for abilities that scale with total HD:
 - Formula DSL: `"expression": "TotalHD + 11"` for SR, `"expression": "max(10, TotalHD)"` for scaling values

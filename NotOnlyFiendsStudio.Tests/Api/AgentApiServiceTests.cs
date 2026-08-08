@@ -29,6 +29,22 @@ public class AgentApiServiceTests
     }
 
     [Fact]
+    public void SkillsAndLanguagesCanBeFilteredByQuery()
+    {
+        var service = SharedService.Value;
+
+        var skills = service.GetSkills("craft_alchemy").ToList();
+        var languages = service.GetLanguages("under").ToList();
+
+        var skill = Assert.Single(skills);
+        Assert.Equal("skill:craft_alchemy", skill.Id);
+        Assert.Equal("Undercommon", Assert.Single(languages).Name);
+
+        Assert.DoesNotContain(service.GetSkills("craft_alchemy"), skill => skill.Id == "skill:appraise");
+        Assert.DoesNotContain(service.GetLanguages("under"), language => language.Name == "Common");
+    }
+
+    [Fact]
     public void RaceCatalogExposesPlayerCharacterSanctioning()
     {
         var races = SharedService.Value.GetRaces().ToList();

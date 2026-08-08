@@ -1151,6 +1151,20 @@
       "skill:ride",
       "skill:swim"
     ],
+    "naturalAttacks": [
+      {
+        "name": "Talon",
+        "damage": "1d4",
+        "count": 4,
+        "isPrimary": true
+      },
+      {
+        "name": "Bite",
+        "damage": "1d4",
+        "count": 1,
+        "isPrimary": false
+      }
+    ],
     "racialPermabuffs": [
       {
         "$type": "ModifyAttribute",

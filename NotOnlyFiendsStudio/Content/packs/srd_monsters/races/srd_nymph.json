@@ -21,6 +21,10 @@
     "levelAdjustment": 7,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
+    "automaticLanguages": [
+      "common",
+      "sylvan"
+    ],
     "racialHDDriverId": "racial_hd:fey",
     "racialPermabuffs": [
       {

@@ -16,6 +16,21 @@ public class ContentValidationTests
     }
 
     [Fact]
+    public void SahuaginMutant_HasItsNaturalAttacks()
+    {
+        var race = TestContentHelper.LoadAllPacks().GetRace("race:sahuagin_mutant");
+
+        var talons = Assert.Single(race.NaturalAttacks, attack => attack.Name == "Talon");
+        Assert.Equal("1d4", talons.Damage);
+        Assert.Equal(4, talons.Count);
+        Assert.True(talons.IsPrimary);
+
+        var bite = Assert.Single(race.NaturalAttacks, attack => attack.Name == "Bite");
+        Assert.Equal("1d4", bite.Damage);
+        Assert.False(bite.IsPrimary);
+    }
+
+    [Fact]
     public void SRDEquipment_LoadsCatalog()
     {
         var registry = TestContentHelper.LoadAllPacks();

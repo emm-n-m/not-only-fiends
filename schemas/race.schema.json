@@ -199,6 +199,17 @@
       ],
       "additionalProperties": false
     },
+    "NaturalAttack": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "damage": { "type": "string" },
+        "count": { "type": "integer", "minimum": 1 },
+        "isPrimary": { "type": "boolean" }
+      },
+      "required": ["name", "damage"],
+      "additionalProperties": false
+    },
     "UserPermabuff": {
       "description": "Permabuffs applied at race creation (racialPermabuffs).",
       "oneOf": [
@@ -552,6 +563,13 @@
             "$ref": "#/$defs/ScalingFormula"
           },
           "description": "Formula-based abilities that recalculate every tick (e.g., SR = TotalHD + 11)."
+        },
+        "naturalAttacks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/NaturalAttack"
+          },
+          "description": "Natural weapons granted by the race, including primary/secondary attack role and count."
         }
       },
       "required": [

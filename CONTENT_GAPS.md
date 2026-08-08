@@ -9,19 +9,6 @@ The broader extraction backlog (epic magic items, mundane gear, remaining monste
 predates this test and still stands; the entries below are the specific items the rebuild test
 proved are missing because a real character needed them.
 
-## Magic item bonus variants
-
-The catalog carries low bonus tiers of several stat/save items but not the higher SRD tiers a
-mid-level character actually wears. Rebuilds could not attach:
-
-- Amulet of Natural Armor +5 (higher tiers than the catalog's max)
-- Belt of Giant Strength +6
-- Bracers of Health +8 and Headband of Intellect +12 (epic tiers — part of the known epic
-  magic item backlog)
-
-Each missing tier shows up as a 1–5 point save/HP/AC drift between an API-built character and
-the same character imported from PCGen.
-
 ## Enchanted weapon and armor variants
 
 Base items exist (`weapon:longbow`, `weapon:flail_heavy`, `armor:mithral_shirt`) but there is no
@@ -38,10 +25,3 @@ drivers exist, with different save progressions. An API builder picking the gene
 water elemental gets different saves than the PCG import produced (observed on a small water
 elemental familiar: Fort/Ref differed by 3). Either retire the generic driver or make the typed
 ones the only offer for typed elemental races.
-
-## Race data holes
-
-- `race:nymph` — `automaticLanguages` is empty; the SRD nymph speaks Common and Sylvan. Bonus
-  language selection is impossible when the race offers nothing.
-- `race:sahuagin_mutant` — `naturalAttacks` is empty (talons/bite missing from the race
-  record).
