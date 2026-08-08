@@ -34,6 +34,13 @@ public enum Alignment { LG, LN, LE, NG, N, NE, CG, CN, CE }
 
 public enum CastingType { Arcane, Divine }
 
+public enum PreparedSpellSlotKind
+{
+    Normal,
+    Domain,
+    Specialty
+}
+
 /// <summary>
 /// How a caster comes by the spells available to it. Distinct from <see cref="CastingType"/>,
 /// which is only arcane vs divine — the two are independent (a wizard and a sorcerer are both

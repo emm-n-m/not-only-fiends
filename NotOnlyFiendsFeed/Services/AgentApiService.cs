@@ -256,6 +256,7 @@ public sealed class AgentApiService
             DroppedTemplates = result.DroppedTemplates,
             DroppedDomains = result.DroppedDomains,
             DroppedSpells = result.DroppedSpells,
+            DroppedClassAbilities = result.DroppedClassAbilities,
             DroppedEquipment = result.DroppedEquipment,
             UnsupportedCustomEquipmentModifiers = result.UnsupportedCustomEquipmentModifiers,
             IgnoredTemporaryBonuses = result.IgnoredTemporaryBonuses,
@@ -495,6 +496,8 @@ public sealed class AgentApiService
             .OrderBy(entry => entry.Key)
             .Select(entry => BuildClassFeatureChoiceGroup(state, entry.Key, entry.Value, optionDetail))
             .ToList(),
+        SpellChoices = BuildSpellSelectionChoiceGroups(state, optionDetail),
+        PreparedSpellChoices = BuildPreparedSpellChoiceGroups(state, optionDetail),
         SpellLists = state.Spellcasting.Values
             .OrderBy(spellcasting => spellcasting.ClassId)
             .Select(spellcasting => new SpellcastingSummaryDto
@@ -507,10 +510,173 @@ public sealed class AgentApiService
                 MaxSpellLevel = spellcasting.MaxSpellLevel,
                 SpellsPerDay = new Dictionary<int, int>(spellcasting.SpellsPerDay),
                 SpellsKnown = spellcasting.SpellsKnown == null ? null : new Dictionary<int, int>(spellcasting.SpellsKnown),
-                DomainBonusSlots = new Dictionary<int, int>(spellcasting.DomainBonusSlots)
+                DomainBonusSlots = new Dictionary<int, int>(spellcasting.DomainBonusSlots),
+                SpecialtyBonusSlots = new Dictionary<int, int>(spellcasting.SpecialtyBonusSlots),
+                AbilityBonusSlots = new Dictionary<int, int>(spellcasting.AbilityBonusSlots)
             })
             .ToList()
     };
+
+    private List<SpellSelectionChoiceGroupDto> BuildSpellSelectionChoiceGroups(
+        CharacterState state,
+        OptionDetail optionDetail)
+    {
+        var groups = new List<SpellSelectionChoiceGroupDto>();
+
+        foreach (var spellcasting in state.Spellcasting.Values
+                     .Where(spellcasting => spellcasting.Acquisition == SpellAcquisition.Spellbook)
+                     .OrderBy(spellcasting => spellcasting.ClassId))
+        {
+            var selectedByLevel = spellcasting.SelectedSpells
+                .Where(selection => selection.ClassId == spellcasting.ClassId && selection.SpellLevel > 0)
+                .GroupBy(selection => selection.SpellLevel)
+                .ToDictionary(group => group.Key, group => group.Select(selection => selection.SpellId).ToHashSet(StringComparer.Ordinal));
+            var selectedCount = selectedByLevel.Values.Sum(selectionIds => selectionIds.Count);
+            var spellbookLimit = ReplayStudio.SpellbookSpellsAllowed(
+                state.ClassLevels.GetValueOrDefault(spellcasting.ClassId),
+                AbilityScoreSet.Modifier(state.AbilityScores.GetScore(spellcasting.CastingStat)));
+            var remaining = Math.Max(0, spellbookLimit - selectedCount);
+
+            var legalSpells = _content.GetSpellsForList(spellcasting.ClassId, spellcasting.MaxSpellLevel)
+                .Where(spell => !WizardSchools.IsProhibited(state, spell.School))
+                .Select(spell =>
+                {
+                    _content.TryGetSpellLevelForList(spell, spellcasting.ClassId, out var level);
+                    return (Spell: spell, Level: level);
+                })
+                .Where(entry => entry.Level >= 1)
+                .GroupBy(entry => entry.Level)
+                .OrderBy(group => group.Key);
+
+            foreach (var levelGroup in legalSpells)
+            {
+                var existing = selectedByLevel.GetValueOrDefault(levelGroup.Key)
+                    ?? new HashSet<string>(StringComparer.Ordinal);
+                var options = levelGroup
+                    .Select(entry => entry.Spell)
+                    .Where(spell => !existing.Contains(spell.Id))
+                    .ToList();
+
+                groups.Add(new SpellSelectionChoiceGroupDto
+                {
+                    ClassId = spellcasting.ClassId,
+                    SpellLevel = levelGroup.Key,
+                    OptionCount = options.Count,
+                    ExistingSelections = existing.OrderBy(id => id, StringComparer.Ordinal).ToList(),
+                    SpellbookUsed = selectedCount,
+                    SpellbookLimit = spellbookLimit,
+                    SpellbookRemaining = remaining,
+                    OptionIds = optionDetail == OptionDetail.Ids
+                        ? options.Select(spell => spell.Id).ToList()
+                        : null,
+                    Options = optionDetail == OptionDetail.Full
+                        ? options.Select(MapSpell).ToList()
+                        : null,
+                });
+            }
+        }
+
+        return groups;
+    }
+
+    private List<PreparedSpellChoiceGroupDto> BuildPreparedSpellChoiceGroups(
+        CharacterState state,
+        OptionDetail optionDetail)
+    {
+        var groups = new List<PreparedSpellChoiceGroupDto>();
+        foreach (var spellcasting in state.Spellcasting.Values
+                     .Where(spellcasting => spellcasting.Acquisition is SpellAcquisition.FullList or SpellAcquisition.Spellbook)
+                     .OrderBy(spellcasting => spellcasting.ClassId))
+        {
+            foreach (var spellLevel in spellcasting.SpellsPerDay.Keys.Where(level => level >= 1).OrderBy(level => level))
+            {
+                foreach (var slotKind in Enum.GetValues<PreparedSpellSlotKind>())
+                {
+                    var slotCount = slotKind switch
+                    {
+                        PreparedSpellSlotKind.Normal => spellcasting.SpellsPerDay.GetValueOrDefault(spellLevel)
+                            + spellcasting.AbilityBonusSlots.GetValueOrDefault(spellLevel),
+                        PreparedSpellSlotKind.Domain => spellcasting.DomainBonusSlots.GetValueOrDefault(spellLevel),
+                        PreparedSpellSlotKind.Specialty => spellcasting.SpecialtyBonusSlots.GetValueOrDefault(spellLevel),
+                        _ => 0
+                    };
+                    if (slotCount <= 0)
+                        continue;
+
+                    var existing = state.PreparedSpellSelections
+                        .Where(selection => selection.ClassId == spellcasting.ClassId
+                            && selection.SpellLevel == spellLevel
+                            && selection.SlotKind == slotKind)
+                        .Select(selection => selection.SpellId)
+                        .ToList();
+                    var options = GetPreparedSpellOptions(state, spellcasting, spellLevel, slotKind).ToList();
+                    groups.Add(new PreparedSpellChoiceGroupDto
+                    {
+                        ClassId = spellcasting.ClassId,
+                        SpellLevel = spellLevel,
+                        SlotKind = slotKind,
+                        SlotCount = slotCount,
+                        PreparedCount = existing.Count,
+                        ExistingSelections = existing,
+                        OptionCount = options.Count,
+                        OptionIds = optionDetail == OptionDetail.Ids
+                            ? options.Select(spell => spell.Id).ToList()
+                            : null,
+                        Options = optionDetail == OptionDetail.Full
+                            ? options.Select(MapSpell).ToList()
+                            : null,
+                    });
+                }
+            }
+        }
+        return groups;
+    }
+
+    private IEnumerable<SpellDefinition> GetPreparedSpellOptions(
+        CharacterState state,
+        SpellcastingState spellcasting,
+        int spellLevel,
+        PreparedSpellSlotKind slotKind)
+    {
+        IEnumerable<SpellDefinition> options;
+        if (slotKind == PreparedSpellSlotKind.Domain)
+        {
+            var domainSpellIds = state.DomainOwners
+                .Where(entry => entry.Value == spellcasting.ClassId)
+                .SelectMany(entry => _content.TryGetDomain(entry.Key, out var domain) && domain != null
+                    ? domain.BonusSpells.Where(spell => spell.Key == spellLevel).Select(spell => spell.Value)
+                    : Enumerable.Empty<string>())
+                .ToHashSet(StringComparer.Ordinal);
+            options = _content.GetAllSpells().Where(spell => domainSpellIds.Contains(spell.Id));
+        }
+        else if (slotKind == PreparedSpellSlotKind.Specialty)
+        {
+            var specialty = WizardSchools.Specialty(state);
+            options = _content.GetSpellsForList(spellcasting.ClassId, spellcasting.MaxSpellLevel)
+                .Where(spell => _content.TryGetSpellLevelForList(spell, spellcasting.ClassId, out var level)
+                    && level == spellLevel
+                    && string.Equals(spell.School, specialty, StringComparison.OrdinalIgnoreCase));
+        }
+        else if (spellcasting.Acquisition == SpellAcquisition.Spellbook)
+        {
+            options = spellcasting.SelectedSpells
+                .Where(selection => selection.ClassId == spellcasting.ClassId && selection.SpellLevel == spellLevel)
+                .Select(selection => _content.TryGetSpell(selection.SpellId, out var spell) ? spell : null)
+                .Where(spell => spell != null)
+                .Cast<SpellDefinition>();
+        }
+        else
+        {
+            options = _content.GetSpellsForList(spellcasting.ClassId, spellcasting.MaxSpellLevel)
+                .Where(spell => _content.TryGetSpellLevelForList(spell, spellcasting.ClassId, out var level)
+                    && level == spellLevel);
+        }
+
+        return options
+            .Where(spell => !WizardSchools.IsProhibited(state, spell.School))
+            .OrderBy(spell => spell.Name, StringComparer.Ordinal)
+            .DistinctBy(spell => spell.Id);
+    }
 
     private DomainChoiceGroupDto BuildDomainChoiceGroup(string ownerClassId, int count, OptionDetail optionDetail)
     {

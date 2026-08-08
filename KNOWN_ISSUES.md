@@ -1,5 +1,9 @@
 # Known issues
 
+##PRC Class abilities not converted
+
+When converting characters with PRCS that grant selectable abilities (like Archmage High Arcana or Loremaster sercret), the selected values are ignored and not converted
+
 ## War-domain favored weapons
 
 The War domain currently asks the player to choose a weapon from the equipment catalog. It grants

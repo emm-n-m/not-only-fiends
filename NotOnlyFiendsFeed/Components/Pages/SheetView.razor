@@ -456,13 +456,14 @@ else if (_state != null && _character != null)
                             {
                                 var domain = sc.DomainBonusSlots.GetValueOrDefault(kv.Key);
                                 var specialty = sc.SpecialtyBonusSlots.GetValueOrDefault(kv.Key);
-                                var extra = (domain > 0 ? $"+{domain}D" : "") + (specialty > 0 ? $"+{specialty}S" : "");
+                                var ability = sc.AbilityBonusSlots.GetValueOrDefault(kv.Key);
+                                var extra = (ability > 0 ? $"+{ability}A" : "") + (domain > 0 ? $"+{domain}D" : "") + (specialty > 0 ? $"+{specialty}S" : "");
                                 return $"{kv.Key}th:{kv.Value}{extra}";
                             }))
-                            @if (sc.DomainBonusSlots.Any() || sc.SpecialtyBonusSlots.Any())
+                            @if (sc.AbilityBonusSlots.Any() || sc.DomainBonusSlots.Any() || sc.SpecialtyBonusSlots.Any())
                             {
                                 <span class="text-muted small">
-                                    (@(sc.DomainBonusSlots.Any() ? "D = domain slot" : "")@(sc.DomainBonusSlots.Any() && sc.SpecialtyBonusSlots.Any() ? ", " : "")@(sc.SpecialtyBonusSlots.Any() ? "S = specialty school slot" : ""))
+                                    (@(sc.AbilityBonusSlots.Any() ? "A = ability slot" : "")@(sc.AbilityBonusSlots.Any() && (sc.DomainBonusSlots.Any() || sc.SpecialtyBonusSlots.Any()) ? ", " : "")@(sc.DomainBonusSlots.Any() ? "D = domain slot" : "")@(sc.DomainBonusSlots.Any() && sc.SpecialtyBonusSlots.Any() ? ", " : "")@(sc.SpecialtyBonusSlots.Any() ? "S = specialty school slot" : ""))
                                 </span>
                             }
                         </p>
@@ -518,6 +519,27 @@ else if (_state != null && _character != null)
                                         _registry.TryGetSpell(s.SpellId, out var spDef);
                                         <span title="@(spDef?.Description ?? "")">@(spDef?.Name ?? s.SpellId)</span>@(s != group.Last() ? ", " : "")
                                     }</li>
+                                }
+                            </ul>
+                        }
+                        @if (_state.PreparedSpellSelections.Any(selection => selection.ClassId == classId))
+                        {
+                            <p class="mb-1"><strong>Prepared Today:</strong></p>
+                            <ul class="mb-3">
+                                @foreach (var group in _state.PreparedSpellSelections
+                                    .Where(selection => selection.ClassId == classId)
+                                    .OrderBy(selection => selection.SpellLevel)
+                                    .ThenBy(selection => selection.SlotKind)
+                                    .GroupBy(selection => (selection.SpellLevel, selection.SlotKind)))
+                                {
+                                    <li>
+                                        @($"{group.Key.SlotKind} {group.Key.SpellLevel}th: ")
+                                        @foreach (var selection in group)
+                                        {
+                                            _registry.TryGetSpell(selection.SpellId, out var preparedDef);
+                                            <span title="@(preparedDef?.Description ?? selection.SpellId)">@(preparedDef?.Name ?? selection.SpellId)</span>@(selection != group.Last() ? ", " : "")
+                                        }
+                                    </li>
                                 }
                             </ul>
                         }

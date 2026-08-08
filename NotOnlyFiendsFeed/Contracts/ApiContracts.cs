@@ -200,6 +200,7 @@ public sealed class ImportPcgResponse
     public List<string> DroppedTemplates { get; set; } = new();
     public List<string> DroppedDomains { get; set; } = new();
     public List<string> DroppedSpells { get; set; } = new();
+    public List<string> DroppedClassAbilities { get; set; } = new();
     public List<string> DroppedEquipment { get; set; } = new();
     public List<string> UnsupportedCustomEquipmentModifiers { get; set; } = new();
     public List<string> IgnoredTemporaryBonuses { get; set; } = new();
@@ -288,6 +289,8 @@ public sealed class PendingChoicesDto
     public List<FeatChoiceGroupDto> FeatChoices { get; set; } = new();
     public List<DomainChoiceGroupDto> DomainChoices { get; set; } = new();
     public List<ClassFeatureChoiceGroupDto> ClassFeatureChoices { get; set; } = new();
+    public List<SpellSelectionChoiceGroupDto> SpellChoices { get; set; } = new();
+    public List<PreparedSpellChoiceGroupDto> PreparedSpellChoices { get; set; } = new();
     public List<SpellcastingSummaryDto> SpellLists { get; set; } = new();
 }
 
@@ -361,6 +364,36 @@ public sealed class ChoiceOptionDto
     public int? RequiredCasterLevel { get; set; }
 }
 
+public sealed class SpellSelectionChoiceGroupDto
+{
+    public string ClassId { get; set; } = string.Empty;
+    public int SpellLevel { get; set; }
+    public int OptionCount { get; set; }
+    public List<string> ExistingSelections { get; set; } = new();
+    public int SpellbookUsed { get; set; }
+    public int SpellbookLimit { get; set; }
+    public int SpellbookRemaining { get; set; }
+
+    /// <summary>Populated at <see cref="OptionDetail.Ids"/>.</summary>
+    public List<string>? OptionIds { get; set; }
+
+    /// <summary>Populated at <see cref="OptionDetail.Full"/>.</summary>
+    public List<SpellSummaryDto>? Options { get; set; }
+}
+
+public sealed class PreparedSpellChoiceGroupDto
+{
+    public string ClassId { get; set; } = string.Empty;
+    public int SpellLevel { get; set; }
+    public PreparedSpellSlotKind SlotKind { get; set; }
+    public int SlotCount { get; set; }
+    public int PreparedCount { get; set; }
+    public List<string> ExistingSelections { get; set; } = new();
+    public int OptionCount { get; set; }
+    public List<string>? OptionIds { get; set; }
+    public List<SpellSummaryDto>? Options { get; set; }
+}
+
 public sealed class SpellcastingSummaryDto
 {
     public string ClassId { get; set; } = string.Empty;
@@ -372,4 +405,6 @@ public sealed class SpellcastingSummaryDto
     public Dictionary<int, int> SpellsPerDay { get; set; } = new();
     public Dictionary<int, int>? SpellsKnown { get; set; }
     public Dictionary<int, int> DomainBonusSlots { get; set; } = new();
+    public Dictionary<int, int> SpecialtyBonusSlots { get; set; } = new();
+    public Dictionary<int, int> AbilityBonusSlots { get; set; } = new();
 }

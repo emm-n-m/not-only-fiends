@@ -13,6 +13,7 @@ public class PcgCharacterData
     public List<PcgLevelEntry> Levels { get; set; } = new();
     public List<PcgSkillEntry> Skills { get; set; } = new();
     public List<PcgFeatEntry> Feats { get; set; } = new();
+    public List<PcgClassAbilityEntry> ClassAbilities { get; set; } = new();
     public List<PcgTemplateEntry> Templates { get; set; } = new();
     public List<PcgSpellEntry> Spells { get; set; } = new();
     public List<PcgDomainEntry> Domains { get; set; } = new();
@@ -57,6 +58,19 @@ public class PcgFeatEntry
     public string Key { get; set; } = "";
     public string? AppliedTo { get; set; }
     public List<string> Types { get; set; } = new();
+}
+
+/// <summary>
+/// A selectable PCGen ability outside the FEAT category, such as an Archmage High Arcana
+/// or Loremaster Secret choice.
+/// </summary>
+public class PcgClassAbilityEntry
+{
+    public string Category { get; set; } = string.Empty;
+    public string Key { get; set; } = string.Empty;
+    public string? AppliedTo { get; set; }
+    public string? ClassName { get; set; }
+    public int ClassLevel { get; set; }
 }
 
 public class PcgTemplateEntry

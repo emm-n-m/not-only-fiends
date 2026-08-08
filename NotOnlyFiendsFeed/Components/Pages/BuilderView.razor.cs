@@ -368,6 +368,7 @@ public partial class BuilderView
                             kv.Value.SpellsKnown != null ? new Dictionary<int, int>(kv.Value.SpellsKnown) : null,
                             new Dictionary<int, int>(kv.Value.DomainBonusSlots),
                             new Dictionary<int, int>(kv.Value.SpecialtyBonusSlots),
+                            new Dictionary<int, int>(kv.Value.AbilityBonusSlots),
                             kv.Value.Acquisition,
                             ReplayStudio.SpellbookSpellsAllowed(
                                 state.ClassLevels.GetValueOrDefault(kv.Key),
@@ -762,6 +763,111 @@ public partial class BuilderView
     private int AvailableSpellCount(string spellListId, int maxSpellLevel) =>
         _spells.Count(s => Content.Registry.TryGetSpellLevelForList(s, spellListId, out var lvl)
             && lvl <= maxSpellLevel);
+
+    private static string PreparedSpellSlotLabel(PreparedSpellSlotKind slotKind) => slotKind switch
+    {
+        PreparedSpellSlotKind.Normal => "Normal",
+        PreparedSpellSlotKind.Domain => "Domain",
+        PreparedSpellSlotKind.Specialty => "Specialty",
+        _ => slotKind.ToString()
+    };
+
+    private static int PreparedSpellSlotCount(
+        TickSpellcastingInfo spellcasting,
+        int spellLevel,
+        PreparedSpellSlotKind slotKind) => slotKind switch
+        {
+            PreparedSpellSlotKind.Normal => spellcasting.SpellsPerDay.GetValueOrDefault(spellLevel)
+                + spellcasting.AbilityBonusSlots.GetValueOrDefault(spellLevel),
+            PreparedSpellSlotKind.Domain => spellcasting.DomainBonusSlots.GetValueOrDefault(spellLevel),
+            PreparedSpellSlotKind.Specialty => spellcasting.SpecialtyBonusSlots.GetValueOrDefault(spellLevel),
+            _ => 0
+        };
+
+    private List<PreparedSpellSelection> PreparedSelections(
+        string classId,
+        int spellLevel,
+        PreparedSpellSlotKind slotKind) =>
+        _character.PreparedSpellSelections
+            .Where(selection => selection.ClassId == classId
+                && selection.SpellLevel == spellLevel
+                && selection.SlotKind == slotKind)
+            .ToList();
+
+    private IEnumerable<SpellDefinition> PreparedSpellOptions(
+        string classId,
+        TickSpellcastingInfo tickSpellcasting,
+        int spellLevel,
+        PreparedSpellSlotKind slotKind)
+    {
+        if (_state == null || !_state.Spellcasting.TryGetValue(classId, out var spellcasting))
+            return Enumerable.Empty<SpellDefinition>();
+
+        IEnumerable<SpellDefinition> options;
+        if (slotKind == PreparedSpellSlotKind.Domain)
+        {
+            var domainSpellIds = _state.DomainOwners
+                .Where(entry => entry.Value == classId)
+                .SelectMany(entry => _domains.FirstOrDefault(domain => domain.Id == entry.Key)?.BonusSpells
+                    .Where(spell => spell.Key == spellLevel)
+                    .Select(spell => spell.Value)
+                    ?? Enumerable.Empty<string>())
+                .ToHashSet(StringComparer.Ordinal);
+            options = _spells.Where(spell => domainSpellIds.Contains(spell.Id));
+        }
+        else if (slotKind == PreparedSpellSlotKind.Specialty)
+        {
+            var specialty = WizardSchools.Specialty(_state);
+            options = _spells.Where(spell =>
+                Content.Registry.TryGetSpellLevelForList(spell, classId, out var level)
+                && level == spellLevel
+                && string.Equals(spell.School, specialty, StringComparison.OrdinalIgnoreCase));
+        }
+        else if (spellcasting.Acquisition == SpellAcquisition.Spellbook)
+        {
+            options = spellcasting.SelectedSpells
+                .Where(selection => selection.ClassId == classId && selection.SpellLevel == spellLevel)
+                .Select(selection => _spells.FirstOrDefault(spell => spell.Id == selection.SpellId))
+                .Where(spell => spell != null)
+                .Cast<SpellDefinition>();
+        }
+        else
+        {
+            options = _spells.Where(spell =>
+                Content.Registry.TryGetSpellLevelForList(spell, classId, out var level)
+                && level == spellLevel);
+        }
+
+        return options
+            .Where(spell => !WizardSchools.IsProhibited(_state, spell.School))
+            .OrderBy(spell => spell.Name, StringComparer.Ordinal)
+            .DistinctBy(spell => spell.Id);
+    }
+
+    private void AddPreparedSpellSelection(
+        string classId,
+        int spellLevel,
+        PreparedSpellSlotKind slotKind,
+        string spellId)
+    {
+        if (string.IsNullOrWhiteSpace(spellId))
+            return;
+
+        _character.PreparedSpellSelections.Add(new PreparedSpellSelection
+        {
+            ClassId = classId,
+            SpellLevel = spellLevel,
+            SpellId = spellId,
+            SlotKind = slotKind,
+        });
+        OnCharacterChanged();
+    }
+
+    private void RemovePreparedSpellSelection(PreparedSpellSelection selection)
+    {
+        _character.PreparedSpellSelections.Remove(selection);
+        OnCharacterChanged();
+    }
 
     // --- Specialist wizard schools ---
 
@@ -1280,6 +1386,53 @@ public partial class BuilderView
         OnCharacterChanged();
     }
 
+    private void LearnAllWizardSpells(int tickIndex, string classId)
+    {
+        if (tickIndex < 0 || tickIndex >= _character.Ticks.Count
+            || !_tickCasterInfos.TryGetValue(tickIndex, out var casterInfo)
+            || !casterInfo.Spellcasting.TryGetValue(classId, out var spellcasting)
+            || spellcasting.Acquisition != SpellAcquisition.Spellbook)
+            return;
+
+        var selected = _character.Ticks
+            .SelectMany(tick => tick.Choices.SpellSelections ?? Enumerable.Empty<SpellSelection>())
+            .Where(selection => selection.ClassId == classId && selection.SpellLevel > 0)
+            .Select(selection => selection.SpellId)
+            .ToHashSet(StringComparer.Ordinal);
+        var remaining = Math.Max(0, spellcasting.SpellbookLimit - selected.Count);
+        if (remaining == 0)
+            return;
+
+        var prohibited = _tickProhibitedSchools.GetValueOrDefault(tickIndex)
+            ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var additions = _spells
+            .Select(spell =>
+            {
+                Content.Registry.TryGetSpellLevelForList(spell, classId, out var level);
+                return (Spell: spell, Level: level);
+            })
+            .Where(entry => entry.Level >= 1
+                && entry.Level <= spellcasting.MaxSpellLevel
+                && !prohibited.Contains(entry.Spell.School)
+                && !selected.Contains(entry.Spell.Id))
+            .OrderBy(entry => entry.Level)
+            .ThenBy(entry => entry.Spell.Name)
+            .Take(remaining)
+            .ToList();
+        if (additions.Count == 0)
+            return;
+
+        var choices = _character.Ticks[tickIndex].Choices;
+        choices.SpellSelections ??= new List<SpellSelection>();
+        choices.SpellSelections.AddRange(additions.Select(entry => new SpellSelection
+        {
+            ClassId = classId,
+            SpellLevel = entry.Level,
+            SpellId = entry.Spell.Id,
+        }));
+        OnCharacterChanged();
+    }
+
     private void RemoveSpellSelection(int tickIndex, SpellSelection selection)
     {
         var tick = _character.Ticks[tickIndex];
@@ -1727,6 +1880,7 @@ public partial class BuilderView
         Dictionary<int, int>? SpellsKnown,
         Dictionary<int, int> DomainBonusSlots,
         Dictionary<int, int> SpecialtyBonusSlots,
+        Dictionary<int, int> AbilityBonusSlots,
         SpellAcquisition Acquisition,
         // Spellbook casters only: how many spells of 1st level or higher the book may hold.
         int SpellbookLimit);

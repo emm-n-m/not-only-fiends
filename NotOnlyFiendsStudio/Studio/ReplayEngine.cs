@@ -330,7 +330,147 @@ public class ReplayStudio
         // template applies at creation, but the domains it reads are chosen during the tick loop.
         FinalizeDomainSpellLikeAbilities(ctx);
 
+        // 11. Tail pass — casting-ability bonus spell slots. Ability scores are final only after
+        // equipment has been applied, and developed epic spells use a knowledge-based pool rather
+        // than ordinary spell slots.
+        FinalizeAbilityBonusSpellSlots(state);
+
+        // 12. Validate and materialize the optional daily prepared-spell loadout after all slot
+        // components and spellbook contents are final.
+        FinalizePreparedSpellSelections(state, character);
+
         return state;
+    }
+
+    private static void FinalizeAbilityBonusSpellSlots(CharacterState state)
+    {
+        foreach (var spellcasting in state.Spellcasting.Values)
+        {
+            spellcasting.AbilityBonusSlots.Clear();
+            if (spellcasting.Acquisition == SpellAcquisition.Developed)
+                continue;
+
+            var abilityModifier = AbilityScoreSet.Modifier(
+                state.AbilityScores.GetScore(spellcasting.CastingStat));
+            foreach (var spellLevel in spellcasting.SpellsPerDay.Keys.Where(level => level >= 1))
+            {
+                var bonus = GameRules.BonusSpellSlots(abilityModifier, spellLevel);
+                if (bonus > 0)
+                    spellcasting.AbilityBonusSlots[spellLevel] = bonus;
+            }
+        }
+    }
+
+    private void FinalizePreparedSpellSelections(CharacterState state, Character character)
+    {
+        state.PreparedSpellSelections.Clear();
+        if (character.PreparedSpellSelections.Count == 0)
+            return;
+
+        var used = new Dictionary<(string ClassId, int Level, PreparedSpellSlotKind Kind), int>();
+        foreach (var selection in character.PreparedSpellSelections)
+        {
+            if (string.IsNullOrWhiteSpace(selection.ClassId) || string.IsNullOrWhiteSpace(selection.SpellId))
+            {
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = "incomplete prepared spell selection ignored" });
+                continue;
+            }
+            if (selection.SpellLevel < 1)
+            {
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"prepared spell '{selection.SpellId}' must be level 1 or higher" });
+                continue;
+            }
+            if (!state.Spellcasting.TryGetValue(selection.ClassId, out var spellcasting)
+                || spellcasting.Acquisition is not (SpellAcquisition.FullList or SpellAcquisition.Spellbook))
+            {
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"prepared spell '{selection.SpellId}' references non-prepared caster '{selection.ClassId}'" });
+                continue;
+            }
+            if (selection.SpellLevel > spellcasting.MaxSpellLevel)
+            {
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"prepared spell '{selection.SpellId}' exceeds max spell level {spellcasting.MaxSpellLevel} for {selection.ClassId}" });
+                continue;
+            }
+
+            if (!_content.TryGetSpell(selection.SpellId, out var spell) || spell == null)
+            {
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown prepared spell '{selection.SpellId}'" });
+                continue;
+            }
+
+            var isDomainSpell = selection.SlotKind == PreparedSpellSlotKind.Domain
+                && IsDomainSpell(state, selection);
+            var legalLevel = selection.SlotKind == PreparedSpellSlotKind.Domain
+                ? isDomainSpell
+                : _content.TryGetSpellLevelForList(spell, selection.ClassId, out var classSpellLevel)
+                    && classSpellLevel == selection.SpellLevel;
+            if (spellcasting.Acquisition == SpellAcquisition.Spellbook && selection.SlotKind != PreparedSpellSlotKind.Domain)
+            {
+                legalLevel = spellcasting.SelectedSpells.Any(bookSpell =>
+                    bookSpell.ClassId == selection.ClassId
+                    && bookSpell.SpellId == selection.SpellId
+                    && bookSpell.SpellLevel == selection.SpellLevel);
+            }
+            if (!legalLevel)
+            {
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"prepared spell '{selection.SpellId}' is not available to {selection.ClassId} at level {selection.SpellLevel}" });
+                continue;
+            }
+            if (WizardSchools.IsProhibited(state, spell.School))
+            {
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"prepared spell '{selection.SpellId}' is from a prohibited school" });
+                continue;
+            }
+
+            var allowed = selection.SlotKind switch
+            {
+                PreparedSpellSlotKind.Normal => spellcasting.SpellsPerDay.GetValueOrDefault(selection.SpellLevel)
+                    + spellcasting.AbilityBonusSlots.GetValueOrDefault(selection.SpellLevel),
+                PreparedSpellSlotKind.Domain => spellcasting.DomainBonusSlots.GetValueOrDefault(selection.SpellLevel),
+                PreparedSpellSlotKind.Specialty => spellcasting.SpecialtyBonusSlots.GetValueOrDefault(selection.SpellLevel),
+                _ => 0
+            };
+            var key = (selection.ClassId, selection.SpellLevel, selection.SlotKind);
+            var alreadyUsed = used.GetValueOrDefault(key);
+            if (alreadyUsed >= allowed)
+            {
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"too many {selection.SlotKind.ToString().ToLowerInvariant()} prepared spells for {selection.ClassId} level {selection.SpellLevel}" });
+                continue;
+            }
+
+            if (selection.SlotKind == PreparedSpellSlotKind.Domain && !isDomainSpell)
+            {
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"prepared domain spell '{selection.SpellId}' is not offered by a domain owned by {selection.ClassId}" });
+                continue;
+            }
+            if (selection.SlotKind == PreparedSpellSlotKind.Specialty
+                && !string.Equals(WizardSchools.Specialty(state), spell.School, StringComparison.OrdinalIgnoreCase))
+            {
+                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"prepared specialty spell '{selection.SpellId}' is not from the specialty school" });
+                continue;
+            }
+
+            state.PreparedSpellSelections.Add(new PreparedSpellSelection
+            {
+                ClassId = selection.ClassId,
+                SpellLevel = selection.SpellLevel,
+                SpellId = selection.SpellId,
+                SlotKind = selection.SlotKind,
+            });
+            used[key] = alreadyUsed + 1;
+        }
+    }
+
+    private bool IsDomainSpell(CharacterState state, PreparedSpellSelection selection)
+    {
+        foreach (var (domainId, ownerClassId) in state.DomainOwners)
+        {
+            if (ownerClassId != selection.ClassId || !_content.TryGetDomain(domainId, out var domain) || domain == null)
+                continue;
+            if (domain.BonusSpells.GetValueOrDefault(selection.SpellLevel) == selection.SpellId)
+                return true;
+        }
+        return false;
     }
 
     private static bool IsFeatBasedPrerequisite(Prerequisite prerequisite) => prerequisite switch

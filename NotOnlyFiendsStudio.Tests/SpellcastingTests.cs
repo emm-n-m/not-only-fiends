@@ -46,6 +46,10 @@ public class SpellcastingTests
         Assert.Equal(5, sc.SpellsPerDay[4]);
         Assert.Equal(3, sc.SpellsPerDay[5]);
 
+        // CHA 18 gives a +4 modifier: one bonus slot at levels 1-4, none at level 5.
+        Assert.Equal(new Dictionary<int, int> { [1] = 1, [2] = 1, [3] = 1, [4] = 1 },
+            sc.AbilityBonusSlots);
+
         // Spells known at level 10: 9/5/4/3/2/1
         Assert.NotNull(sc.SpellsKnown);
         Assert.Equal(9, sc.SpellsKnown![0]);
@@ -137,9 +141,40 @@ public class SpellcastingTests
 
         // Cleric has no spells known table (prepared caster)
         Assert.Null(sc.SpellsKnown);
+        Assert.Equal(new Dictionary<int, int> { [1] = 1, [2] = 1, [3] = 1 },
+            sc.AbilityBonusSlots);
 
         // Cleric gets turn undead
         Assert.Contains(state.Abilities, a => a.Id == "turn_undead");
+    }
+
+    [Fact]
+    public void PreparedSpellLoadout_UsesBaseAndAbilitySlotsAndRejectsOverflow()
+    {
+        var (_, engine) = CreateStudio();
+        var character = new Character
+        {
+            Name = "Prepared Cleric",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 16, CHA = 10 },
+            Ticks = new List<Tick> { new() { DriverId = "class:cleric" } },
+            PreparedSpellSelections = Enumerable.Range(0, 3)
+                .Select(_ => new PreparedSpellSelection
+                {
+                    ClassId = "class:cleric",
+                    SpellLevel = 1,
+                    SpellId = "spell:cure_light_wounds"
+                })
+                .ToList()
+        };
+
+        var state = engine.Evaluate(character);
+
+        // Cleric 1 has one base 1st-level slot and one WIS 16 bonus slot.
+        Assert.Equal(2, state.Spellcasting["class:cleric"].SpellsPerDay[1]
+            + state.Spellcasting["class:cleric"].AbilityBonusSlots[1]);
+        Assert.Equal(2, state.PreparedSpellSelections.Count);
+        Assert.Contains(state.Warnings, warning => warning.Message.Contains("too many normal prepared spells"));
     }
 
     [Fact]

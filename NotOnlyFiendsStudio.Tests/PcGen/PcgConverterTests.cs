@@ -303,6 +303,56 @@ public class PcgConverterTests
     }
 
     [Fact]
+    public void ParseText_ExtractsSelectableClassAbilities()
+    {
+        const string pcg = "ABILITY:Special Ability|KEY:High Arcana|APPLIEDTO:Arcane Fire|CLASS:Archmage|LEVEL:1";
+
+        var data = PcgParser.ParseText(pcg);
+
+        var ability = Assert.Single(data.ClassAbilities);
+        Assert.Equal("Special Ability", ability.Category);
+        Assert.Equal("High Arcana", ability.Key);
+        Assert.Equal("Arcane Fire", ability.AppliedTo);
+        Assert.Equal("Archmage", ability.ClassName);
+        Assert.Equal(1, ability.ClassLevel);
+    }
+
+    [Fact]
+    public void Convert_MapsArchmageSelectionsToTheirGrantedTicks()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var data = new PcgCharacterData
+        {
+            Race = "Human",
+            BaseStats = new() { ["INT"] = 18 },
+            Classes = new()
+            {
+                new() { Name = "Wizard", Level = 1 },
+                new() { Name = "Archmage", Level = 2 },
+            },
+            Levels = new()
+            {
+                new() { ClassName = "Wizard", ClassLevel = 1 },
+                new() { ClassName = "Archmage", ClassLevel = 1 },
+                new() { ClassName = "Archmage", ClassLevel = 2 },
+            },
+            ClassAbilities = new()
+            {
+                new() { Key = "High Arcana", AppliedTo = "Arcane Fire" },
+                new() { Key = "High Arcana", AppliedTo = "Arcane Reach" },
+            },
+        };
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+
+        Assert.Equal(new[] { "arcane_fire" },
+            result.Character.Ticks[1].Choices.ClassFeatureChoices!["class_feature:high_arcana"]);
+        Assert.Equal(new[] { "arcane_reach" },
+            result.Character.Ticks[2].Choices.ClassFeatureChoices!["class_feature:high_arcana"]);
+        Assert.Empty(result.DroppedClassAbilities);
+    }
+
+    [Fact]
     public void Convert_HitPointRolls_AreStoredOnTheirTicks()
     {
         var data = CreateClericData();

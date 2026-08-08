@@ -37,6 +37,12 @@ public class Character
     // Post-tick modifiers
     public List<EquipmentEntry> Equipment { get; set; } = new();
 
+    /// <summary>
+    /// Daily prepared-spell loadout. This is separate from <see cref="TickChoices.SpellSelections"/>,
+    /// which represents permanent spellbook, known, or developed-spell choices.
+    /// </summary>
+    public List<PreparedSpellSelection> PreparedSpellSelections { get; set; } = new();
+
     // Companions/familiars/mounts/cohorts — stored as separate Character files,
     // referenced here. Resolution is host-side (CompanionResolver), not in ReplayStudio.
     public List<CompanionLink> CompanionLinks { get; set; } = new();
@@ -107,6 +113,13 @@ public class Character
             EnhancementBonusOverride = item.EnhancementBonusOverride,
             Permabuffs = new List<Permabuff>(item.Permabuffs),
         }).ToList(),
+        PreparedSpellSelections = PreparedSpellSelections.Select(selection => new PreparedSpellSelection
+        {
+            ClassId = selection.ClassId,
+            SpellLevel = selection.SpellLevel,
+            SpellId = selection.SpellId,
+            SlotKind = selection.SlotKind,
+        }).ToList(),
         CompanionLinks = CompanionLinks.Select(link => new CompanionLink
         {
             LinkType = link.LinkType,
@@ -176,6 +189,7 @@ public class CharacterSheet
     public int? SpellResistance { get; set; }
     public int NaturalArmor { get; set; }
     public Dictionary<string, List<string>> ClassFeatureSelections { get; set; } = new();
+    public List<PreparedSpellSelection> PreparedSpellSelections { get; set; } = new();
 
     /// <summary>
     /// Per-class spellcasting summary keyed by class id (e.g. "class:sorcerer"). Includes the
@@ -212,6 +226,13 @@ public class CharacterSheet
         SpellResistance = state.SpellResistance,
         NaturalArmor = state.NaturalArmor,
         ClassFeatureSelections = state.ClassFeatureSelections,
+        PreparedSpellSelections = state.PreparedSpellSelections.Select(selection => new PreparedSpellSelection
+        {
+            ClassId = selection.ClassId,
+            SpellLevel = selection.SpellLevel,
+            SpellId = selection.SpellId,
+            SlotKind = selection.SlotKind,
+        }).ToList(),
         Spellcasting = state.Spellcasting.ToDictionary(
             kv => kv.Key,
             kv => SpellcastingSummary.FromState(kv.Value)),
@@ -243,6 +264,8 @@ public class SpellcastingSummary
     public Dictionary<int, int> DomainBonusSlots { get; set; } = new();
     /// <summary>Specialist wizard bonus slots, castable only from the specialty school.</summary>
     public Dictionary<int, int> SpecialtyBonusSlots { get; set; } = new();
+    /// <summary>Bonus slots granted by the casting ability score.</summary>
+    public Dictionary<int, int> AbilityBonusSlots { get; set; } = new();
 
     public static SpellcastingSummary FromState(SpellcastingState sc) => new()
     {
@@ -256,6 +279,7 @@ public class SpellcastingSummary
         SpellsKnown = sc.SpellsKnown is null ? null : new Dictionary<int, int>(sc.SpellsKnown),
         DomainBonusSlots = new Dictionary<int, int>(sc.DomainBonusSlots),
         SpecialtyBonusSlots = new Dictionary<int, int>(sc.SpecialtyBonusSlots),
+        AbilityBonusSlots = new Dictionary<int, int>(sc.AbilityBonusSlots),
     };
 }
 
@@ -335,6 +359,14 @@ public class SpellSelection
     public string ClassId { get; set; } = string.Empty;
     public int SpellLevel { get; set; }
     public string SpellId { get; set; } = string.Empty;
+}
+
+public class PreparedSpellSelection
+{
+    public string ClassId { get; set; } = string.Empty;
+    public int SpellLevel { get; set; }
+    public string SpellId { get; set; } = string.Empty;
+    public PreparedSpellSlotKind SlotKind { get; set; } = PreparedSpellSlotKind.Normal;
 }
 
 public class EquipmentEntry

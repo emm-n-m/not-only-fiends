@@ -106,6 +106,68 @@ public class AgentApiServiceTests
     }
 
     [Fact]
+    public void EvaluateExposesWizardSpellbookChoicesAndCapacity()
+    {
+        var character = new Character
+        {
+            Name = "Wizard Spellbook API Test",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 10, CON = 10, INT = 18, WIS = 10, CHA = 10
+            },
+            Ticks =
+            {
+                new Tick
+                {
+                    DriverId = "class:wizard",
+                    Choices = new TickChoices
+                    {
+                        SpellSelections = new List<SpellSelection>
+                        {
+                            new() { ClassId = "class:wizard", SpellLevel = 1, SpellId = "spell:magic_missile" }
+                        }
+                    }
+                }
+            }
+        };
+
+        var response = SharedService.Value.Evaluate(new EvaluateCharacterRequest { Character = character });
+
+        var firstLevel = Assert.Single(response.PendingChoices.SpellChoices,
+            group => group.ClassId == "class:wizard" && group.SpellLevel == 1);
+        Assert.Equal(7, firstLevel.SpellbookLimit); // 3 + INT 18 modifier 4
+        Assert.Equal(1, firstLevel.SpellbookUsed);
+        Assert.Equal(6, firstLevel.SpellbookRemaining);
+        Assert.Contains("spell:magic_missile", firstLevel.ExistingSelections);
+        Assert.DoesNotContain(firstLevel.Options!, spell => spell.Id == "spell:magic_missile");
+        Assert.True(firstLevel.OptionCount > 0);
+    }
+
+    [Fact]
+    public void EvaluateExposesPreparedSpellChoicesAndSlotKinds()
+    {
+        var response = SharedService.Value.Evaluate(new EvaluateCharacterRequest
+        {
+            Character = new Character
+            {
+                Name = "API Prepared Cleric Test",
+                RaceId = "race:human",
+                BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 16, CHA = 10 },
+                Ticks = new List<Tick> { new() { DriverId = "class:cleric" } }
+            }
+        });
+
+        var normal = Assert.Single(response.PendingChoices.PreparedSpellChoices,
+            group => group.ClassId == "class:cleric"
+                && group.SpellLevel == 1
+                && group.SlotKind == PreparedSpellSlotKind.Normal);
+        Assert.Equal(2, normal.SlotCount); // one base slot plus one WIS bonus slot
+        Assert.Equal(0, normal.PreparedCount);
+        Assert.True(normal.OptionCount > 0);
+    }
+
+    [Fact]
     public void NextStepBuildsDriverPreviewWithPendingChoices()
     {
         var response = SharedService.Value.GetNextStep(new NextStepRequest

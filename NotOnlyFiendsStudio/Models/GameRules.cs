@@ -70,6 +70,16 @@ public class GameRules
     public bool GrantsEpicFeat(int totalHD) =>
         totalHD >= EpicFeatStartHD && (totalHD - EpicFeatStartHD) % EpicFeatInterval == 0;
 
+    /// <summary>
+    /// Returns the number of bonus spells granted at a spell level by a positive casting
+    /// ability modifier. D&amp;D 3.5 Table 1-1 gives one slot when the modifier reaches the
+    /// spell level, then one additional slot for every four modifier points beyond it.
+    /// </summary>
+    public static int BonusSpellSlots(int abilityModifier, int spellLevel) =>
+        abilityModifier < spellLevel
+            ? 0
+            : 1 + (abilityModifier - spellLevel) / 4;
+
     // 3.5e PHB carrying capacity, STR 1..29. Each +10 STR multiplies loads by 4 (handled below).
     private static readonly (int Light, int Medium, int Heavy)[] EncumbranceTable =
     {

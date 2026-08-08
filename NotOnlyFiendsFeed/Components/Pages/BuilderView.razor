@@ -716,9 +716,10 @@ else
                                                 {
                                                     var domainBonus = sc.DomainBonusSlots.GetValueOrDefault(lvl);
                                                     var specialtyBonus = sc.SpecialtyBonusSlots.GetValueOrDefault(lvl);
+                                                    var abilityBonus = sc.AbilityBonusSlots.GetValueOrDefault(lvl);
                                                     <span class="badge bg-light text-dark border"
-                                                          title="D = domain slot, S = specialty school slot">
-                                                        Lvl @lvl: @count@(domainBonus > 0 ? $"+{domainBonus}D" : "")@(specialtyBonus > 0 ? $"+{specialtyBonus}S" : "")
+                                                          title="A = casting-ability slot, D = domain slot, S = specialty school slot">
+                                                        Lvl @lvl: @count@(abilityBonus > 0 ? $"+{abilityBonus}A" : "")@(domainBonus > 0 ? $"+{domainBonus}D" : "")@(specialtyBonus > 0 ? $"+{specialtyBonus}S" : "")
                                                     </span>
                                                 }
                                             </div>
@@ -734,13 +735,10 @@ else
                                             }
                                             @if (sc.Acquisition == SpellAcquisition.FullList)
                                             {
-                                                @* A cleric, druid, paladin or ranger has the entire class list available and
-                                                   prepares from it daily. There is no build-time choice to offer, so offering
-                                                   one invented a decision the rules do not have. *@
                                                 <div class="mt-1 small text-muted">
                                                     Knows the entire @capturedListId.Replace("class:", "") list
                                                     (@AvailableSpellCount(capturedListId, sc.MaxSpellLevel) spells up to level @sc.MaxSpellLevel)
-                                                    — prepared daily, nothing to choose here.
+                                                    — choose the daily loadout below.
                                                 </div>
                                             }
                                             else
@@ -771,6 +769,13 @@ else
                                                         <span class="text-muted">
                                                             — plus @freeCantrips 0-level spells, held automatically@(barredSchools.Count > 0 ? " (those of given-up schools excluded)" : "").
                                                         </span>
+                                                        @if (sc.SpellbookLimit > inBook)
+                                                        {
+                                                            <button class="btn btn-sm btn-outline-secondary ms-2"
+                                                                    @onclick="() => LearnAllWizardSpells(index, capturedListId)">
+                                                                Learn all available
+                                                            </button>
+                                                        }
                                                     </div>
                                                 }
 
@@ -864,6 +869,66 @@ else
                                                 }
                                             </div>
                                         </div>
+                                    }
+
+                                    @if (index == _character.Ticks.Count - 1 && _state != null)
+                                    {
+                                        @foreach (var (preparedClassId, preparedSc) in _tickCasterInfos.GetValueOrDefault(index)?.Spellcasting
+                                            .Where(entry => entry.Value.Acquisition is SpellAcquisition.FullList or SpellAcquisition.Spellbook)
+                                            ?? Enumerable.Empty<KeyValuePair<string, TickSpellcastingInfo>>())
+                                        {
+                                            <div class="mt-2 border-top pt-2">
+                                                <small class="text-muted">Daily prepared loadout (@preparedClassId.Replace("class:", "")):</small>
+                                                @foreach (var slotKind in Enum.GetValues<PreparedSpellSlotKind>())
+                                                {
+                                                    var capturedKind = slotKind;
+                                                    var kindLabel = PreparedSpellSlotLabel(capturedKind);
+                                                    var levels = preparedSc.SpellsPerDay.Keys
+                                                        .Concat(preparedSc.DomainBonusSlots.Keys)
+                                                        .Concat(preparedSc.SpecialtyBonusSlots.Keys)
+                                                        .Distinct()
+                                                        .Where(level => PreparedSpellSlotCount(preparedSc, level, capturedKind) > 0)
+                                                        .OrderBy(level => level)
+                                                        .ToList();
+                                                    @foreach (var level in levels)
+                                                    {
+                                                        var capturedLevel = level;
+                                                        var slotCount = PreparedSpellSlotCount(preparedSc, capturedLevel, capturedKind);
+                                                        var selected = PreparedSelections(preparedClassId, capturedLevel, capturedKind);
+                                                        var options = PreparedSpellOptions(preparedClassId, preparedSc, capturedLevel, capturedKind)
+                                                            .ToList();
+                                                        <div class="mt-1">
+                                                            <small class="text-muted">@kindLabel level @capturedLevel (@selected.Count / @slotCount):</small>
+                                                            @foreach (var prepared in selected)
+                                                            {
+                                                                var capturedPrepared = prepared;
+                                                                var preparedDef = _spells.FirstOrDefault(spell => spell.Id == prepared.SpellId);
+                                                                <span class="badge bg-secondary ms-1" title="@(preparedDef?.Description ?? prepared.SpellId)">
+                                                                    @(preparedDef?.Name ?? prepared.SpellId)
+                                                                    <button class="btn-close btn-close-white btn-sm" @onclick="() => RemovePreparedSpellSelection(capturedPrepared)"></button>
+                                                                </span>
+                                                            }
+                                                            @if (selected.Count < slotCount && options.Count > 0)
+                                                            {
+                                                                <SearchSelect TItem="SpellDefinition"
+                                                                              Items="options"
+                                                                              DisplaySelector="@(spell => spell.Name)"
+                                                                              ValueSelector="@(spell => spell.Id)"
+                                                                              TitleSelector="@(spell => SpellTooltip(spell))"
+                                                                              DescriptionSelector="@(spell => SpellTooltip(spell))"
+                                                                              CssClass="form-control-sm ms-1"
+                                                                              Placeholder="Prepare a spell..."
+                                                                              ValueChanged="@((value) => { if (!string.IsNullOrEmpty(value)) AddPreparedSpellSelection(preparedClassId, capturedLevel, capturedKind, value); })" />
+                                                            }
+                                                            else if (selected.Count < slotCount)
+                                                            {
+                                                                <span class="small text-muted ms-1">No legal spells available.</span>
+                                                            }
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        }
                                     }
                                 </div>
                         </div>

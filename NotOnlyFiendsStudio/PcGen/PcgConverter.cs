@@ -14,6 +14,7 @@ public class PcgConversionResult
     public List<string> DroppedTemplates { get; set; } = new();
     public List<string> DroppedDomains { get; set; } = new();
     public List<string> DroppedSpells { get; set; } = new();
+    public List<string> DroppedClassAbilities { get; set; } = new();
     public List<string> DroppedEquipment { get; set; } = new();
     public List<string> UnsupportedCustomEquipmentModifiers { get; set; } = new();
     public List<string> IgnoredTemporaryBonuses { get; set; } = new();
@@ -31,6 +32,7 @@ public class PcgConversionResult
             if (DroppedTemplates.Count > 0) parts.Add($"{DroppedTemplates.Count} template(s) missing");
             if (DroppedDomains.Count > 0) parts.Add($"{DroppedDomains.Count} domain(s) missing");
             if (DroppedSpells.Count > 0) parts.Add($"{DroppedSpells.Count} spell(s) missing");
+            if (DroppedClassAbilities.Count > 0) parts.Add($"{DroppedClassAbilities.Count} class ability selection(s) missing");
             if (DroppedEquipment.Count > 0) parts.Add($"{DroppedEquipment.Count} equipment item(s) missing");
             if (IgnoredTemporaryBonuses.Count > 0) parts.Add($"{IgnoredTemporaryBonuses.Count} temporary modifier(s) ignored");
             return parts.Count == 0 ? "Clean import" : string.Join(", ", parts);
@@ -344,6 +346,8 @@ public static class PcgConverter
                 appliedAbilityIncreases[a] = appliedAbilityIncreases.GetValueOrDefault(a) + 1;
             }
         }
+
+        ApplyClassAbilitySelections(data, character, result, registry);
 
         // Feats go on the LAST valid tick. At the final HD, prerequisites
         // (caster level, BAB, skill ranks) are satisfied, the max-ranks cap covers
@@ -697,6 +701,140 @@ public static class PcgConverter
             }
         }
         return ticks.Count - 1;
+    }
+
+    private static void ApplyClassAbilitySelections(
+        PcgCharacterData data,
+        Character character,
+        PcgConversionResult result,
+        ContentRegistry? registry)
+    {
+        if (data.ClassAbilities.Count == 0)
+            return;
+
+        if (registry == null)
+        {
+            foreach (var ability in data.ClassAbilities)
+            {
+                result.DroppedClassAbilities.Add(ability.Key);
+                result.Warnings.Add($"Class ability '{ability.Key}' was not resolved because content validation was unavailable");
+            }
+            return;
+        }
+
+        var grantTicks = BuildClassFeatureGrantTicks(character.Ticks, registry);
+        var usedGrantTicks = new HashSet<(string FeatureType, int TickIndex)>();
+
+        foreach (var ability in data.ClassAbilities)
+        {
+            var mapped = MapClassAbility(ability, registry);
+            if (mapped == null)
+            {
+                result.DroppedClassAbilities.Add(ability.Key);
+                result.Warnings.Add($"Class ability '{ability.Key}' selection '{ability.AppliedTo}' has no matching class-feature option");
+                continue;
+            }
+
+            var grant = grantTicks
+                .Where(candidate => candidate.FeatureType == mapped.Value.FeatureType
+                    && !usedGrantTicks.Contains((candidate.FeatureType, candidate.TickIndex))
+                    && (string.IsNullOrWhiteSpace(ability.ClassName)
+                        || candidate.DriverName.Equals(ability.ClassName, StringComparison.OrdinalIgnoreCase)
+                        || candidate.DriverId.Equals(ability.ClassName, StringComparison.OrdinalIgnoreCase))
+                    && (ability.ClassLevel <= 0 || candidate.DriverLevel == ability.ClassLevel))
+                .OrderBy(candidate => candidate.TickIndex)
+                .FirstOrDefault();
+
+            if (grant == null)
+            {
+                result.DroppedClassAbilities.Add(ability.Key);
+                result.Warnings.Add($"Class ability '{ability.Key}' selection '{ability.AppliedTo}' has no matching pending tick");
+                continue;
+            }
+
+            AddClassFeatureChoices(character.Ticks[grant.TickIndex].Choices,
+                mapped.Value.FeatureType, new[] { mapped.Value.OptionId });
+            usedGrantTicks.Add((grant.FeatureType, grant.TickIndex));
+        }
+    }
+
+    private static List<ClassFeatureGrantTick> BuildClassFeatureGrantTicks(
+        List<Tick> ticks,
+        ContentRegistry registry)
+    {
+        var levelsByDriver = new Dictionary<string, int>(StringComparer.Ordinal);
+        var result = new List<ClassFeatureGrantTick>();
+
+        for (var tickIndex = 0; tickIndex < ticks.Count; tickIndex++)
+        {
+            Driver driver;
+            try
+            {
+                driver = registry.GetDriver(ticks[tickIndex].DriverId);
+            }
+            catch (KeyNotFoundException)
+            {
+                continue;
+            }
+
+            if (driver is not HDDriver hd)
+                continue;
+
+            var driverLevel = levelsByDriver.GetValueOrDefault(hd.Id) + 1;
+            levelsByDriver[hd.Id] = driverLevel;
+            if (!hd.LevelPermabuffs.TryGetValue(driverLevel, out var permabuffs))
+                continue;
+
+            foreach (var grant in permabuffs.OfType<GrantClassFeatureSelection>())
+            {
+                result.Add(new ClassFeatureGrantTick
+                {
+                    FeatureType = grant.FeatureType,
+                    TickIndex = tickIndex,
+                    DriverId = hd.Id,
+                    DriverName = hd.Name,
+                    DriverLevel = driverLevel,
+                });
+            }
+        }
+
+        return result;
+    }
+
+    private static (string FeatureType, string OptionId)? MapClassAbility(
+        PcgClassAbilityEntry ability,
+        ContentRegistry registry)
+    {
+        var key = PcgIdMapper.DefaultIdTransform(ability.Key);
+        var applied = string.IsNullOrWhiteSpace(ability.AppliedTo)
+            ? key
+            : PcgIdMapper.DefaultIdTransform(ability.AppliedTo.Split(',')[0].Trim());
+
+        foreach (var feature in registry.GetAllClassFeatures())
+        {
+            var featureId = feature.Id[(feature.Id.IndexOf(':') + 1)..];
+            var featureName = PcgIdMapper.DefaultIdTransform(feature.Name);
+            if (!string.Equals(key, featureName, StringComparison.Ordinal)
+                && !string.Equals(key, featureId, StringComparison.Ordinal))
+                continue;
+
+            var option = feature.Options.FirstOrDefault(candidate =>
+                string.Equals(candidate.Id, applied, StringComparison.Ordinal)
+                || string.Equals(PcgIdMapper.DefaultIdTransform(candidate.Name), applied, StringComparison.Ordinal));
+            if (option != null)
+                return (feature.Id, option.Id);
+        }
+
+        return null;
+    }
+
+    private sealed class ClassFeatureGrantTick
+    {
+        public string FeatureType { get; init; } = string.Empty;
+        public int TickIndex { get; init; }
+        public string DriverId { get; init; } = string.Empty;
+        public string DriverName { get; init; } = string.Empty;
+        public int DriverLevel { get; init; }
     }
 
     private static void AddClassFeatureChoices(TickChoices choices, string key, IEnumerable<string> values)

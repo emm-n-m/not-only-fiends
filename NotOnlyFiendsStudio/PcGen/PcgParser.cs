@@ -86,6 +86,8 @@ public static class PcgParser
                 ParseSkill(line, data);
             else if (line.StartsWith("ABILITY:FEAT|"))
                 ParseFeat(line, data);
+            else if (line.StartsWith("ABILITY:"))
+                ParseClassAbility(line, data);
             else if (line.StartsWith("TEMPLATESAPPLIED:"))
                 ParseTemplate(line, data);
             else if (line.StartsWith("SPELLNAME:"))
@@ -283,6 +285,38 @@ public static class PcgParser
         }
 
         data.Feats.Add(entry);
+    }
+
+    private static void ParseClassAbility(string line, PcgCharacterData data)
+    {
+        var fields = ParseFields(line);
+        var category = fields.GetValueOrDefault("CATEGORY") ??
+            line["ABILITY:".Length..].Split('|')[0].Trim();
+
+        if (category.StartsWith("CATEGORY=", StringComparison.OrdinalIgnoreCase))
+            category = category["CATEGORY=".Length..];
+        if (category.Equals("FEAT", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var key = fields.GetValueOrDefault("KEY");
+        if (string.IsNullOrWhiteSpace(key))
+            key = line["ABILITY:".Length..].Split('|')[0].Trim();
+        if (string.IsNullOrWhiteSpace(key) || key.Contains('='))
+            return;
+
+        var entry = new PcgClassAbilityEntry
+        {
+            Category = category,
+            Key = key,
+            AppliedTo = fields.GetValueOrDefault("APPLIEDTO"),
+            ClassName = fields.GetValueOrDefault("CLASS") ?? fields.GetValueOrDefault("SOURCECLASS"),
+        };
+        var classLevel = 0;
+        if (fields.TryGetValue("LEVEL", out var levelText))
+            int.TryParse(levelText, out classLevel);
+        entry.ClassLevel = classLevel;
+
+        data.ClassAbilities.Add(entry);
     }
 
     private static void ParseTemplate(string line, PcgCharacterData data)

@@ -89,6 +89,7 @@ public class CharacterState
 
     // Spellcasting
     public Dictionary<string, SpellcastingState> Spellcasting { get; set; } = new();
+    public List<PreparedSpellSelection> PreparedSpellSelections { get; set; } = new();
     public List<CasterLevelModifier> CasterLevelModifiers { get; set; } = new();
     public List<ItemActivationLevelRule> ItemActivationLevelRules { get; set; } = new();
 
@@ -336,6 +337,10 @@ public class SpellcastingState
 
     // Domain bonus spell slots (spell level → bonus count)
     public Dictionary<int, int> DomainBonusSlots { get; set; } = new();
+
+    // Casting-ability bonus spell slots (spell level → bonus count). These are kept separate
+    // from base progression and other restricted slots so sheets can explain the total.
+    public Dictionary<int, int> AbilityBonusSlots { get; set; } = new();
 
     /// <summary>
     /// Specialist wizard bonus slots (spell level → bonus count). SRD: "A specialist wizard can
