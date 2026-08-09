@@ -49,11 +49,23 @@ public class CompanionResolver
 
     private readonly ReplayStudio _engine;
     private readonly Func<string, Character?> _lookup;
+    private readonly Func<string, Character?>? _lookupByName;
 
-    public CompanionResolver(ReplayStudio engine, Func<string, Character?> companionLookup)
+    /// <param name="companionLookup">Resolves a companion id to its character.</param>
+    /// <param name="companionLookupByName">
+    /// Optional repair path, consulted only when the id misses: resolves
+    /// <see cref="CompanionLink.SourceName"/> to the one character with that name, or null when
+    /// none or several match. Lets a link written before its companion existed heal itself once
+    /// the companion is imported, without ever guessing between same-named characters.
+    /// </param>
+    public CompanionResolver(
+        ReplayStudio engine,
+        Func<string, Character?> companionLookup,
+        Func<string, Character?>? companionLookupByName = null)
     {
         _engine = engine;
         _lookup = companionLookup;
+        _lookupByName = companionLookupByName;
     }
 
     public CompositeBuildResult Build(Character master)
@@ -67,12 +79,28 @@ public class CompanionResolver
         foreach (var link in master.CompanionLinks)
         {
             var companion = _lookup(link.CompanionId);
+
+            // Id missed — fall back to the name the source used, if that names exactly one
+            // character. This is what repairs a link written before its companion was imported.
+            if (companion == null && !string.IsNullOrWhiteSpace(link.SourceName) && _lookupByName != null)
+                companion = _lookupByName(link.SourceName!);
+
             if (companion == null)
             {
+                // A dangling link is usually an identity mismatch rather than an absent character:
+                // the id comes from what the master calls the companion, while the saved character
+                // is filed under the name in its own record. When those disagree by so much as a
+                // letter the lookup misses, so the warning carries the link's provenance note —
+                // naming the source it was imported from is what makes the mismatch findable.
+                var byName = string.IsNullOrWhiteSpace(link.SourceName)
+                    ? ""
+                    : $", and no single saved character is named '{link.SourceName}'";
+                var provenance = string.IsNullOrWhiteSpace(link.Notes) ? "" : $" ({link.Notes})";
                 result.MasterState.Warnings.Add(new Warning
                 {
                     TickIndex = null,
-                    Message = $"Companion link '{link.LinkType}' references missing companion '{link.CompanionId}'"
+                    Message = $"Companion link '{link.LinkType}' references missing companion "
+                        + $"'{link.CompanionId}' — no saved character has that id{byName}{provenance}"
                 });
                 continue;
             }

@@ -52,10 +52,11 @@ public class PcgGoldenBuildTests
         Character Character,
         CharacterState State);
 
+    // Frozen fixtures, not the live PCGen directory: every assertion below is an exact value, so
+    // reading the working set would make an edit in PCGen look like a code regression.
     private static Build Load(string fileName)
     {
-        var dir = TestContentHelper.GetOptionalPcgenCharactersPath()!;
-        var source = PcgParser.Parse(Path.Combine(dir, fileName));
+        var source = PcgParser.Parse(TestContentHelper.PcgFixture(fileName));
         var registry = SharedRegistry.Value;
         var result = PcgConverter.Convert(source, new PcgIdMapper(), registry);
         var state = new ReplayStudio(registry).Evaluate(result.Character);
@@ -85,7 +86,7 @@ public class PcgGoldenBuildTests
     // Straight martial — Human Fighter 7
     // ---------------------------------------------------------------
 
-    [RequiresPcgenGoldenDataFact]
+    [RequiresPcgFixturesFact]
     public void Golden_StraightMartial_HumanFighter7()
     {
         var build = Load("High Priestess's Bodyguard.pcg");
@@ -134,7 +135,7 @@ public class PcgGoldenBuildTests
     // Straight divine caster with domains — Human Cleric 6
     // ---------------------------------------------------------------
 
-    [RequiresPcgenGoldenDataFact]
+    [RequiresPcgFixturesFact]
     public void Golden_DivineCasterWithDomains_HumanCleric6()
     {
         var build = Load("High Priestess.pcg");
@@ -184,7 +185,7 @@ public class PcgGoldenBuildTests
     // Straight arcane caster — Drow Wizard 5
     // ---------------------------------------------------------------
 
-    [RequiresPcgenGoldenDataFact]
+    [RequiresPcgFixturesFact]
     public void Golden_ArcaneCaster_DrowWizard5()
     {
         var build = Load("Drow Cult Wizard.pcg");
@@ -231,7 +232,7 @@ public class PcgGoldenBuildTests
     // Multiclass skill build — Drow Rogue 7 / Assassin 10
     // ---------------------------------------------------------------
 
-    [RequiresPcgenGoldenDataFact]
+    [RequiresPcgFixturesFact]
     public void Golden_MulticlassSkillBuild_DrowRogue7Assassin10()
     {
         var build = Load("Spymistress.pcg");
@@ -301,7 +302,7 @@ public class PcgGoldenBuildTests
     // Prestige spell advancement — Human Cleric 7 / Thaumaturgist 2
     // ---------------------------------------------------------------
 
-    [RequiresPcgenGoldenDataFact]
+    [RequiresPcgFixturesFact]
     public void Golden_PrestigeSpellAdvancement_ClericThaumaturgist()
     {
         var build = Load("Human High Priestess.pcg");
@@ -352,7 +353,7 @@ public class PcgGoldenBuildTests
     // Racial-HD creature — Nymph (6 fey HD) / Druid 6
     // ---------------------------------------------------------------
 
-    [RequiresPcgenGoldenDataFact]
+    [RequiresPcgFixturesFact]
     public void Golden_RacialHdCreature_NymphDruid6()
     {
         var build = Load("Nymph Archdruid.pcg");
@@ -403,7 +404,7 @@ public class PcgGoldenBuildTests
     // Templated creature — Human Bard 13 + Lich
     // ---------------------------------------------------------------
 
-    [RequiresPcgenGoldenDataFact]
+    [RequiresPcgFixturesFact]
     public void Golden_TemplatedCreature_LichBard13()
     {
         var build = Load("Lich Recruiter.pcg");
@@ -454,7 +455,7 @@ public class PcgGoldenBuildTests
     // Epic progression — Human Wizard 7 / Loremaster 10 / Archmage 5 / Cosmic Descryer 10
     // ---------------------------------------------------------------
 
-    [RequiresPcgenGoldenDataFact]
+    [RequiresPcgFixturesFact]
     public void Golden_EpicProgression_Wizard32()
     {
         var build = Load("Wizard.pcg");

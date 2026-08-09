@@ -77,6 +77,7 @@ else
         <CharacterHeaderBar State="_state"
                             Name="@_character.Name"
                             Subtitle="@HeaderSubtitle()"
+                            ClassName="DriverName"
                             OnNavigate="SetActiveTab" />
     }
 
@@ -175,7 +176,8 @@ else
     var raceForLanguages = SelectedRace();
     var offeredLanguages = OfferedBonusLanguages();
     var languageAllowance = LanguageCatalog.Allowance(GetStartingIntelligence());
-    var languagePicksUsed = _character.BonusLanguageIds.Count;
+    var importedLanguagePicks = ImportedBonusLanguages();
+    var languagePicksUsed = LanguagePicksUsed();
 
     @if ((raceForLanguages is not null && (raceForLanguages.AutomaticLanguages.Count > 0 || offeredLanguages.Count > 0))
         || _character.SourceLanguageIds.Count > 0)
@@ -208,7 +210,11 @@ else
                         }
                     </div>
                     <div class="form-text mb-2">
-                        Preserved from the imported character; the source does not say which were starting-Intelligence picks.
+                        Preserved from the imported character. The source does not say which were
+                        starting-Intelligence picks, so @(importedLanguagePicks.Count == 0
+                            ? "none are credited against the bonus picks below"
+                            : $"the first {importedLanguagePicks.Count} the race offers are credited against the bonus picks below") —
+                        the character already speaks all of them either way.
                     </div>
                 }
                 @if (languageAllowance == 0)
@@ -223,15 +229,17 @@ else
                     <div class="d-flex flex-wrap gap-3">
                         @foreach (var language in offeredLanguages)
                         {
-                            var chosen = _character.BonusLanguageIds.Contains(language.Id);
+                            var imported = importedLanguagePicks.Contains(language.Id);
+                            var chosen = imported || _character.BonusLanguageIds.Contains(language.Id);
                             var atLimit = !chosen && languagePicksUsed >= languageAllowance;
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox"
                                        id="@($"lang-{language.Id}")"
-                                       checked="@chosen" disabled="@atLimit"
+                                       checked="@chosen" disabled="@(imported || atLimit)"
                                        @onchange="() => ToggleBonusLanguage(language.Id)" />
-                                <label class="form-check-label @(atLimit ? "text-muted" : "")"
-                                       for="@($"lang-{language.Id}")" title="@language.Description">
+                                <label class="form-check-label @(imported || atLimit ? "text-muted" : "")"
+                                       for="@($"lang-{language.Id}")"
+                                       title="@(imported ? $"Credited from the import — {language.Description}" : language.Description)">
                                     @language.Name
                                 </label>
                             </div>
@@ -1007,7 +1015,7 @@ else
         <aside class="reg-builder-delta">
             @if (_state != null)
             {
-                <DeltaPane State="_state" OnSave="SaveCharacter" OnEvaluate="EvaluateCharacter" />
+                <DeltaPane State="_state" ClassName="DriverName" OnSave="SaveCharacter" OnEvaluate="EvaluateCharacter" />
             }
         </aside>
     </div>@* end .reg-builder-grid *@

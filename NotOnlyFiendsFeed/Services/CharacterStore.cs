@@ -111,18 +111,71 @@ public sealed class CharacterStore
 
     public string Create(Character character, string? explicitId = null)
     {
-        var id = explicitId != null ? ValidateId(explicitId) : DeriveId(character);
-        var path = PathFor(id);
-
         lock (_writeLock)
         {
-            if (File.Exists(path))
-                throw new CharacterStoreException("already_exists", $"Character already exists: {id}");
+            string id;
+            if (explicitId != null)
+            {
+                id = ValidateId(explicitId);
+                if (File.Exists(PathFor(id)))
+                    throw new CharacterStoreException("already_exists", $"Character already exists: {id}");
+            }
+            else
+            {
+                // Names are not identities. A campaign may hold six characters called "Lilly" —
+                // her mortal self, each ascension — so a name collision picks the next free id
+                // rather than refusing the save. Pass explicitId when the caller wants the id
+                // to be exactly one thing and a clash to be an error.
+                id = ReserveDerivedId(character);
+            }
 
-            WriteAtomic(path, character);
+            WriteAtomic(PathFor(id), character);
+            return id;
+        }
+    }
+
+    /// <summary>
+    /// First free id derived from the character's name: <c>lilly</c>, then <c>lilly_2</c>,
+    /// <c>lilly_3</c>… Callers must already hold the write lock.
+    /// </summary>
+    private string ReserveDerivedId(Character character)
+    {
+        var baseId = DeriveId(character);
+        if (!File.Exists(PathFor(baseId)))
+            return baseId;
+
+        for (var suffix = 2; suffix < 1000; suffix++)
+        {
+            var candidate = $"{baseId}_{suffix}";
+            if (!File.Exists(PathFor(candidate)))
+                return candidate;
         }
 
-        return id;
+        throw new CharacterStoreException("already_exists",
+            $"Could not find a free id for '{baseId}' after 999 attempts");
+    }
+
+    /// <summary>
+    /// The single character whose <see cref="Character.Name"/> matches, ignoring case. Returns null
+    /// when nothing matches *or* when several do — a name shared by six Lillys identifies none of
+    /// them, and guessing between them would silently link the wrong character.
+    /// </summary>
+    public CharacterFileInfo? FindByName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return null;
+
+        CharacterFileInfo? match = null;
+        foreach (var info in List())
+        {
+            if (!string.Equals(info.Name?.Trim(), name.Trim(), StringComparison.OrdinalIgnoreCase))
+                continue;
+            if (match != null)
+                return null;
+            match = info;
+        }
+
+        return match;
     }
 
     public void Replace(string id, Character character)
@@ -181,6 +234,12 @@ public sealed class CharacterStore
         return id;
     }
 
+    /// <summary>
+    /// A starting id suggestion slugged from the character's name, used only when a character is
+    /// first created. An id is assigned once and then belongs to the file: renaming a character
+    /// must never re-derive it, or every companion link pointing at the old slug would dangle and
+    /// the previous file would be orphaned.
+    /// </summary>
     public static string DeriveId(Character character)
     {
         var name = character.Name?.Trim();

@@ -42,6 +42,130 @@ public class RulesAccuracyTests
         Assert.Contains("fire", sheet.Immunities);
     }
 
+    // ---- ability-modifier save bonuses (Divine Grace / Dark Blessing) ----
+
+    /// <summary>
+    /// SRD paladin: "she applies her Charisma modifier (if positive) as a bonus on all saving
+    /// throws." The feature arrives at 2nd level and is worth nothing at 1st.
+    /// </summary>
+    [Fact]
+    public void Paladin_DivineGrace_AddsCharismaToEverySaveFromSecondLevel()
+    {
+        var level1 = Evaluate(Human(new Tick { DriverId = "class:paladin" }));
+        Assert.Equal(0, level1.AbilitySaveBonusTotal);
+
+        var level2 = Evaluate(Human(
+            new Tick { DriverId = "class:paladin" },
+            new Tick { DriverId = "class:paladin" }));
+
+        // Human() sets CHA 14 → +2 on every save, over and above the WIS/DEX/CON modifiers.
+        var charisma = AbilityScoreSet.Modifier(level2.AbilityScores.CHA);
+        Assert.Equal(2, charisma);
+        Assert.Equal(charisma, level2.AbilitySaveBonusTotal);
+        Assert.Equal(level2.BaseSaves.Fort + AbilityScoreSet.Modifier(level2.AbilityScores.CON) + charisma,
+            level2.EffectiveSaves.Fort);
+        Assert.Equal(level2.BaseSaves.Ref + AbilityScoreSet.Modifier(level2.AbilityScores.DEX) + charisma,
+            level2.EffectiveSaves.Ref);
+        Assert.Equal(level2.BaseSaves.Will + AbilityScoreSet.Modifier(level2.AbilityScores.WIS) + charisma,
+            level2.EffectiveSaves.Will);
+    }
+
+    /// <summary>
+    /// The bonus is the *current* Charisma modifier, not the one at the level that granted the
+    /// feature. Banking a number at the granting tick was the original bug: it silently ignored
+    /// every later ability increase, tome and worn item.
+    /// </summary>
+    [Fact]
+    public void DivineGrace_TracksCharismaGainedAfterTheGrantingLevel()
+    {
+        var character = Human(
+            new Tick { DriverId = "class:paladin" },
+            new Tick { DriverId = "class:paladin" },
+            new Tick { DriverId = "class:paladin" },
+            new Tick
+            {
+                DriverId = "class:paladin",
+                Choices = new TickChoices { AbilityIncrease = Ability.CHA }
+            });
+
+        var state = Evaluate(character);
+
+        // CHA 14 + 1 from the 4th-level increase = 15, still +2.
+        Assert.Equal(15, state.AbilityScores.CHA);
+        Assert.Equal(2, state.AbilitySaveBonusTotal);
+
+        // Tome of Leadership and Influence +5, read just before the 4th level.
+        character.PermanentEvents.Add(new PermanentEvent
+        {
+            BeforeTick = 3,
+            Permabuffs = new List<Permabuff>
+            {
+                new ModifyAttribute
+                {
+                    Target = AttributeTarget.AbilityScore,
+                    AbilityScore = Ability.CHA,
+                    Value = 5
+                }
+            }
+        });
+
+        var boosted = Evaluate(character);
+        Assert.Equal(20, boosted.AbilityScores.CHA);
+        Assert.Equal(5, boosted.AbilitySaveBonusTotal);
+        Assert.Equal(state.EffectiveSaves.Will + 3, boosted.EffectiveSaves.Will);
+    }
+
+    /// <summary>SRD blackguard Dark Blessing is the same rule under a different name.</summary>
+    [Fact]
+    public void Blackguard_DarkBlessing_AddsCharismaToEverySave()
+    {
+        var state = Evaluate(Human(
+            new Tick { DriverId = "class:blackguard" },
+            new Tick { DriverId = "class:blackguard" }));
+
+        Assert.Contains(state.AbilitySaveBonuses, bonus => bonus.SourceId == "dark_blessing");
+        Assert.Equal(AbilityScoreSet.Modifier(state.AbilityScores.CHA), state.AbilitySaveBonusTotal);
+    }
+
+    /// <summary>
+    /// A negative Charisma modifier is not carried onto saves — both features say "if positive".
+    /// </summary>
+    [Fact]
+    public void DivineGrace_IgnoresANegativeCharismaModifier()
+    {
+        var character = Human(
+            new Tick { DriverId = "class:paladin" },
+            new Tick { DriverId = "class:paladin" });
+        character.BaseAbilityScores.CHA = 6;
+
+        var state = Evaluate(character);
+
+        Assert.Equal(-2, AbilityScoreSet.Modifier(state.AbilityScores.CHA));
+        Assert.Equal(0, state.AbilitySaveBonusTotal);
+    }
+
+    /// <summary>
+    /// Epic ring of universal energy immunity: "the wearer takes no damage from energy of any of
+    /// these types" — fire, cold, electricity, acid and sonic.
+    /// </summary>
+    [Fact]
+    public void RingOfUniversalEnergyImmunity_GrantsAllFiveEnergyImmunities()
+    {
+        var character = Human(new Tick { DriverId = "class:fighter" });
+        character.Equipment.Add(new EquipmentEntry
+        {
+            ItemId = "Ring of Universal Energy Immunity",
+            ContentId = "ring:universal_energy_immunity",
+            Slot = "ring"
+        });
+
+        var state = Evaluate(character);
+
+        Assert.Equal(
+            new[] { "acid", "cold", "electricity", "fire", "sonic" },
+            state.Immunities.OrderBy(immunity => immunity, StringComparer.Ordinal));
+    }
+
     // ---- validation gaps -------------------------------------------------
 
     [Fact]

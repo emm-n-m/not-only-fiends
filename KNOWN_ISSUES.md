@@ -1,5 +1,25 @@
 # Known issues
 
+## Mechanics described in prose but never encoded
+
+`GrantAbility` carries a description string only, so any rule stated there and nowhere else is
+flavour text as far as the engine is concerned. Three instances were found and fixed on
+2026-08-09 (blackguard Dark Blessing / paladin Divine Grace, the Archfiend devil-and-demon-trait
+immunities, and the Ring of Universal Energy Immunity's empty `grantedPermabuffs`), but the
+pattern is corpus-wide and unaudited: a sweep for `"description"` strings containing "immune",
+"resistance", "bonus to" and similar wording finds many more candidates, mostly in the private
+packs' spells and class features.
+
+A `verify-content` style audit that diffs each `GrantAbility` description against the permabuffs
+beside it would enumerate the rest. Until then, treat a stat that looks wrong on a character
+sheet as a likely un-encoded description.
+
+## Permanent events scheduled past the last tick are silently dropped
+
+`ReplayEngine` applies a `PermanentEvent` only when `BeforeTick` matches a tick index that
+actually exists, so a tome or wish read *after* the final level (`BeforeTick == Ticks.Count`)
+never fires and produces no warning. Storing it is accepted, which makes the loss invisible.
+
 ##PRC Class abilities not converted
 
 When converting characters with PRCS that grant selectable abilities (like Archmage High Arcana or Loremaster sercret), the selected values are ignored and not converted

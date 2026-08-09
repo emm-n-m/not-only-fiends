@@ -27,8 +27,11 @@ public class PcgReconstructionFidelityTests
         return (source, PcgConverter.Convert(source, new PcgIdMapper(), SharedRegistry.Value));
     }
 
+    // Named single-character tests assert exact values, so they read the frozen fixtures rather
+    // than the live PCGen working set — see TestContentHelper.GetOptionalPcgFixturesPath. The
+    // corpus sweeps above stay on the live directory: their job is to cover whatever exists now.
     private static (PcgCharacterData Source, PcgConversionResult Result) ConvertNamed(string fileName) =>
-        Convert(Path.Combine(TestContentHelper.GetOptionalPcgenCharactersPath()!, fileName));
+        Convert(TestContentHelper.PcgFixture(fileName));
 
     // ---------------------------------------------------------------
     // Corpus-wide: what must never be dropped
@@ -152,7 +155,7 @@ public class PcgReconstructionFidelityTests
     /// temporary effect is not a character input: it must be reported and discarded, never folded
     /// into the ability scores or the feat list.
     /// </summary>
-    [RequiresPcgenGoldenDataFact]
+    [RequiresPcgFixturesFact]
     public void TemporaryModifiers_AreReportedAndDiscarded()
     {
         var (source, result) = ConvertNamed("Wizard.pcg");
@@ -178,7 +181,7 @@ public class PcgReconstructionFidelityTests
     /// assembled the sheet, not anything about the character. They are filtered at parse time and
     /// must never reach the reconstructed character as content.
     /// </summary>
-    [RequiresPcgenGoldenDataFact]
+    [RequiresPcgFixturesFact]
     public void InternalPcgenTemplates_NeverBecomeCharacterContent()
     {
         var (source, result) = ConvertNamed("High Priestess.pcg");
@@ -199,7 +202,7 @@ public class PcgReconstructionFidelityTests
     /// roll rather than clamping it, so the reconstruction stays faithful to the played character
     /// while flagging the discrepancy.
     /// </summary>
-    [RequiresPcgenGoldenDataFact]
+    [RequiresPcgFixturesFact]
     public void HitPointRollsOutsideTheDriverDie_ArePreservedAndWarned()
     {
         var (source, result) = ConvertNamed("Lich Recruiter.pcg");
@@ -227,7 +230,7 @@ public class PcgReconstructionFidelityTests
     /// link is rebuilt from the derived character id and the path dependency is reported rather
     /// than followed.
     /// </summary>
-    [RequiresPcgenGoldenDataFact]
+    [RequiresPcgFixturesFact]
     public void ExternalCompanionFileReferences_AreWarnedAndLinkedById()
     {
         var (_, result) = ConvertNamed("Wizard.pcg");
@@ -251,7 +254,7 @@ public class PcgReconstructionFidelityTests
     /// the first is "the import lost something", the second is "the rules were not satisfied".
     /// A clean import must produce neither, so this pins one character as the reference point.
     /// </summary>
-    [RequiresPcgenGoldenDataFact]
+    [RequiresPcgFixturesFact]
     public void CleanImport_ProducesNoWarningsOnEitherChannel()
     {
         var (_, result) = ConvertNamed("Drow Cult Wizard.pcg");

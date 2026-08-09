@@ -24,7 +24,14 @@ public class PcgReconstructionTests
         return (registry, new ReplayStudio(registry));
     }
 
+    // Named characters come from the frozen fixtures — these tests assert exact field values, so
+    // reading the live PCGen working set would turn any in-app edit into a test failure.
     private static PcgCharacterData LoadCharacter(string filename) =>
+        PcgParser.Parse(TestContentHelper.PcgFixture(filename));
+
+    // The gap-analysis theories sweep whatever is in the live corpus right now — that breadth is
+    // the point, and they assert mappability rather than exact values, so drift is harmless.
+    private static PcgCharacterData LoadCorpusCharacter(string filename) =>
         PcgParser.Parse(Path.Combine(GetSampleCharactersPath(), filename));
 
     public static IEnumerable<object[]> AllPcgFiles()
@@ -40,7 +47,7 @@ public class PcgReconstructionTests
     // Test A: Parser Verification
     // ---------------------------------------------------------------
 
-    [RequiresPcgenCharactersFact]
+    [RequiresPcgFixturesFact]
     public void Parse_HighPriestess_ExtractsAllFields()
     {
         var data = LoadCharacter("High Priestess.pcg");
@@ -88,7 +95,7 @@ public class PcgReconstructionTests
             $"Expected template '{t.Name}' to be internal"));
     }
 
-    [RequiresPcgenCharactersFact]
+    [RequiresPcgFixturesFact]
     public void Parse_Vampire_ExtractsMulticlass()
     {
         var data = LoadCharacter("vampire.pcg");
@@ -114,7 +121,7 @@ public class PcgReconstructionTests
         Assert.All(abilityLevels, l => Assert.Equal("INT", l.AbilityIncrease));
     }
 
-    [RequiresPcgenCharactersFact]
+    [RequiresPcgFixturesFact]
     public void Parse_PixieOfficers_ExtractsTripleClass()
     {
         var data = LoadCharacter("Pixie Officers.pcg");
@@ -135,7 +142,7 @@ public class PcgReconstructionTests
     [MemberData(nameof(AllPcgFiles))]
     public void GapAnalysis_Race(string filename)
     {
-        var data = LoadCharacter(filename);
+        var data = LoadCorpusCharacter(filename);
         var mapper = new PcgIdMapper();
         var raceId = mapper.MapRace(data.Race);
 
@@ -154,7 +161,7 @@ public class PcgReconstructionTests
     [MemberData(nameof(AllPcgFiles))]
     public void GapAnalysis_Classes(string filename)
     {
-        var data = LoadCharacter(filename);
+        var data = LoadCorpusCharacter(filename);
         var mapper = new PcgIdMapper();
         var (registry, _) = CreateStudio();
         var missing = new List<string>();
@@ -180,7 +187,7 @@ public class PcgReconstructionTests
     [MemberData(nameof(AllPcgFiles))]
     public void GapAnalysis_Feats(string filename)
     {
-        var data = LoadCharacter(filename);
+        var data = LoadCorpusCharacter(filename);
         if (data.Feats.Count == 0) return;
 
         var mapper = new PcgIdMapper();
@@ -202,7 +209,7 @@ public class PcgReconstructionTests
     [MemberData(nameof(AllPcgFiles))]
     public void GapAnalysis_Templates(string filename)
     {
-        var data = LoadCharacter(filename);
+        var data = LoadCorpusCharacter(filename);
         var nonInternal = data.Templates.Where(t => !t.IsInternal).ToList();
         if (nonInternal.Count == 0) return;
 
@@ -226,7 +233,7 @@ public class PcgReconstructionTests
     [MemberData(nameof(AllPcgFiles))]
     public void GapAnalysis_Domains(string filename)
     {
-        var data = LoadCharacter(filename);
+        var data = LoadCorpusCharacter(filename);
         if (data.Domains.Count == 0) return;
 
         var mapper = new PcgIdMapper();
@@ -336,7 +343,7 @@ public class PcgReconstructionTests
     // Test D: Full Reconstruction
     // ---------------------------------------------------------------
 
-    [RequiresPcgenCharactersFact]
+    [RequiresPcgFixturesFact]
     public void Reconstruct_HighPriestess_HumanCleric6()
     {
         var data = LoadCharacter("High Priestess.pcg");

@@ -133,6 +133,7 @@
         "$type": "GrantAbility",
         "ability": { "id": "pot_divine_grace", "name": "Divine Grace", "description": "Add CHA bonus to all saving throws." }
       },
+      { "$type": "GrantAbilityModifierToSaves", "sourceId": "pot_divine_grace", "name": "Divine Grace", "ability": "CHA" },
       {
         "$type": "GrantAbility",
         "ability": { "id": "pot_deadly_touch", "name": "Deadly Touch", "description": "Touch attack dealing class level x CHA mod damage per day. Fort DC 10 + level/2 + CHA for half." }

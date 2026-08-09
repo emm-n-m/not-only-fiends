@@ -18,12 +18,10 @@ public class PcgEpicSpellImportTests
         Assert.Equal("spell:frog_mass", mapper.MapSpell("Frog (Mass)", registry));
     }
 
-    [RequiresPcgenCharactersFact]
+    [RequiresPcgFixturesFact]
     public void DuchessRoseElite_ImportsDevelopedEpicSpellsAndThreeOpenSlots()
     {
-        var sourceRoot = TestContentHelper.GetOptionalPcgenCharactersPath()!;
-        var path = Directory.GetFiles(
-            sourceRoot, "Duchess Rose, Elite Succubus.pcg", SearchOption.AllDirectories).Single();
+        var path = TestContentHelper.PcgFixture("Duchess Rose, Elite Succubus.pcg");
         var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
         var data = PcgParser.ParseText(File.ReadAllText(path), Path.GetFileName(path));
 

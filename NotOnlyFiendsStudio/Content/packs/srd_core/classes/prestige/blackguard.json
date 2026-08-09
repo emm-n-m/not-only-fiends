@@ -149,6 +149,12 @@
         }
       },
       {
+        "$type": "GrantAbilityModifierToSaves",
+        "sourceId": "dark_blessing",
+        "name": "Dark Blessing",
+        "ability": "CHA"
+      },
+      {
         "$type": "GrantAbility",
         "ability": {
           "id": "smite_good",

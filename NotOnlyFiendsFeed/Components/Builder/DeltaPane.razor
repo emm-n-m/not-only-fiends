@@ -11,9 +11,9 @@
         <div class="reg-delta-label">CURRENT STANDING</div>
         <div>
             @Row("Hit points", State.HP.ToString())
-            @if (_primaryCaster is not null)
+            @foreach (var caster in _casters.Where(c => c.CasterLevel > 0))
             {
-                @Row("Caster level", _primaryCaster.CasterLevel.ToString())
+                @Row($"Caster level · {ClassLabel(caster.ClassId)}", caster.CasterLevel.ToString())
             }
             @Row("Base attack", FormatSigned(State.EffectiveBAB))
             @Row("Fort / Ref / Will", $"{FormatSigned(State.EffectiveSaves.Fort)} / {FormatSigned(State.EffectiveSaves.Ref)} / {FormatSigned(State.EffectiveSaves.Will)}")
@@ -22,17 +22,31 @@
         </div>
     </div>
 
-    @if (_primaryCaster is not null && _primaryCaster.SpellsPerDay.Count > 0)
+    @{
+        var slotCasters = _casters.Where(c => c.SpellsPerDay.Count > 0).ToList();
+    }
+    @foreach (var caster in slotCasters)
     {
+        var maxSpellLevel = caster.SpellsPerDay.Keys.Max();
         <div>
-            <div class="reg-delta-label">SPELLS PER DAY</div>
+            <div class="reg-delta-label">
+                SPELLS PER DAY@(slotCasters.Count > 1 ? $" · {ClassLabel(caster.ClassId)}" : "")
+            </div>
             <div class="reg-spd-grid">
-                @foreach (var lvl in Enumerable.Range(0, _maxSpellLevel + 1))
+                @foreach (var lvl in Enumerable.Range(0, maxSpellLevel + 1))
                 {
-                    var has = _primaryCaster.SpellsPerDay.TryGetValue(lvl, out var n) && n > 0;
-                    <div class="reg-spd-cell @(has ? "" : "empty")">
-                        <div class="reg-spd-lvl">@(lvl == 0 ? "0" : $"{lvl}")</div>
-                        <div class="reg-spd-n">@(has ? n.ToString() : "—")</div>
+                    var castable = caster.SpellsPerDay.ContainsKey(lvl);
+                    var total = caster.TotalSlotsAt(lvl);
+                    var bonus = caster.BonusSlotsAt(lvl);
+                    var has = castable && total > 0;
+                    <div class="reg-spd-cell @(has ? "" : "empty")"
+                         title="@SlotBreakdown(caster, lvl)">
+                        <div class="reg-spd-lvl">@lvl</div>
+                        <div class="reg-spd-n">@(has ? total.ToString() : "—")</div>
+                        @if (bonus > 0)
+                        {
+                            <div class="reg-spd-bonus">+@bonus</div>
+                        }
                     </div>
                 }
             </div>
@@ -61,17 +75,42 @@
     [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public EventCallback OnEvaluate { get; set; }
 
-    private SpellcastingState? _primaryCaster;
-    private int _maxSpellLevel;
+    /// <summary>
+    /// Resolves a spellcasting class id to its display name. Optional — without it the pane falls
+    /// back to the bare id, which is still better than labelling nothing.
+    /// </summary>
+    [Parameter] public Func<string, string>? ClassName { get; set; }
+
+    /// Every caster, strongest first. A multiclass caster (Bard 7 / Blackguard 3) has one entry
+    /// each; showing only the strongest hid the rest.
+    private List<SpellcastingState> _casters = new();
 
     protected override void OnParametersSet()
     {
-        _primaryCaster = State.Spellcasting.Values
+        _casters = State.Spellcasting.Values
             .OrderByDescending(s => s.CasterLevel)
-            .FirstOrDefault();
-        _maxSpellLevel = _primaryCaster is null
-            ? 0
-            : _primaryCaster.SpellsPerDay.Keys.DefaultIfEmpty(0).Max();
+            .ThenBy(s => s.ClassId, StringComparer.Ordinal)
+            .ToList();
+    }
+
+    private string ClassLabel(string classId) =>
+        ClassName?.Invoke(classId) ?? classId.Replace("class:", "");
+
+    /// Tooltip explaining a slot count, so the "+2" marker says where the extra slots came from.
+    private static string SlotBreakdown(SpellcastingState caster, int spellLevel)
+    {
+        if (!caster.SpellsPerDay.ContainsKey(spellLevel))
+            return $"Level {spellLevel}: not castable yet";
+
+        var parts = new List<string> { $"{caster.SpellsPerDay.GetValueOrDefault(spellLevel)} base" };
+        var ability = caster.AbilityBonusSlots.GetValueOrDefault(spellLevel);
+        if (ability > 0) parts.Add($"+{ability} {caster.CastingStat}");
+        var domain = caster.DomainBonusSlots.GetValueOrDefault(spellLevel);
+        if (domain > 0) parts.Add($"+{domain} domain");
+        var specialty = caster.SpecialtyBonusSlots.GetValueOrDefault(spellLevel);
+        if (specialty > 0) parts.Add($"+{specialty} specialty");
+
+        return $"Level {spellLevel}: {string.Join(", ", parts)} = {caster.TotalSlotsAt(spellLevel)}";
     }
 
     private static string FormatSigned(int value) => value >= 0 ? $"+{value}" : value.ToString();

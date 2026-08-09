@@ -148,6 +148,16 @@ public class CompanionLink
     // Leadership follower tier (1-6). Zero means an imported source did not record it.
     public int FollowerLevel { get; set; }
     public string? Notes { get; set; }
+
+    /// <summary>
+    /// What the source called this companion, verbatim. <see cref="CompanionId"/> is the identity;
+    /// this is a repair hint for the case the id cannot resolve — the companion has not been
+    /// imported yet, or the master and the companion's own record spell the name differently.
+    /// Names are not identities (a campaign may hold six characters called "Lilly"), so this is
+    /// only ever consulted after an id lookup misses, and only when it matches exactly one
+    /// character. Null for links created in the app.
+    /// </summary>
+    public string? SourceName { get; set; }
 }
 
 public class CompanionOrigin

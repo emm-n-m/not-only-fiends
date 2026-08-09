@@ -1205,6 +1205,12 @@ public class ReplayStudio
         // order). This is observable on imported builds because both choices can share a tick.
         ApplySkillAllocations(state, choices.SkillAllocations);
 
+        // Feats taken at the same HD are a set, not a sequence: the order they happen to sit in
+        // FeatIds is a storage artifact, and PCGen imports put a character's whole feat list in
+        // one tick. Prerequisites are therefore checked once the tick's feats have all landed —
+        // taking Cleave and Power Attack together is legal, taking Cleave without it is not.
+        var pendingFeatPrerequisites = new List<(FeatDefinition Feat, Prerequisite Prerequisite)>();
+
         if (choices.FeatIds != null)
         {
             foreach (var featId in choices.FeatIds)
@@ -1272,10 +1278,7 @@ public class ReplayStudio
                 }
 
                 foreach (var prereq in featDef.Prerequisites)
-                {
-                    if (!prereq.IsMet(state))
-                        state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"prerequisite not met for feat {featDef.Name}: {prereq.Description}" });
-                }
+                    pendingFeatPrerequisites.Add((featDef, prereq));
 
                 ctx.CurrentFeatId = featId;
                 foreach (var buff in featDef.GrantedPermabuffs)
@@ -1288,6 +1291,16 @@ public class ReplayStudio
                 foreach (var tag in featDef.Tags)
                     state.FeatTagCounts[tag] = state.FeatTagCounts.GetValueOrDefault(tag) + 1;
             }
+        }
+
+        foreach (var (feat, prerequisite) in pendingFeatPrerequisites)
+        {
+            if (!prerequisite.IsMet(state))
+                state.Warnings.Add(new Warning
+                {
+                    TickIndex = state.TotalHD,
+                    Message = $"prerequisite not met for feat {feat.Name}: {prerequisite.Description}"
+                });
         }
 
         // Domain selections — each pick consumes a pending slot from the granting class

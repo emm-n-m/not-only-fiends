@@ -64,6 +64,50 @@ public static class TestContentHelper
         return path != null && Directory.Exists(path);
     }
 
+    /// <summary>
+    /// Frozen .pcg fixtures, committed in the private materials repo under
+    /// <c>test-fixtures/pcg/</c>.
+    ///
+    /// Tests that spell out exact expected values must read from here, never from
+    /// <see cref="GetOptionalPcgenCharactersPath"/>: the live PCGen directory is a working set the
+    /// user edits, so an assertion written against it fails whenever a character is retouched — a
+    /// failure that says nothing about the code. Only corpus-wide sweeps and the baseline harness
+    /// (which has an accept-the-diff workflow) should read the live directory.
+    ///
+    /// Refreshing a fixture is deliberate: copy the newer .pcg over the fixture and commit it in
+    /// the materials repo, so the assertion updates land in the same review as the input change.
+    /// </summary>
+    public static string? GetOptionalPcgFixturesPath()
+    {
+        var privatePacksPath = GetOptionalPrivatePacksPath();
+        return privatePacksPath == null
+            ? null
+            : Path.Combine(privatePacksPath, "test-fixtures", "pcg");
+    }
+
+    public static bool HasOptionalPcgFixtures()
+    {
+        var path = GetOptionalPcgFixturesPath();
+        return path != null && Directory.Exists(path);
+    }
+
+    /// <summary>
+    /// Full path to a frozen .pcg fixture by file name. Throws rather than falling back to the
+    /// live corpus — a silent fallback would reintroduce exactly the drift these fixtures prevent.
+    /// </summary>
+    public static string PcgFixture(string fileName)
+    {
+        var dir = GetOptionalPcgFixturesPath()
+            ?? throw new InvalidOperationException(
+                $"EXTRA_PACKS_PATH is not set in {EnvFileName}; .pcg fixtures are unavailable.");
+        var path = Path.Combine(dir, fileName);
+        if (!File.Exists(path))
+            throw new FileNotFoundException(
+                $"Missing .pcg fixture '{fileName}' in {dir}. Copy it from PCGEN_CHARACTERS_PATH "
+                + "and commit it in the materials repo.", path);
+        return path;
+    }
+
     public static string? GetOptionalCharactersPath()
     {
         var env = LoadEnvFile();

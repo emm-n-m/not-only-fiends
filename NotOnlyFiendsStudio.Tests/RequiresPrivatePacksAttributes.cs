@@ -70,3 +70,28 @@ public sealed class RequiresPcgenGoldenDataFactAttribute : FactAttribute
         }
     }
 }
+
+/// <summary>
+/// For tests that assert exact values against a single named character. These read the frozen
+/// fixtures in the materials repo rather than the live PCGen working directory, so editing a
+/// character in PCGen can never break them — see
+/// <see cref="TestContentHelper.GetOptionalPcgFixturesPath"/>. Both the fixtures and the private
+/// packs are needed: the fixtures use third-party classes, races and templates.
+/// </summary>
+public sealed class RequiresPcgFixturesFactAttribute : FactAttribute
+{
+    public RequiresPcgFixturesFactAttribute()
+    {
+        if (!TestContentHelper.HasOptionalPrivatePacks())
+        {
+            Skip =
+                $"Set EXTRA_PACKS_PATH in {TestContentHelper.EnvFileName} to run this test.";
+        }
+        else if (!TestContentHelper.HasOptionalPcgFixtures())
+        {
+            Skip =
+                $"No .pcg fixtures at {TestContentHelper.GetOptionalPcgFixturesPath()} — "
+                + "copy them from PCGEN_CHARACTERS_PATH and commit them in the materials repo.";
+        }
+    }
+}

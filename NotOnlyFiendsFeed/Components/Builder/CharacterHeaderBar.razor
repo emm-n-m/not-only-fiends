@@ -45,9 +45,9 @@
         @Tile("AC", $"{State.AC.Total}")
         @Tile("BAB", FormatSigned(State.EffectiveBAB))
         @Tile("F / R / W", $"{FormatSigned(State.EffectiveSaves.Fort)} / {FormatSigned(State.EffectiveSaves.Ref)} / {FormatSigned(State.EffectiveSaves.Will)}")
-        @if (CasterLevel > 0)
+        @if (_casterLevels.Count > 0)
         {
-            @Tile("CL", CasterLevel.ToString())
+            @Tile("CL", string.Join(" / ", _casterLevels.Select(c => c.Level)), CasterLevelTitle)
         }
     </div>
 </div>
@@ -61,13 +61,32 @@
     private string DisplayName => string.IsNullOrWhiteSpace(Name) ? "Unnamed character" : Name!;
     private int PendingFeats => State.PendingFeatSlots + State.PendingBonusFeatSlots;
     private bool HasOwed => PendingFeats > 0 || State.UnspentSkillPoints > 0 || State.Warnings.Any();
-    private int CasterLevel => State.Spellcasting.Values.Select(s => s.CasterLevel).DefaultIfEmpty(0).Max();
+
+    /// <summary>
+    /// Resolves a spellcasting class id to its display name; falls back to the bare id.
+    /// </summary>
+    [Parameter] public Func<string, string>? ClassName { get; set; }
+
+    // One entry per casting class, strongest first — a Bard 7 / Blackguard 3 has two caster
+    // levels and the tile used to show only the higher one.
+    private List<(string Class, int Level)> _casterLevels = new();
+
+    protected override void OnParametersSet() =>
+        _casterLevels = State.Spellcasting.Values
+            .Where(s => s.CasterLevel > 0)
+            .OrderByDescending(s => s.CasterLevel)
+            .ThenBy(s => s.ClassId, StringComparer.Ordinal)
+            .Select(s => (ClassName?.Invoke(s.ClassId) ?? s.ClassId.Replace("class:", ""), s.CasterLevel))
+            .ToList();
+
+    private string CasterLevelTitle =>
+        string.Join(", ", _casterLevels.Select(c => $"{c.Class} caster level {c.Level}"));
 
     private static string FormatSigned(int value) => value >= 0 ? $"+{value}" : value.ToString();
 
-    private RenderFragment Tile(string label, string value) => __builder =>
+    private RenderFragment Tile(string label, string value, string? title = null) => __builder =>
     {
-        <div class="reg-stattile">
+        <div class="reg-stattile" title="@title">
             <div class="reg-stattile-label">@label</div>
             <div class="reg-stattile-value">@value</div>
         </div>

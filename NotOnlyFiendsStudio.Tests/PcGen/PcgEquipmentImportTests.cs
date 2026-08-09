@@ -456,18 +456,17 @@ public class PcgEquipmentImportTests
         Assert.Contains(result.UnsupportedCustomEquipmentModifiers, warning => warning.EndsWith(": DREAD_MELEE"));
     }
 
-    [RequiresPcgenCharactersFact]
+    [RequiresPcgFixturesFact]
     public void ArchfiendLilly_CustomItemsLanguagesShadowAndFollowers_ArePreserved()
     {
-        var sourceRoot = TestContentHelper.GetOptionalPcgenCharactersPath()!;
-        var path = Directory.GetFiles(sourceRoot, "Archfiend Lilly.pcg", SearchOption.AllDirectories).Single();
+        var path = TestContentHelper.PcgFixture("Archfiend Lilly.pcg");
         var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
         var data = PcgParser.ParseText(File.ReadAllText(path), Path.GetFileName(path));
 
         var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
         var state = new ReplayStudio(registry).Evaluate(result.Character);
 
-        Assert.Equal(11, result.Character.SourceLanguageIds.Count);
+        Assert.Equal(6, result.Character.SourceLanguageIds.Count);
         Assert.Contains("template:archfiend_ascended", result.Character.TemplateIds);
         Assert.Contains("domain:charm", state.Domains);
         Assert.Equal("", state.DomainOwners["domain:charm"]);

@@ -531,7 +531,7 @@ public partial class BuilderView
         {
             if (_character.CompanionLinks.Count > 0 && CharacterStore.IsConfigured)
             {
-                var resolver = new CompanionResolver(_engine, TryLoadCompanion);
+                var resolver = new CompanionResolver(_engine, TryLoadCompanion, TryLoadCompanionByName);
                 var composite = resolver.Build(_character);
                 _state = composite.MasterState;
                 _companionBuilds = composite.Companions;
@@ -555,6 +555,14 @@ public partial class BuilderView
     {
         try { return CharacterStore.Get(id); }
         catch (CharacterStoreException) { return null; }
+    }
+
+    /// Repair path for a companion link whose id no longer resolves — see CompanionResolver.
+    /// Returns null when the name matches no character or more than one.
+    private Character? TryLoadCompanionByName(string name)
+    {
+        var match = CharacterStore.FindByName(name);
+        return match == null ? null : TryLoadCompanion(match.Id);
     }
 
     private void RefreshAvailableCharacters()
@@ -696,11 +704,37 @@ public partial class BuilderView
     private List<LanguageDefinition> OfferedBonusLanguages() =>
         LanguageCatalog.OfferedBonusLanguages(SelectedRace(), _languages).ToList();
 
+    /// <summary>
+    /// Imported languages that the race offers as bonus picks, capped at the starting-Intelligence
+    /// allowance. A PCG import lists the finished character's languages without saying which were
+    /// creation-time Intelligence purchases, so the builder credits these against the allowance
+    /// instead of re-prompting for picks the character has visibly already made.
+    /// </summary>
+    private HashSet<string> ImportedBonusLanguages()
+    {
+        if (_character.SourceLanguageIds.Count == 0)
+            return new HashSet<string>(StringComparer.Ordinal);
+
+        var offered = OfferedBonusLanguages().Select(l => l.Id).ToHashSet(StringComparer.Ordinal);
+        return _character.SourceLanguageIds
+            .Where(offered.Contains)
+            .Distinct(StringComparer.Ordinal)
+            .Take(LanguageCatalog.Allowance(GetStartingIntelligence()))
+            .ToHashSet(StringComparer.Ordinal);
+    }
+
+    /// Bonus picks accounted for: the imported ones plus any the user chose on top of them.
+    private int LanguagePicksUsed()
+    {
+        var imported = ImportedBonusLanguages();
+        return imported.Count + _character.BonusLanguageIds.Count(id => !imported.Contains(id));
+    }
+
     private void ToggleBonusLanguage(string languageId)
     {
         if (!_character.BonusLanguageIds.Remove(languageId))
         {
-            if (_character.BonusLanguageIds.Count >= LanguageCatalog.Allowance(GetStartingIntelligence()))
+            if (LanguagePicksUsed() >= LanguageCatalog.Allowance(GetStartingIntelligence()))
                 return;
             _character.BonusLanguageIds.Add(languageId);
         }
@@ -732,7 +766,7 @@ public partial class BuilderView
 
         var classes = string.Join(" / ", _state.ClassLevels
             .Where(kv => kv.Value > 0)
-            .Select(kv => $"{_drivers.FirstOrDefault(d => d.Id == kv.Key)?.Name ?? kv.Key} {kv.Value}"));
+            .Select(kv => $"{DriverName(kv.Key)} {kv.Value}"));
         if (!string.IsNullOrEmpty(classes))
             parts.Add(classes);
 
@@ -740,6 +774,14 @@ public partial class BuilderView
 
         return string.Join(" · ", parts);
     }
+
+    /// <summary>
+    /// Display name for a driver (class or racial HD) id, falling back to the id stripped of its
+    /// <c>class:</c> prefix when the driver is not loaded.
+    /// </summary>
+    private string DriverName(string driverId) =>
+        _drivers.FirstOrDefault(d => d.Id == driverId)?.Name
+        ?? driverId.Replace("class:", "");
 
     private string FormatFeatLabel(string featId, FeatDefinition? featDef)
     {

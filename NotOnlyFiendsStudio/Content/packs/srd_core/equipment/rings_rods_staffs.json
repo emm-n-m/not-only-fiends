@@ -1538,7 +1538,13 @@
     "priceCp": 216000000,
     "description": "This ring functions as a ring of energy immunity for all types of energy—fire, cold, electricity, acid, and sonic. The wearer takes no damage from energy of any of these types. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, protection from energy; Market Price 2,160,000 gp.",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantImmunity", "immunity": "fire" },
+      { "$type": "GrantImmunity", "immunity": "cold" },
+      { "$type": "GrantImmunity", "immunity": "electricity" },
+      { "$type": "GrantImmunity", "immunity": "acid" },
+      { "$type": "GrantImmunity", "immunity": "sonic" }
+    ],
     "tags": [
       "ring",
       "cl20",

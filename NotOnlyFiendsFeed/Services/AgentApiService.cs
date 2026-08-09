@@ -236,6 +236,8 @@ public sealed class AgentApiService
         var mapper = new PcgIdMapper();
         var result = PcgConverter.Convert(data, mapper, _content);
 
+        ResolveCompanionLinks(result.Character);
+
         string? id = null;
         if (save)
         {
@@ -262,6 +264,30 @@ public sealed class AgentApiService
             IgnoredTemporaryBonuses = result.IgnoredTemporaryBonuses,
             RaceDropped = result.RaceDropped
         };
+    }
+
+    /// <summary>
+    /// Re-points imported companion links at real store ids. PCGen names a follower; it has no
+    /// concept of this app's ids, so the converter can only guess one from the name. Where the
+    /// guess misses but the name identifies exactly one saved character, adopt that character's
+    /// id — this is what survives a companion whose own record spells its name differently from
+    /// the master's reference. Links that still cannot be resolved keep their guessed id and
+    /// their <see cref="CompanionLink.SourceName"/>, so the evaluation warning can name both.
+    /// </summary>
+    private void ResolveCompanionLinks(Character character)
+    {
+        if (!_characterStore.IsConfigured)
+            return;
+
+        foreach (var link in character.CompanionLinks)
+        {
+            if (string.IsNullOrWhiteSpace(link.SourceName) || _characterStore.Exists(link.CompanionId))
+                continue;
+
+            var match = _characterStore.FindByName(link.SourceName!);
+            if (match != null)
+                link.CompanionId = match.Id;
+        }
     }
 
     public Character LoadCharacter(string id) => _characterStore.Get(id);

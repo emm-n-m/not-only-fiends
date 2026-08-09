@@ -52,6 +52,7 @@
       ],
       "2": [
         { "$type": "GrantAbility", "ability": { "id": "pof_divine_grace", "name": "Divine Grace", "description": "Add Charisma bonus to all saving throws." } },
+        { "$type": "GrantAbilityModifierToSaves", "sourceId": "pof_divine_grace", "name": "Divine Grace", "ability": "CHA" },
         { "$type": "GrantAbility", "ability": { "id": "pof_lay_on_hands", "name": "Lay on Hands", "description": "Heal damage by touch as the standard paladin." } }
       ],
       "3": [
@@ -137,6 +138,7 @@
       ],
       "2": [
         { "$type": "GrantAbility", "ability": { "id": "pos_divine_grace", "name": "Divine Grace", "description": "Add Charisma bonus to all saving throws." } },
+        { "$type": "GrantAbilityModifierToSaves", "sourceId": "pos_divine_grace", "name": "Divine Grace", "ability": "CHA" },
         { "$type": "GrantAbility", "ability": { "id": "pos_deadly_touch", "name": "Deadly Touch", "description": "Deal or cure damage by touch as the standard paladin of slaughter feature." } }
       ],
       "3": [

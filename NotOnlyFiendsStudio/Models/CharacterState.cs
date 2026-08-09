@@ -46,13 +46,35 @@ public class CharacterState
     public int EpicAttackBonus { get; set; }
     public int EpicSaveBonus { get; set; }
 
+    /// <summary>
+    /// Class features that add an ability modifier to every save — paladin Divine Grace, blackguard
+    /// Dark Blessing. Held as rules rather than folded into <see cref="BaseSaves"/> at the granting
+    /// tick, because the modifier tracks the *final* score: level-up increases, tomes and worn items
+    /// all land after the class level that grants the feature, and a value banked at that tick would
+    /// silently understate every one of them.
+    /// </summary>
+    public List<AbilitySaveBonus> AbilitySaveBonuses { get; set; } = new();
+
+    /// <summary>
+    /// Total ability-modifier save bonus. Distinct sources stack (they are untyped bonuses from
+    /// different class features); the same source granted more than once does not, so a feature
+    /// re-applied by a scaling or template path cannot double.
+    /// </summary>
+    public int AbilitySaveBonusTotal => AbilitySaveBonuses
+        .DistinctBy(bonus => bonus.SourceId, StringComparer.Ordinal)
+        .Sum(bonus =>
+        {
+            var modifier = AbilityScoreSet.Modifier(AbilityScores.GetScore(bonus.Ability));
+            return bonus.PositiveOnly ? Math.Max(0, modifier) : modifier;
+        });
+
     // Effective totals (base + epic)
     public int EffectiveBAB => BaseBAB + EpicAttackBonus;
     public SaveSet EffectiveSaves => new()
     {
-        Fort = BaseSaves.Fort + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.CON),
-        Ref = BaseSaves.Ref + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.DEX),
-        Will = BaseSaves.Will + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.WIS)
+        Fort = BaseSaves.Fort + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.CON) + AbilitySaveBonusTotal,
+        Ref = BaseSaves.Ref + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.DEX) + AbilitySaveBonusTotal,
+        Will = BaseSaves.Will + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.WIS) + AbilitySaveBonusTotal
     };
 
     // HP
@@ -310,6 +332,24 @@ public class ItemActivationLevelRule
     public int EffectiveLevel(CharacterState state) => Math.Max(MinimumLevel, state.ClassLevels.GetValueOrDefault(SourceClassId) / Divisor);
 }
 
+/// <summary>
+/// One "add this ability's modifier to all saving throws" class feature, e.g. paladin Divine Grace
+/// or blackguard Dark Blessing. <see cref="SourceId"/> identifies the feature so repeat grants of
+/// the same one collapse, while two different features still stack.
+/// </summary>
+public class AbilitySaveBonus
+{
+    public string SourceId { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public Ability Ability { get; set; }
+
+    /// <summary>
+    /// SRD wording for both known cases is "applies his Charisma modifier (if positive)", so a
+    /// penalty is not carried over to saves. Content can opt out for a feature that says otherwise.
+    /// </summary>
+    public bool PositiveOnly { get; set; } = true;
+}
+
 public class DREntry
 {
     public int Value { get; set; }
@@ -365,6 +405,24 @@ public class SpellcastingState
         AcquisitionOverride
         ?? ProgressionData?.ResolvedAcquisition
         ?? (SpellsKnown != null ? SpellAcquisition.SpellsKnown : SpellAcquisition.FullList);
+
+    /// <summary>
+    /// Extra slots at a spell level from every bonus source — casting ability, domains and a
+    /// specialist wizard's school. Each source only ever keys levels the caster can already cast,
+    /// so this never invents access to a level the base table withholds.
+    /// </summary>
+    public int BonusSlotsAt(int spellLevel) =>
+        AbilityBonusSlots.GetValueOrDefault(spellLevel)
+        + DomainBonusSlots.GetValueOrDefault(spellLevel)
+        + SpecialtyBonusSlots.GetValueOrDefault(spellLevel);
+
+    /// <summary>
+    /// Slots the character actually casts at a spell level: the class table plus every bonus.
+    /// This is the number a sheet or summary should show; <see cref="SpellsPerDay"/> alone is the
+    /// base progression and understates a caster with a high casting stat, domains or a specialty.
+    /// </summary>
+    public int TotalSlotsAt(int spellLevel) =>
+        SpellsPerDay.GetValueOrDefault(spellLevel) + BonusSlotsAt(spellLevel);
 
     public void ApplyProgression(int casterLevel)
     {

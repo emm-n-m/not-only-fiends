@@ -28,6 +28,7 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(GrantEffectiveLevels), "GrantEffectiveLevels")]
 [JsonDerivedType(typeof(ModifyCounter), "ModifyCounter")]
 [JsonDerivedType(typeof(GrantImmunity), "GrantImmunity")]
+[JsonDerivedType(typeof(GrantAbilityModifierToSaves), "GrantAbilityModifierToSaves")]
 [JsonDerivedType(typeof(GrantDR), "GrantDR")]
 [JsonDerivedType(typeof(GrantSkillBonus), "GrantSkillBonus")]
 [JsonDerivedType(typeof(GrantClassFeatureSelection), "GrantClassFeatureSelection")]
@@ -757,6 +758,30 @@ public class GrantRacialSpellcasting : Permabuff
             BonusFormula = LevelFormula,
             // Casting as an Nth-level druid is not being an Nth-level druid.
             Scope = EffectiveLevelScope.SpellcastingOnly
+        });
+    }
+}
+
+/// <summary>
+/// "Apply your <see cref="Ability"/> modifier as a bonus on all saving throws" — paladin Divine
+/// Grace, blackguard Dark Blessing. Registers a rule rather than adding a number, because the
+/// modifier must follow the final ability score; see <see cref="AbilitySaveBonus"/>.
+/// </summary>
+public class GrantAbilityModifierToSaves : Permabuff
+{
+    public string SourceId { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public Ability Ability { get; set; } = Ability.CHA;
+    public bool PositiveOnly { get; set; } = true;
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        ctx.State.AbilitySaveBonuses.Add(new AbilitySaveBonus
+        {
+            SourceId = SourceId,
+            Name = Name,
+            Ability = Ability,
+            PositiveOnly = PositiveOnly,
         });
     }
 }

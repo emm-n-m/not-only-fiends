@@ -98,6 +98,10 @@ public static class PcgConverter
             {
                 LinkType = linkType,
                 CompanionId = ToCharacterId(follower.Name, sourceReference),
+                // The id above is only a guess: PCGen records a follower by name, and the saved
+                // companion is filed under whatever id it was created with. Keeping the raw name
+                // lets the host re-point the link once it can see the character store.
+                SourceName = string.IsNullOrWhiteSpace(follower.Name) ? null : follower.Name.Trim(),
                 SelectedSpecies = mapper.MapRace(follower.Race),
                 EffectiveLevelFormula = CompanionLevelFormula(linkType),
                 FollowerLevel = linkType == "leadership_follower" ? follower.HitDice : 0,

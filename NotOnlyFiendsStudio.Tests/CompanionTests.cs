@@ -2034,14 +2034,11 @@ public class CompanionTests
         Assert.DoesNotContain(owlBuild.State.Abilities, a => a.Id == "fam_spell_resistance");
     }
 
-    [RequiresPcgenCharactersFact]
+    [RequiresPcgFixturesFact]
     public void DuchessRoseElite_LillietteUsesMasterDerivedFamiliarStats()
     {
-        var sourceRoot = TestContentHelper.GetOptionalPcgenCharactersPath()!;
-        var rosePath = Directory.GetFiles(
-            sourceRoot, "Duchess Rose, Elite Succubus.pcg", SearchOption.AllDirectories).Single();
-        var lilliettePath = Directory.GetFiles(
-            sourceRoot, "Lilly.pcg", SearchOption.AllDirectories).Single();
+        var rosePath = TestContentHelper.PcgFixture("Duchess Rose, Elite Succubus.pcg");
+        var lilliettePath = TestContentHelper.PcgFixture("Lilly.pcg");
         var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
         var mapper = new PcgIdMapper();
         var rose = PcgConverter.Convert(

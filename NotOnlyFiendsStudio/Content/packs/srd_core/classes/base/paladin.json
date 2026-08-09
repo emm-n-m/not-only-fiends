@@ -217,6 +217,12 @@
         }
       },
       {
+        "$type": "GrantAbilityModifierToSaves",
+        "sourceId": "divine_grace",
+        "name": "Divine Grace",
+        "ability": "CHA"
+      },
+      {
         "$type": "GrantAbility",
         "ability": {
           "id": "lay_on_hands",

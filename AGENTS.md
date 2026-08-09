@@ -19,6 +19,21 @@ dotnet test --filter "FullyQualifiedName~ClassName.MethodName"  # Run a single t
 dotnet test --filter "FullyQualifiedName~ClassName"             # Run a single test class
 ```
 
+### Assertion discipline
+
+An assertion is only as good as the authority behind it, and the failure mode to guard
+against is updating a number to match new output until the test asserts nothing.
+
+- **Never change an expected value to match what the code now prints.** Re-derive it from
+  the SRD, or from the source file the test reads, and say which in the diff. If neither
+  can justify the new value, the code is wrong, not the test.
+- **Prefer deriving over transcribing.** `Assert.Equal(AverageBab(6), …)` and
+  `Assert.Equal(source.Languages.Distinct().Count(), …)` stay correct and keep testing
+  something; a bare `4` or `11` decays into "the input hasn't changed".
+- **Exact-value tests read frozen inputs**, never live external data — see the fixture
+  entry under External Data. Snapshot-style expectations belong in a baseline file with an
+  accept-the-diff workflow (`PcgImportRegression`), not hand-written in a test.
+
 ## Architecture
 
 **Core Principle: Store Inputs, Compute Everything.** Only user decisions are persisted. All derived values are computed by ordered replay of the character's HD timeline. There is no cached state.
@@ -80,6 +95,7 @@ See `ARCHITECTURE.md` for the full class hierarchy, replay algorithm, and formul
 ## External Data (symlinks)
 
 - **PCGen LST data** → path configured via `PCGEN_DATA_PATH` in `.env`. PCGen 3.5e LST data files (Wizards, third-party publishers), subdirectories per publisher (e.g., `wizards_of_the_coast/`, `12_to_midnight/`). Ground truth for auditing private-pack content.
-- **PCGen `.pcg` characters** → path configured via `PCGEN_CHARACTERS_PATH` in `.env`. Used by the PCGen reconstruction test suite, which skips automatically when the path is unset or the directory is missing.
+- **PCGen `.pcg` characters** → path configured via `PCGEN_CHARACTERS_PATH` in `.env`. Used by the PCGen reconstruction test suite, which skips automatically when the path is unset or the directory is missing. This is a **live working directory the user edits in PCGen**, so only corpus sweeps and the baseline harness may read it — see the fixture rule below.
+- **Frozen `.pcg` fixtures** → `{EXTRA_PACKS_PATH}/test-fixtures/pcg/`, reached via `TestContentHelper.PcgFixture(name)` and gated by `[RequiresPcgFixturesFact]`. Any test asserting **exact values for a named character** reads these committed copies, never the live directory, so a character edited in PCGen can't fail the suite for a non-code reason. Refreshing a fixture is a deliberate commit in the materials repo; see the README there.
 - **PCG import regression** → `PcgImportRegression` test runs the converter over every `.pcg` file and compares against a golden baseline stored in `{EXTRA_PACKS_PATH}/test-reports/`. Run after any change that could affect PCG import (converter, id mapper, new/changed content that touches mapped names). On mismatch the test writes `pcg_import_report.diff.md` and fails with review instructions. Re-run with `UPDATE_PCG_BASELINE=1` to accept intentional changes.
 - **`sources/`** → Source PDFs (gitignored). Drop PDFs here for content extraction. Long-term storage of owned PDFs is configured via `SOURCE_PDFS_PATH` in `.env` — for books with no PCGen LST data (e.g. the Fiendish Codices), these PDFs are the audit ground truth.
