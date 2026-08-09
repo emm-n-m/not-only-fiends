@@ -570,9 +570,9 @@ public class CompanionTests
         Assert.Contains("feat:leadership", state.Feats);
         // 7 HD + Mod(CHA 14)=+2 + 0 modifier = 9
         Assert.Equal(9, state.LeadershipScore);
-        // SRD Leadership table: score 9 → cohort level 6th, capped below the character's own
-        // level (7th), so 6.
-        Assert.Equal(6, state.MaxCohortLevel);
+        // SRD Leadership table: score 9 → cohort level 6th, held to 5th by "two or more levels
+        // lower than himself" for a 7th-level character.
+        Assert.Equal(5, state.MaxCohortLevel);
         Assert.Equal(0, state.Followers.Level1); // score 9 → no followers
     }
 

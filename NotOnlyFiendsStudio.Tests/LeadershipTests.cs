@@ -23,9 +23,9 @@ public class LeadershipTests
         Assert.Contains("feat:leadership", state.Feats);
         // 6 HD + Mod(CHA 14)=+2 = 8 → no followers (<10).
         Assert.Equal(8, state.LeadershipScore);
-        // SRD Leadership table: score 8 → cohort level 5th. The separate cap is the character's
-        // own level (6th) minus one, which is also 5.
-        Assert.Equal(5, state.MaxCohortLevel);
+        // SRD Leadership table: score 8 → cohort level 5th, held to 4th by "two or more levels
+        // lower than himself" for a 6th-level character.
+        Assert.Equal(4, state.MaxCohortLevel);
         Assert.Equal(0, state.Followers.Level1);
 
         // Cohort slot granted by the feat.
@@ -138,8 +138,8 @@ public class LeadershipTests
         var registry = TestContentHelper.LoadAllPacks();
         var engine = new ReplayStudio(registry);
 
-        // Fighter 10 + CHA 16 (+3) = score 13 → SRD table cohort level 9th, under the
-        // own-level-minus-one cap of 9.
+        // Fighter 10 + CHA 16 (+3) = score 13 → SRD table cohort level 9th, held to 8th by the
+        // two-levels-lower cap.
         var master = BuildFighterWithLeadership(levels: 10, cha: 16);
         master.CompanionLinks = new List<CompanionLink>
         {
@@ -163,7 +163,7 @@ public class LeadershipTests
         var result = new CompanionResolver(engine, _ => cohort).Build(master);
 
         Assert.Equal(13, result.MasterState.LeadershipScore);
-        Assert.Equal(9, result.MasterState.MaxCohortLevel);
+        Assert.Equal(8, result.MasterState.MaxCohortLevel);
         Assert.DoesNotContain(result.MasterState.Warnings, w =>
             w.Message.Contains("exceeds max cohort level", StringComparison.OrdinalIgnoreCase));
     }
@@ -174,8 +174,8 @@ public class LeadershipTests
         var registry = TestContentHelper.LoadAllPacks();
         var engine = new ReplayStudio(registry);
 
-        // Fighter 7 + CHA 14 (+2) = score 9 → SRD table cohort level 6th, under the
-        // own-level-minus-one cap of 6.
+        // Fighter 7 + CHA 14 (+2) = score 9 → SRD table cohort level 6th, held to 5th by the
+        // two-levels-lower cap.
         var master = BuildFighterWithLeadership(levels: 7, cha: 14);
         master.CompanionLinks = new List<CompanionLink>
         {
@@ -187,18 +187,18 @@ public class LeadershipTests
             }
         };
 
-        // Cohort is a level-7 fighter — exceeds the cap of 6.
+        // Cohort is a level-6 fighter — exceeds the cap of 5.
         var cohort = new Character
         {
             Name = "OverleveledCohort",
             RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 12, CON = 12, INT = 10, WIS = 10, CHA = 10 },
-            Ticks = Enumerable.Range(0, 7).Select(_ => new Tick { DriverId = "class:fighter" }).ToList()
+            Ticks = Enumerable.Range(0, 6).Select(_ => new Tick { DriverId = "class:fighter" }).ToList()
         };
 
         var result = new CompanionResolver(engine, _ => cohort).Build(master);
 
-        Assert.Equal(6, result.MasterState.MaxCohortLevel);
+        Assert.Equal(5, result.MasterState.MaxCohortLevel);
         Assert.Contains(result.MasterState.Warnings, w =>
             w.Message.Contains("exceeds max cohort level", StringComparison.OrdinalIgnoreCase));
     }
@@ -209,7 +209,7 @@ public class LeadershipTests
         var registry = TestContentHelper.LoadAllPacks();
         var engine = new ReplayStudio(registry);
 
-        // Fighter 10 + CHA 16 (+3) = 13 → SRD table cohort level 9th.
+        // Fighter 10 + CHA 16 (+3) = 13 → SRD table cohort level 9th, capped to 8th.
         var master = BuildFighterWithLeadership(levels: 10, cha: 16);
         master.CompanionLinks = new List<CompanionLink>
         {
@@ -222,8 +222,8 @@ public class LeadershipTests
         };
 
         // Erinyes cohort (LA +7 per srd_companions.json) with 1 outsider HD → ECL = 1 + 7 = 8.
-        // The point of the test is that level adjustment counts toward the cap at all: 1 HD would
-        // pass trivially, ECL 8 is what must be compared against the cap of 9.
+        // Level adjustment counts toward the cap: 1 HD would pass trivially, and ECL 8 sits exactly
+        // on the cap of 8, which is allowed — "up to this level".
         var cohort = new Character
         {
             Name = "Erinyes",
@@ -234,7 +234,7 @@ public class LeadershipTests
 
         var result = new CompanionResolver(engine, _ => cohort).Build(master);
 
-        Assert.Equal(9, result.MasterState.MaxCohortLevel);
+        Assert.Equal(8, result.MasterState.MaxCohortLevel);
         Assert.Equal(8, result.Companions[0].State.ECL);
         Assert.DoesNotContain(result.MasterState.Warnings, w =>
             w.Message.Contains("exceeds max cohort level", StringComparison.OrdinalIgnoreCase));
@@ -366,7 +366,8 @@ public class LeadershipTests
         Assert.Equal(30, withEpic.LeadershipScore);
         Assert.Equal(300, withEpic.Followers.Level1);         // Table: Epic Leadership, score 30
         Assert.Equal(1, withEpic.Followers.At(7));
-        Assert.Equal(20, withEpic.MaxCohortLevel);            // table 20th, under level 21 - 1
+        // Table row 30 gives 20th; Epic Leadership's own cap is level - 1 = 20, so both agree.
+        Assert.Equal(20, withEpic.MaxCohortLevel);
     }
 
     // ---------- Leadership modifiers ----------
@@ -522,7 +523,7 @@ public class LeadershipTests
         // Table: Epic Leadership row 36 — 660/66/33/17/9/5/3/2/1 — not row 34's.
         Assert.Equal(660, state.Followers.Level1);
         Assert.Equal(2, state.Followers.At(8));
-        // Cohort level comes from row 34: 22nd, under the own-level cap of 20... which wins.
+        // Row 34 offers 22nd; Epic Leadership's cap of level - 1 = 20 is what binds.
         Assert.Equal(20, state.MaxCohortLevel);
     }
 
@@ -606,6 +607,30 @@ public class LeadershipTests
         Assert.Equal(2, result.MasterState.FollowerOccupancy[2]);
         Assert.Contains(result.MasterState.Warnings, w =>
             w.Message.Contains("2 follower(s) of level 2 linked"));
+    }
+
+    /// <summary>
+    /// The two feats state the cohort cap differently, and Epic Leadership's wording wins for a
+    /// character who has it. Base: "he can only recruit a cohort who is two or more levels lower
+    /// than himself." Table: Epic Leadership, under its own Cohort Level column: "he or she can't
+    /// recruit a cohort of his or her level or higher." Epic Leadership also says it "in all other
+    /// ways functions as the Leadership feat", which pulls the other way — but the epic wording is
+    /// specific to the epic table, and specific beats general.
+    /// </summary>
+    [Fact]
+    public void EpicLeadershipRelaxesTheCohortCapByOne()
+    {
+        var baseFeats = new[] { "feat:leadership" };
+        var epicFeats = new[] { "feat:leadership", "feat:epic_leadership" };
+
+        Assert.Equal(19, LeadershipTables.CohortLevelCap(baseFeats, 21));
+        Assert.Equal(20, LeadershipTables.CohortLevelCap(epicFeats, 21));
+
+        // The cap is character level — hit dice, not ECL — which is what keeps a 6 HD succubus
+        // whose racial Charisma buys a Leadership score of 18 from fielding the 12th-level cohort
+        // the table would otherwise offer her.
+        Assert.Equal(12, LeadershipTables.LookupCohortLevel(18));
+        Assert.Equal(4, LeadershipTables.CohortLevelCap(baseFeats, 6));
     }
 
     private static Character BuildFighterWithLeadership(int levels, int cha)

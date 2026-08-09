@@ -810,15 +810,14 @@ public class ReplayStudio
             // Epic Leadership replaces the table rather than adding to it: "The character attracts
             // a cohort and followers as shown below on Table: Epic Leadership … Normal: The
             // Leadership feat provides no benefit for leadership scores beyond 25."
-            // Cohort level is a table column, not arithmetic — the SRD progression is irregular
-            // (score 20 → 14th, 21 → 15th, 22 → 15th). The only formula is the separate cap:
-            // "Regardless of the character's Leadership score, he or she can't recruit a cohort of
-            // his or her level or higher."
             ApplyLeadershipModifiers(state, character);
 
+            // Cohort level is a table column, not arithmetic — the SRD progression is irregular
+            // (score 20 → 14th, 21 → 15th, 22 → 15th) — and is then held down by a separate cap
+            // that Epic Leadership relaxes; see LeadershipTables.CohortLevelCap.
             state.MaxCohortLevel = Math.Min(
                 LeadershipTables.LookupCohortLevelFor(state.Feats, state.LeadershipCohortScore),
-                state.TotalHD - 1);
+                LeadershipTables.CohortLevelCap(state.Feats, state.TotalHD));
 
             state.Followers =
                 LeadershipTables.LookupFollowerCountsFor(state.Feats, state.LeadershipFollowerScore);

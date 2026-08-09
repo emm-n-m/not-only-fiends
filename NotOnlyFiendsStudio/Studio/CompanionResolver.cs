@@ -207,7 +207,7 @@ public class CompanionResolver
         master.LeadershipModifierNotes.Add("Recruits a cohort of a different alignment (cohort only) -1");
         master.MaxCohortLevel = Math.Min(
             LeadershipTables.LookupCohortLevelFor(master.Feats, master.LeadershipCohortScore),
-            master.TotalHD - 1);
+            LeadershipTables.CohortLevelCap(master.Feats, master.TotalHD));
     }
 
     /// <summary>

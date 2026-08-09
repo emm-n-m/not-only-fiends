@@ -77,6 +77,23 @@ public static class LeadershipTables
             ? LookupEpicFollowerCounts(leadershipScore)
             : LookupFollowerCounts(leadershipScore);
 
+    /// <summary>
+    /// The hard cap on cohort level, independent of the table.
+    ///
+    /// Base Leadership: "Regardless of a character's Leadership score, he can only recruit a cohort
+    /// who is two or more levels lower than himself" — level - 2. Table: Epic Leadership restates
+    /// it under its own Cohort Level column as "he or she can't recruit a cohort of his or her level
+    /// or higher" — level - 1. Epic Leadership says it "in all other ways functions as the
+    /// Leadership feat", which pulls the other way, but the epic wording is specific to the epic
+    /// table and specific beats general, so taking the feat relaxes the cap by one.
+    ///
+    /// The level here is character level — hit dice, excluding level adjustment. That is what stops
+    /// a 6 HD succubus whose racial Charisma bonus buys a Leadership score of 18 from fielding the
+    /// 12th-level cohort her score would otherwise offer.
+    /// </summary>
+    public static int CohortLevelCap(IEnumerable<string> feats, int characterLevel) =>
+        feats.Contains("feat:epic_leadership") ? characterLevel - 1 : characterLevel - 2;
+
     public static FollowerCounts LookupFollowerCounts(int leadershipScore)
     {
         // Below 10 → no followers attracted.
