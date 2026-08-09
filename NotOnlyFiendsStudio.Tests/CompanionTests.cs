@@ -1205,9 +1205,53 @@ public class CompanionTests
     };
 
     /// <summary>
+    /// Celestial and Fiendish share one progression table:
+    ///
+    ///   HD 1–3   resistance 5,  no DR
+    ///   HD 4–7   resistance 5,  DR 5/magic
+    ///   HD 8–11  resistance 10, DR 5/magic
+    ///   HD 12+   resistance 10, DR 10/magic
+    ///
+    /// with "Spell resistance equal to the creature's HD + 5 (maximum 25)".
+    /// </summary>
+    [Theory]
+    [InlineData("template:celestial", 3, 5, 0, 8)]
+    [InlineData("template:celestial", 4, 5, 5, 9)]
+    [InlineData("template:celestial", 8, 10, 5, 13)]
+    [InlineData("template:celestial", 12, 10, 10, 17)]
+    [InlineData("template:celestial", 25, 10, 10, 25)]   // SR capped
+    [InlineData("template:fiendish", 3, 5, 0, 8)]
+    [InlineData("template:fiendish", 8, 10, 5, 13)]
+    [InlineData("template:fiendish", 25, 10, 10, 25)]
+    public void CelestialAndFiendish_ShareTheSameProgressionTable(
+        string templateId, int hitDice, int resistance, int damageReduction, int spellResistance)
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var element = templateId == "template:celestial" ? "acid" : "fire";
+
+        var state = new ReplayStudio(registry).Evaluate(new Character
+        {
+            Name = "Templated animal",
+            RaceId = "race:companion_snake_viper_tiny",
+            Alignment = Alignment.N,
+            TemplateIds = new List<string> { templateId },
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, hitDice)
+                .Select(_ => new Tick { DriverId = "racial_hd:animal" }).ToList()
+        });
+
+        Assert.Equal(resistance, state.Resistances.GetValueOrDefault(element));
+        Assert.Equal(damageReduction, state.DamageReduction.FirstOrDefault()?.Value ?? 0);
+        Assert.Equal(spellResistance, state.SpellResistance);
+        // "Abilities: Same as the base creature, but Intelligence is at least 3." A viper has 1.
+        Assert.Equal(3, state.AbilityScores.INT);
+    }
+
+    /// <summary>
     /// The celestial counterpart of template:fiendish, so a nonevil planar ranger has a companion
-    /// to take. Structurally identical — the SRD mirror carries neither the Celestial Creature nor
-    /// the Fiendish Creature page, so both are derived; see KNOWN_ISSUES.
+    /// to take. Structurally identical apart from the element set, the smite, and the base-type
+    /// list — the celestial one omits ooze, which the fiendish one allows.
     /// </summary>
     [Fact]
     public void CelestialTemplate_MirrorsFiendishWithItsOwnElementsAndSmite()

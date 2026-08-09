@@ -1,84 +1,175 @@
 [
-{
-  "id": "template:fiendish",
-  "name": "Fiendish",
-  "applicabilityPrerequisites": [
-    { "$type": "AlignmentReq", "allowed": ["LE", "NE", "CE", "LN", "N", "CN"] },
-    { "$type": "AnyOf", "options": [
-      { "$type": "HasCreatureType", "type": "aberration" }, { "$type": "HasCreatureType", "type": "animal" },
-      { "$type": "HasCreatureType", "type": "dragon" }, { "$type": "HasCreatureType", "type": "fey" },
-      { "$type": "HasCreatureType", "type": "giant" }, { "$type": "HasCreatureType", "type": "humanoid" },
-      { "$type": "HasCreatureType", "type": "magicalBeast" }, { "$type": "HasCreatureType", "type": "monstrousHumanoid" },
-      { "$type": "HasCreatureType", "type": "ooze" }, { "$type": "HasCreatureType", "type": "plant" }, { "$type": "HasCreatureType", "type": "vermin" }
-    ] }
-  ],
-  "typeOverridesByBaseType": { "animal": "magicalBeast", "vermin": "magicalBeast" },
-  "levelAdjustment": 2,
-  "creationPermabuffs": [
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "fiendish_darkvision_60", "name": "Darkvision 60 ft.", "description": "Can see in the dark up to 60 feet." }
+  {
+    "id": "template:fiendish",
+    "name": "Fiendish",
+    "applicabilityPrerequisites": [
+      {
+        "$type": "HasCreatureTrait",
+        "corporeal": true
+      },
+      {
+        "$type": "AlignmentReq",
+        "allowed": [
+          "LE",
+          "NE",
+          "CE",
+          "LN",
+          "N",
+          "CN"
+        ]
+      },
+      {
+        "$type": "AnyOf",
+        "options": [
+          {
+            "$type": "HasCreatureType",
+            "type": "aberration"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "animal"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "dragon"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "fey"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "giant"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "humanoid"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "magicalBeast"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "monstrousHumanoid"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "ooze"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "plant"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "vermin"
+          }
+        ]
+      }
+    ],
+    "typeOverridesByBaseType": {
+      "animal": "magicalBeast",
+      "vermin": "magicalBeast"
     },
-    {
-      "$type": "GrantSpecialAttack",
-      "attack": { "id": "fiendish_smite_good", "name": "Smite Good", "usesPerDay": "1/day", "description": "Normal melee attack against a good foe; extra damage equals total HD (maximum +20)." }
-    }
-  ],
-  "scalingPermabuffs": {
-    "1": [
+    "levelAdjustment": 2,
+    "creationPermabuffs": [
       {
-        "$type": "ModifyAttribute",
-        "target": "Resistance",
-        "resistanceElement": "cold",
-        "value": 5
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "fiendish_darkvision_60",
+          "name": "Darkvision 60 ft.",
+          "description": "Can see in the dark up to 60 feet."
+        }
       },
       {
-        "$type": "ModifyAttribute",
-        "target": "Resistance",
-        "resistanceElement": "fire",
-        "value": 5
+        "$type": "GrantSpecialAttack",
+        "attack": {
+          "id": "fiendish_smite_good",
+          "name": "Smite Good",
+          "usesPerDay": "1/day",
+          "description": "Normal melee attack against a good foe; extra damage equals total HD (maximum +20)."
+        }
       }
     ],
-    "4": [
+    "scalingPermabuffs": {
+      "1": [
+        {
+          "$type": "ModifyAttribute",
+          "target": "Resistance",
+          "resistanceElement": "cold",
+          "value": 5
+        },
+        {
+          "$type": "ModifyAttribute",
+          "target": "Resistance",
+          "resistanceElement": "fire",
+          "value": 5
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantDR",
+          "value": 5,
+          "bypassedBy": "magic"
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "fiendish_natural_weapons_magic",
+            "name": "Natural Weapons Treated as Magic",
+            "description": "A fiendish creature that gains damage reduction has its natural weapons treated as magic weapons for the purpose of overcoming damage reduction."
+          }
+        }
+      ],
+      "8": [
+        {
+          "$type": "ModifyAttribute",
+          "target": "Resistance",
+          "resistanceElement": "cold",
+          "value": 5
+        },
+        {
+          "$type": "ModifyAttribute",
+          "target": "Resistance",
+          "resistanceElement": "fire",
+          "value": 5
+        }
+      ],
+      "12": [
+        {
+          "$type": "GrantDR",
+          "value": 10,
+          "bypassedBy": "magic"
+        }
+      ]
+    },
+    "scalingFormulas": [
       {
-        "$type": "GrantDR", "value": 5, "bypassedBy": "magic"
-      }
-    ],
-    "8": [
-      {
-        "$type": "ModifyAttribute",
-        "target": "Resistance",
-        "resistanceElement": "cold",
-        "value": 5
+        "target": "SpellResistance",
+        "formula": {
+          "expression": "min(TotalHD + 5, 25)"
+        }
       },
       {
-        "$type": "ModifyAttribute",
-        "target": "Resistance",
-        "resistanceElement": "fire",
-        "value": 5
-      }
-    ],
-    "12": [
-      {
-        "$type": "GrantDR", "value": 10, "bypassedBy": "magic"
+        "target": "AbilityScore",
+        "abilityScore": "INT",
+        "formula": {
+          "expression": "max(Score(INT), 3)"
+        }
       }
     ]
   },
-  "scalingFormulas": [
-    {
-      "target": "SpellResistance",
-      "formula": { "expression": "TotalHD + 5" }
-    }
-  ]
-},
-{
-  "id": "template:fiendish_animal",
-  "name": "Fiendish (Animal)",
-  "typeOverride": "magicalBeast",
-  "subtypeAdditions": ["augmented"],
-  "levelAdjustment": 0,
-  "creationPermabuffs": [],
-  "scalingPermabuffs": {},
-  "scalingFormulas": []
-}
+  {
+    "id": "template:fiendish_animal",
+    "name": "Fiendish (Animal)",
+    "typeOverride": "magicalBeast",
+    "subtypeAdditions": [
+      "augmented"
+    ],
+    "levelAdjustment": 0,
+    "creationPermabuffs": [],
+    "scalingPermabuffs": {},
+    "scalingFormulas": []
+  }
 ]

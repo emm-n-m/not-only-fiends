@@ -4,6 +4,10 @@
     "name": "Celestial",
     "applicabilityPrerequisites": [
       {
+        "$type": "HasCreatureTrait",
+        "corporeal": true
+      },
+      {
         "$type": "AlignmentReq",
         "allowed": [
           "LG",
@@ -48,10 +52,6 @@
           {
             "$type": "HasCreatureType",
             "type": "monstrousHumanoid"
-          },
-          {
-            "$type": "HasCreatureType",
-            "type": "ooze"
           },
           {
             "$type": "HasCreatureType",
@@ -114,6 +114,14 @@
           "$type": "GrantDR",
           "value": 5,
           "bypassedBy": "magic"
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "celestial_natural_weapons_magic",
+            "name": "Natural Weapons Treated as Magic",
+            "description": "A celestial creature that gains damage reduction has its natural weapons treated as magic weapons for the purpose of overcoming damage reduction."
+          }
         }
       ],
       "8": [
@@ -148,7 +156,14 @@
       {
         "target": "SpellResistance",
         "formula": {
-          "expression": "TotalHD + 5"
+          "expression": "min(TotalHD + 5, 25)"
+        }
+      },
+      {
+        "target": "AbilityScore",
+        "abilityScore": "INT",
+        "formula": {
+          "expression": "max(Score(INT), 3)"
         }
       }
     ]
