@@ -1,9 +1,24 @@
 # Known issues
 
+## The Celestial and Fiendish Creature templates are derived, not transcribed
+
+The SRD mirror carries neither page — `siteMap.html` lists both, but no file holds the text, the
+same gap that already existed for `template:fiendish`. `template:celestial` was authored on
+2026-08-09 by mirroring `template:fiendish` exactly (alignment prerequisite inverted, base-type
+list, `animal`/`vermin` → magical beast, LA +2, darkvision 60, DR 5/magic at 4 HD and 10/magic at
+12, SR = HD + 5) and substituting the two things that genuinely differ: resistance to acid, cold
+and electricity in place of cold and fire, and Smite Evil in place of Smite Good. The element set
+is corroborated by the Half-Celestial entry in `monstersHtoI.html` ("Resistance to acid 10, cold
+10, and electricity 10") against Half-Fiend's four, though those are a different template with
+different numbers.
+
+If either page ever appears in a real source, replace both rather than editing around them —
+the same standing instruction as the two derived spells below.
+
 ## A celestial or fiendish animal companion cannot be chosen in the builder
 
 A planar ranger "may have a celestial version of a normal animal as his animal companion" if
-nonevil, or a fiendish version if nongood. `CompanionResolver` now *validates* this — a non-animal
+nonevil, or a fiendish version if nongood. `CompanionResolver` validates this — a non-animal
 companion is rejected unless the master is a planar ranger, and then only in the direction its
 alignment allows — but nothing *offers* it. The species picker lists plain animals, so building a
 planar ranger in the app produces an ordinary companion and the template has to be added to the
@@ -12,8 +27,6 @@ the converter carries them.
 
 The right shape is a selection gated by alignment, not an automatic grant: the SRD says "may
 have", and a true-neutral planar ranger is both nonevil and nongood, so may choose either.
-There is also no `template:celestial` in content yet — only `template:fiendish` — so the celestial
-half of the validation is written but currently unreachable.
 
 ## Cohort slot level is arithmetic while the cap is a table
 

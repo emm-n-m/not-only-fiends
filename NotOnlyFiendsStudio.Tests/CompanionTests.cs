@@ -1205,6 +1205,73 @@ public class CompanionTests
     };
 
     /// <summary>
+    /// The celestial counterpart of template:fiendish, so a nonevil planar ranger has a companion
+    /// to take. Structurally identical — the SRD mirror carries neither the Celestial Creature nor
+    /// the Fiendish Creature page, so both are derived; see KNOWN_ISSUES.
+    /// </summary>
+    [Fact]
+    public void CelestialTemplate_MirrorsFiendishWithItsOwnElementsAndSmite()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        Character Snake(params string[] templates) => new()
+        {
+            Name = "Snake",
+            RaceId = "race:companion_snake_viper_tiny",
+            Alignment = Alignment.NG,
+            TemplateIds = templates.ToList(),
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 4)
+                .Select(_ => new Tick { DriverId = "racial_hd:animal" }).ToList()
+        };
+
+        var celestial = engine.Evaluate(Snake("template:celestial", "template:celestial_animal"));
+
+        // Animal → magical beast, the same shift that makes a celestial companion illegal for
+        // anyone but a planar ranger.
+        Assert.Equal(CreatureType.MagicalBeast, celestial.Type);
+        Assert.Contains("augmented", celestial.Subtypes);
+        Assert.Equal(2, celestial.LevelAdjustment);
+
+        // Acid, cold and electricity — where fiendish takes cold and fire.
+        Assert.Equal(5, celestial.Resistances["acid"]);
+        Assert.Equal(5, celestial.Resistances["cold"]);
+        Assert.Equal(5, celestial.Resistances["electricity"]);
+        Assert.False(celestial.Resistances.ContainsKey("fire"));
+
+        Assert.Contains(celestial.DamageReduction, dr => dr.Value == 5 && dr.BypassedBy == "magic");
+        Assert.Equal(celestial.TotalHD + 5, celestial.SpellResistance);
+        Assert.Contains(celestial.SpecialAttacks, a => a.Name == "Smite Evil");
+
+        var fiendish = engine.Evaluate(Snake("template:fiendish", "template:fiendish_animal"));
+        Assert.Contains(fiendish.SpecialAttacks, a => a.Name == "Smite Good");
+        Assert.Equal(celestial.LevelAdjustment, fiendish.LevelAdjustment);
+        Assert.Equal(celestial.SpellResistance, fiendish.SpellResistance);
+    }
+
+    /// <summary>An evil creature cannot carry the celestial template.</summary>
+    [Fact]
+    public void CelestialTemplate_IsRefusedToAnEvilCreature()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var state = new ReplayStudio(registry).Evaluate(new Character
+        {
+            Name = "Snake",
+            RaceId = "race:companion_snake_viper_tiny",
+            Alignment = Alignment.NE,
+            TemplateIds = new List<string> { "template:celestial" },
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick> { new() { DriverId = "racial_hd:animal" } }
+        });
+
+        Assert.Contains(state.Warnings, w =>
+            w.Message.Contains("Celestial", StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
     /// An animal companion must be an animal. The celestial and fiendish templates move the type to
     /// magical beast, so a druid or ordinary ranger cannot field one — the planar ranger's "may have
     /// a celestial/fiendish version" is the exception that makes it legal, and only in the direction

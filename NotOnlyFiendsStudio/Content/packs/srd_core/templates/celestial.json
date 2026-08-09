@@ -1,0 +1,168 @@
+[
+  {
+    "id": "template:celestial",
+    "name": "Celestial",
+    "applicabilityPrerequisites": [
+      {
+        "$type": "AlignmentReq",
+        "allowed": [
+          "LG",
+          "NG",
+          "CG",
+          "LN",
+          "N",
+          "CN"
+        ]
+      },
+      {
+        "$type": "AnyOf",
+        "options": [
+          {
+            "$type": "HasCreatureType",
+            "type": "aberration"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "animal"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "dragon"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "fey"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "giant"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "humanoid"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "magicalBeast"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "monstrousHumanoid"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "ooze"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "plant"
+          },
+          {
+            "$type": "HasCreatureType",
+            "type": "vermin"
+          }
+        ]
+      }
+    ],
+    "typeOverridesByBaseType": {
+      "animal": "magicalBeast",
+      "vermin": "magicalBeast"
+    },
+    "levelAdjustment": 2,
+    "creationPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "celestial_darkvision_60",
+          "name": "Darkvision 60 ft.",
+          "description": "Can see in the dark up to 60 feet."
+        }
+      },
+      {
+        "$type": "GrantSpecialAttack",
+        "attack": {
+          "id": "celestial_smite_evil",
+          "name": "Smite Evil",
+          "usesPerDay": "1/day",
+          "description": "Normal melee attack against an evil foe; extra damage equals total HD (maximum +20)."
+        }
+      }
+    ],
+    "scalingPermabuffs": {
+      "1": [
+        {
+          "$type": "ModifyAttribute",
+          "target": "Resistance",
+          "resistanceElement": "acid",
+          "value": 5
+        },
+        {
+          "$type": "ModifyAttribute",
+          "target": "Resistance",
+          "resistanceElement": "cold",
+          "value": 5
+        },
+        {
+          "$type": "ModifyAttribute",
+          "target": "Resistance",
+          "resistanceElement": "electricity",
+          "value": 5
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantDR",
+          "value": 5,
+          "bypassedBy": "magic"
+        }
+      ],
+      "8": [
+        {
+          "$type": "ModifyAttribute",
+          "target": "Resistance",
+          "resistanceElement": "acid",
+          "value": 5
+        },
+        {
+          "$type": "ModifyAttribute",
+          "target": "Resistance",
+          "resistanceElement": "cold",
+          "value": 5
+        },
+        {
+          "$type": "ModifyAttribute",
+          "target": "Resistance",
+          "resistanceElement": "electricity",
+          "value": 5
+        }
+      ],
+      "12": [
+        {
+          "$type": "GrantDR",
+          "value": 10,
+          "bypassedBy": "magic"
+        }
+      ]
+    },
+    "scalingFormulas": [
+      {
+        "target": "SpellResistance",
+        "formula": {
+          "expression": "TotalHD + 5"
+        }
+      }
+    ]
+  },
+  {
+    "id": "template:celestial_animal",
+    "name": "Celestial (Animal)",
+    "typeOverride": "magicalBeast",
+    "subtypeAdditions": [
+      "augmented"
+    ],
+    "levelAdjustment": 0,
+    "creationPermabuffs": [],
+    "scalingPermabuffs": {},
+    "scalingFormulas": []
+  }
+]
