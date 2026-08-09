@@ -19,14 +19,35 @@ Two traps make a bulk extraction from the SRD unsafe, both hit on the first atte
   owl's Spot in shadowy illumination, the cat's Hide in tall grass. The engine has no situational
   modifiers, so these must be dropped rather than applied flat.
 
-## PCGen animal tricks import as unmatched class abilities
+## TODO: animal tricks are unmodelled, and import as unmatched class abilities
 
 A `.pcg` records trained tricks as class abilities — "Animal Trick ~ Attack", "~ Defend", "~ Fetch"
-and so on — and the converter reports each as `has no matching class-feature option`. They are not
-class features at all: tricks are outcomes of the Handle Animal skill, described on that skill's
-page, and belong to the animal's training rather than to any class. Either map them to a Handle
-Animal-derived record or recognise and drop them; today they are eight warnings of pure noise on
-any trained companion.
+— so the converter reports each as `has no matching class-feature option`. Eight warnings of pure
+noise on any trained companion, and the tricks themselves are dropped.
+
+They are not class features. A trick is a property of the **animal**, and its budget is a capacity
+the creature has rather than anything a class grants:
+
+- **Handle Animal, Teach an Animal a Trick:** "An animal with an Intelligence score of 1 can learn
+  a maximum of three tricks, while an animal with an Intelligence score of 2 can learn a maximum
+  of six tricks." Those are the only two values the SRD gives, because that is the animal range.
+- **Bonus tricks** from the companion progression, which "don't require any training time or Handle
+  Animal checks, and they don't count against the normal limit": 1 at effective druid level 1–2,
+  then 2/3/4/5/6/7 at 3–5, 6–8, 9–11, 12–14, 15–17, 18–20. Epic adds one more every three levels
+  past 20th.
+- Teaching an animal to attack *all* creatures "counts as two tricks" — which is what PCGen's
+  "Animal Trick ~ Attack II" alongside "~ Attack" is recording.
+
+Modelling it needs a tricks list on `CharacterState`, the capacity rule, import mapping including
+the double-cost variants, and somewhere to spend the budget. **Parked deliberately: the area is
+badly defined.** The SRD table stops at Intelligence 2, and a boosted companion goes past it — the
+roster's fiendish viper carries `template:int_bonus_+2` and sits at Intelligence 3, where the rules
+say nothing. Its eight tricks happen to equal 6 (the Int-2 maximum) plus 2 (its bonus tricks at
+effective druid level 3), which may be the right budget or may be coincidence; there is no way to
+tell from the text.
+
+Until it is modelled, the cheap win is to stop the warnings: recognise "Animal Trick ~ *" on import
+and drop it deliberately rather than reporting it as an unmatched class feature.
 
 ## The Celestial and Fiendish Creature templates are derived, not transcribed
 
