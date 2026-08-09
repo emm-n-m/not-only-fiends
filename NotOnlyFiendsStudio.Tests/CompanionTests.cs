@@ -570,7 +570,9 @@ public class CompanionTests
         Assert.Contains("feat:leadership", state.Feats);
         // 7 HD + Mod(CHA 14)=+2 + 0 modifier = 9
         Assert.Equal(9, state.LeadershipScore);
-        Assert.Equal(5, state.MaxCohortLevel); // min(9-2, 7-2) = 5
+        // SRD Leadership table: score 9 → cohort level 6th, capped below the character's own
+        // level (7th), so 6.
+        Assert.Equal(6, state.MaxCohortLevel);
         Assert.Equal(0, state.Followers.Level1); // score 9 → no followers
     }
 
@@ -620,10 +622,16 @@ public class CompanionTests
     [Fact]
     public void LeadershipTables_Score25_MaxFollowers()
     {
+        // Base table's last row is "25 or higher — 17th — 135 13 7 4 2 2". Without Epic
+        // Leadership the table stops there however high the score goes.
         var counts = LeadershipTables.LookupFollowerCounts(30);
         Assert.Equal(135, counts.Level1);
         Assert.Equal(13, counts.Level2);
-        Assert.Equal(1, counts.Level6);
+        Assert.Equal(7, counts.Level3);
+        Assert.Equal(4, counts.Level4);
+        Assert.Equal(2, counts.Level5);
+        Assert.Equal(2, counts.Level6);
+        Assert.Equal(0, counts.At(7));
     }
 
     // ---------- ReplayStudio tail pass: companion-side template scaling ----------

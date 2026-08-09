@@ -1644,16 +1644,11 @@ public partial class BuilderView
         OnCharacterChanged();
     }
 
-    private int FollowerCapacity(int level) => level switch
-    {
-        1 => _state?.Followers.Level1 ?? 0,
-        2 => _state?.Followers.Level2 ?? 0,
-        3 => _state?.Followers.Level3 ?? 0,
-        4 => _state?.Followers.Level4 ?? 0,
-        5 => _state?.Followers.Level5 ?? 0,
-        6 => _state?.Followers.Level6 ?? 0,
-        _ => 0,
-    };
+    private int FollowerCapacity(int level) => _state?.Followers.At(level) ?? 0;
+
+    /// Highest follower level worth showing. Epic Leadership pushes this past the base table's
+    /// 6th, and the halving rule past the epic table's 10th, so it cannot be a constant.
+    private int HighestFollowerLevel() => Math.Max(1, _state?.Followers.HighestLevel ?? 1);
 
     private void CreateLeadershipFollower(int level)
     {

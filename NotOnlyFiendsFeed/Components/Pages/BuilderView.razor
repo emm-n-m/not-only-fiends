@@ -1664,7 +1664,7 @@ else
                             <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                                 <strong>Leadership followers</strong>
                                 <span class="badge bg-secondary">score @_state.LeadershipScore</span>
-                                @for (var level = 1; level <= 6; level++)
+                                @for (var level = 1; level <= HighestFollowerLevel(); level++)
                                 {
                                     <span class="badge bg-light text-dark">L@level: @FollowerCapacity(level)</span>
                                 }
@@ -1673,7 +1673,7 @@ else
                                 <label class="small" for="leadership-follower-level">Follower level</label>
                                 <select id="leadership-follower-level" class="form-select form-select-sm" style="width:auto"
                                         @bind="_leadershipFollowerLevel">
-                                    @for (var level = 1; level <= 6; level++)
+                                    @for (var level = 1; level <= HighestFollowerLevel(); level++)
                                     {
                                         <option value="@level">@level (capacity @FollowerCapacity(level))</option>
                                     }

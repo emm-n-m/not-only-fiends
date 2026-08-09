@@ -248,14 +248,37 @@ public class CompanionSlotState
     public string? SelectedSpecies { get; set; }
 }
 
+/// <summary>
+/// How many followers of each level a character can lead. Keyed by follower level rather than
+/// held in fixed properties because the ceiling is not fixed: the base table stops at 6th and
+/// Table: Epic Leadership prints to 10th, but the halving rule that continues past the printed
+/// table keeps producing followers as the score climbs — a Leadership score of 60 reaches 11th
+/// and 12th. The only hard limit is the SRD's "A character can't have a follower of higher than
+/// 20th level".
+/// </summary>
 public class FollowerCounts
 {
-    public int Level1 { get; set; }
-    public int Level2 { get; set; }
-    public int Level3 { get; set; }
-    public int Level4 { get; set; }
-    public int Level5 { get; set; }
-    public int Level6 { get; set; }
+    /// <summary>The SRD's ceiling: no follower may be above 20th level.</summary>
+    public const int MaxFollowerLevel = 20;
+
+    /// <summary>Follower level → count. Levels the character cannot field are simply absent.</summary>
+    public Dictionary<int, int> ByLevel { get; set; } = new();
+
+    public int At(int level) => ByLevel.GetValueOrDefault(level);
+
+    /// <summary>Highest follower level with at least one follower; 0 when there are none.</summary>
+    public int HighestLevel => ByLevel.Count == 0
+        ? 0
+        : ByLevel.Where(entry => entry.Value > 0).Select(entry => entry.Key).DefaultIfEmpty(0).Max();
+
+    // Convenience accessors for the six levels the base table prints; the sheet and most tests
+    // only ever ask about these.
+    public int Level1 { get => At(1); set => ByLevel[1] = value; }
+    public int Level2 { get => At(2); set => ByLevel[2] = value; }
+    public int Level3 { get => At(3); set => ByLevel[3] = value; }
+    public int Level4 { get => At(4); set => ByLevel[4] = value; }
+    public int Level5 { get => At(5); set => ByLevel[5] = value; }
+    public int Level6 { get => At(6); set => ByLevel[6] = value; }
 }
 
 public class SaveSet

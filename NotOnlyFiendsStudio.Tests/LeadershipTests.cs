@@ -23,13 +23,17 @@ public class LeadershipTests
         Assert.Contains("feat:leadership", state.Feats);
         // 6 HD + Mod(CHA 14)=+2 = 8 → no followers (<10).
         Assert.Equal(8, state.LeadershipScore);
-        Assert.Equal(4, state.MaxCohortLevel); // min(8-2, 6-2) = 4
+        // SRD Leadership table: score 8 → cohort level 5th. The separate cap is the character's
+        // own level (6th) minus one, which is also 5.
+        Assert.Equal(5, state.MaxCohortLevel);
         Assert.Equal(0, state.Followers.Level1);
 
         // Cohort slot granted by the feat.
         var slot = Assert.Single(state.CompanionSlots);
         Assert.Equal("leadership_cohort", slot.LinkType);
         Assert.Equal("feat:leadership", slot.Granter);
+        // The slot's own formula is authored in content and still arithmetic — see KNOWN_ISSUES,
+        // formulas cannot do the table lookup that MaxCohortLevel now uses.
         Assert.Equal(4, slot.EffectiveLevel); // min(6-2, 8-2) = 4
     }
 
@@ -134,7 +138,8 @@ public class LeadershipTests
         var registry = TestContentHelper.LoadAllPacks();
         var engine = new ReplayStudio(registry);
 
-        // Fighter 10 + CHA 16 (+3) = score 13 → MaxCohortLevel = min(11, 8) = 8.
+        // Fighter 10 + CHA 16 (+3) = score 13 → SRD table cohort level 9th, under the
+        // own-level-minus-one cap of 9.
         var master = BuildFighterWithLeadership(levels: 10, cha: 16);
         master.CompanionLinks = new List<CompanionLink>
         {
@@ -158,7 +163,7 @@ public class LeadershipTests
         var result = new CompanionResolver(engine, _ => cohort).Build(master);
 
         Assert.Equal(13, result.MasterState.LeadershipScore);
-        Assert.Equal(8, result.MasterState.MaxCohortLevel);
+        Assert.Equal(9, result.MasterState.MaxCohortLevel);
         Assert.DoesNotContain(result.MasterState.Warnings, w =>
             w.Message.Contains("exceeds max cohort level", StringComparison.OrdinalIgnoreCase));
     }
@@ -169,7 +174,8 @@ public class LeadershipTests
         var registry = TestContentHelper.LoadAllPacks();
         var engine = new ReplayStudio(registry);
 
-        // Fighter 7 + CHA 14 (+2) = score 9 → MaxCohortLevel = min(7, 5) = 5.
+        // Fighter 7 + CHA 14 (+2) = score 9 → SRD table cohort level 6th, under the
+        // own-level-minus-one cap of 6.
         var master = BuildFighterWithLeadership(levels: 7, cha: 14);
         master.CompanionLinks = new List<CompanionLink>
         {
@@ -181,18 +187,18 @@ public class LeadershipTests
             }
         };
 
-        // Cohort is a level-6 fighter — exceeds the cap of 5.
+        // Cohort is a level-7 fighter — exceeds the cap of 6.
         var cohort = new Character
         {
             Name = "OverleveledCohort",
             RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 12, CON = 12, INT = 10, WIS = 10, CHA = 10 },
-            Ticks = Enumerable.Range(0, 6).Select(_ => new Tick { DriverId = "class:fighter" }).ToList()
+            Ticks = Enumerable.Range(0, 7).Select(_ => new Tick { DriverId = "class:fighter" }).ToList()
         };
 
         var result = new CompanionResolver(engine, _ => cohort).Build(master);
 
-        Assert.Equal(5, result.MasterState.MaxCohortLevel);
+        Assert.Equal(6, result.MasterState.MaxCohortLevel);
         Assert.Contains(result.MasterState.Warnings, w =>
             w.Message.Contains("exceeds max cohort level", StringComparison.OrdinalIgnoreCase));
     }
@@ -203,7 +209,7 @@ public class LeadershipTests
         var registry = TestContentHelper.LoadAllPacks();
         var engine = new ReplayStudio(registry);
 
-        // Fighter 10 + CHA 16 (+3) = 13 → cap 8.
+        // Fighter 10 + CHA 16 (+3) = 13 → SRD table cohort level 9th.
         var master = BuildFighterWithLeadership(levels: 10, cha: 16);
         master.CompanionLinks = new List<CompanionLink>
         {
@@ -216,7 +222,8 @@ public class LeadershipTests
         };
 
         // Erinyes cohort (LA +7 per srd_companions.json) with 1 outsider HD → ECL = 1 + 7 = 8.
-        // This equals the cap exactly — no warning.
+        // The point of the test is that level adjustment counts toward the cap at all: 1 HD would
+        // pass trivially, ECL 8 is what must be compared against the cap of 9.
         var cohort = new Character
         {
             Name = "Erinyes",
@@ -227,14 +234,140 @@ public class LeadershipTests
 
         var result = new CompanionResolver(engine, _ => cohort).Build(master);
 
-        // ECL == cap → no warning.
-        Assert.Equal(8, result.MasterState.MaxCohortLevel);
+        Assert.Equal(9, result.MasterState.MaxCohortLevel);
         Assert.Equal(8, result.Companions[0].State.ECL);
         Assert.DoesNotContain(result.MasterState.Warnings, w =>
             w.Message.Contains("exceeds max cohort level", StringComparison.OrdinalIgnoreCase));
     }
 
     // ---------- helper ----------
+
+    // ---------- Epic Leadership ----------
+
+    /// <summary>
+    /// SRD: "Normal: The Leadership feat provides no benefit for leadership scores beyond 25."
+    /// Without the epic feat the base table's last row applies however high the score climbs.
+    /// </summary>
+    [Fact]
+    public void BaseLeadershipTable_StopsAt25()
+    {
+        var at25 = LeadershipTables.LookupFollowerCounts(25);
+        var at40 = LeadershipTables.LookupFollowerCounts(40);
+
+        Assert.Equal(135, at25.Level1);
+        Assert.Equal(at25.Level1, at40.Level1);
+        Assert.Equal(0, at40.At(7));
+        Assert.Equal(17, LeadershipTables.LookupCohortLevel(40));
+    }
+
+    /// <summary>Rows transcribed from Table: Epic Leadership in `epicFeats.html`.</summary>
+    [Theory]
+    // score, cohort, 1st,  2nd, 3rd, 4th, 5th, 6th, 7th, 8th, 9th, 10th
+    [InlineData(25, 17, 135, 13, 7, 4, 2, 2, 1, 0, 0, 0)]
+    [InlineData(30, 20, 300, 30, 15, 8, 4, 2, 1, 0, 0, 0)]
+    [InlineData(31, 20, 350, 35, 18, 9, 5, 3, 2, 1, 0, 0)]
+    [InlineData(36, 23, 660, 66, 33, 17, 9, 5, 3, 2, 1, 0)]
+    [InlineData(40, 25, 1000, 100, 50, 25, 13, 7, 4, 2, 1, 0)]
+    public void EpicLeadershipTable_MatchesTheSrdRows(
+        int score, int cohort, int l1, int l2, int l3, int l4, int l5, int l6, int l7, int l8, int l9, int l10)
+    {
+        var counts = LeadershipTables.LookupEpicFollowerCounts(score);
+
+        Assert.Equal(cohort, LeadershipTables.LookupEpicCohortLevel(score));
+        Assert.Equal(
+            new[] { l1, l2, l3, l4, l5, l6, l7, l8, l9, l10 },
+            new[] { counts.Level1, counts.Level2, counts.Level3, counts.Level4, counts.Level5,
+                    counts.Level6, counts.At(7), counts.At(8), counts.At(9), counts.At(10) });
+    }
+
+    /// <summary>
+    /// Past 40 the SRD gives rules rather than rows: +100 1st-level followers per point, then
+    /// one-tenth as many 2nd as 1st and half as many at each level after, rounding up except that
+    /// a fraction below 1 rounds to 0. The cohort level rises by 1 per 2 points.
+    /// </summary>
+    [Fact]
+    public void EpicLeadershipBeyond40_FollowsTheStatedRules()
+    {
+        var at42 = LeadershipTables.LookupEpicFollowerCounts(42);
+
+        Assert.Equal(1200, at42.Level1);            // 1000 + 100 x 2
+        Assert.Equal(120, at42.Level2);             // one-tenth of 1st
+        Assert.Equal(60, at42.Level3);              // half of 2nd
+        Assert.Equal(30, at42.Level4);
+        Assert.Equal(15, at42.Level5);
+        Assert.Equal(8, at42.Level6);               // 15/2 rounds up
+        Assert.Equal(4, at42.At(7));
+        Assert.Equal(2, at42.At(8));
+        Assert.Equal(1, at42.At(9));
+        Assert.Equal(0, at42.At(10));              // half of 1 is below 1, so none
+
+        Assert.Equal(26, LeadershipTables.LookupEpicCohortLevel(42));   // 25 + 2/2
+        Assert.Equal(30, LeadershipTables.LookupEpicCohortLevel(50));   // 25 + 10/2
+    }
+
+    /// <summary>
+    /// "And so on" outruns the printed table. The epic table's last column is 10th level, but the
+    /// halving rule keeps producing followers as the score climbs — a score of 60 fields 11th- and
+    /// 12th-level followers, and only the SRD's "can't have a follower of higher than 20th level"
+    /// stops it.
+    /// </summary>
+    [Fact]
+    public void EpicLeadershipHalving_ContinuesPastThePrintedTable()
+    {
+        var at60 = LeadershipTables.LookupEpicFollowerCounts(60);
+
+        Assert.Equal(3000, at60.Level1);            // 1000 + 100 x 20
+        Assert.Equal(300, at60.Level2);
+        Assert.Equal(150, at60.Level3);
+        Assert.Equal(75, at60.Level4);
+        Assert.Equal(38, at60.Level5);              // 75/2 rounds up
+        Assert.Equal(19, at60.Level6);
+        Assert.Equal(10, at60.At(7));
+        Assert.Equal(5, at60.At(8));
+        Assert.Equal(3, at60.At(9));
+        Assert.Equal(2, at60.At(10));
+        // Past the printed table.
+        Assert.Equal(1, at60.At(11));
+        Assert.Equal(0, at60.At(12));
+        Assert.Equal(11, at60.HighestLevel);
+    }
+
+    /// <summary>No follower may be above 20th level, however extreme the score.</summary>
+    [Fact]
+    public void FollowerLevelsNeverExceedTwentieth()
+    {
+        var absurd = LeadershipTables.LookupEpicFollowerCounts(500);
+
+        Assert.True(absurd.HighestLevel <= FollowerCounts.MaxFollowerLevel);
+        Assert.Equal(0, absurd.At(FollowerCounts.MaxFollowerLevel + 1));
+    }
+
+    /// <summary>
+    /// The feat has to actually switch tables during evaluation, not merely exist in the content.
+    /// </summary>
+    [Fact]
+    public void EpicLeadershipFeat_SwitchesTheEngineToTheEpicTable()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        var master = BuildFighterWithLeadership(levels: 21, cha: 28);
+        // 21 HD + Mod(CHA 28) = +9 → score 30.
+        var withoutEpic = engine.Evaluate(master);
+        Assert.Equal(30, withoutEpic.LeadershipScore);
+        Assert.Equal(135, withoutEpic.Followers.Level1);      // base table, capped at its 25 row
+        Assert.Equal(0, withoutEpic.Followers.At(7));
+
+        master.Ticks[^1].Choices.FeatIds =
+            new List<string> { "feat:epic_leadership" };
+        var withEpic = engine.Evaluate(master);
+
+        Assert.Contains("feat:epic_leadership", withEpic.Feats);
+        Assert.Equal(30, withEpic.LeadershipScore);
+        Assert.Equal(300, withEpic.Followers.Level1);         // Table: Epic Leadership, score 30
+        Assert.Equal(1, withEpic.Followers.At(7));
+        Assert.Equal(20, withEpic.MaxCohortLevel);            // table 20th, under level 21 - 1
+    }
 
     private static Character BuildFighterWithLeadership(int levels, int cha)
     {

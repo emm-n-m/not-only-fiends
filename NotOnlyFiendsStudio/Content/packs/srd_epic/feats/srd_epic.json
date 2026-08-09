@@ -796,7 +796,8 @@
       }
     ],
     "grantedPermabuffs": [],
-    "repeatable": false
+    "repeatable": false,
+    "description": "The character attracts a cohort and followers as shown on Table: Epic Leadership, which extends the Leadership table past score 25 and adds followers of 7th through 10th level. In all other ways it functions as the Leadership feat."
   },
   {
     "id": "feat:epic_reputation",

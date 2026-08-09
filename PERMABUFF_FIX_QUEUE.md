@@ -86,11 +86,9 @@ materials repo's `CONTENT_GAPS.md`.
 
 ## Not content bugs — engine work these surfaced
 
-- **`feat:epic_leadership` does nothing, and the audit could not see it.** It has an empty
-  `grantedPermabuffs` *and no description*, so every description-based sweep skips it. SRD:
-  "Multiply the number of followers of each level that the character can lead by 10." Needs a
-  multiplier on `CharacterState.FollowerCounts` — `ModifyLeadershipScore` moves the score, not the
-  counts derived from it. One roster character has the feat.
+- **`feat:epic_leadership` did nothing, and the audit could not see it** — fixed 2026-08-09. It
+  had an empty `grantedPermabuffs` *and no description*, so every description-based sweep skipped
+  it. It is the reason the third sweep below exists.
 - **284 objects share that blind spot** (empty `grantedPermabuffs`, no description, mostly epic
   feats). The audit prompts now emit them under a `NO-DESCRIPTION` heading, but they cannot be
   judged by comparing a description to its neighbours — they need `verify-content`, which has an

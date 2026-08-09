@@ -1,5 +1,22 @@
 # Known issues
 
+## Cohort slot level is arithmetic while the cap is a table
+
+`MaxCohortLevel` now comes from the SRD Leadership / Epic Leadership tables, whose progression is
+irregular (score 20 → 14th, 21 → 15th, 22 → 15th) and cannot be derived. But the cohort
+*companion slot* granted by `feat:leadership` carries an authored `EffectiveLevelFormula` —
+`min(TotalHD - 2, LeadershipScore - 2)` — and the formula DSL has no table lookup, so the two
+disagree. The warning a player sees uses `MaxCohortLevel` and is correct; the slot's effective
+level, which drives companion scaling, is not. Either the DSL needs a `CohortLevel()` function or
+the slot should read `MaxCohortLevel` directly.
+
+## The PCG baseline does not record leadership outputs
+
+`PcgImportRegression`'s `CharacterReport` captures no `Followers`, `LeadershipScore` or
+`MaxCohortLevel`, so the 2026-08-09 Epic Leadership work — which changed follower counts from
+135/13/7/4/2/2 to 740/74/37/19/10/5/3/2/1 on a roster character — produced no baseline diff at
+all. Any future leadership change is invisible to the harness.
+
 ## Mechanics described in prose but never encoded
 
 `GrantAbility` carries a description string only, so any rule stated there and nowhere else is

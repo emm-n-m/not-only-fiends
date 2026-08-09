@@ -806,8 +806,24 @@ public class ReplayStudio
             state.LeadershipScore = state.TotalHD
                                     + AbilityScoreSet.Modifier(state.AbilityScores.CHA)
                                     + state.LeadershipScoreModifier;
-            state.MaxCohortLevel = Math.Min(state.LeadershipScore - 2, state.TotalHD - 2);
-            state.Followers = LeadershipTables.LookupFollowerCounts(state.LeadershipScore);
+
+            // Epic Leadership replaces the table rather than adding to it: "The character attracts
+            // a cohort and followers as shown below on Table: Epic Leadership … Normal: The
+            // Leadership feat provides no benefit for leadership scores beyond 25."
+            var epic = state.Feats.Contains("feat:epic_leadership");
+
+            // Cohort level is a table column, not arithmetic — the SRD progression is irregular
+            // (score 20 → 14th, 21 → 15th, 22 → 15th). The only formula is the separate cap:
+            // "Regardless of the character's Leadership score, he or she can't recruit a cohort of
+            // his or her level or higher."
+            var cohortFromTable = epic
+                ? LeadershipTables.LookupEpicCohortLevel(state.LeadershipScore)
+                : LeadershipTables.LookupCohortLevel(state.LeadershipScore);
+            state.MaxCohortLevel = Math.Min(cohortFromTable, state.TotalHD - 1);
+
+            state.Followers = epic
+                ? LeadershipTables.LookupEpicFollowerCounts(state.LeadershipScore)
+                : LeadershipTables.LookupFollowerCounts(state.LeadershipScore);
 
             // Re-evaluate any slot whose formula references LeadershipScore (cohort cap).
             foreach (var slot in state.CompanionSlots)
