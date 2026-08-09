@@ -266,9 +266,19 @@
         "ability": {
           "id": "bonus_feats",
           "name": "Bonus Feats",
-          "description": "At 5th level and every 5 levels after, gain a bonus feat from the list of item creation or metamagic feats."
+          "description": "At 5th, 10th, 15th and 20th level, gain a bonus feat, which must be a metamagic feat, an item creation feat, or Spell Mastery. All prerequisites, including caster level minimums, still apply."
         }
-      }
+      },
+      { "$type": "GrantFeatSlot", "restriction": "wizard_bonus" }
+    ],
+    "10": [
+      { "$type": "GrantFeatSlot", "restriction": "wizard_bonus" }
+    ],
+    "15": [
+      { "$type": "GrantFeatSlot", "restriction": "wizard_bonus" }
+    ],
+    "20": [
+      { "$type": "GrantFeatSlot", "restriction": "wizard_bonus" }
     ]
   },
   "perLevelPermabuffs": [],

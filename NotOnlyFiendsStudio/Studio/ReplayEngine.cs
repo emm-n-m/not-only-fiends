@@ -2102,10 +2102,21 @@ public class ReplayStudio
         "fighter_bonus" => feat != null
             && (feat.Type == FeatType.FighterBonus || feat.Tags.Contains(FighterBonusTag)),
         "metamagic" => feat?.Type == FeatType.Metamagic,
-        _ => false
+        // Wizard bonus feat: "a metamagic feat, an item creation feat, or Spell Mastery" — the
+        // one named exception is why this is not just the two types.
+        "wizard_bonus" => feat != null
+            && (feat.Type is FeatType.Metamagic or FeatType.ItemCreation
+                || feat.Id == SpellMasteryFeatId),
+        // A pool with exactly one member — an epic dragon's Improved Spell Capacity grants —
+        // is still a slot rather than an outright grant, because the pick carries a choice
+        // (which spell level the new slot sits at).
+        _ => feat != null
+            && restriction.StartsWith("feat:", StringComparison.Ordinal)
+            && feat.Id == restriction
     };
 
     public const string FighterBonusTag = "fighter_bonus";
+    public const string SpellMasteryFeatId = "feat:spell_mastery";
 
     private bool ValidateDynamicSelection(CharacterState state, DynamicOptionSource source, string optionId, string featureType)
     {

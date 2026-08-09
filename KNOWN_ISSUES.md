@@ -165,6 +165,41 @@ CONTENT-BUGs**, queued in priority order in [PERMABUFF_FIX_QUEUE.md](PERMABUFF_F
 12 in the private packs. Until they are worked through, treat a stat that looks wrong on a
 character sheet as a likely un-encoded description.
 
+## There is no attack or AC track outside the equipment pass
+
+`GrantTypedBonus` only reaches AC, attack and damage when it runs inside the equipment pass, so a
+class feature or feat that grants one of those has nowhere to put it. That is why `feat:dodge`,
+`feat:weapon_focus` and `feat:epic_prowess` all carry empty `grantedPermabuffs`, and why the
+loremaster's Weapon Trick (+1 attack) and Dodge Trick (+1 dodge AC) secrets, added 2026-08-09 so
+their selections stop being dropped on import, are encoded as `GrantAbility` descriptions. The
+printed AC and attack lines are short by whatever these should contribute. Fixing this needs a
+non-equipment bonus track on `CharacterState`, not more content.
+
+## Loremaster's Secret Health grants Toughness instead of +3 hit points
+
+The SRD secret is "+3 hit points"; `loremaster_secret.json` grants `feat:toughness` instead. The
+character ends up owning a feat it never took, which any `HasFeat` prerequisite will see. It is
+currently invisible because `feat:toughness` is itself a no-op (`ModifyAttribute` with `value: 0`),
+so the +3 is missing either way. `AttributeTarget.HitPoints` exists but is documented as
+post-evaluation only, so a correct fix needs a hit-point grant that survives the CON tail pass.
+
+## Epic class progression is unmodelled except for Arcane Trickster
+
+`LevelPermabuffs` is keyed by class level and every class stops at its non-epic maximum, so no
+class grants anything above 20th (or above 10th for a prestige class). Epic bonus feats, epic
+class features and the rest are simply absent. Arcane Trickster was given its epic bonus feats
+(levels 14/18/22/26/30, matching `14:REPEATLEVEL:4` in PCGen's `rsrd_classes_prestige_epic.lst`)
+on 2026-08-09 because an imported character needed them; every other epic progression is still
+missing, and the 30 cap there is arbitrary rather than a rule.
+
+## IMP.pcg spends one more feat than its own sheet allows
+
+`IMP.pcg` lists 11 feats — 9 general plus 2 from the Epic Arcane Trickster pool — but at 26 HD
+and Arcane Trickster 14 the budget is 9 general plus 1 pool feat. The .pcg's own
+`USERPOOL:Epic Arcane Trickster Feat|POOLPOINTS:0.0` agrees there is nothing left to spend, so
+the source sheet is over budget, not the engine. The import drops one feat and reports it; which
+one it drops follows list order and is arbitrary. Fix the character in PCGen, not the importer.
+
 ## Permanent events scheduled past the last tick are silently dropped
 
 `ReplayEngine` applies a `PermanentEvent` only when `BeforeTick` matches a tick index that

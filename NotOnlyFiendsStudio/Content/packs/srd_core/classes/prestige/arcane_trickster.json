@@ -126,7 +126,12 @@
         "$type": "ModifyCounter",
         "counterId": "sneak_attack_dice"
       }
-    ]
+    ],
+    "14": [{ "$type": "GrantFeatSlot", "restriction": null }],
+    "18": [{ "$type": "GrantFeatSlot", "restriction": null }],
+    "22": [{ "$type": "GrantFeatSlot", "restriction": null }],
+    "26": [{ "$type": "GrantFeatSlot", "restriction": null }],
+    "30": [{ "$type": "GrantFeatSlot", "restriction": null }]
   },
   "perLevelPermabuffs": [
     {

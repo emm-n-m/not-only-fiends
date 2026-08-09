@@ -809,22 +809,47 @@ public static class PcgConverter
         PcgClassAbilityEntry ability,
         ContentRegistry registry)
     {
-        var key = PcgIdMapper.DefaultIdTransform(ability.Key);
         var applied = string.IsNullOrWhiteSpace(ability.AppliedTo)
-            ? key
+            ? null
             : PcgIdMapper.DefaultIdTransform(ability.AppliedTo.Split(',')[0].Trim());
 
+        // A key with no tilde carries its choice in APPLIEDTO, or is itself the choice.
+        var wholeKey = PcgIdMapper.DefaultIdTransform(ability.Key);
+        var match = MatchFeatureOption(registry, wholeKey, applied ?? wholeKey);
+        if (match != null)
+            return match;
+
+        // PCGen also writes a per-level pick as a compound "parent ~ choice" key —
+        // "Loremaster Secret ~ Weapon Trick", "High Arcana ~ Arcane Fire" — where APPLIEDTO is
+        // not the choice at all (the archmage rows hold the advanced spellcasting class there).
+        // Splitting is the fallback, not the first move: content is free to name a feature with
+        // a tilde in it, as the Favored Soul pools do, and that whole-name match must win.
+        var tilde = ability.Key.IndexOf('~');
+        if (tilde < 0)
+            return null;
+
+        var parentKey = PcgIdMapper.DefaultIdTransform(ability.Key[..tilde].Trim());
+        var choice = PcgIdMapper.DefaultIdTransform(ability.Key[(tilde + 1)..].Trim());
+        return MatchFeatureOption(registry, parentKey, choice)
+            ?? (applied == null ? null : MatchFeatureOption(registry, parentKey, applied));
+    }
+
+    private static (string FeatureType, string OptionId)? MatchFeatureOption(
+        ContentRegistry registry,
+        string featureKey,
+        string optionKey)
+    {
         foreach (var feature in registry.GetAllClassFeatures())
         {
             var featureId = feature.Id[(feature.Id.IndexOf(':') + 1)..];
             var featureName = PcgIdMapper.DefaultIdTransform(feature.Name);
-            if (!string.Equals(key, featureName, StringComparison.Ordinal)
-                && !string.Equals(key, featureId, StringComparison.Ordinal))
+            if (!string.Equals(featureKey, featureName, StringComparison.Ordinal)
+                && !string.Equals(featureKey, featureId, StringComparison.Ordinal))
                 continue;
 
             var option = feature.Options.FirstOrDefault(candidate =>
-                string.Equals(candidate.Id, applied, StringComparison.Ordinal)
-                || string.Equals(PcgIdMapper.DefaultIdTransform(candidate.Name), applied, StringComparison.Ordinal));
+                string.Equals(candidate.Id, optionKey, StringComparison.Ordinal)
+                || string.Equals(PcgIdMapper.DefaultIdTransform(candidate.Name), optionKey, StringComparison.Ordinal));
             if (option != null)
                 return (feature.Id, option.Id);
         }

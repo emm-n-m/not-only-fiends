@@ -84,10 +84,8 @@ public static class PcgParser
                 ParseLevel(line, data);
             else if (line.StartsWith("SKILL:"))
                 ParseSkill(line, data);
-            else if (line.StartsWith("ABILITY:FEAT|"))
-                ParseFeat(line, data);
             else if (line.StartsWith("ABILITY:"))
-                ParseClassAbility(line, data);
+                ParseAbility(line, data);
             else if (line.StartsWith("TEMPLATESAPPLIED:"))
                 ParseTemplate(line, data);
             else if (line.StartsWith("SPELLNAME:"))
@@ -257,6 +255,27 @@ public static class PcgParser
 
             searchFrom = bracketEnd + 1;
         }
+    }
+
+    /// <summary>
+    /// Routes an ABILITY row by its CATEGORY, not by the tag that opens the line. A feat the
+    /// character chose is written as <c>ABILITY:FEAT|…</c>, but one a class handed out keeps the
+    /// granting pool in that first field — <c>ABILITY:Wizard Feat|…|CATEGORY:FEAT|KEY:Extend
+    /// Spell</c>. Both are feats and both must land in <see cref="PcgCharacterData.Feats"/>;
+    /// matching on the opening tag dropped every class bonus feat, taking with it any later feat
+    /// that named one as a prerequisite.
+    /// </summary>
+    private static void ParseAbility(string line, PcgCharacterData data)
+    {
+        var category = ParseFields(line).GetValueOrDefault("CATEGORY")
+            ?? line["ABILITY:".Length..].Split('|')[0].Trim();
+        if (category.StartsWith("CATEGORY=", StringComparison.OrdinalIgnoreCase))
+            category = category["CATEGORY=".Length..];
+
+        if (category.Equals("FEAT", StringComparison.OrdinalIgnoreCase))
+            ParseFeat(line, data);
+        else
+            ParseClassAbility(line, data);
     }
 
     private static void ParseFeat(string line, PcgCharacterData data)

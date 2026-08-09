@@ -122,13 +122,27 @@ public class PcgGoldenBuildTests
 
         AssertHitPointsFollowSourceRolls(build);
 
-        // The source sheet took Great Cleave and Improved Bull Rush without the Cleave and
-        // Power Attack prerequisites. The engine keeps the feats (the .pcg is the record of
-        // what was played) and reports the gap rather than silently dropping them.
+        // Four of this sheet's eight feats came out of the fighter bonus pool — the .pcg writes
+        // those as "ABILITY:Fighter Feat|…|CATEGORY:FEAT", a different opening tag from the
+        // four the character bought with its general slots. Both kinds are feats, and Cleave
+        // and Power Attack are the prerequisites for two of the general picks, so a build that
+        // reads only one kind reports prerequisite failures the source sheet does not have.
+        var bonusPoolFeats = File
+            .ReadAllLines(TestContentHelper.PcgFixture("High Priestess's Bodyguard.pcg"))
+            .Where(line => line.StartsWith("ABILITY:Fighter Feat|", StringComparison.Ordinal))
+            .Select(line => line.Split('|').First(field => field.StartsWith("KEY:", StringComparison.Ordinal))["KEY:".Length..])
+            // Weapon Focus and Weapon Specialization encode their chosen weapon into the id,
+            // so match on the base id rather than on equality.
+            .Select(key => new PcgIdMapper().MapFeat(key))
+            .ToList();
+        Assert.Equal(4, bonusPoolFeats.Count);
+        Assert.All(bonusPoolFeats, featId =>
+            Assert.Contains(state.Feats, granted => granted.StartsWith(featId, StringComparison.Ordinal)));
+        Assert.Contains("feat:cleave", state.Feats);
+        Assert.Contains("feat:power_attack", state.Feats);
         Assert.Contains("feat:great_cleave", state.Feats);
         Assert.Contains("feat:improved_bull_rush", state.Feats);
-        Assert.Equal(2, state.Warnings.Count);
-        Assert.All(state.Warnings, w => Assert.Contains("prerequisite not met for feat", w.Message));
+        Assert.Empty(state.Warnings);
     }
 
     // ---------------------------------------------------------------
