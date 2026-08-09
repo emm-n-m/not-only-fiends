@@ -114,7 +114,7 @@ public sealed class CharacterIdentityTests : IDisposable
 
         var result = Build(master);
 
-        Assert.Equal(companionId, "umbriel_the_shadow");
+        Assert.Equal("umbriel_the_shadow", companionId);
         Assert.Single(result.Companions);
         Assert.DoesNotContain(result.MasterState.Warnings,
             warning => warning.Message.Contains("references missing companion"));

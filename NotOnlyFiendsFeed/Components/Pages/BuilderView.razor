@@ -179,8 +179,11 @@ else
     var importedLanguagePicks = ImportedBonusLanguages();
     var languagePicksUsed = LanguagePicksUsed();
 
+    var grantedLanguageSlots = GrantedLanguageSlots();
+
     @if ((raceForLanguages is not null && (raceForLanguages.AutomaticLanguages.Count > 0 || offeredLanguages.Count > 0))
-        || _character.SourceLanguageIds.Count > 0)
+        || _character.SourceLanguageIds.Count > 0
+        || grantedLanguageSlots > 0)
     {
         <div class="card mb-3">
             <div class="card-header">
@@ -215,6 +218,37 @@ else
                             ? "none are credited against the bonus picks below"
                             : $"the first {importedLanguagePicks.Count} the race offers are credited against the bonus picks below") —
                         the character already speaks all of them either way.
+                    </div>
+                }
+                @if (grantedLanguageSlots > 0)
+                {
+                    <div class="mb-2 border-top pt-2">
+                        <strong class="small">Granted:</strong>
+                        <span class="float-end small text-muted">
+                            @_character.GrantedLanguageIds.Count / @grantedLanguageSlots granted slot(s) used
+                        </span>
+                        @foreach (var source in GrantedLanguageSources())
+                        {
+                            <div class="form-text">@source</div>
+                        }
+                        <div class="d-flex flex-wrap gap-3 mt-1">
+                            @foreach (var language in OfferedGrantedLanguages())
+                            {
+                                var takenByGrant = _character.GrantedLanguageIds.Contains(language.Id);
+                                var grantAtLimit = !takenByGrant
+                                    && _character.GrantedLanguageIds.Count >= grantedLanguageSlots;
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                           id="@($"granted-lang-{language.Id}")"
+                                           checked="@takenByGrant" disabled="@grantAtLimit"
+                                           @onchange="() => ToggleGrantedLanguage(language.Id)" />
+                                    <label class="form-check-label @(grantAtLimit ? "text-muted" : "")"
+                                           for="@($"granted-lang-{language.Id}")" title="@language.Description">
+                                        @language.Name
+                                    </label>
+                                </div>
+                            }
+                        </div>
                     </div>
                 }
                 @if (languageAllowance == 0)
@@ -855,7 +889,7 @@ else
                                                     @foreach (var (lvl, spellId) in slots)
                                                     {
                                                         var domainSpell = _spells.FirstOrDefault(s => s.Id == spellId);
-                                                        <li title="@(domainSpell?.Description ?? "")">
+                                                        <li title="@(domainSpell == null ? spellId : SpellTooltip(domainSpell))">
                                                             Level @lvl: <strong>@(domainSpell?.Name ?? spellId)</strong>
                                                         </li>
                                                     }
@@ -873,7 +907,7 @@ else
                                                 {
                                                     var sel = selection;
                                                     var spellDef = _spells.FirstOrDefault(s => s.Id == sel.SpellId);
-                                                    <span class="badge bg-secondary" title="@(spellDef?.Description ?? sel.SpellId)">@FormatSpellSelection(sel) <button class="btn-close btn-close-white btn-sm" @onclick="() => RemoveSpellSelection(index, sel)"></button></span>
+                                                    <span class="badge bg-secondary" title="@(spellDef == null ? sel.SpellId : SpellTooltip(spellDef))">@FormatSpellSelection(sel) <button class="btn-close btn-close-white btn-sm" @onclick="() => RemoveSpellSelection(index, sel)"></button></span>
                                                 }
                                             </div>
                                         </div>
@@ -911,7 +945,7 @@ else
                                                             {
                                                                 var capturedPrepared = prepared;
                                                                 var preparedDef = _spells.FirstOrDefault(spell => spell.Id == prepared.SpellId);
-                                                                <span class="badge bg-secondary ms-1" title="@(preparedDef?.Description ?? prepared.SpellId)">
+                                                                <span class="badge bg-secondary ms-1" title="@(preparedDef == null ? prepared.SpellId : SpellTooltip(preparedDef))">
                                                                     @(preparedDef?.Name ?? prepared.SpellId)
                                                                     <button class="btn-close btn-close-white btn-sm" @onclick="() => RemovePreparedSpellSelection(capturedPrepared)"></button>
                                                                 </span>
@@ -1398,7 +1432,7 @@ else
                                 <h5>Spell-Like Abilities</h5>
                                 @foreach (var sla in _state.SLAs)
                                 {
-                                    <span class="badge bg-primary me-1" title="@(sla.Description ?? "")">@sla.Name@(sla.UsesPerDay != null ? $" ({sla.UsesPerDay}/day)" : "")</span>
+                                    <span class="badge bg-primary me-1" title="@SlaTooltip(sla)">@sla.Name@(sla.UsesPerDay != null ? $" ({sla.UsesPerDay}/day)" : "")</span>
                                 }
                             </div>
                         }

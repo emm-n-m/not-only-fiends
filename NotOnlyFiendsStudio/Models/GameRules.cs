@@ -56,6 +56,36 @@ public class GameRules
         _ => 0
     };
 
+    /// <summary>
+    /// The Hide skill's own size table, which is four times the AC/attack one and applies only to
+    /// Hide. SRD: "A creature larger or smaller than Medium takes a size bonus or penalty on Hide
+    /// checks depending on its size category: Fine +16, Diminutive +12, Tiny +8, Small +4,
+    /// Large –4, Huge –8, Gargantuan –12, Colossal –16."
+    /// </summary>
+    public Func<Size, int> CalculateHideSizeModifier { get; init; } = size => size switch
+    {
+        Size.Fine => 16,
+        Size.Diminutive => 12,
+        Size.Tiny => 8,
+        Size.Small => 4,
+        Size.Medium => 0,
+        Size.Large => -4,
+        Size.Huge => -8,
+        Size.Gargantuan => -12,
+        Size.Colossal or Size.ColossalPlus => -16,
+        _ => 0
+    };
+
+    /// <summary>
+    /// Skills that take a size modifier, and the table each uses. Only Hide does in the SRD; it is
+    /// keyed here rather than hard-coded at the totalling site so a variant ruleset can change it.
+    /// </summary>
+    public IReadOnlyDictionary<string, Func<GameRules, Size, int>> SkillSizeModifiers { get; init; } =
+        new Dictionary<string, Func<GameRules, Size, int>>(StringComparer.Ordinal)
+        {
+            ["skill:hide"] = (rules, size) => rules.CalculateHideSizeModifier(size),
+        };
+
     public static GameRules Standard35e() => new();
 
     public bool GrantsStandardFeat(int totalHD) => StandardFeatHDs.Contains(totalHD);

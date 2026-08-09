@@ -132,7 +132,7 @@ public class CompanionResolver
 
             var companionState = _engine.Evaluate(companion);
             if (IsFamiliarLinkType(link.LinkType))
-                ApplyFamiliarMasterStats(result.MasterState, companionState);
+                ApplyFamiliarMasterStats(result.MasterState, companionState, _engine);
 
             result.Companions.Add(new CompanionBuild
             {
@@ -185,7 +185,39 @@ public class CompanionResolver
     private static bool IsFamiliarLinkType(string linkType) =>
         linkType is "familiar" or "improved_familiar";
 
-    private static void ApplyFamiliarMasterStats(CharacterState master, CharacterState familiar)
+    /// <summary>
+    /// SRD familiar skills: "For each skill in which either the master or the familiar has ranks,
+    /// use either the normal skill ranks for an animal of that type or the master's skill ranks,
+    /// whichever are better. In either case, the familiar uses its own ability modifiers."
+    ///
+    /// So this is a per-skill maximum, not a replacement — the familiar keeps any skill where its
+    /// own ranks are higher, which is what it would use if dismissed. Ranks borrowed this way are
+    /// not bought, so they deliberately ignore the familiar's own max-ranks cap and skill points.
+    /// Totals are then recomputed, which is where "its own ability modifiers" applies: a toad
+    /// borrowing a sorcerer's Hide ranks still adds the toad's Dexterity.
+    /// </summary>
+    private static void ApplyFamiliarMasterSkills(
+        CharacterState master,
+        CharacterState familiar,
+        ReplayStudio engine)
+    {
+        var touched = false;
+        foreach (var (skillId, masterHalfRanks) in master.SkillHalfRanks)
+        {
+            if (masterHalfRanks <= familiar.SkillHalfRanks.GetValueOrDefault(skillId))
+                continue;
+            familiar.SkillHalfRanks[skillId] = masterHalfRanks;
+            touched = true;
+        }
+
+        if (touched)
+            engine.RecomputeSkillTotals(familiar);
+    }
+
+    private static void ApplyFamiliarMasterStats(
+        CharacterState master,
+        CharacterState familiar,
+        ReplayStudio engine)
     {
         // PCGen's standard familiar modifier mirrors the 3.5e familiar rules:
         // COPYMASTERBAB:MASTER, COPYMASTERCHECK:MASTER, and
@@ -207,6 +239,33 @@ public class CompanionResolver
             Will = master.ProgressionBaseSaves.Will + ownWillBonus
         };
         familiar.EpicSaveBonus = 0;
+
+        ApplyFamiliarMasterSkills(master, familiar, engine);
+        ApplyFamiliarSpecialToMaster(master, familiar, engine);
+    }
+
+    /// <summary>
+    /// The SRD "Familiar Special" column, where the benefit runs from familiar to master: a toad
+    /// gives +3 hit points, a rat +2 on Fortitude saves, a cat +3 on Move Silently. Applied to the
+    /// master's finished state, because that is what the bonus modifies — nothing about it belongs
+    /// to a tick. Only fires for an actual familiar binding, so a druid's animal companion of the
+    /// same species grants its master nothing.
+    /// </summary>
+    private static void ApplyFamiliarSpecialToMaster(
+        CharacterState master,
+        CharacterState familiar,
+        ReplayStudio engine)
+    {
+        var race = engine.FindRace(familiar.RaceId);
+        if (race == null || race.FamiliarMasterPermabuffs.Count == 0)
+            return;
+
+        foreach (var buff in race.FamiliarMasterPermabuffs)
+            engine.ApplyToFinishedState(master, buff);
+
+        // A granted skill bonus lands in SkillBonuses, which the master's totals were computed
+        // from before this ran.
+        engine.RecomputeSkillTotals(master);
     }
 }
 

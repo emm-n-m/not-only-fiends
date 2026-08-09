@@ -174,6 +174,15 @@ public class CharacterState
     public Dictionary<string, int> Counters { get; set; } = new();
     public List<SLA> SLAs { get; set; } = new();
     public List<SpecialAttack> SpecialAttacks { get; set; } = new();
+    /// <summary>
+    /// Language picks granted outright rather than bought from the starting-Intelligence budget.
+    /// Spent by <c>Character.GrantedLanguageIds</c>.
+    /// </summary>
+    public int GrantedLanguageSlots { get; set; }
+
+    /// <summary>What granted those slots, for the builder to label the picker with.</summary>
+    public List<string> GrantedLanguageSources { get; set; } = new();
+
     public HashSet<string> Immunities { get; set; } = new();
     public HashSet<string> Capabilities { get; set; } = new();
     public Dictionary<string, int> Resistances { get; set; } = new();

@@ -42,9 +42,50 @@
           "name": "Scent",
           "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:balance",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:climb",
+        "value": 4
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:hide",
+        "value": 4
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:jump",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
+        "value": 4
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:balance",
+      "skill:climb",
+      "skill:hide",
+      "skill:jump",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:spot"
+    ],
+    "familiarMasterPermabuffs": [
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
+        "value": 3
+      }
+    ]
   },
   {
     "id": "race:familiar_lizard",
@@ -77,9 +118,33 @@
           "name": "Low-Light Vision",
           "description": "Can see twice as far as a human in dim light."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:balance",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:climb",
+        "value": 8
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:balance",
+      "skill:climb",
+      "skill:hide",
+      "skill:listen",
+      "skill:spot"
+    ],
+    "familiarMasterPermabuffs": [
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:climb",
+        "value": 3
+      }
+    ]
   },
   {
     "id": "race:familiar_owl",
@@ -120,11 +185,21 @@
       },
       {
         "$type": "GrantSkillBonus",
-        "skillId": "skill:spot",
+        "skillId": "skill:listen",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
         "value": 14
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:move_silently",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:familiar_rat",
@@ -166,9 +241,51 @@
           "name": "Scent",
           "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:balance",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:climb",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:hide",
+        "value": 4
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
+        "value": 4
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:swim",
+        "value": 8
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:balance",
+      "skill:climb",
+      "skill:hide",
+      "skill:move_silently",
+      "skill:swim"
+    ],
+    "familiarMasterPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "SaveFort",
+        "bonusType": "untyped",
+        "value": {
+          "expression": "2"
+        }
+      }
+    ]
   },
   {
     "id": "race:familiar_toad",
@@ -208,9 +325,26 @@
           "name": "Amphibious",
           "description": "Breathes both air and water."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:hide",
+        "value": 4
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:hide",
+      "skill:listen",
+      "skill:spot"
+    ],
+    "familiarMasterPermabuffs": [
+      {
+        "$type": "ModifyAttribute",
+        "target": "hitPoints",
+        "value": 3
+      }
+    ]
   },
   {
     "id": "race:familiar_weasel",
@@ -259,8 +393,40 @@
           "name": "Attach",
           "description": "On a successful bite, latches on automatically (no separate grapple check required)."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:balance",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:climb",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
+        "value": 4
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:balance",
+      "skill:climb",
+      "skill:hide",
+      "skill:move_silently",
+      "skill:spot"
+    ],
+    "familiarMasterPermabuffs": [
+      {
+        "$type": "GrantTypedBonus",
+        "target": "SaveRef",
+        "bonusType": "untyped",
+        "value": {
+          "expression": "2"
+        }
+      }
+    ]
   }
 ]

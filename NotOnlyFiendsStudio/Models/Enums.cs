@@ -92,7 +92,13 @@ public enum AttributeTarget
     LevelAdjustment,
     Resistance,
     AbilityScore,
-    AllSaves
+    AllSaves,
+    /// <summary>
+    /// Flat hit points. Only meaningful after the hit-point tail pass has run, so it is for
+    /// post-evaluation grants such as a toad familiar's +3 to its master — not for tick content,
+    /// where a Constitution change would retroactively overwrite it.
+    /// </summary>
+    HitPoints
 }
 
 // 3.5e bonus-type taxonomy. Stacking rule: Dodge and Untyped stack with everything

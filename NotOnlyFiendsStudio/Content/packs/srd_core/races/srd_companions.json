@@ -42,11 +42,26 @@
         "ability": {
           "id": "snake_poison_tiny",
           "name": "Poison",
-          "description": "Bite \u2014 Fort DC 10; 1d6 Con/1d6 Con."
+          "description": "Bite — Fort DC 10; 1d6 Con/1d6 Con."
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:balance",
+      "skill:climb",
+      "skill:hide",
+      "skill:listen",
+      "skill:spot",
+      "skill:swim"
+    ],
+    "familiarMasterPermabuffs": [
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:bluff",
+        "value": 3
+      }
+    ]
   },
   {
     "id": "race:companion_snake_viper_medium",
@@ -91,7 +106,7 @@
         "ability": {
           "id": "snake_poison_medium",
           "name": "Poison",
-          "description": "Bite \u2014 Fort DC 11; 1d6 Con/1d6 Con."
+          "description": "Bite — Fort DC 11; 1d6 Con/1d6 Con."
         }
       }
     ],
@@ -141,7 +156,7 @@
         "ability": {
           "id": "snake_poison_large",
           "name": "Poison",
-          "description": "Bite \u2014 Fort DC 11; 1d6 Con/1d6 Con."
+          "description": "Bite — Fort DC 11; 1d6 Con/1d6 Con."
         }
       }
     ],
@@ -150,7 +165,7 @@
   {
     "id": "race:companion_raven",
     "name": "Raven",
-    "description": "Tiny flying animal companion with low-light vision, often used as a familiar.",
+    "description": "Tiny flying animal companion with low-light vision, often used as a familiar. A raven familiar can speak one language of its master's choice.",
     "type": "animal",
     "subtypes": [],
     "size": "tiny",
@@ -178,9 +193,25 @@
           "name": "Low-Light Vision",
           "description": "Can see twice as far as a human in dim light."
         }
+      },
+      {
+        "$type": "GrantLanguageSlot",
+        "count": 1,
+        "source": "Raven familiar — speaks one language of its master's choice"
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot"
+    ],
+    "familiarMasterPermabuffs": [
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:appraise",
+        "value": 3
+      }
+    ]
   },
   {
     "id": "race:companion_leopard",
@@ -291,9 +322,18 @@
           "name": "Low-Light Vision",
           "description": "Can see twice as far as a human in dim light."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:spot",
+        "value": 8
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_bat",
@@ -334,9 +374,32 @@
           "name": "Low-Light Vision",
           "description": "Can see twice as far as a human in dim light."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:listen",
+        "value": 4
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:spot",
+        "value": 4
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:hide",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:spot"
+    ],
+    "familiarMasterPermabuffs": [
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:listen",
+        "value": 3
+      }
+    ]
   },
   {
     "id": "race:companion_devil_imp",
@@ -418,7 +481,7 @@
         "ability": {
           "id": "imp_poison",
           "name": "Poison",
-          "description": "Sting \u2014 Fort DC 13; 1d4 Dex/2d4 Dex."
+          "description": "Sting — Fort DC 13; 1d4 Dex/2d4 Dex."
         }
       },
       {
@@ -774,7 +837,7 @@
         "ability": {
           "id": "imp_poison",
           "name": "Poison",
-          "description": "Sting \u2014 Fort DC 13; 1d4 Dex/2d4 Dex."
+          "description": "Sting — Fort DC 13; 1d4 Dex/2d4 Dex."
         }
       },
       {
@@ -1044,7 +1107,7 @@
         "ability": {
           "id": "medusa_poison",
           "name": "Poison",
-          "description": "Snake hair \u2014 Fort DC 14; 1d6 Str/2d6 Str."
+          "description": "Snake hair — Fort DC 14; 1d6 Str/2d6 Str."
         }
       }
     ],

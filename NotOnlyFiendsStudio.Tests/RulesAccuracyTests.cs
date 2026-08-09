@@ -42,6 +42,130 @@ public class RulesAccuracyTests
         Assert.Contains("fire", sheet.Immunities);
     }
 
+    // ---- familiar / companion animal skills ----
+
+    /// <summary>
+    /// An animal's class skills are the ones named in its own statblock — the Animal type grants no
+    /// list of its own. Without them every rank an animal buys is cross-class at double cost, which
+    /// made a legally-built 1-HD familiar report "spent 4 more skill points than available".
+    ///
+    /// SRD toad: "Skills: Hide +21, Listen +4, Spot +4" and "A toad's coloration gives it a +4
+    /// racial bonus on Hide checks."
+    /// </summary>
+    [Fact]
+    public void ToadFamiliar_HasItsStatblockSkillsAsClassSkillsAndItsRacialHideBonus()
+    {
+        var character = new Character
+        {
+            Name = "Toad",
+            RaceId = "race:familiar_toad",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new()
+            {
+                new Tick
+                {
+                    DriverId = "racial_hd:animal",
+                    Choices = new TickChoices
+                    {
+                        // 4 ranks of Hide — exactly what a 1-HD animal can afford at class-skill
+                        // cost, and double that cross-class.
+                        SkillAllocations = new List<SkillAllocation>
+                        {
+                            new() { SkillId = "skill:hide", HalfRanks = 8 }
+                        }
+                    }
+                }
+            }
+        };
+
+        var state = Evaluate(character);
+
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("more skill points than available"));
+        Assert.Equal(4, state.SkillBonuses["skill:hide"]);
+
+        // 4 ranks + the toad's own Dexterity + racial +4 + Diminutive's +12 Hide size bonus.
+        // Cross-check against the SRD's printed toad, Hide +21: it has Dex 12 (+1), so
+        // 4 + 1 + 4 + 12 = 21 exactly.
+        Assert.Equal(Size.Diminutive, state.Size);
+        var dexMod = AbilityScoreSet.Modifier(state.AbilityScores.DEX);
+        Assert.Equal(4 + dexMod + 4 + 12, state.SkillTotals["skill:hide"]);
+    }
+
+    /// <summary>
+    /// SRD Hide: "A creature larger or smaller than Medium takes a size bonus or penalty on Hide
+    /// checks depending on its size category: Fine +16, Diminutive +12, Tiny +8, Small +4,
+    /// Large –4, Huge –8, Gargantuan –12, Colossal –16." Four times the AC/attack table, and it
+    /// applies to Hide alone.
+    /// </summary>
+    [Theory]
+    [InlineData(Size.Fine, 16)]
+    [InlineData(Size.Diminutive, 12)]
+    [InlineData(Size.Tiny, 8)]
+    [InlineData(Size.Small, 4)]
+    [InlineData(Size.Medium, 0)]
+    [InlineData(Size.Large, -4)]
+    [InlineData(Size.Huge, -8)]
+    [InlineData(Size.Gargantuan, -12)]
+    [InlineData(Size.Colossal, -16)]
+    public void HideTakesItsOwnSizeModifier_NotTheAcAndAttackOne(Size size, int expected)
+    {
+        var rules = GameRules.Standard35e();
+
+        // The AC/attack table runs 8/4/2/1/0/-1/-2/-4/-8 — it coincides with a quarter of this one
+        // through the middle of the range but not at either end, so Hide needs its own table.
+        Assert.Equal(expected, rules.CalculateHideSizeModifier(size));
+    }
+
+    /// <summary>The size modifier applies to Hide only — Move Silently and Spot take none.</summary>
+    [Fact]
+    public void OtherSkillsTakeNoSizeModifier()
+    {
+        var state = Evaluate(new Character
+        {
+            Name = "Toad",
+            RaceId = "race:familiar_toad",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new()
+            {
+                new Tick
+                {
+                    DriverId = "racial_hd:animal",
+                    Choices = new TickChoices
+                    {
+                        SkillAllocations = new List<SkillAllocation>
+                        {
+                            new() { SkillId = "skill:spot", HalfRanks = 4 }
+                        }
+                    }
+                }
+            }
+        });
+
+        var wisMod = AbilityScoreSet.Modifier(state.AbilityScores.WIS);
+        Assert.Equal(2 + wisMod, state.SkillTotals["skill:spot"]);
+    }
+
+    /// <summary>
+    /// The same omission affected every animal familiar, not just the toad. SRD hawk:
+    /// "Hawks have a +8 racial bonus on Spot checks."
+    /// </summary>
+    [Fact]
+    public void HawkCompanion_HasItsRacialSpotBonus()
+    {
+        var state = Evaluate(new Character
+        {
+            Name = "Hawk",
+            RaceId = "race:companion_hawk",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = "racial_hd:animal" } }
+        });
+
+        Assert.Equal(8, state.SkillBonuses["skill:spot"]);
+    }
+
     // ---- ability-modifier save bonuses (Divine Grace / Dark Blessing) ----
 
     /// <summary>

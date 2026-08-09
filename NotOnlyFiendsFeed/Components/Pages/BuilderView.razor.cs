@@ -730,6 +730,38 @@ public partial class BuilderView
         return imported.Count + _character.BonusLanguageIds.Count(id => !imported.Contains(id));
     }
 
+    /// Language slots granted outright (a raven familiar's speech), and what granted them.
+    private int GrantedLanguageSlots() => _state?.GrantedLanguageSlots ?? 0;
+
+    private List<string> GrantedLanguageSources() =>
+        _state?.GrantedLanguageSources ?? new List<string>();
+
+    /// <summary>
+    /// A granted slot is "one language of its master's choice", so it is not restricted to the
+    /// race's bonus-language list the way an Intelligence pick is — only secret languages are off
+    /// the table, and anything already known would waste the slot.
+    /// </summary>
+    private List<LanguageDefinition> OfferedGrantedLanguages()
+    {
+        var automatic = (SelectedRace()?.AutomaticLanguages ?? new List<string>())
+            .ToHashSet(StringComparer.Ordinal);
+        return _languages
+            .Where(language => !language.IsSecret && !automatic.Contains(language.Id))
+            .OrderBy(language => language.Name, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private void ToggleGrantedLanguage(string languageId)
+    {
+        if (!_character.GrantedLanguageIds.Remove(languageId))
+        {
+            if (_character.GrantedLanguageIds.Count >= GrantedLanguageSlots())
+                return;
+            _character.GrantedLanguageIds.Add(languageId);
+        }
+        OnCharacterChanged();
+    }
+
     private void ToggleBonusLanguage(string languageId)
     {
         if (!_character.BonusLanguageIds.Remove(languageId))
@@ -1090,15 +1122,14 @@ public partial class BuilderView
         return $"{listId} {selection.SpellLevel}th: {selection.SpellId}";
     }
 
-    private static string SpellTooltip(SpellDefinition spell)
-    {
-        var school = string.IsNullOrEmpty(spell.Subschool)
-            ? spell.School
-            : $"{spell.School} ({spell.Subschool})";
-        var descriptors = spell.Descriptors.Any() ? $" [{string.Join(", ", spell.Descriptors)}]" : string.Empty;
-        var rules = $"{school}{descriptors}. {spell.CastingTime}; {spell.Range}; {spell.Duration}. Save: {spell.SavingThrow}. SR: {spell.SpellResistance}.";
-        return string.IsNullOrWhiteSpace(spell.Description) ? rules : $"{rules} {spell.Description}";
-    }
+    private static string SpellTooltip(SpellDefinition spell) => Tooltips.ForSpell(spell);
+
+    private string SpellTooltip(string spellId) =>
+        Content.Registry.TryGetSpell(spellId, out var spell) && spell != null
+            ? Tooltips.ForSpell(spell)
+            : spellId;
+
+    private string SlaTooltip(SLA sla) => Tooltips.ForSla(sla, Content.Registry);
 
     private List<FeatDefinition> GetTickFeats(int index) =>
         _tickAvailableFeats.TryGetValue(index, out var feats) ? feats : _feats;

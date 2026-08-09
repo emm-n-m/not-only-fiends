@@ -10,9 +10,10 @@ pattern is corpus-wide and unaudited: a sweep for `"description"` strings contai
 "resistance", "bonus to" and similar wording finds many more candidates, mostly in the private
 packs' spells and class features.
 
-A `verify-content` style audit that diffs each `GrantAbility` description against the permabuffs
-beside it would enumerate the rest. Until then, treat a stat that looks wrong on a character
-sheet as a likely un-encoded description.
+Enumerated on 2026-08-09 by the `audit-cosmetic-permabuffs` skill: **138 public-pack
+CONTENT-BUGs**, queued in priority order in [PERMABUFF_FIX_QUEUE.md](PERMABUFF_FIX_QUEUE.md), plus
+12 in the private packs. Until they are worked through, treat a stat that looks wrong on a
+character sheet as a likely un-encoded description.
 
 ## Permanent events scheduled past the last tick are silently dropped
 

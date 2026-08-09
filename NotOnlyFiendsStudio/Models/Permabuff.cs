@@ -41,6 +41,7 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(GrantArmorProfile), "GrantArmorProfile")]
 [JsonDerivedType(typeof(GrantWeaponLine), "GrantWeaponLine")]
 [JsonDerivedType(typeof(GrantLanguage), "GrantLanguage")]
+[JsonDerivedType(typeof(GrantLanguageSlot), "GrantLanguageSlot")]
 [JsonDerivedType(typeof(GrantMovement), "GrantMovement")]
 public abstract class Permabuff
 {
@@ -222,6 +223,27 @@ public class GrantLanguage : Permabuff
     public string LanguageId { get; set; } = string.Empty;
 
     public override void Apply(PermabuffContext ctx) => ctx.State.Languages.Add(LanguageId);
+}
+
+/// <summary>
+/// Grants the right to know a language without saying which — "a raven familiar can speak one
+/// language of its master's choice". Distinct from <see cref="GrantLanguage"/>, which names the
+/// language, and from the starting-Intelligence budget, which a creature with Int 2 cannot draw
+/// on at all. The pick itself lives in <c>Character.GrantedLanguageIds</c>.
+/// </summary>
+public class GrantLanguageSlot : Permabuff
+{
+    public int Count { get; set; } = 1;
+
+    /// <summary>Why the slot exists, for the builder to label the picker with.</summary>
+    public string? Source { get; set; }
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        ctx.State.GrantedLanguageSlots += Count;
+        if (!string.IsNullOrWhiteSpace(Source))
+            ctx.State.GrantedLanguageSources.Add(Source!);
+    }
 }
 
 public class GrantMovement : Permabuff
@@ -415,6 +437,9 @@ public class ModifyAttribute : Permabuff
                 state.BaseSaves.Fort += Value;
                 state.BaseSaves.Ref += Value;
                 state.BaseSaves.Will += Value;
+                break;
+            case AttributeTarget.HitPoints:
+                state.HP += Value;
                 break;
         }
     }

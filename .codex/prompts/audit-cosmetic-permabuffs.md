@@ -67,7 +67,7 @@ PY
 Expect 310 lines: 251 tagged `public`, 59 tagged `private`. If you get 251, `.env` was not read
 and you are missing the private packs — stop and fix that before continuing.
 
-Then run this second sweep, for equipment that describes a benefit but grants nothing:
+Then run this second sweep, for anything that describes a benefit but grants nothing:
 
 ```bash
 python3 - <<'PY'
@@ -83,6 +83,38 @@ for f in sorted(glob.glob('NotOnlyFiendsStudio/Content/**/*.json',recursive=True
                 print(f"{os.path.basename(f)}\t{item.get('id')}\t{(item.get('description') or '')[:160]}")
 PY
 ```
+
+Finally, a third sweep. The two above only see things that *say* something; content with an
+empty `grantedPermabuffs` and **no description at all** is invisible to both, and 284 objects are
+in that state — mostly epic feats. `feat:epic_leadership` is the worked example: it grants nothing
+and says nothing, yet the SRD gives it "Multiply the number of followers of each level that the
+character can lead by 10."
+
+```bash
+python3 - <<'PY'
+import json,glob,os
+env=dict(l.strip().split('=',1) for l in open('.env') if '=' in l and not l.startswith('#'))
+for tag,root in [('public','NotOnlyFiendsStudio/Content'),('private',env.get('EXTRA_PACKS_PATH'))]:
+    if not root: continue
+    for f in sorted(glob.glob(root+'/**/*.json',recursive=True)):
+        try: d=json.load(open(f,encoding='utf-8-sig'))
+        except Exception: continue
+        stack=[d]
+        while stack:
+            o=stack.pop()
+            if isinstance(o,dict):
+                if ('grantedPermabuffs' in o and not o['grantedPermabuffs']
+                        and not (o.get('description') or '').strip() and o.get('id')):
+                    print(f"{tag}\t{os.path.relpath(f,root)}\t{o['id']}\t{o.get('name','')}")
+                stack.extend(o.values())
+            elif isinstance(o,list): stack.extend(o)
+PY
+```
+
+These have no description to compare against, so "compare only with adjacent JSON" cannot decide
+them. Do **not** guess from the name. List them under a separate **NO-DESCRIPTION** heading,
+grouped by file, with a count — they are a work-list for a human or for `verify-content`, which
+does have an authoritative source. Nothing else in this audit changes.
 
 ## Step 2 — process candidates in batches of 20
 
@@ -136,6 +168,23 @@ is the complete set. If it is still not there, the verdict is ENGINE-GAP.
 
 The description is a permanent self-affecting mechanic, but no permabuff can express it.
 
+**Name the specific missing capability, in the form "needs X on Y".** Required level of detail:
+
+- "needs a multiplier on `CharacterState.FollowerCounts`; `ModifyLeadershipScore` changes the
+  score, not the counts it produces"
+- "needs a conditional bonus applying only in shadowy illumination; the engine has no situational
+  modifiers at all"
+
+A generic rationale is a failed finding. **Do not reuse the same sentence across entries** — if
+more than three of your ENGINE-GAP entries share a rationale, you have not looked at them
+individually and should go back and do so. Naming what is missing is the entire value of this
+verdict; without it the reader has to redo the analysis.
+
+Before filing one, **check the capability is really absent**: search the `[JsonDerivedType]` list
+in `Permabuff.cs` *and* grep `CharacterState.cs` for a field that already models it. Wizard
+specialisation looks like a gap and is not — `SpecialtyBonusSlots` and `WizardSchools` already
+implement it, so it is BY-DESIGN. Anything already implemented elsewhere is BY-DESIGN.
+
 One specific case to watch for. `GrantTypedBonus` evaluates its formula **once**, at the moment it
 is applied. So a bonus keyed to an ability score that keeps changing (level-up increases, tomes,
 worn items land later) **cannot** be a `GrantTypedBonus`. It needs a rule the engine re-evaluates
@@ -164,7 +213,8 @@ Group by verdict, then by pack. Use this shape per finding:
   ```
 ```
 
-End the report with a count table: CONTENT-BUG / ENGINE-GAP / BY-DESIGN, split public vs private.
+End the report with a count table: CONTENT-BUG / ENGINE-GAP / BY-DESIGN / NO-DESCRIPTION, split
+public vs private.
 
 ## Rules for the report
 

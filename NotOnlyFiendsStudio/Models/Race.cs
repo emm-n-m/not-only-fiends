@@ -66,6 +66,16 @@ public class RaceDefinition
     // Flat abilities applied at creation
     public List<Permabuff> RacialPermabuffs { get; set; } = new();
 
+    /// <summary>
+    /// Permabuffs applied to the <b>master</b> when a creature of this race is bound as a familiar
+    /// — the SRD's "Familiar Special" column, where the benefit runs the other way (a toad familiar
+    /// gives its master +3 hit points, a rat +2 on Fortitude saves). Ignored unless the creature is
+    /// actually linked as a familiar, so an unbound animal of the same race grants nothing.
+    /// Conditional entries — the hawk's Spot in bright light, the owl's in shadows — are absent:
+    /// the engine has no representation for a situational bonus.
+    /// </summary>
+    public List<Permabuff> FamiliarMasterPermabuffs { get; set; } = new();
+
     // Formula-based abilities that scale with total HD
     public List<ScalingFormula> ScalingFormulas { get; set; } = new();
 

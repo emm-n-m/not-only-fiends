@@ -850,6 +850,214 @@ public class CompanionTests
         Assert.Contains(result.MasterState.Warnings, w => w.Message.Contains("missing companion"));
     }
 
+    /// <summary>
+    /// SRD wizard.html, Familiar Special: "Toad — Master gains +3 hit points" and
+    /// "Rat — Master gains a +2 bonus on Fortitude saves". The benefit runs from familiar to
+    /// master, which nothing in the engine did before.
+    /// </summary>
+    [Fact]
+    public void CompanionResolver_Familiar_GrantsItsSpecialAbilityToTheMaster()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        Character Master(string companionId) => new()
+        {
+            Name = "Master",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 12, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick>
+            {
+                new() { DriverId = "class:wizard", Choices = new TickChoices { HitPointsRolled = 4 } }
+            },
+            CompanionLinks = new List<CompanionLink>
+            {
+                new()
+                {
+                    LinkType = "familiar",
+                    CompanionId = companionId,
+                    EffectiveLevelFormula = new Formula("ClassLevel(wizard)")
+                }
+            }
+        };
+
+        Character Animal(string raceId) => new()
+        {
+            Name = raceId,
+            RaceId = raceId,
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick> { new() { DriverId = "racial_hd:animal" } }
+        };
+
+        var unbound = engine.Evaluate(Master("none"));
+
+        var withToad = new CompanionResolver(engine, _ => Animal("race:familiar_toad"))
+            .Build(Master("toad")).MasterState;
+        Assert.Equal(unbound.HP + 3, withToad.HP);
+
+        var withRat = new CompanionResolver(engine, _ => Animal("race:familiar_rat"))
+            .Build(Master("rat")).MasterState;
+        Assert.Equal(unbound.EffectiveSaves.Fort + 2, withRat.EffectiveSaves.Fort);
+        Assert.Equal(unbound.EffectiveSaves.Ref, withRat.EffectiveSaves.Ref);
+
+        var withCat = new CompanionResolver(engine, _ => Animal("race:familiar_cat"))
+            .Build(Master("cat")).MasterState;
+        Assert.Equal(3, withCat.SkillBonuses["skill:move_silently"]);
+        Assert.Equal(3, withCat.SkillTotals["skill:move_silently"]);
+    }
+
+    /// <summary>
+    /// The special is a familiar benefit, so the same animal taken as an animal companion gives
+    /// its master nothing.
+    /// </summary>
+    [Fact]
+    public void CompanionResolver_AnimalCompanion_DoesNotGrantTheFamiliarSpecial()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+        var master = new Character
+        {
+            Name = "Druid",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 12, WIS = 12, CHA = 10 },
+            Ticks = new List<Tick>
+            {
+                new() { DriverId = "class:druid", Choices = new TickChoices { HitPointsRolled = 4 } }
+            },
+            CompanionLinks = new List<CompanionLink>
+            {
+                new()
+                {
+                    LinkType = "animal_companion",
+                    CompanionId = "toad",
+                    EffectiveLevelFormula = new Formula("ClassLevel(druid)")
+                }
+            }
+        };
+        var toad = new Character
+        {
+            Name = "Toad",
+            RaceId = "race:familiar_toad",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick> { new() { DriverId = "racial_hd:animal" } }
+        };
+
+        var bound = new CompanionResolver(engine, _ => toad).Build(master).MasterState;
+        var unbound = engine.Evaluate(new Character
+        {
+            Name = "Druid",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 12, WIS = 12, CHA = 10 },
+            Ticks = new List<Tick>
+            {
+                new() { DriverId = "class:druid", Choices = new TickChoices { HitPointsRolled = 4 } }
+            }
+        });
+
+        Assert.Equal(unbound.HP, bound.HP);
+    }
+
+    /// <summary>
+    /// SRD familiar skills: "For each skill in which either the master or the familiar has ranks,
+    /// use either the normal skill ranks for an animal of that type or the master's skill ranks,
+    /// whichever are better. In either case, the familiar uses its own ability modifiers."
+    ///
+    /// Per-skill maximum, not wholesale replacement — the familiar keeps whatever it is better at,
+    /// which is what it would use if dismissed.
+    /// </summary>
+    [Fact]
+    public void CompanionResolver_Familiar_TakesTheBetterOfItsOwnAndItsMastersSkillRanks()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+
+        // Master: a rogue with 8 ranks of Hide and 1 of Listen, and a Dexterity of 10 (+0) so the
+        // familiar's own modifier is visibly different from the master's.
+        var master = new Character
+        {
+            Name = "Master",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 12, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick>
+            {
+                new()
+                {
+                    DriverId = "class:rogue",
+                    Choices = new TickChoices
+                    {
+                        SkillAllocations = new List<SkillAllocation>
+                        {
+                            new() { SkillId = "skill:hide", HalfRanks = 16 },
+                            new() { SkillId = "skill:listen", HalfRanks = 2 },
+                        }
+                    }
+                }
+            },
+            CompanionLinks = new List<CompanionLink>
+            {
+                new()
+                {
+                    LinkType = "familiar",
+                    CompanionId = "toad",
+                    EffectiveLevelFormula = new Formula("ClassLevel(rogue)")
+                }
+            }
+        };
+
+        // Familiar: a toad with 1 rank of Hide (worse than the master) and 2 of Spot, which the
+        // master does not have at all.
+        var familiar = new Character
+        {
+            Name = "Toad",
+            RaceId = "race:familiar_toad",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 14, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick>
+            {
+                new()
+                {
+                    DriverId = "racial_hd:animal",
+                    Choices = new TickChoices
+                    {
+                        SkillAllocations = new List<SkillAllocation>
+                        {
+                            new() { SkillId = "skill:hide", HalfRanks = 2 },
+                            new() { SkillId = "skill:spot", HalfRanks = 4 },
+                        }
+                    }
+                }
+            }
+        };
+
+        var result = new CompanionResolver(new ReplayStudio(registry), _ => familiar).Build(master);
+        var familiarState = Assert.Single(result.Companions).State;
+
+        // Master is better at Hide (8 ranks vs 1) — the familiar takes the master's.
+        Assert.Equal(16, familiarState.SkillHalfRanks["skill:hide"]);
+        // Familiar is better at Spot (2 ranks vs none) — it keeps its own.
+        Assert.Equal(4, familiarState.SkillHalfRanks["skill:spot"]);
+        // A skill only the master has ranks in still transfers.
+        Assert.Equal(2, familiarState.SkillHalfRanks["skill:listen"]);
+
+        // "In either case, the familiar uses its own ability modifiers": the toad's Dexterity is
+        // 14 base +2 racial = 16 (+3), the master's is 10 (+0), so the borrowed Hide ranks are
+        // totalled with the toad's modifier.
+        var toadDexMod = AbilityScoreSet.Modifier(familiarState.AbilityScores.DEX);
+        Assert.Equal(3, toadDexMod);
+        // Plus the toad's Diminutive +12 Hide size bonus, which the master (Medium) does not get.
+        Assert.Equal(Size.Diminutive, familiarState.Size);
+        Assert.Equal(
+            8 + toadDexMod + 12 + familiarState.SkillBonuses.GetValueOrDefault("skill:hide")
+              + familiarState.SkillSynergyBonuses.GetValueOrDefault("skill:hide"),
+            familiarState.SkillTotals["skill:hide"]);
+        Assert.NotEqual(result.MasterState.SkillTotals["skill:hide"], familiarState.SkillTotals["skill:hide"]);
+    }
+
     [Theory]
     [InlineData("familiar")]
     [InlineData("improved_familiar")]

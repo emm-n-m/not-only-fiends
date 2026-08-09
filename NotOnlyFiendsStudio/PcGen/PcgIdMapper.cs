@@ -38,6 +38,9 @@ public class PcgIdMapper
         ["Companion ~ Elemental (Air Small)"] = "companion_elemental_air_small",
         ["Companion ~ Elemental (Water Small)"] = "companion_elemental_water_small",
         ["Companion ~ Shadow"] = "companion_shadow",
+        // PCGen files familiars under the same "Companion ~" prefix. The toad is a familiar only —
+        // it is not on any animal-companion list — so it resolves to the familiar race.
+        ["Companion ~ Toad"] = "familiar_toad",
 
         // SRD dragons
         ["Dragon (Red Great Wyrm)"] = "dragon_red_great_wyrm",

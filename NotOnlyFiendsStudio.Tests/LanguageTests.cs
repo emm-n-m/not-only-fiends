@@ -166,4 +166,74 @@ public class LanguageTests
 
         Assert.Equal(new[] { "draconic", "elven" }, clone.BonusLanguageIds);
     }
+
+    /// <summary>
+    /// SRD wizard.html: "A raven familiar can speak one language of its master's choice as a
+    /// supernatural ability." A raven's Intelligence of 2 buys no bonus languages at all, so this
+    /// cannot come out of the starting-Intelligence budget — it is a granted slot.
+    /// </summary>
+    [Fact]
+    public void RavenFamiliar_MaySpeakOneLanguageDespiteBuyingNoneWithIntelligence()
+    {
+        var registry = TestContentHelper.LoadBundledPacks();
+        var raven = new Character
+        {
+            Name = "Raven",
+            RaceId = "race:companion_raven",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick> { new() { DriverId = "racial_hd:animal" } },
+        };
+
+        var baseline = new ReplayStudio(registry).Evaluate(raven);
+        Assert.Equal(1, baseline.GrantedLanguageSlots);
+        // Int 10 - 8 racial = 2, whose modifier buys nothing.
+        Assert.Equal(0, LanguageCatalog.Allowance(baseline.AbilityScores.INT));
+
+        raven.GrantedLanguageIds.Add("common");
+        var spoken = new ReplayStudio(registry).Evaluate(raven);
+
+        Assert.Contains("common", spoken.Languages);
+        Assert.DoesNotContain(spoken.Warnings, w => w.Message.Contains("Granted language"));
+    }
+
+    [Fact]
+    public void GrantedLanguagesBeyondTheSlotCountAreRefused()
+    {
+        var registry = TestContentHelper.LoadBundledPacks();
+        var raven = new Character
+        {
+            Name = "Raven",
+            RaceId = "race:companion_raven",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick> { new() { DriverId = "racial_hd:animal" } },
+            GrantedLanguageIds = new List<string> { "common", "elven" },
+        };
+
+        var state = new ReplayStudio(registry).Evaluate(raven);
+
+        Assert.Contains("common", state.Languages);
+        Assert.DoesNotContain("elven", state.Languages);
+        Assert.Contains(state.Warnings, w => w.Message.Contains("exceeds the 1 language slot"));
+    }
+
+    /// <summary>A creature with no granted slot cannot take one by writing the list directly.</summary>
+    [Fact]
+    public void GrantedLanguagesWithoutASlotAreRefused()
+    {
+        var registry = TestContentHelper.LoadBundledPacks();
+        var state = new ReplayStudio(registry).Evaluate(new Character
+        {
+            Name = "Toad",
+            RaceId = "race:familiar_toad",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick> { new() { DriverId = "racial_hd:animal" } },
+            GrantedLanguageIds = new List<string> { "common" },
+        });
+
+        Assert.DoesNotContain("common", state.Languages);
+        Assert.Contains(state.Warnings, w => w.Message.Contains("exceeds the 0 language slot"));
+    }
 }

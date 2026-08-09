@@ -13,6 +13,21 @@ public class ReplayStudio
         _rules = rules ?? GameRules.Standard35e();
     }
 
+    /// <summary>
+    /// Applies a permabuff to an already-evaluated state, outside the tick loop. For the
+    /// familiar rule, where the benefit runs from the familiar's race to the master's finished
+    /// state and so has no tick to belong to.
+    /// </summary>
+    public void ApplyToFinishedState(CharacterState state, Permabuff buff) =>
+        buff.Apply(CreateContext(state));
+
+    public RaceDefinition? FindRace(string? raceId)
+    {
+        if (string.IsNullOrEmpty(raceId)) return null;
+        try { return _content.GetRace(raceId); }
+        catch (KeyNotFoundException) { return null; }
+    }
+
     private PermabuffContext CreateContext(CharacterState state) =>
         new(state, _rules, _content);
 
@@ -339,6 +354,10 @@ public class ReplayStudio
         // components and spellbook contents are final.
         FinalizePreparedSpellSelections(state, character);
 
+        // 13. Tail pass — languages taken against a granted slot. Must run after every racial and
+        // template permabuff, since any of them can be what granted the slot.
+        FinalizeGrantedLanguages(state, character);
+
         return state;
     }
 
@@ -642,6 +661,13 @@ public class ReplayStudio
     /// Diplomacy legitimately receives three separate +2s (Bluff, Sense Motive, Knowledge
     /// (nobility)), so they are summed rather than deduplicated.
     /// </summary>
+    /// <summary>
+    /// Recomputes synergies and skill totals from the state's current ranks and ability scores.
+    /// Exposed for the familiar rule, which rewrites a familiar's ranks after its own replay has
+    /// finished and needs the totals brought back in line with the new ranks.
+    /// </summary>
+    public void RecomputeSkillTotals(CharacterState state) => FinalizeSkills(state);
+
     private void FinalizeSkills(CharacterState state)
     {
         state.SkillSynergyBonuses.Clear();
@@ -676,8 +702,16 @@ public class ReplayStudio
                 && Enum.TryParse<Ability>(def.KeyAbility, ignoreCase: true, out var keyAbility))
                 abilityMod = AbilityScoreSet.Modifier(state.AbilityScores.GetScore(keyAbility));
 
+            // Hide is the one skill with a size modifier, and it is not the AC/attack one — a
+            // Diminutive toad hides at +12, not +4. Kept out of SkillBonuses so that dictionary
+            // keeps meaning "what content granted".
+            var sizeModifier = _rules.SkillSizeModifiers.TryGetValue(skillId, out var sizeRule)
+                ? sizeRule(_rules, state.Size)
+                : 0;
+
             state.SkillTotals[skillId] = WholeRanks(skillId)
                                          + abilityMod
+                                         + sizeModifier
                                          + state.SkillBonuses.GetValueOrDefault(skillId)
                                          + state.SkillSynergyBonuses.GetValueOrDefault(skillId);
         }
@@ -899,6 +933,42 @@ public class ReplayStudio
 
         foreach (var languageId in character.SourceLanguageIds.Distinct(StringComparer.Ordinal))
             state.Languages.Add(languageId);
+    }
+
+    /// <summary>
+    /// Spends languages taken against a granted slot — a raven familiar's "one language of its
+    /// master's choice". These are not priced off Intelligence and are not restricted to the
+    /// race's bonus-language list: the grant says "of its master's choice", so any language the
+    /// content offers is legal. Runs as a tail pass because the slot itself may be granted by a
+    /// racial or template permabuff that has already fired by then.
+    /// </summary>
+    private static void FinalizeGrantedLanguages(CharacterState state, Character character)
+    {
+        var spent = 0;
+        foreach (var languageId in character.GrantedLanguageIds.Distinct(StringComparer.Ordinal))
+        {
+            if (state.Languages.Contains(languageId))
+            {
+                state.Warnings.Add(new Warning
+                {
+                    Message = $"Granted language '{languageId}' is already known — slot not spent"
+                });
+                continue;
+            }
+
+            if (spent >= state.GrantedLanguageSlots)
+            {
+                state.Warnings.Add(new Warning
+                {
+                    Message = $"Granted language '{languageId}' exceeds the "
+                        + $"{state.GrantedLanguageSlots} language slot(s) this character has — skipped"
+                });
+                continue;
+            }
+
+            state.Languages.Add(languageId);
+            spent++;
+        }
     }
 
     private void ApplyTemplateCreation(PermabuffContext ctx, TemplateDriver template)

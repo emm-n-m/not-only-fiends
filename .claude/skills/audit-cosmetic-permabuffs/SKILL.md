@@ -87,12 +87,18 @@ for f in glob.glob(root+'/**/*.json',recursive=True):
 PY
 ```
 
-Also sweep two places `GrantAbility` never reaches:
+Also sweep three places `GrantAbility` never reaches:
 
-- **Equipment with `grantedPermabuffs: []` and a description that grants something.** This is how
+- **Anything with `grantedPermabuffs: []` and a description that grants something.** This is how
   the Ring of Universal Energy Immunity was inert.
 - **`GrantSLA` / `GrantSpecialAttack` descriptions carrying a static rider.** "…gains fire
   resistance 10 while active" is fine; "…the wearer is immune to fire" is not.
+- **`grantedPermabuffs: []` with _no description at all_** — 284 objects, mostly epic feats, and
+  invisible to every description-based sweep. `feat:epic_leadership` is the case that exposed it:
+  it grants nothing, says nothing, and the SRD gives it "Multiply the number of followers of each
+  level that the character can lead by 10." These cannot be judged by this skill's one rule (there
+  is no description to compare against), so list them under **NO-DESCRIPTION** as a work-list for
+  `verify-content`, which has an authoritative source. Never guess the mechanic from the name.
 
 ## What the engine can actually encode
 
@@ -146,15 +152,21 @@ Every finding carries one, mirroring `verify-content-lst`:
 
 - **CONTENT-BUG** — the engine has a permabuff for this and the content omits it. Ship a proposed
   diff. This is the useful output; all four fixes above were this.
-- **ENGINE-GAP** — the description is correct but nothing can express it. Name the missing
-  capability in one sentence. Do not invent a `$type`.
+- **ENGINE-GAP** — the description is correct but nothing can express it. Name the *specific*
+  missing capability, as "needs X on Y": *"needs a multiplier on `CharacterState.FollowerCounts`;
+  `ModifyLeadershipScore` changes the score, not the counts it produces."* A generic rationale is
+  a failed finding, and a rationale repeated across entries means they were not looked at
+  individually — the 2026-08-09 run filed all 150 with one boilerplate sentence and the section
+  was unusable. Check the capability is genuinely absent first (the `[JsonDerivedType]` list *and*
+  `CharacterState`'s fields): wizard specialisation reads like a gap but `SpecialtyBonusSlots`
+  already implements it, so it is BY-DESIGN. Never invent a `$type`.
 - **BY-DESIGN** — trips a trap above. One line, no diff. Include these, so a reviewer knows they
   were considered rather than missed.
 
 ## Output
 
-`{EXTRA_PACKS_PATH}/test-reports/cosmetic_permabuff_audit_<YYYY-MM-DD>.md`, grouped by verdict then
-pack. Every finding carries the file path, the ability id, the description **verbatim**, the
+`test-reports/cosmetic_permabuff_audit_<YYYY-MM-DD>.md` (gitignored — the report quotes
+third-party content), grouped by verdict then pack. Every finding carries the file path, the ability id, the description **verbatim**, the
 permabuffs actually present, and for CONTENT-BUG the exact JSON to insert.
 
 Keep the repos separate in the report; private-pack findings must not quote non-OGC text into

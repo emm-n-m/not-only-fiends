@@ -28,6 +28,15 @@ public class Character
     /// </summary>
     public List<string> SourceLanguageIds { get; set; } = new();
 
+    /// <summary>
+    /// Languages taken against a granted slot rather than bought from the starting-Intelligence
+    /// budget — a raven familiar's "can speak one language of its master's choice", where the
+    /// creature's own Intelligence 2 buys nothing at all. Each entry consumes one slot granted by
+    /// <see cref="GrantLanguageSlot"/>; the engine warns about picks beyond the granted count and
+    /// about any that duplicate a language already known.
+    /// </summary>
+    public List<string> GrantedLanguageIds { get; set; } = new();
+
     // HD Timeline — the build
     public List<Tick> Ticks { get; set; } = new();
 
@@ -73,6 +82,7 @@ public class Character
         },
         BonusLanguageIds = new List<string>(BonusLanguageIds),
         SourceLanguageIds = new List<string>(SourceLanguageIds),
+        GrantedLanguageIds = new List<string>(GrantedLanguageIds),
         Ticks = Ticks.Select(t => new Tick
         {
             DriverId = t.DriverId,

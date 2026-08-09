@@ -286,7 +286,7 @@ else if (_state != null && _character != null)
                             <ul class="list-unstyled mb-0">
                                 @foreach (var sla in _state.SLAs)
                                 {
-                                    <li title="@(sla.Description ?? "")">
+                                    <li title="@Tooltips.ForSla(sla, _registry)">
                                         @sla.Name @(sla.UsesPerDay != null ? $"({sla.UsesPerDay})" : "")
                                         @if (sla.SaveDC.HasValue)
                                         {
@@ -517,7 +517,7 @@ else if (_state != null && _character != null)
                                     <li>@($"{group.Key}th: ")@foreach (var s in group)
                                     {
                                         _registry.TryGetSpell(s.SpellId, out var spDef);
-                                        <span title="@(spDef?.Description ?? "")">@(spDef?.Name ?? s.SpellId)</span>@(s != group.Last() ? ", " : "")
+                                        <span title="@(spDef == null ? s.SpellId : Tooltips.ForSpell(spDef))">@(spDef?.Name ?? s.SpellId)</span>@(s != group.Last() ? ", " : "")
                                     }</li>
                                 }
                             </ul>
@@ -537,7 +537,7 @@ else if (_state != null && _character != null)
                                         @foreach (var selection in group)
                                         {
                                             _registry.TryGetSpell(selection.SpellId, out var preparedDef);
-                                            <span title="@(preparedDef?.Description ?? selection.SpellId)">@(preparedDef?.Name ?? selection.SpellId)</span>@(selection != group.Last() ? ", " : "")
+                                            <span title="@(preparedDef == null ? selection.SpellId : Tooltips.ForSpell(preparedDef))">@(preparedDef?.Name ?? selection.SpellId)</span>@(selection != group.Last() ? ", " : "")
                                         }
                                     </li>
                                 }
