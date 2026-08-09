@@ -139,6 +139,9 @@ public class CompanionResolver
             if (link.LinkType is "leadership_follower" or "follower")
                 RecordFollowerOccupancy(result.MasterState, companionState);
 
+            if (link.LinkType == "animal_companion")
+                CheckAnimalCompanionIsLegal(result.MasterState, companionState, link.CompanionId);
+
             if (IsFamiliarLinkType(link.LinkType))
                 ApplyFamiliarMasterStats(result.MasterState, companionState, _engine);
 
@@ -244,6 +247,79 @@ public class CompanionResolver
             });
         }
     }
+
+    /// <summary>
+    /// An animal companion has to be an animal. The druid list is "badger, camel, dire rat …" and
+    /// nothing on it is anything else, so a companion whose type has moved off Animal is not a
+    /// legal choice — which is exactly what the celestial and fiendish templates do
+    /// (<c>typeOverridesByBaseType: animal → magicalBeast</c>).
+    ///
+    /// The planar ranger is the exception the SRD writes for precisely this: "A nonevil planar
+    /// ranger may have a celestial version of a normal animal as his animal companion. A nongood
+    /// ranger may have a fiendish version of a normal animal as his animal companion." So the type
+    /// change is legal for a planar ranger, and then only in the direction its alignment allows.
+    ///
+    /// "May have" — so this never demands the template, it only rejects one the master cannot take.
+    /// </summary>
+    private static void CheckAnimalCompanionIsLegal(
+        CharacterState master,
+        CharacterState companion,
+        string companionId)
+    {
+        if (companion.Type == CreatureType.Animal)
+            return;
+
+        var isPlanarRanger = master.ClassLevels.GetValueOrDefault("class:planar_ranger") > 0;
+        if (!isPlanarRanger)
+        {
+            master.Warnings.Add(new Warning
+            {
+                TickIndex = null,
+                Message = $"Animal companion '{companionId}' is {companion.Type}, not an animal — the "
+                    + "animal companion list is animals only. A celestial or fiendish version is a "
+                    + "planar ranger's option; no other class may field one."
+            });
+            return;
+        }
+
+        var celestial = companion.TemplateIds.Contains("template:celestial");
+        var fiendish = companion.TemplateIds.Contains("template:fiendish");
+
+        if (celestial && IsEvil(master.Alignment))
+        {
+            master.Warnings.Add(new Warning
+            {
+                TickIndex = null,
+                Message = $"Animal companion '{companionId}' is celestial, which only a nonevil "
+                    + $"planar ranger may have — this one is {master.Alignment}."
+            });
+        }
+        else if (fiendish && IsGood(master.Alignment))
+        {
+            master.Warnings.Add(new Warning
+            {
+                TickIndex = null,
+                Message = $"Animal companion '{companionId}' is fiendish, which only a nongood "
+                    + $"planar ranger may have — this one is {master.Alignment}."
+            });
+        }
+        else if (!celestial && !fiendish)
+        {
+            master.Warnings.Add(new Warning
+            {
+                TickIndex = null,
+                Message = $"Animal companion '{companionId}' is {companion.Type} rather than an "
+                    + "animal, and is neither celestial nor fiendish — a planar ranger's exception "
+                    + "covers only those two."
+            });
+        }
+    }
+
+    private static bool IsGood(Alignment alignment) =>
+        alignment is Alignment.LG or Alignment.NG or Alignment.CG;
+
+    private static bool IsEvil(Alignment alignment) =>
+        alignment is Alignment.LE or Alignment.NE or Alignment.CE;
 
     private static bool IsFamiliarLinkType(string linkType) =>
         linkType is "familiar" or "improved_familiar";

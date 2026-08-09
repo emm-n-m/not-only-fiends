@@ -1,5 +1,20 @@
 # Known issues
 
+## A celestial or fiendish animal companion cannot be chosen in the builder
+
+A planar ranger "may have a celestial version of a normal animal as his animal companion" if
+nonevil, or a fiendish version if nongood. `CompanionResolver` now *validates* this — a non-animal
+companion is rejected unless the master is a planar ranger, and then only in the direction its
+alignment allows — but nothing *offers* it. The species picker lists plain animals, so building a
+planar ranger in the app produces an ordinary companion and the template has to be added to the
+companion character by hand. Imported characters are unaffected: PCGen records the templates and
+the converter carries them.
+
+The right shape is a selection gated by alignment, not an automatic grant: the SRD says "may
+have", and a true-neutral planar ranger is both nonevil and nongood, so may choose either.
+There is also no `template:celestial` in content yet — only `template:fiendish` — so the celestial
+half of the validation is written but currently unreachable.
+
 ## Cohort slot level is arithmetic while the cap is a table
 
 `MaxCohortLevel` now comes from the SRD Leadership / Epic Leadership tables, whose progression is

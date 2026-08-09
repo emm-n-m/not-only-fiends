@@ -1205,6 +1205,65 @@ public class CompanionTests
     };
 
     /// <summary>
+    /// An animal companion must be an animal. The celestial and fiendish templates move the type to
+    /// magical beast, so a druid or ordinary ranger cannot field one — the planar ranger's "may have
+    /// a celestial/fiendish version" is the exception that makes it legal, and only in the direction
+    /// its alignment allows.
+    /// </summary>
+    [Fact]
+    public void ANonAnimalCompanionIsRejectedUnlessTheMasterIsAPlanarRanger()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        Character Master(string classId, int levels, Alignment alignment) => new()
+        {
+            Name = classId,
+            RaceId = "race:human",
+            Alignment = alignment,
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 14, CHA = 10 },
+            Ticks = Enumerable.Range(0, levels).Select(_ => new Tick { DriverId = classId }).ToList(),
+            CompanionLinks = new List<CompanionLink>
+            {
+                new()
+                {
+                    LinkType = "animal_companion",
+                    CompanionId = "pet",
+                    EffectiveLevelFormula = new Formula(CompanionResolver.AnimalCompanionLevelExpression)
+                }
+            }
+        };
+
+        // A fiendish wolf: the template moves animal → magical beast.
+        var fiendishPet = new Character
+        {
+            Name = "Fiendish wolf",
+            RaceId = "race:companion_bat",
+            TemplateIds = new List<string> { "template:fiendish" },
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick> { new() { DriverId = "racial_hd:animal" } }
+        };
+
+        var druid = new CompanionResolver(engine, _ => fiendishPet)
+            .Build(Master("class:druid", 5, Alignment.N)).MasterState;
+        Assert.Contains(druid.Warnings, w =>
+            w.Message.Contains("not an animal") && w.Message.Contains("planar ranger's option"));
+
+        // A nongood planar ranger may have exactly this.
+        var planar = new CompanionResolver(engine, _ => fiendishPet)
+            .Build(Master("class:planar_ranger", 5, Alignment.LE)).MasterState;
+        Assert.DoesNotContain(planar.Warnings, w => w.Message.Contains("animal companion"));
+
+        // A good one may not.
+        var goodPlanar = new CompanionResolver(engine, _ => fiendishPet)
+            .Build(Master("class:planar_ranger", 5, Alignment.LG)).MasterState;
+        Assert.Contains(goodPlanar.Warnings, w =>
+            w.Message.Contains("fiendish, which only a nongood"));
+    }
+
+    /// <summary>
     /// SRD Unearthed Arcana: "The planar ranger has all the standard ranger class features, except
     /// as noted below", and Animal Companion is one of the entries it keeps (in a celestial or
     /// fiendish variant). Its content carried the feature as a description with no mechanics, so a
