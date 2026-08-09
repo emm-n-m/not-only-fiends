@@ -109,6 +109,17 @@
         {
           "type": "object",
           "properties": {
+            "$type": { "const": "GrantSaveBonus" },
+            "target": { "type": "string", "enum": ["Fort", "Ref", "Will"] },
+            "bonusType": { "type": "string", "enum": ["Armor", "Shield", "Natural", "NaturalEnhancement", "Enhancement", "Deflection", "Dodge", "Insight", "Luck", "Sacred", "Profane", "Morale", "Competence", "Resistance", "Circumstance", "Size", "Racial", "Untyped"] },
+            "value": { "type": "integer" }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
             "$type": { "const": "GrantImmunity" },
             "immunity": { "type": "string" }
           },

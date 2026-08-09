@@ -70,7 +70,8 @@
           "name": "Grace",
           "description": "+2 competence bonus on Reflex saves."
         }
-      }
+      },
+      { "$type": "GrantSaveBonus", "target": "Ref", "bonusType": "Competence", "value": 2 }
     ],
     "5": [
       {

@@ -41,8 +41,7 @@
     ],
     "4": [
       {
-        "$type": "GrantAbility",
-        "ability": { "id": "fiendish_dr_5_magic", "name": "DR 5/magic", "description": "Damage reduction 5/magic (creatures with 4 or more Hit Dice)." }
+        "$type": "GrantDR", "value": 5, "bypassedBy": "magic"
       }
     ],
     "8": [
@@ -61,8 +60,7 @@
     ],
     "12": [
       {
-        "$type": "GrantAbility",
-        "ability": { "id": "fiendish_dr_10_magic", "name": "DR 10/magic", "description": "Damage reduction 10/magic (creatures with 12 or more Hit Dice). Supersedes the earlier DR 5/magic." }
+        "$type": "GrantDR", "value": 10, "bypassedBy": "magic"
       }
     ]
   },

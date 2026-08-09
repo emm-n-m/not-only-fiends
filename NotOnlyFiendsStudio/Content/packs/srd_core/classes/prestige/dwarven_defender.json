@@ -74,6 +74,7 @@
           "description": "Gain damage reduction 3/- at 5th level, increasing to 6/- at 10th level."
         }
       },
+      { "$type": "GrantDR", "value": 3, "bypassedBy": "" },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -82,6 +83,9 @@
           "description": "Cannot be flanked except by a rogue 4+ levels higher."
         }
       }
+    ],
+    "10": [
+      { "$type": "GrantDR", "value": 6, "bypassedBy": "" }
     ],
     "8": [
       {

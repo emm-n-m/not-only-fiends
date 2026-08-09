@@ -1595,6 +1595,13 @@
           "description": "Immune to mind-affecting effects (charms, compulsions, phantasms, patterns, morale), poison, sleep, paralysis, polymorph, and stunning. Not subject to critical hits."
         }
       },
+      { "$type": "GrantImmunity", "immunity": "mind-affecting" },
+      { "$type": "GrantImmunity", "immunity": "poison" },
+      { "$type": "GrantImmunity", "immunity": "sleep" },
+      { "$type": "GrantImmunity", "immunity": "paralysis" },
+      { "$type": "GrantImmunity", "immunity": "polymorph" },
+      { "$type": "GrantImmunity", "immunity": "stunning" },
+      { "$type": "GrantImmunity", "immunity": "critical hits" },
       {
         "$type": "GrantAbility",
         "ability": {

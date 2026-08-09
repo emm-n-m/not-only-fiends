@@ -263,14 +263,8 @@
           "expression": "max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)"
         }
       },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "nature_sense",
-          "name": "Nature Sense",
-          "description": "+2 bonus on Knowledge (nature) and Survival checks."
-        }
-      },
+      { "$type": "GrantSkillBonus", "skillId": "skill:knowledge_nature", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "skill:survival", "value": 2 },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -354,14 +348,7 @@
       }
     ],
     "9": [
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "venom_immunity",
-          "name": "Venom Immunity",
-          "description": "Immune to all poisons."
-        }
-      }
+      { "$type": "GrantImmunity", "immunity": "poison" }
     ],
     "10": [
       {

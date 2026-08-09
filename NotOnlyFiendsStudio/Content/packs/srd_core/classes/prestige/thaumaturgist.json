@@ -51,14 +51,7 @@
       }
     ],
     "2": [
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "augment_summoning",
-          "name": "Augment Summoning",
-          "description": "Gain Augment Summoning as a bonus feat. Summoned creatures get +4 STR and +4 CON."
-        }
-      }
+      { "$type": "GrantBonusFeat", "featId": "feat:augment_summoning" }
     ],
     "3": [
       {

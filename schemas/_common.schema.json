@@ -581,6 +581,18 @@
         },
         {
           "type": "object",
+          "description": "Grant a permanent typed bonus to one saving throw.",
+          "properties": {
+            "$type": { "const": "GrantSaveBonus" },
+            "target": { "type": "string", "enum": ["Fort", "Ref", "Will"] },
+            "bonusType": { "type": "string", "enum": ["Armor", "Shield", "Natural", "NaturalEnhancement", "Enhancement", "Deflection", "Dodge", "Insight", "Luck", "Sacred", "Profane", "Morale", "Competence", "Resistance", "Circumstance", "Size", "Racial", "Untyped"] },
+            "value": { "type": "integer" }
+          },
+          "required": ["$type", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
           "description": "Grant an immunity (e.g., 'electricity', 'poison', 'sleep').",
           "properties": {
             "$type": { "const": "GrantImmunity" },

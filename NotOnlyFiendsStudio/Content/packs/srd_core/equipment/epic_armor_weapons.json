@@ -79,7 +79,9 @@
     "priceCp": 61630000,
     "description": "This +7 chainmail is so fine and light that it can be worn under normal clothing without revealing its presence. It has a maximum Dexterity bonus of +10, no armor check penalty, and an arcane spell failure chance of 10%. It is considered light armor, and it allows the wearer to fly at will (as the fly spell). Furthermore, the wearer is at all times surrounded by a magic circle against evil effect (as the spell) which, if dispelled, can be created again as a free action. Caster Level: 20th; Prerequisites: Craft Magic Arms and Armor, Craft Epic Magic Arms and Armor, creator must be good, magic circle against evil; Market Price: 616,300 gp; Cost to Create: 308,300 gp + 16,160 XP. (The SRD gives no weight for this armor; 20 lb. is carried over from Celestial Armor, the non-epic item described in the same terms.)",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantMovement", "mode": "Fly", "speed": 60, "flyManeuverability": "Good" }
+    ],
     "armor": {
       "kind": "light",
       "armorBonus": 12,

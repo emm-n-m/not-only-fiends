@@ -8,7 +8,9 @@
     "priceCp": 50000000,
     "description": "This +5 flaming quarterstaff grants its wielder fire resistance 30 whenever held. In addition, it has the following powers: wall of fire (extended, 1 charge, DC 18), delayed blast fireball (intensified to 240 points of damage, 2 charges, DC 22), meteor swarm (heightened to 12th, 2 charges, DC 30), summon monster IX (extended, 2 charges, elder fire elemental only). A staff of fiery power can be broken in a retributive strike; the breaking must be purposeful and declared by the wielder. All charges currently in the staff are instantly released in a 30-foot-radius globe: those within 10 feet of the broken staff take damage equal to eight times the number of charges in the staff, those 11-20 feet away take six times the number of charges in damage, and those 21-30 feet distant take four times the number of charges in damage (Reflex DC 17 half). The character breaking the staff has a 50% chance of traveling to another plane of existence; if not, the explosive release of spell energy destroys him or her. After all charges are used up, it remains a +5 quarterstaff with no special abilities (and once empty, it cannot be broken in a retributive strike). Caster Level 25th; Prerequisites: Craft Staff, Craft Epic Staff, Extend Spell, Heighten Spell, Improved Heighten Spell, Intensify Spell, Spell Focus (Evocation), continual flame, delayed blast fireball, meteor swarm, protection from energy, summon monster IX, wall of fire; Market Price 500,000 gp.",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "Resistance", "resistanceElement": "fire", "value": 30 }
+    ],
     "tags": [
       "staff",
       "cl25",

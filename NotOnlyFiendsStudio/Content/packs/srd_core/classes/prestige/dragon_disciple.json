@@ -51,6 +51,11 @@
           "name": "Natural Armor Increase",
           "description": "Natural armor bonus increases by +1 at 1st, 4th, and 7th level."
         }
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "NaturalArmor",
+        "value": 1
       }
     ],
     "2": [
@@ -81,6 +86,9 @@
         }
       }
     ],
+    "4": [
+      { "$type": "ModifyAttribute", "target": "NaturalArmor", "value": 1 }
+    ],
     "5": [
       {
         "$type": "GrantAbility",
@@ -91,6 +99,9 @@
         }
       }
     ],
+    "7": [
+      { "$type": "ModifyAttribute", "target": "NaturalArmor", "value": 1 }
+    ],
     "9": [
       {
         "$type": "GrantAbility",
@@ -99,7 +110,8 @@
           "name": "Wings",
           "description": "Grow wings, gaining a fly speed of 30 ft. (average maneuverability)."
         }
-      }
+      },
+      { "$type": "GrantMovement", "mode": "Fly", "speed": 30, "flyManeuverability": "Average" }
     ],
     "10": [
       {
@@ -109,7 +121,9 @@
           "name": "Dragon Apotheosis",
           "description": "Type changes to half-dragon. Gain immunity to sleep, paralysis, and the dragon's energy type, plus darkvision 120 ft. and low-light vision."
         }
-      }
+      },
+      { "$type": "GrantImmunity", "immunity": "sleep" },
+      { "$type": "GrantImmunity", "immunity": "paralysis" }
     ]
   },
   "perLevelPermabuffs": [],

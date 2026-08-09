@@ -46,6 +46,7 @@
           "description": "Damage reduction 10/magic. Gargoyle natural weapons are treated as magic for the purpose of overcoming DR."
         }
       },
+      { "$type": "GrantDR", "value": 10, "bypassedBy": "magic" },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -310,6 +311,7 @@
           "description": "Janni have resistance 10 to fire damage."
         }
       },
+      { "$type": "ModifyAttribute", "target": "Resistance", "resistanceElement": "fire", "value": 10 },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -437,6 +439,9 @@
           "description": "+2 racial bonus on all saving throws. Replaces the rock gnome's +2 vs. illusions."
         }
       },
+      { "$type": "GrantSaveBonus", "target": "Fort", "bonusType": "Racial", "value": 2 },
+      { "$type": "GrantSaveBonus", "target": "Ref", "bonusType": "Racial", "value": 2 },
+      { "$type": "GrantSaveBonus", "target": "Will", "bonusType": "Racial", "value": 2 },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -505,6 +510,7 @@
           "description": "+2 racial bonus on Craft (alchemy) checks."
         }
       },
+      { "$type": "GrantSkillBonus", "skillId": "skill:craft_alchemy", "value": 2 },
       {
         "$type": "GrantSkillBonus",
         "skillId": "skill:listen",
@@ -618,6 +624,7 @@
           "description": "+2 racial bonus on Craft (alchemy) checks."
         }
       },
+      { "$type": "GrantSkillBonus", "skillId": "skill:craft_alchemy", "value": 2 },
       {
         "$type": "GrantAbility",
         "ability": {

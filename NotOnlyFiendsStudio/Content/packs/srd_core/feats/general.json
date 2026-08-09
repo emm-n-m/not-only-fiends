@@ -305,7 +305,7 @@
     "description": "+2 bonus on Will saving throws.",
     "type": "general",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [{ "$type": "GrantSaveBonus", "target": "Will", "value": 2 }],
     "repeatable": false
   },
   {
@@ -314,7 +314,7 @@
     "description": "+2 bonus on Fortitude saving throws.",
     "type": "general",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [{ "$type": "GrantSaveBonus", "target": "Fort", "value": 2 }],
     "repeatable": false
   },
   {
@@ -323,7 +323,7 @@
     "description": "+2 bonus on Reflex saving throws.",
     "type": "general",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [{ "$type": "GrantSaveBonus", "target": "Ref", "value": 2 }],
     "repeatable": false
   }
 ]

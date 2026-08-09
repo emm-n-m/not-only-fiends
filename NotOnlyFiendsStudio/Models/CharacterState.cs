@@ -56,6 +56,13 @@ public class CharacterState
     public List<AbilitySaveBonus> AbilitySaveBonuses { get; set; } = new();
 
     /// <summary>
+    /// Permanent typed save bonuses from feats and racial/class features. They are kept separate
+    /// from progression so the normal 3.5e stacking rule (highest bonus of each type) still
+    /// applies when several sources grant the same save bonus.
+    /// </summary>
+    public List<SaveBonus> SaveBonuses { get; set; } = new();
+
+    /// <summary>
     /// Total ability-modifier save bonus. Distinct sources stack (they are untyped bonuses from
     /// different class features); the same source granted more than once does not, so a feature
     /// re-applied by a scaling or template path cannot double.
@@ -72,10 +79,17 @@ public class CharacterState
     public int EffectiveBAB => BaseBAB + EpicAttackBonus;
     public SaveSet EffectiveSaves => new()
     {
-        Fort = BaseSaves.Fort + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.CON) + AbilitySaveBonusTotal,
-        Ref = BaseSaves.Ref + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.DEX) + AbilitySaveBonusTotal,
-        Will = BaseSaves.Will + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.WIS) + AbilitySaveBonusTotal
+        Fort = BaseSaves.Fort + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.CON) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Fort),
+        Ref = BaseSaves.Ref + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.DEX) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Ref),
+        Will = BaseSaves.Will + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.WIS) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Will)
     };
+
+    private int SaveBonusTotal(SaveTarget target) =>
+        SaveBonuses.Where(bonus => bonus.Target == target)
+            .GroupBy(bonus => bonus.BonusType)
+            .Sum(group => group.Key is BonusType.Dodge or BonusType.Untyped
+                ? group.Sum(bonus => bonus.Value)
+                : Math.Max(0, group.Max(bonus => bonus.Value)));
 
     // HP
     public int HP { get; set; }
@@ -406,6 +420,13 @@ public class AbilitySaveBonus
     /// penalty is not carried over to saves. Content can opt out for a feature that says otherwise.
     /// </summary>
     public bool PositiveOnly { get; set; } = true;
+}
+
+public class SaveBonus
+{
+    public SaveTarget Target { get; set; }
+    public BonusType BonusType { get; set; } = BonusType.Untyped;
+    public int Value { get; set; }
 }
 
 public class DREntry

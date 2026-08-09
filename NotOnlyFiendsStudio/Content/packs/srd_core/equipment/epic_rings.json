@@ -46,7 +46,13 @@
     "priceCp": 24000000,
     "description": "This band continually provides the wearer with immunity to a single type of energy: fire, cold, electricity, acid, or sonic (chosen by the creator of the item). The wearer takes no damage from the energy of the specific type. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, protection from energy; Market Price 240,000 gp.",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantImmunity", "immunity": "fire" },
+      { "$type": "GrantImmunity", "immunity": "cold" },
+      { "$type": "GrantImmunity", "immunity": "electricity" },
+      { "$type": "GrantImmunity", "immunity": "acid" },
+      { "$type": "GrantImmunity", "immunity": "sonic" }
+    ],
     "tags": [
       "ring",
       "cl20",
@@ -273,7 +279,13 @@
     "priceCp": 30800000,
     "description": "This ring functions as a ring of greater energy resistance for all types of energy—fire, cold, electricity, acid, and sonic. When the wearer would normally take such damage, subtract 30 points of damage per round from the amount before applying. Caster Level 20th; Prerequisites: Forge Ring, Forge Epic Ring, protection from energy; Market Price 308,000 gp; Cost to Create: 154,000 gp + 13,080 XP.",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "Resistance", "resistanceElement": "fire", "value": 30 },
+      { "$type": "ModifyAttribute", "target": "Resistance", "resistanceElement": "cold", "value": 30 },
+      { "$type": "ModifyAttribute", "target": "Resistance", "resistanceElement": "electricity", "value": 30 },
+      { "$type": "ModifyAttribute", "target": "Resistance", "resistanceElement": "acid", "value": 30 },
+      { "$type": "ModifyAttribute", "target": "Resistance", "resistanceElement": "sonic", "value": 30 }
+    ],
     "tags": [
       "ring",
       "cl20",

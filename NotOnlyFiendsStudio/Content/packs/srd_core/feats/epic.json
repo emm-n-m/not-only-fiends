@@ -38,7 +38,7 @@
         "value": 21
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [{ "$type": "GrantSaveBonus", "target": "Fort", "value": 4 }],
     "repeatable": false
   },
   {
@@ -52,7 +52,7 @@
         "value": 21
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [{ "$type": "GrantSaveBonus", "target": "Ref", "value": 4 }],
     "repeatable": false
   },
   {
@@ -66,7 +66,7 @@
         "value": 21
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [{ "$type": "GrantSaveBonus", "target": "Will", "value": 4 }],
     "repeatable": false
   }
 ]

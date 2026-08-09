@@ -79,6 +79,8 @@ public enum BABProgression { Good, Average, Poor }
 
 public enum ProgressionRate { Good, Poor }
 
+public enum SaveTarget { Fort, Ref, Will }
+
 public enum FeatType
 {
     General, FighterBonus, Metamagic, ItemCreation, Epic,

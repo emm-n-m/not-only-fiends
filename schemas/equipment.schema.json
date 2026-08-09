@@ -222,6 +222,47 @@
         {
           "type": "object",
           "properties": {
+            "$type": { "const": "GrantEquipmentSkillBonus" },
+            "skillId": { "type": "string" },
+            "bonusType": { "$ref": "#/$defs/BonusType" },
+            "value": { "$ref": "#/$defs/Formula" }
+          },
+          "required": ["$type", "skillId", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantMovement" },
+            "mode": { "type": "string", "enum": ["Land", "Fly", "Swim", "Burrow", "Climb"] },
+            "speed": { "type": "integer", "minimum": 1 },
+            "flyManeuverability": { "type": "string" }
+          },
+          "required": ["$type", "mode", "speed"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "ModifyMovement" },
+            "mode": { "type": "string", "enum": ["Land", "Fly", "Swim", "Burrow", "Climb"] },
+            "amount": { "type": "integer" }
+          },
+          "required": ["$type", "mode", "amount"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "$type": { "const": "GrantAbility" },
+            "ability": { "type": "object", "required": ["id", "name", "description"] }
+          },
+          "required": ["$type", "ability"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
             "$type": { "const": "ModifyAttribute" },
             "target": {
               "type": "string",

@@ -1878,9 +1878,15 @@ public class ReplayStudio
                 case BonusTarget.AbilityInt: AddAbility(state, Ability.INT, agg); break;
                 case BonusTarget.AbilityWis: AddAbility(state, Ability.WIS, agg); break;
                 case BonusTarget.AbilityCha: AddAbility(state, Ability.CHA, agg); break;
-                case BonusTarget.SaveFort: state.BaseSaves.Fort += agg; break;
-                case BonusTarget.SaveRef: state.BaseSaves.Ref += agg; break;
-                case BonusTarget.SaveWill: state.BaseSaves.Will += agg; break;
+                case BonusTarget.SaveFort:
+                    state.BaseSaves.Fort += agg;
+                    break;
+                case BonusTarget.SaveRef:
+                    state.BaseSaves.Ref += agg;
+                    break;
+                case BonusTarget.SaveWill:
+                    state.BaseSaves.Will += agg;
+                    break;
                 case BonusTarget.AllSaves:
                     state.BaseSaves.Fort += agg;
                     state.BaseSaves.Ref += agg;

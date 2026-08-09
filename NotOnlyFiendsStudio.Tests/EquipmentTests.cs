@@ -249,6 +249,62 @@ public class EquipmentTests
     }
 
     [Fact]
+    public void TypedEquipmentSaveBonuses_UseHighestBonusOfEachType()
+    {
+        var character = BuildFighter(1);
+        character.Equipment.Add(new EquipmentEntry
+        {
+            ItemId = "Cloak +1",
+            Permabuffs = new List<Permabuff>
+            {
+                new GrantTypedBonus
+                {
+                    Target = BonusTarget.AllSaves,
+                    BonusType = BonusType.Resistance,
+                    Value = new Formula("1")
+                }
+            }
+        });
+        character.Equipment.Add(new EquipmentEntry
+        {
+            ItemId = "Cloak +4",
+            Permabuffs = new List<Permabuff>
+            {
+                new GrantTypedBonus
+                {
+                    Target = BonusTarget.AllSaves,
+                    BonusType = BonusType.Resistance,
+                    Value = new Formula("4")
+                }
+            }
+        });
+
+        var state = new ReplayStudio(BuildRegistry()).Evaluate(character);
+
+        Assert.Equal(8, state.EffectiveSaves.Fort); // fighter Fort +2, CON +2, plus the highest resistance +4
+        Assert.Equal(6, state.EffectiveSaves.Ref);
+        Assert.Equal(4, state.EffectiveSaves.Will);
+    }
+
+    [Fact]
+    public void ModifyMovement_AddsToTheExistingBaseSpeed()
+    {
+        var character = BuildFighter(1);
+        character.Equipment.Add(new EquipmentEntry
+        {
+            ItemId = "Striding Boots",
+            Permabuffs = new List<Permabuff>
+            {
+                new ModifyMovement { Mode = MovementMode.Land, Amount = 10 }
+            }
+        });
+
+        var state = new ReplayStudio(BuildRegistry()).Evaluate(character);
+
+        Assert.Equal(40, state.Speeds[MovementMode.Land]);
+    }
+
+    [Fact]
     public void FullKit_FighterAcMatchesExpected()
     {
         var registry = BuildRegistry();

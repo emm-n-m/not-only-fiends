@@ -12,6 +12,18 @@
       "$type": "GrantAbility",
       "ability": { "id": "lich_undead_traits", "name": "Undead Traits", "description": "No Constitution score. Uses CHA for HP and Fort saves. Immune to poison, sleep, paralysis, stunning, disease, death effects, critical hits, nonlethal damage, ability drain, energy drain, fatigue, exhaustion, and any effect requiring a Fortitude save unless it also works on objects. Darkvision 60 ft." }
     },
+    { "$type": "GrantImmunity", "immunity": "poison" },
+    { "$type": "GrantImmunity", "immunity": "sleep" },
+    { "$type": "GrantImmunity", "immunity": "paralysis" },
+    { "$type": "GrantImmunity", "immunity": "stunning" },
+    { "$type": "GrantImmunity", "immunity": "disease" },
+    { "$type": "GrantImmunity", "immunity": "death effects" },
+    { "$type": "GrantImmunity", "immunity": "critical hits" },
+    { "$type": "GrantImmunity", "immunity": "nonlethal damage" },
+    { "$type": "GrantImmunity", "immunity": "ability drain" },
+    { "$type": "GrantImmunity", "immunity": "energy drain" },
+    { "$type": "GrantImmunity", "immunity": "fatigue" },
+    { "$type": "GrantImmunity", "immunity": "exhaustion" },
     {
       "$type": "GrantAbility",
       "ability": { "id": "lich_fear_aura", "name": "Fear Aura (Su)", "description": "Creatures of less than 5 HD in a 60-foot radius that look at the lich must succeed on a Will save (DC 10 + 1/2 lich's HD + lich's CHA modifier) or be affected as by a fear spell from a sorcerer of the lich's level. A creature that saves cannot be affected again by the same lich's aura for 24 hours." }
@@ -29,13 +41,16 @@
       "ability": { "id": "lich_turn_resistance", "name": "+4 Turn Resistance (Ex)", "description": "A lich has +4 turn resistance." }
     },
     {
-      "$type": "GrantAbility",
-      "ability": { "id": "lich_dr", "name": "DR 15/bludgeoning and magic (Su)", "description": "Damage reduction 15/bludgeoning and magic. The lich's natural weapons are treated as magic weapons for the purpose of overcoming damage reduction." }
+      "$type": "GrantDR", "value": 15, "bypassedBy": "bludgeoning and magic"
     },
     {
       "$type": "GrantAbility",
       "ability": { "id": "lich_immunities", "name": "Immunities (Ex)", "description": "Immune to cold, electricity, polymorph (though it can use polymorph effects on itself), and mind-affecting attacks." }
     },
+    { "$type": "GrantImmunity", "immunity": "cold" },
+    { "$type": "GrantImmunity", "immunity": "electricity" },
+    { "$type": "GrantImmunity", "immunity": "polymorph" },
+    { "$type": "GrantImmunity", "immunity": "mind-affecting" },
     {
       "$type": "GrantAbility",
       "ability": { "id": "lich_rejuvenation", "name": "Rejuvenation (Su)", "description": "Unless its phylactery is located and destroyed, a lich reappears 1d10 days after its apparent death, rebuilt by the life force stored in its phylactery." }

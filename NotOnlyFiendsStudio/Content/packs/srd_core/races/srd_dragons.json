@@ -54,6 +54,8 @@
           "description": "Immune to fire damage."
         }
       },
+      { "$type": "GrantImmunity", "immunity": "fire" },
+      { "$type": "GrantImmunity", "immunity": "fire" },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -70,6 +72,10 @@
           "description": "Immune to sleep and paralysis effects."
         }
       },
+      { "$type": "GrantImmunity", "immunity": "sleep" },
+      { "$type": "GrantImmunity", "immunity": "paralysis" },
+      { "$type": "GrantImmunity", "immunity": "sleep" },
+      { "$type": "GrantImmunity", "immunity": "paralysis" },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -107,6 +113,8 @@
           "description": "Damage reduction 20/magic."
         }
       },
+      { "$type": "GrantDR", "value": 20, "bypassedBy": "magic" },
+      { "$type": "GrantDR", "value": 20, "bypassedBy": "magic" },
       {
         "$type": "GrantSLA",
         "sla": {

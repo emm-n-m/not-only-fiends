@@ -99,14 +99,7 @@
         "name": "Spell Power",
         "description": "+1 to caster level for the purpose of level-dependent spell effects. May be selected multiple times. Costs one 5th-level spell slot.",
         "grantedPermabuffs": [
-          {
-            "$type": "GrantAbility",
-            "ability": {
-              "id": "spell_power",
-              "name": "Spell Power",
-              "description": "+1 to caster level for the purpose of determining level-dependent spell variables and for caster level checks."
-            }
-          }
+          { "$type": "GrantCasterLevelModifier", "modifier": { "value": 1 } }
         ]
       },
       {

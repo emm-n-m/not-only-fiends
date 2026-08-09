@@ -296,6 +296,17 @@ public class PermabuffTests
         Assert.Contains("feat:improved_initiative", state.Feats);
     }
 
+    [Fact]
+    public void GrantSaveBonus_UsesHighestBonusOfEachType()
+    {
+        var state = CreateState();
+        new GrantSaveBonus { Target = SaveTarget.Will, BonusType = BonusType.Racial, Value = 2 }.Apply(state);
+        new GrantSaveBonus { Target = SaveTarget.Will, BonusType = BonusType.Racial, Value = 1 }.Apply(state);
+        new GrantSaveBonus { Target = SaveTarget.Will, BonusType = BonusType.Untyped, Value = 2 }.Apply(state);
+
+        Assert.Equal(4 + AbilityScoreSet.Modifier(state.AbilityScores.WIS), state.EffectiveSaves.Will);
+    }
+
     // --- ModifyAttribute ---
 
     [Fact]

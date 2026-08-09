@@ -64,6 +64,7 @@
           "description": "A nymph adds her Charisma modifier as a bonus on all her saving throws, and as a deflection bonus to her Armor Class."
         }
       },
+      { "$type": "GrantAbilityModifierToSaves", "sourceId": "nymph_unearthly_grace", "name": "Unearthly Grace", "ability": "CHA" },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -72,6 +73,7 @@
           "description": "Damage reduction 10/cold iron."
         }
       },
+      { "$type": "GrantDR", "value": 10, "bypassedBy": "cold iron" },
       {
         "$type": "GrantAbility",
         "ability": {

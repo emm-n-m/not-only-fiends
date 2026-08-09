@@ -102,6 +102,7 @@
           "description": "+2 racial bonus on Jump checks."
         }
       },
+      { "$type": "GrantSkillBonus", "skillId": "skill:jump", "value": 2 },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -110,6 +111,7 @@
           "description": "+2 racial bonus on Listen checks."
         }
       },
+      { "$type": "GrantSkillBonus", "skillId": "skill:listen", "value": 2 },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -117,7 +119,8 @@
           "name": "+2 Spot",
           "description": "+2 racial bonus on Spot checks."
         }
-      }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "skill:spot", "value": 2 }
     ],
     "scalingFormulas": []
   },
@@ -210,6 +213,7 @@
           "description": "+5 racial bonus on Hide checks."
         }
       },
+      { "$type": "GrantSkillBonus", "skillId": "skill:hide", "value": 5 },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -218,6 +222,7 @@
           "description": "+5 racial bonus on Move Silently checks."
         }
       },
+      { "$type": "GrantSkillBonus", "skillId": "skill:move_silently", "value": 5 },
       {
         "$type": "GrantBonusFeat",
         "featId": "feat:track"

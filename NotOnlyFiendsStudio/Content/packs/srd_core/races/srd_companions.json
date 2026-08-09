@@ -602,7 +602,12 @@
           "name": "Elemental Traits",
           "description": "Immune to poison, sleep, paralysis, and stunning. Not subject to critical hits or flanking."
         }
-      }
+      },
+      { "$type": "GrantImmunity", "immunity": "poison" },
+      { "$type": "GrantImmunity", "immunity": "sleep" },
+      { "$type": "GrantImmunity", "immunity": "paralysis" },
+      { "$type": "GrantImmunity", "immunity": "stunning" },
+      { "$type": "GrantImmunity", "immunity": "critical hits" }
     ],
     "scalingFormulas": []
   },
@@ -677,7 +682,12 @@
           "name": "Elemental Traits",
           "description": "Immune to poison, sleep, paralysis, and stunning. Not subject to critical hits or flanking."
         }
-      }
+      },
+      { "$type": "GrantImmunity", "immunity": "poison" },
+      { "$type": "GrantImmunity", "immunity": "sleep" },
+      { "$type": "GrantImmunity", "immunity": "paralysis" },
+      { "$type": "GrantImmunity", "immunity": "stunning" },
+      { "$type": "GrantImmunity", "immunity": "critical hits" }
     ],
     "scalingFormulas": []
   },
@@ -753,7 +763,15 @@
           "name": "Undead Traits",
           "description": "Immune to mind-affecting effects, poison, sleep, paralysis, stunning, disease, death effects, and critical hits."
         }
-      }
+      },
+      { "$type": "GrantImmunity", "immunity": "mind-affecting" },
+      { "$type": "GrantImmunity", "immunity": "poison" },
+      { "$type": "GrantImmunity", "immunity": "sleep" },
+      { "$type": "GrantImmunity", "immunity": "paralysis" },
+      { "$type": "GrantImmunity", "immunity": "stunning" },
+      { "$type": "GrantImmunity", "immunity": "disease" },
+      { "$type": "GrantImmunity", "immunity": "death effects" },
+      { "$type": "GrantImmunity", "immunity": "critical hits" }
     ],
     "scalingFormulas": []
   },

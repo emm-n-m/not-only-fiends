@@ -58,8 +58,13 @@
     },
     {
       "$type": "GrantAbility",
-      "ability": { "id": "hf_immunity_poison", "name": "Immunity to Poison", "description": "Immune to all poisons." }
+      "ability": {
+        "id": "hf_immunity_poison",
+        "name": "Poison Immunity",
+        "description": "Immune to poison."
+      }
     },
+    { "$type": "GrantImmunity", "immunity": "poison" },
     {
       "$type": "GrantAbility",
       "ability": { "id": "hf_smite_good", "name": "Smite Good", "description": "Once per day, +CHA to attack, +HD to damage (max 20) vs good creature." }

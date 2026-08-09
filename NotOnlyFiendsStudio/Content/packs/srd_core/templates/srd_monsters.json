@@ -70,6 +70,19 @@
       "$type": "GrantAbility",
       "ability": { "id": "undead_traits", "name": "Undead Traits", "description": "No Constitution score. Uses CHA for HP, Fort saves, and CON-based abilities. Immune to mind-affecting effects, poison, sleep, paralysis, stunning, disease, death effects, critical hits, nonlethal damage, ability drain, energy drain, fatigue, exhaustion, and any effect requiring a Fortitude save unless it also works on objects." }
     },
+    { "$type": "GrantImmunity", "immunity": "mind-affecting" },
+    { "$type": "GrantImmunity", "immunity": "poison" },
+    { "$type": "GrantImmunity", "immunity": "sleep" },
+    { "$type": "GrantImmunity", "immunity": "paralysis" },
+    { "$type": "GrantImmunity", "immunity": "stunning" },
+    { "$type": "GrantImmunity", "immunity": "disease" },
+    { "$type": "GrantImmunity", "immunity": "death effects" },
+    { "$type": "GrantImmunity", "immunity": "critical hits" },
+    { "$type": "GrantImmunity", "immunity": "nonlethal damage" },
+    { "$type": "GrantImmunity", "immunity": "ability drain" },
+    { "$type": "GrantImmunity", "immunity": "energy drain" },
+    { "$type": "GrantImmunity", "immunity": "fatigue" },
+    { "$type": "GrantImmunity", "immunity": "exhaustion" },
     {
       "$type": "GrantAbility",
       "ability": { "id": "undead_darkvision_60", "name": "Darkvision 60 ft.", "description": "See in the dark up to 60 feet." }
@@ -88,8 +101,7 @@
   "levelAdjustment": 8,
   "creationPermabuffs": [
     {
-      "$type": "GrantAbility",
-      "ability": { "id": "vampire_dr", "name": "DR 10/silver and magic", "description": "Damage reduction 10/silver and magic." }
+      "$type": "GrantDR", "value": 10, "bypassedBy": "silver and magic"
     },
     {
       "$type": "ModifyAttribute",

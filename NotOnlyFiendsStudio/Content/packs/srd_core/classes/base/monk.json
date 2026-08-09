@@ -129,7 +129,8 @@
           "name": "Purity of Body",
           "description": "Immune to all diseases, including supernatural and magical diseases."
         }
-      }
+      },
+      { "$type": "GrantImmunity", "immunity": "disease" }
     ],
     "7": [
       {
@@ -159,7 +160,8 @@
           "name": "Diamond Body",
           "description": "Immune to all poisons."
         }
-      }
+      },
+      { "$type": "GrantImmunity", "immunity": "poison" }
     ],
     "12": [
       {
@@ -227,7 +229,8 @@
           "name": "Perfect Self",
           "description": "Type changes to outsider. Gain damage reduction 10/magic."
         }
-      }
+      },
+      { "$type": "GrantDR", "value": 10, "bypassedBy": "magic" }
     ]
   },
   "perLevelPermabuffs": [],

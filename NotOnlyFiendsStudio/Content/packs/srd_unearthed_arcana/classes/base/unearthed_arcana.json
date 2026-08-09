@@ -144,6 +144,7 @@
         "$type": "GrantAbility",
         "ability": { "id": "pot_divine_health", "name": "Divine Health", "description": "Immune to all diseases, including supernatural and magical diseases." }
       },
+      { "$type": "GrantImmunity", "immunity": "disease" },
       {
         "$type": "GrantAbility",
         "ability": { "id": "pot_aura_despair", "name": "Aura of Despair", "description": "10-ft aura; enemies take -2 to all saving throws." }

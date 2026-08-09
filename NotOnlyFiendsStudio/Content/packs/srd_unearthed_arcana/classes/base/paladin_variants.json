@@ -57,7 +57,9 @@
       ],
       "3": [
         { "$type": "GrantAbility", "ability": { "id": "pof_aura_resolve", "name": "Aura of Resolve", "description": "Immune to compulsion; allies within 10 feet gain +4 morale on saves against compulsion." } },
-        { "$type": "GrantAbility", "ability": { "id": "pof_divine_health", "name": "Divine Health", "description": "Immune to all diseases, including supernatural and magical diseases." } }
+        { "$type": "GrantImmunity", "immunity": "compulsion" },
+        { "$type": "GrantAbility", "ability": { "id": "pof_divine_health", "name": "Divine Health", "description": "Immune to all diseases, including supernatural and magical diseases." } },
+        { "$type": "GrantImmunity", "immunity": "disease" }
       ],
       "4": [
         { "$type": "GrantAbility", "ability": { "id": "pof_turn_undead", "name": "Turn Undead", "description": "Turn undead as a cleric of three levels lower." } },
@@ -143,7 +145,8 @@
       ],
       "3": [
         { "$type": "GrantAbility", "ability": { "id": "pos_debilitating_aura", "name": "Debilitating Aura", "description": "Enemies within 10 feet take a -1 penalty to Armor Class." } },
-        { "$type": "GrantAbility", "ability": { "id": "pos_divine_health", "name": "Divine Health", "description": "Immune to all diseases, including supernatural and magical diseases." } }
+        { "$type": "GrantAbility", "ability": { "id": "pos_divine_health", "name": "Divine Health", "description": "Immune to all diseases, including supernatural and magical diseases." } },
+        { "$type": "GrantImmunity", "immunity": "disease" }
       ],
       "4": [
         { "$type": "GrantAbility", "ability": { "id": "pos_rebuke_undead", "name": "Rebuke Undead", "description": "Rebuke undead as an evil cleric of three levels lower." } },

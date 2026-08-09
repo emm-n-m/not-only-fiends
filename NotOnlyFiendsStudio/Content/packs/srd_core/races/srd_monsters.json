@@ -56,6 +56,7 @@
           "description": "Damage reduction 10/cold iron."
         }
       },
+      { "$type": "GrantDR", "value": 10, "bypassedBy": "cold iron" },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -80,6 +81,7 @@
           "description": "+2 racial bonus on Listen checks."
         }
       },
+      { "$type": "GrantSkillBonus", "skillId": "skill:listen", "value": 2 },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -88,6 +90,7 @@
           "description": "+2 racial bonus on Search checks."
         }
       },
+      { "$type": "GrantSkillBonus", "skillId": "skill:search", "value": 2 },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -96,6 +99,7 @@
           "description": "+2 racial bonus on Spot checks."
         }
       },
+      { "$type": "GrantSkillBonus", "skillId": "skill:spot", "value": 2 },
       {
         "$type": "GrantSLA",
         "sla": {
@@ -253,6 +257,7 @@
           "description": "Immune to magic sleep effects."
         }
       },
+      { "$type": "GrantImmunity", "immunity": "sleep" },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -277,6 +282,7 @@
           "description": "+2 racial bonus on Listen checks."
         }
       },
+      { "$type": "GrantSkillBonus", "skillId": "skill:listen", "value": 2 },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -285,6 +291,7 @@
           "description": "+2 racial bonus on Search checks."
         }
       },
+      { "$type": "GrantSkillBonus", "skillId": "skill:search", "value": 2 },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -293,6 +300,7 @@
           "description": "+2 racial bonus on Spot checks."
         }
       },
+      { "$type": "GrantSkillBonus", "skillId": "skill:spot", "value": 2 },
       {
         "$type": "GrantAbility",
         "ability": {

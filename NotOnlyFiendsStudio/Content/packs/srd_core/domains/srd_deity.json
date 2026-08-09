@@ -32,6 +32,8 @@
     "name": "Community",
     "description": "Use calm emotions as a spell-like ability once per day, and gain a +2 competence bonus on Diplomacy checks.",
     "grantedPermabuffs": [
+      { "$type": "GrantSLA", "sla": { "id": "spell:calm_emotions", "name": "Calm Emotions", "usesPerDay": "1/day" } },
+      { "$type": "GrantSkillBonus", "skillId": "skill:diplomacy", "value": 2 },
       {
         "$type": "GrantAbility",
         "ability": {

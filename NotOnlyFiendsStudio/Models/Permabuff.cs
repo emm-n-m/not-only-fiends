@@ -29,6 +29,7 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(ModifyCounter), "ModifyCounter")]
 [JsonDerivedType(typeof(GrantImmunity), "GrantImmunity")]
 [JsonDerivedType(typeof(GrantAbilityModifierToSaves), "GrantAbilityModifierToSaves")]
+[JsonDerivedType(typeof(GrantSaveBonus), "GrantSaveBonus")]
 [JsonDerivedType(typeof(GrantDR), "GrantDR")]
 [JsonDerivedType(typeof(GrantSkillBonus), "GrantSkillBonus")]
 [JsonDerivedType(typeof(GrantClassFeatureSelection), "GrantClassFeatureSelection")]
@@ -43,6 +44,7 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(GrantLanguage), "GrantLanguage")]
 [JsonDerivedType(typeof(GrantLanguageSlot), "GrantLanguageSlot")]
 [JsonDerivedType(typeof(GrantMovement), "GrantMovement")]
+[JsonDerivedType(typeof(ModifyMovement), "ModifyMovement")]
 public abstract class Permabuff
 {
     public abstract void Apply(PermabuffContext ctx);
@@ -265,6 +267,21 @@ public class GrantMovement : Permabuff
         {
             state.FlyManeuverability = FlyManeuverability.Value;
         }
+    }
+}
+
+/// <summary>Adjusts an existing movement mode, preserving the creature's base speed.</summary>
+public class ModifyMovement : Permabuff
+{
+    public MovementMode Mode { get; set; }
+    public int Amount { get; set; }
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        var state = ctx.State;
+        var speed = state.BaseSpeeds.GetValueOrDefault(Mode) + Amount;
+        state.BaseSpeeds[Mode] = speed;
+        state.Speeds[Mode] = speed;
     }
 }
 
@@ -811,6 +828,23 @@ public class GrantAbilityModifierToSaves : Permabuff
     }
 }
 
+public class GrantSaveBonus : Permabuff
+{
+    public SaveTarget Target { get; set; }
+    public BonusType BonusType { get; set; } = BonusType.Untyped;
+    public int Value { get; set; }
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        ctx.State.SaveBonuses.Add(new SaveBonus
+        {
+            Target = Target,
+            BonusType = BonusType,
+            Value = Value
+        });
+    }
+}
+
 public class GrantImmunity : Permabuff
 {
     public string Immunity { get; set; } = string.Empty;
@@ -958,13 +992,13 @@ public class GrantTypedBonus : Permabuff
     {
         switch (Target)
         {
-            case BonusTarget.SaveFort: state.BaseSaves.Fort += v; break;
-            case BonusTarget.SaveRef: state.BaseSaves.Ref += v; break;
-            case BonusTarget.SaveWill: state.BaseSaves.Will += v; break;
+            case BonusTarget.SaveFort: AddSaveBonus(state, SaveTarget.Fort, v); break;
+            case BonusTarget.SaveRef: AddSaveBonus(state, SaveTarget.Ref, v); break;
+            case BonusTarget.SaveWill: AddSaveBonus(state, SaveTarget.Will, v); break;
             case BonusTarget.AllSaves:
-                state.BaseSaves.Fort += v;
-                state.BaseSaves.Ref += v;
-                state.BaseSaves.Will += v;
+                AddSaveBonus(state, SaveTarget.Fort, v);
+                AddSaveBonus(state, SaveTarget.Ref, v);
+                AddSaveBonus(state, SaveTarget.Will, v);
                 break;
             case BonusTarget.NaturalArmor: state.NaturalArmor += v; break;
             case BonusTarget.SR: state.SpellResistance = (state.SpellResistance ?? 0) + v; break;
@@ -982,6 +1016,16 @@ public class GrantTypedBonus : Permabuff
     {
         var current = state.AbilityScores.GetScore(ability);
         state.AbilityScores.SetScore(ability, current + v);
+    }
+
+    private void AddSaveBonus(CharacterState state, SaveTarget target, int value)
+    {
+        switch (target)
+        {
+            case SaveTarget.Fort: state.BaseSaves.Fort += value; break;
+            case SaveTarget.Ref: state.BaseSaves.Ref += value; break;
+            case SaveTarget.Will: state.BaseSaves.Will += value; break;
+        }
     }
 }
 

@@ -293,6 +293,7 @@
           "description": "+2 racial bonus on Craft (alchemy) checks."
         }
       },
+      { "$type": "GrantSkillBonus", "skillId": "skill:craft_alchemy", "value": 2 },
       {
         "$type": "GrantSLA",
         "sla": {
@@ -528,6 +529,9 @@
           "description": "+1 racial bonus on all saving throws."
         }
       },
+      { "$type": "GrantSaveBonus", "target": "Fort", "bonusType": "Racial", "value": 1 },
+      { "$type": "GrantSaveBonus", "target": "Ref", "bonusType": "Racial", "value": 1 },
+      { "$type": "GrantSaveBonus", "target": "Will", "bonusType": "Racial", "value": 1 },
       {
         "$type": "GrantAbility",
         "ability": {
