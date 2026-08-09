@@ -1,5 +1,33 @@
 # Known issues
 
+## 27 animal companions still have no class skills
+
+The Animal type grants no class-skill list of its own — a creature's class skills are the skills
+named in its own statblock — so an animal with none has every rank it buys charged at cross-class
+rate. The ten familiar-adjacent races were fixed on 2026-08-09 and the three snakes shortly after
+(a 5 HD Int-3 viper gets 1 point per HD and 4 at first, 8 in total, which is exactly what 8 ranks
+of Hide costs as a class skill and half what it costs cross-class). The rest of
+`srd_animal_companions*.json` and `srd_companions.json` are still untouched.
+
+Two traps make a bulk extraction from the SRD unsafe, both hit on the first attempt:
+
+- **`monstersDitoDo.html` runs every dire animal in one table**, so slicing per anchor bleeds
+  across entries — a dire bat came out with Swim, Climb +8 and Survival +4 lifted from its
+  neighbours. Skill *names* are safe to take from an interleaved statblock (they do not vary by
+  column) but bonuses are not.
+- **Some bonuses are conditional**: the polar bear's "+12 on Hide checks *in snowy areas*", the
+  owl's Spot in shadowy illumination, the cat's Hide in tall grass. The engine has no situational
+  modifiers, so these must be dropped rather than applied flat.
+
+## PCGen animal tricks import as unmatched class abilities
+
+A `.pcg` records trained tricks as class abilities — "Animal Trick ~ Attack", "~ Defend", "~ Fetch"
+and so on — and the converter reports each as `has no matching class-feature option`. They are not
+class features at all: tricks are outcomes of the Handle Animal skill, described on that skill's
+page, and belong to the animal's training rather than to any class. Either map them to a Handle
+Animal-derived record or recognise and drop them; today they are eight warnings of pure noise on
+any trained companion.
+
 ## The Celestial and Fiendish Creature templates are derived, not transcribed
 
 The SRD mirror carries neither page — `siteMap.html` lists both, but no file holds the text, the

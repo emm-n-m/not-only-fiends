@@ -203,7 +203,15 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:balance",
+      "skill:climb",
+      "skill:hide",
+      "skill:listen",
+      "skill:spot",
+      "skill:swim"
+    ]
   },
   {
     "id": "race:companion_wolverine",
@@ -306,7 +314,7 @@
         "ability": {
           "id": "croc_hold_breath",
           "name": "Hold Breath",
-          "description": "Can hold breath for a number of rounds equal to 4 \u00d7 Constitution score before risking drowning."
+          "description": "Can hold breath for a number of rounds equal to 4 × Constitution score before risking drowning."
         }
       },
       {

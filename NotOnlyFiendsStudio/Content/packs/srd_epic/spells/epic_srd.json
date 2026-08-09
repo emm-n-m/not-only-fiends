@@ -53,6 +53,8 @@
     "school": "conjuration",
     "descriptors": [],
     "classLevels": {
+      "class:epic_spells_cha": 10,
+      "class:epic_spells_int": 10,
       "class:epic_spells_wis": 10
     },
     "components": {
@@ -125,6 +127,8 @@
       "teleportation"
     ],
     "classLevels": {
+      "class:epic_spells_cha": 10,
+      "class:epic_spells_int": 10,
       "class:epic_spells_wis": 10
     },
     "components": {
@@ -250,6 +254,8 @@
       "teleportation"
     ],
     "classLevels": {
+      "class:epic_spells_cha": 10,
+      "class:epic_spells_int": 10,
       "class:epic_spells_wis": 10
     },
     "components": {
@@ -901,6 +907,8 @@
       "mind-affecting"
     ],
     "classLevels": {
+      "class:epic_spells_cha": 10,
+      "class:epic_spells_int": 10,
       "class:epic_spells_wis": 10
     },
     "components": {
@@ -994,6 +1002,8 @@
     "school": "abjuration",
     "descriptors": [],
     "classLevels": {
+      "class:epic_spells_cha": 10,
+      "class:epic_spells_int": 10,
       "class:epic_spells_wis": 10
     },
     "components": {

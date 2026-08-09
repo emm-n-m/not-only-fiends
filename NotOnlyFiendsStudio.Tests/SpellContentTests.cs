@@ -45,6 +45,30 @@ public class SpellContentTests
     }
 
     [Fact]
+    public void RequestedEpicSrdSpells_AreOnAllEpicSpellLists()
+    {
+        var registry = TestContentHelper.LoadBundledPacks();
+        var spellIds = new[]
+        {
+            "spell:contingent_resurrection",
+            "spell:damnation",
+            "spell:dreamscape",
+            "spell:soul_dominion",
+            "spell:superb_dispelling",
+        };
+
+        // The RSRD epic spell list assigns each of these to Epic Spells (CHA),
+        // Epic Spells (INT), and Epic Spells (WIS), all at level 10.
+        foreach (var spellId in spellIds)
+        {
+            var spell = registry.GetSpell(spellId);
+            Assert.Equal(10, spell.ClassLevels[EpicSpellcasting.CharismaListId]);
+            Assert.Equal(10, spell.ClassLevels[EpicSpellcasting.IntelligenceListId]);
+            Assert.Equal(10, spell.ClassLevels[EpicSpellcasting.WisdomListId]);
+        }
+    }
+
+    [Fact]
     public void GetSpellsForClass_FiltersAndOrders()
     {
         var registry = TestContentHelper.LoadAllPacks();

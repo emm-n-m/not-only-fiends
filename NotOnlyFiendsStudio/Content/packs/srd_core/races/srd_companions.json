@@ -110,7 +110,15 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:balance",
+      "skill:climb",
+      "skill:hide",
+      "skill:listen",
+      "skill:spot",
+      "skill:swim"
+    ]
   },
   {
     "id": "race:companion_snake_viper_large",
@@ -160,7 +168,15 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:balance",
+      "skill:climb",
+      "skill:hide",
+      "skill:listen",
+      "skill:spot",
+      "skill:swim"
+    ]
   },
   {
     "id": "race:companion_raven",
@@ -603,11 +619,26 @@
           "description": "Immune to poison, sleep, paralysis, and stunning. Not subject to critical hits or flanking."
         }
       },
-      { "$type": "GrantImmunity", "immunity": "poison" },
-      { "$type": "GrantImmunity", "immunity": "sleep" },
-      { "$type": "GrantImmunity", "immunity": "paralysis" },
-      { "$type": "GrantImmunity", "immunity": "stunning" },
-      { "$type": "GrantImmunity", "immunity": "critical hits" }
+      {
+        "$type": "GrantImmunity",
+        "immunity": "poison"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "sleep"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "paralysis"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "stunning"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "critical hits"
+      }
     ],
     "scalingFormulas": []
   },
@@ -683,11 +714,26 @@
           "description": "Immune to poison, sleep, paralysis, and stunning. Not subject to critical hits or flanking."
         }
       },
-      { "$type": "GrantImmunity", "immunity": "poison" },
-      { "$type": "GrantImmunity", "immunity": "sleep" },
-      { "$type": "GrantImmunity", "immunity": "paralysis" },
-      { "$type": "GrantImmunity", "immunity": "stunning" },
-      { "$type": "GrantImmunity", "immunity": "critical hits" }
+      {
+        "$type": "GrantImmunity",
+        "immunity": "poison"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "sleep"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "paralysis"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "stunning"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "critical hits"
+      }
     ],
     "scalingFormulas": []
   },
@@ -764,14 +810,38 @@
           "description": "Immune to mind-affecting effects, poison, sleep, paralysis, stunning, disease, death effects, and critical hits."
         }
       },
-      { "$type": "GrantImmunity", "immunity": "mind-affecting" },
-      { "$type": "GrantImmunity", "immunity": "poison" },
-      { "$type": "GrantImmunity", "immunity": "sleep" },
-      { "$type": "GrantImmunity", "immunity": "paralysis" },
-      { "$type": "GrantImmunity", "immunity": "stunning" },
-      { "$type": "GrantImmunity", "immunity": "disease" },
-      { "$type": "GrantImmunity", "immunity": "death effects" },
-      { "$type": "GrantImmunity", "immunity": "critical hits" }
+      {
+        "$type": "GrantImmunity",
+        "immunity": "mind-affecting"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "poison"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "sleep"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "paralysis"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "stunning"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "disease"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "death effects"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "critical hits"
+      }
     ],
     "scalingFormulas": []
   },
