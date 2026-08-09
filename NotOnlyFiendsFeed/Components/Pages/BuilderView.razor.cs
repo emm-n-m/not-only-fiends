@@ -1646,6 +1646,10 @@ public partial class BuilderView
 
     private int FollowerCapacity(int level) => _state?.Followers.At(level) ?? 0;
 
+    /// Followers linked at a level, counted by their ECL — see CompanionResolver. Falls back to
+    /// nothing when companions have not been resolved (no links, or the store is unconfigured).
+    private int FollowersLinkedAt(int level) => _state?.FollowerOccupancy.GetValueOrDefault(level) ?? 0;
+
     /// The SRD Leadership modifier table, as toggles. Most of it is DM judgement about the
     /// campaign, so it is character input; the familiar/mount/companion penalty and the
     /// different-alignment cohort penalty are derived and deliberately absent from this list.

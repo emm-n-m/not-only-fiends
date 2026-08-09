@@ -526,6 +526,88 @@ public class LeadershipTests
         Assert.Equal(20, state.MaxCohortLevel);
     }
 
+    // ---------- follower slots are filled by ECL ----------
+
+    /// <summary>
+    /// "Number of Followers by Level" counts a follower's level, and level adjustment is part of
+    /// that — a 6 HD aranea with LA +4 fills a 10th-level slot, not a 6th. The stored
+    /// CompanionLink.FollowerLevel cannot be used: PCGen writes HITDICE:0 on every FOLLOWER line,
+    /// so every imported link claims level 0.
+    /// </summary>
+    [Fact]
+    public void FollowersOccupyTheSlotMatchingTheirEcl()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        var master = BuildFighterWithLeadership(levels: 20, cha: 20);
+        master.CompanionLinks = new List<CompanionLink>
+        {
+            new()
+            {
+                LinkType = "leadership_follower",
+                CompanionId = "drow",
+                FollowerLevel = 0,          // what an import leaves behind
+                EffectiveLevelFormula = new Formula("TotalHD")
+            }
+        };
+
+        // A drow has LA +2, so 3 racial-free class levels reach ECL 5.
+        var follower = new Character
+        {
+            Name = "Drow follower",
+            RaceId = "race:drow",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 3).Select(_ => new Tick { DriverId = "class:fighter" }).ToList()
+        };
+
+        var result = new CompanionResolver(engine, _ => follower).Build(master);
+        var followerState = result.Companions[0].State;
+
+        Assert.Equal(3, followerState.TotalHD);
+        Assert.Equal(5, followerState.ECL);            // 3 HD + LA 2
+        // Filed under 5, not 3, and not the link's stored 0.
+        Assert.Equal(1, result.MasterState.FollowerOccupancy.GetValueOrDefault(5));
+        Assert.Equal(0, result.MasterState.FollowerOccupancy.GetValueOrDefault(3));
+        Assert.Equal(0, result.MasterState.FollowerOccupancy.GetValueOrDefault(0));
+    }
+
+    /// <summary>Over-filling a follower level is reported against that level's capacity.</summary>
+    [Fact]
+    public void MoreFollowersThanCapacityAtALevelWarns()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        // Fighter 10 + Cha 12 (+1) = score 11 → 6 first-level followers and nothing above.
+        var master = BuildFighterWithLeadership(levels: 10, cha: 12);
+        master.CompanionLinks = Enumerable.Range(0, 2).Select(i => new CompanionLink
+        {
+            LinkType = "leadership_follower",
+            CompanionId = $"follower{i}",
+            EffectiveLevelFormula = new Formula("TotalHD")
+        }).ToList();
+
+        // Two 2nd-level followers, where the table allows none.
+        var follower = new Character
+        {
+            Name = "Follower",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 2).Select(_ => new Tick { DriverId = "class:fighter" }).ToList()
+        };
+
+        var result = new CompanionResolver(engine, _ => follower).Build(master);
+
+        Assert.Equal(11, result.MasterState.LeadershipFollowerScore);
+        Assert.Equal(0, result.MasterState.Followers.At(2));
+        Assert.Equal(2, result.MasterState.FollowerOccupancy[2]);
+        Assert.Contains(result.MasterState.Warnings, w =>
+            w.Message.Contains("2 follower(s) of level 2 linked"));
+    }
+
     private static Character BuildFighterWithLeadership(int levels, int cha)
     {
         // Feat schedule: fighter gets bonus feats at L1, L2, L4, L6, L8, ...

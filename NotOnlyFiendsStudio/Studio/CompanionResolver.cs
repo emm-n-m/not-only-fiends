@@ -136,6 +136,9 @@ public class CompanionResolver
             if (link.LinkType == "leadership_cohort")
                 ApplyDifferentAlignmentCohortPenalty(result.MasterState, companionState);
 
+            if (link.LinkType is "leadership_follower" or "follower")
+                RecordFollowerOccupancy(result.MasterState, companionState);
+
             if (IsFamiliarLinkType(link.LinkType))
                 ApplyFamiliarMasterStats(result.MasterState, companionState, _engine);
 
@@ -156,10 +159,12 @@ public class CompanionResolver
                     TickIndex = null,
                     Message = $"Leadership cohort '{link.CompanionId}' ECL {companionState.ECL} exceeds "
                         + $"max cohort level {result.MasterState.MaxCohortLevel} "
-                        + $"(Leadership score {result.MasterState.LeadershipScore})."
+                        + $"(cohort Leadership score {result.MasterState.LeadershipCohortScore})."
                 });
             }
         }
+
+        CheckFollowerCapacity(result.MasterState);
 
         return result;
     }
@@ -203,6 +208,41 @@ public class CompanionResolver
         master.MaxCohortLevel = Math.Min(
             LeadershipTables.LookupCohortLevelFor(master.Feats, master.LeadershipCohortScore),
             master.TotalHD - 1);
+    }
+
+    /// <summary>
+    /// A follower occupies the slot matching its <b>ECL</b>, not its hit dice: the Leadership table
+    /// counts "followers of each level", and level adjustment is part of a character's level. Lilly's
+    /// aranea messenger is 6 HD with LA +4 and so fills a 10th-level slot, not a 6th.
+    ///
+    /// The stored <see cref="CompanionLink.FollowerLevel"/> is not used — PCGen writes HITDICE:0 on
+    /// every FOLLOWER line, so imported links all claim level 0.
+    /// </summary>
+    private static void RecordFollowerOccupancy(CharacterState master, CharacterState follower)
+    {
+        var level = follower.ECL;
+        if (level <= 0) return;
+        master.FollowerOccupancy[level] = master.FollowerOccupancy.GetValueOrDefault(level) + 1;
+    }
+
+    /// <summary>
+    /// Reports follower levels the leader has over-filled. Runs once, after every link is resolved,
+    /// because a level is only over capacity once all of its occupants are counted.
+    /// </summary>
+    private static void CheckFollowerCapacity(CharacterState master)
+    {
+        foreach (var (level, taken) in master.FollowerOccupancy.OrderBy(entry => entry.Key))
+        {
+            var capacity = master.Followers.At(level);
+            if (taken <= capacity) continue;
+
+            master.Warnings.Add(new Warning
+            {
+                TickIndex = null,
+                Message = $"{taken} follower(s) of level {level} linked, but a Leadership score of "
+                    + $"{master.LeadershipFollowerScore} supports {capacity} at that level."
+            });
+        }
     }
 
     private static bool IsFamiliarLinkType(string linkType) =>

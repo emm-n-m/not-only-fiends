@@ -229,6 +229,15 @@ public class CharacterState
     public List<string> LeadershipModifierNotes { get; set; } = new();
 
     public int MaxCohortLevel { get; set; }
+
+    /// <summary>
+    /// Followers actually linked, counted by the level they occupy — which is their **ECL**, not
+    /// their hit dice. A level-adjusted follower costs a leader a higher slot than its HD suggests:
+    /// a 6 HD aranea with LA +4 fills a 10th-level slot. Populated host-side by
+    /// <c>CompanionResolver</c>, which is the only place the followers themselves are evaluated.
+    /// Compare against <see cref="Followers"/> for capacity.
+    /// </summary>
+    public Dictionary<int, int> FollowerOccupancy { get; set; } = new();
     public FollowerCounts Followers { get; set; } = new();
 
     // Companion-side: only set when this Character is a companion.

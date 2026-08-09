@@ -1652,26 +1652,22 @@ else
                         </div>
                     }
 
-                    @if (_state.Feats.Contains("feat:leadership")
-                        || _character.CompanionLinks.Any(link => link.LinkType is "leadership_follower" or "follower"))
+                    @if (_state.Feats.Contains("feat:leadership"))
                     {
-                        var followerLinks = _character.CompanionLinks
-                            .Where(link => link.LinkType is "leadership_follower" or "follower")
-                            .ToArray();
-                        var followerCapacity = FollowerCapacity(_leadershipFollowerLevel);
-                        var followersAtLevel = followerLinks.Count(link => link.FollowerLevel == _leadershipFollowerLevel);
                         <div class="border rounded p-2 mb-2">
                             <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-                                <strong>Leadership followers</strong>
-                                <span class="badge bg-secondary" title="Base: character level + Cha modifier">base @_state.LeadershipScore</span>
+                                <strong>Leadership</strong>
+                                <span class="badge bg-secondary" title="Character level + Charisma modifier">base @_state.LeadershipScore</span>
                                 <span class="badge bg-info text-dark" title="@string.Join("; ", _state.LeadershipModifierNotes)">cohort @_state.LeadershipCohortScore</span>
                                 <span class="badge bg-info text-dark" title="@string.Join("; ", _state.LeadershipModifierNotes)">followers @_state.LeadershipFollowerScore</span>
-                                @for (var level = 1; level <= HighestFollowerLevel(); level++)
-                                {
-                                    <span class="badge bg-light text-dark">L@level: @FollowerCapacity(level)</span>
-                                }
+                                <span class="badge bg-light text-dark">max cohort level @_state.MaxCohortLevel</span>
                             </div>
-                            <details class="mb-2">
+                            <div class="form-text mb-1">
+                                The SRD modifier table gives a leader two different effective scores:
+                                reputation counts whoever is being recruited, the rest applies to cohorts
+                                or to followers but not both.
+                            </div>
+                            <details class="mb-2" open>
                                 <summary class="small text-muted">Leadership modifiers (campaign judgement)</summary>
                                 <div class="d-flex flex-wrap gap-3 mt-1">
                                     @foreach (var row in LeadershipModifierRows)
@@ -1702,13 +1698,36 @@ else
                                     not listed here.
                                 </div>
                             </details>
+                        </div>
+                    }
+
+                    @if (_state.Feats.Contains("feat:leadership")
+                        || _character.CompanionLinks.Any(link => link.LinkType is "leadership_follower" or "follower"))
+                    {
+                        var followerLinks = _character.CompanionLinks
+                            .Where(link => link.LinkType is "leadership_follower" or "follower")
+                            .ToArray();
+                        var followerCapacity = FollowerCapacity(_leadershipFollowerLevel);
+                        var followersAtLevel = FollowersLinkedAt(_leadershipFollowerLevel);
+                        <div class="border rounded p-2 mb-2">
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                <strong>Leadership followers</strong>
+                                <span class="badge bg-info text-dark" title="@string.Join("; ", _state.LeadershipModifierNotes)">follower score @_state.LeadershipFollowerScore</span>
+                                @for (var level = 1; level <= HighestFollowerLevel(); level++)
+                                {
+                                    <span class="badge @(FollowersLinkedAt(level) > FollowerCapacity(level) ? "bg-danger" : "bg-light text-dark")"
+                                          title="ECL @level — @FollowersLinkedAt(level) linked of @FollowerCapacity(level)">
+                                        L@level: @FollowersLinkedAt(level)/@FollowerCapacity(level)
+                                    </span>
+                                }
+                            </div>
                             <div class="d-flex flex-wrap align-items-center gap-1 mb-2">
                                 <label class="small" for="leadership-follower-level">Follower level</label>
                                 <select id="leadership-follower-level" class="form-select form-select-sm" style="width:auto"
                                         @bind="_leadershipFollowerLevel">
                                     @for (var level = 1; level <= HighestFollowerLevel(); level++)
                                     {
-                                        <option value="@level">@level (capacity @FollowerCapacity(level))</option>
+                                        <option value="@level">@level (@FollowersLinkedAt(level) of @FollowerCapacity(level) filled)</option>
                                     }
                                 </select>
                                 <span class="small text-muted">@followersAtLevel / @followerCapacity linked</span>
