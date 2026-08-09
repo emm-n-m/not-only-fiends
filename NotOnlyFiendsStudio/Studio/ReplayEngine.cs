@@ -810,20 +810,18 @@ public class ReplayStudio
             // Epic Leadership replaces the table rather than adding to it: "The character attracts
             // a cohort and followers as shown below on Table: Epic Leadership … Normal: The
             // Leadership feat provides no benefit for leadership scores beyond 25."
-            var epic = state.Feats.Contains("feat:epic_leadership");
-
             // Cohort level is a table column, not arithmetic — the SRD progression is irregular
             // (score 20 → 14th, 21 → 15th, 22 → 15th). The only formula is the separate cap:
             // "Regardless of the character's Leadership score, he or she can't recruit a cohort of
             // his or her level or higher."
-            var cohortFromTable = epic
-                ? LeadershipTables.LookupEpicCohortLevel(state.LeadershipScore)
-                : LeadershipTables.LookupCohortLevel(state.LeadershipScore);
-            state.MaxCohortLevel = Math.Min(cohortFromTable, state.TotalHD - 1);
+            ApplyLeadershipModifiers(state, character);
 
-            state.Followers = epic
-                ? LeadershipTables.LookupEpicFollowerCounts(state.LeadershipScore)
-                : LeadershipTables.LookupFollowerCounts(state.LeadershipScore);
+            state.MaxCohortLevel = Math.Min(
+                LeadershipTables.LookupCohortLevelFor(state.Feats, state.LeadershipCohortScore),
+                state.TotalHD - 1);
+
+            state.Followers =
+                LeadershipTables.LookupFollowerCountsFor(state.Feats, state.LeadershipFollowerScore);
 
             // Re-evaluate any slot whose formula references LeadershipScore (cohort cap).
             foreach (var slot in state.CompanionSlots)
@@ -1675,6 +1673,51 @@ public class ReplayStudio
             epicCaster.SpellsPerDay = new Dictionary<int, int> { [EpicSpellcasting.SpellLevel] = slots };
             epicCaster.AcquisitionOverride = SpellAcquisition.Developed;
         }
+    }
+
+    /// <summary>
+    /// SRD Leadership, "Leadership Modifiers". Reputation shifts the score whoever the leader is
+    /// recruiting; the other two groups apply only to cohorts or only to followers, which is why
+    /// a character ends up with two effective scores rather than one.
+    ///
+    /// Most of the table is a campaign fact and comes from <see cref="Character.LeadershipModifiers"/>.
+    /// One entry is derivable and so is computed here rather than trusted as input: "Has a familiar,
+    /// special mount, or animal companion -2". The remaining derivable one — "Recruits a cohort of
+    /// a different alignment -1" — needs the cohort itself and is applied host-side by
+    /// <c>CompanionResolver</c>.
+    /// </summary>
+    private static void ApplyLeadershipModifiers(CharacterState state, Character character)
+    {
+        var modifiers = character.LeadershipModifiers;
+        var notes = state.LeadershipModifierNotes;
+
+        void Note(string label, int value)
+        {
+            if (value != 0) notes.Add($"{label} {value:+#;-#;0}");
+        }
+
+        Note("Great renown", modifiers.GreatRenown ? 2 : 0);
+        Note("Fairness and generosity", modifiers.FairnessAndGenerosity ? 1 : 0);
+        Note("Special power", modifiers.SpecialPower ? 1 : 0);
+        Note("Failure", modifiers.Failure ? -1 : 0);
+        Note("Aloofness", modifiers.Aloofness ? -1 : 0);
+        Note("Cruelty", modifiers.Cruelty ? -2 : 0);
+
+        // Cohort side. A familiar, special mount or animal companion costs 2 whether the character
+        // chose it or a class handed it over, so it is read off the resolved slots.
+        var boundCompanion = state.CompanionSlots.Any(slot =>
+            slot.LinkType is "familiar" or "improved_familiar" or "special_mount" or "animal_companion");
+        var companionPenalty = boundCompanion ? -2 : 0;
+        Note("Has a familiar, special mount, or animal companion (cohort only)", companionPenalty);
+        Note("Caused the death of a cohort (cohort only)", -2 * Math.Max(0, modifiers.CohortDeathsCaused));
+
+        // Follower side.
+        Note("Has a stronghold or base of operations (followers only)", modifiers.HasStronghold ? 2 : 0);
+        Note("Moves around a lot (followers only)", modifiers.MovesAroundALot ? -1 : 0);
+        Note("Caused the death of other followers (followers only)", modifiers.CausedFollowerDeaths ? -1 : 0);
+
+        state.LeadershipCohortScore = state.LeadershipScore + modifiers.CohortModifier + companionPenalty;
+        state.LeadershipFollowerScore = state.LeadershipScore + modifiers.FollowerModifier;
     }
 
     private static int WholeSkillRanks(CharacterState state, string skillId) =>

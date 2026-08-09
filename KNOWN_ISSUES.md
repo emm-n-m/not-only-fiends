@@ -10,6 +10,15 @@ disagree. The warning a player sees uses `MaxCohortLevel` and is correct; the sl
 level, which drives companion scaling, is not. Either the DSL needs a `CohortLevel()` function or
 the slot should read `MaxCohortLevel` directly.
 
+## Leadership modifiers are a manual input, and PCG cannot supply them
+
+The SRD modifier table is mostly campaign judgement — renown, cruelty, whether the leader keeps a
+stronghold — so it lives in `Character.LeadershipModifiers` and must be set per character in the
+builder. Nothing derives it, and the PCG importer does not carry it because a `.pcg` has no
+equivalent field, so an imported character starts with every modifier unset and a Leadership score
+equal to the bare base. The two that *are* derivable (familiar/mount/companion, differently
+aligned cohort) are computed and are not settable.
+
 ## The PCG baseline does not record leadership outputs
 
 `PcgImportRegression`'s `CharacterReport` captures no `Followers`, `LeadershipScore` or

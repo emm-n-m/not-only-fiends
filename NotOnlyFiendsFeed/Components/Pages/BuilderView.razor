@@ -1663,12 +1663,45 @@ else
                         <div class="border rounded p-2 mb-2">
                             <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                                 <strong>Leadership followers</strong>
-                                <span class="badge bg-secondary">score @_state.LeadershipScore</span>
+                                <span class="badge bg-secondary" title="Base: character level + Cha modifier">base @_state.LeadershipScore</span>
+                                <span class="badge bg-info text-dark" title="@string.Join("; ", _state.LeadershipModifierNotes)">cohort @_state.LeadershipCohortScore</span>
+                                <span class="badge bg-info text-dark" title="@string.Join("; ", _state.LeadershipModifierNotes)">followers @_state.LeadershipFollowerScore</span>
                                 @for (var level = 1; level <= HighestFollowerLevel(); level++)
                                 {
                                     <span class="badge bg-light text-dark">L@level: @FollowerCapacity(level)</span>
                                 }
                             </div>
+                            <details class="mb-2">
+                                <summary class="small text-muted">Leadership modifiers (campaign judgement)</summary>
+                                <div class="d-flex flex-wrap gap-3 mt-1">
+                                    @foreach (var row in LeadershipModifierRows)
+                                    {
+                                        var capturedLabel = row.Label;
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                   id="@($"lead-{capturedLabel.GetHashCode()}")"
+                                                   checked="@GetLeadershipFlag(capturedLabel)"
+                                                   @onchange="e => SetLeadershipFlag(capturedLabel, (bool)(e.Value ?? false))" />
+                                            <label class="form-check-label small" for="@($"lead-{capturedLabel.GetHashCode()}")">
+                                                @capturedLabel
+                                                <span class="text-muted">@(row.Group == "followers" ? " — followers only" : "")</span>
+                                            </label>
+                                        </div>
+                                    }
+                                    <div class="d-flex align-items-center gap-1">
+                                        <label class="small" for="lead-cohort-deaths">Cohorts caused to die (-2 each, cohort only)</label>
+                                        <input id="lead-cohort-deaths" type="number" min="0" class="form-control form-control-sm"
+                                               style="width:5rem"
+                                               value="@_character.LeadershipModifiers.CohortDeathsCaused"
+                                               @onchange="e => SetCohortDeaths(int.TryParse(e.Value?.ToString(), out var v) ? v : 0)" />
+                                    </div>
+                                </div>
+                                <div class="form-text">
+                                    Keeping a familiar, special mount or animal companion (-2) and recruiting a
+                                    cohort of a different alignment (-1) are worked out from the character and are
+                                    not listed here.
+                                </div>
+                            </details>
                             <div class="d-flex flex-wrap align-items-center gap-1 mb-2">
                                 <label class="small" for="leadership-follower-level">Follower level</label>
                                 <select id="leadership-follower-level" class="form-select form-select-sm" style="width:auto"

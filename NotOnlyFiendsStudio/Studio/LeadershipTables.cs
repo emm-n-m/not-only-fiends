@@ -62,6 +62,21 @@ public static class LeadershipTables
         };
     }
 
+    /// <summary>
+    /// Picks the right cohort-level table for a character: Epic Leadership replaces the base one.
+    /// Saves every caller from repeating the feat check.
+    /// </summary>
+    public static int LookupCohortLevelFor(IEnumerable<string> feats, int leadershipScore) =>
+        feats.Contains("feat:epic_leadership")
+            ? LookupEpicCohortLevel(leadershipScore)
+            : LookupCohortLevel(leadershipScore);
+
+    /// <summary>The follower-count counterpart of <see cref="LookupCohortLevelFor"/>.</summary>
+    public static FollowerCounts LookupFollowerCountsFor(IEnumerable<string> feats, int leadershipScore) =>
+        feats.Contains("feat:epic_leadership")
+            ? LookupEpicFollowerCounts(leadershipScore)
+            : LookupFollowerCounts(leadershipScore);
+
     public static FollowerCounts LookupFollowerCounts(int leadershipScore)
     {
         // Below 10 → no followers attracted.

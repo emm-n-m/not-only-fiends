@@ -211,6 +211,23 @@ public class CharacterState
     // Leadership accumulators. Final values computed in tail pass when feat:leadership present.
     public int LeadershipScore { get; set; }
     public int LeadershipScoreModifier { get; set; }
+
+    /// <summary>
+    /// Effective Leadership score for attracting a cohort: the base score plus reputation, minus
+    /// the cohort-side penalties. The SRD's modifier groups differ for cohorts and followers, so
+    /// one number cannot serve both.
+    /// </summary>
+    public int LeadershipCohortScore { get; set; }
+
+    /// <summary>Effective Leadership score for attracting followers.</summary>
+    public int LeadershipFollowerScore { get; set; }
+
+    /// <summary>
+    /// Why the two scores differ from the base, in the order the SRD lists them. Display only —
+    /// the sheet has to be able to explain a number a player did not expect.
+    /// </summary>
+    public List<string> LeadershipModifierNotes { get; set; } = new();
+
     public int MaxCohortLevel { get; set; }
     public FollowerCounts Followers { get; set; } = new();
 

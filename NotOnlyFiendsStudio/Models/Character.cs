@@ -43,6 +43,15 @@ public class Character
     // Permanent events between ticks (Tomes, Wish inherent bonuses)
     public List<PermanentEvent> PermanentEvents { get; set; } = new();
 
+    /// <summary>
+    /// The DM-judgement half of the Leadership score. Most of the SRD's modifier table cannot be
+    /// derived from a character sheet — whether a leader has great renown or a reputation for
+    /// cruelty is a campaign fact — so they are stored as inputs. The two that *are* derivable
+    /// (keeping a familiar/mount/companion, and recruiting a cohort of a different alignment) are
+    /// computed instead and must not be set here.
+    /// </summary>
+    public LeadershipModifiers LeadershipModifiers { get; set; } = new();
+
     // Post-tick modifiers
     public List<EquipmentEntry> Equipment { get; set; } = new();
 
@@ -80,6 +89,7 @@ public class Character
             WIS = BaseAbilityScores.WIS,
             CHA = BaseAbilityScores.CHA
         },
+        LeadershipModifiers = LeadershipModifiers.Clone(),
         BonusLanguageIds = new List<string>(BonusLanguageIds),
         SourceLanguageIds = new List<string>(SourceLanguageIds),
         GrantedLanguageIds = new List<string>(GrantedLanguageIds),
@@ -405,4 +415,48 @@ public class EquipmentEntry
     /// <summary>PCGen custom weapon enhancement; null uses the catalog definition.</summary>
     public int? EnhancementBonusOverride { get; set; }
     public List<Permabuff> Permabuffs { get; set; } = new(); // inline permabuffs (homebrew, or overrides on top of content)
+}
+
+/// <summary>
+/// SRD Leadership feat, "Leadership Modifiers". Reputation applies to attracting both a cohort
+/// and followers; the other two groups apply to one or the other, which is why a character has a
+/// different effective score for each.
+/// </summary>
+public class LeadershipModifiers
+{
+    // Leader's Reputation — affects cohort and followers alike.
+    public bool GreatRenown { get; set; }            // +2
+    public bool FairnessAndGenerosity { get; set; }  // +1
+    public bool SpecialPower { get; set; }           // +1
+    public bool Failure { get; set; }                // -1
+    public bool Aloofness { get; set; }              // -1
+    public bool Cruelty { get; set; }                // -2
+
+    /// <summary>Cohorts the leader has caused the death of. "-2, cumulative per cohort killed."</summary>
+    public int CohortDeathsCaused { get; set; }      // -2 each, cohort only
+
+    // Followers only.
+    public bool HasStronghold { get; set; }          // +2
+    public bool MovesAroundALot { get; set; }        // -1
+    public bool CausedFollowerDeaths { get; set; }   // -1
+
+    /// <summary>Modifiers that apply however the leader is recruiting.</summary>
+    public int ReputationModifier =>
+        (GreatRenown ? 2 : 0)
+        + (FairnessAndGenerosity ? 1 : 0)
+        + (SpecialPower ? 1 : 0)
+        + (Failure ? -1 : 0)
+        + (Aloofness ? -1 : 0)
+        + (Cruelty ? -2 : 0);
+
+    /// <summary>Cohort-side modifiers a character carries on its own, excluding the derived ones.</summary>
+    public int CohortModifier => ReputationModifier - 2 * Math.Max(0, CohortDeathsCaused);
+
+    public int FollowerModifier =>
+        ReputationModifier
+        + (HasStronghold ? 2 : 0)
+        + (MovesAroundALot ? -1 : 0)
+        + (CausedFollowerDeaths ? -1 : 0);
+
+    public LeadershipModifiers Clone() => (LeadershipModifiers)MemberwiseClone();
 }

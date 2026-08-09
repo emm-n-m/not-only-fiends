@@ -1646,6 +1646,59 @@ public partial class BuilderView
 
     private int FollowerCapacity(int level) => _state?.Followers.At(level) ?? 0;
 
+    /// The SRD Leadership modifier table, as toggles. Most of it is DM judgement about the
+    /// campaign, so it is character input; the familiar/mount/companion penalty and the
+    /// different-alignment cohort penalty are derived and deliberately absent from this list.
+    private static readonly (string Label, string Group)[] LeadershipModifierRows =
+    {
+        ("Great renown (+2)", "reputation"),
+        ("Fairness and generosity (+1)", "reputation"),
+        ("Special power (+1)", "reputation"),
+        ("Failure (-1)", "reputation"),
+        ("Aloofness (-1)", "reputation"),
+        ("Cruelty (-2)", "reputation"),
+        ("Has a stronghold or base of operations (+2)", "followers"),
+        ("Moves around a lot (-1)", "followers"),
+        ("Caused the death of other followers (-1)", "followers"),
+    };
+
+    private bool GetLeadershipFlag(string label) => label switch
+    {
+        var l when l.StartsWith("Great renown") => _character.LeadershipModifiers.GreatRenown,
+        var l when l.StartsWith("Fairness") => _character.LeadershipModifiers.FairnessAndGenerosity,
+        var l when l.StartsWith("Special power") => _character.LeadershipModifiers.SpecialPower,
+        var l when l.StartsWith("Failure") => _character.LeadershipModifiers.Failure,
+        var l when l.StartsWith("Aloofness") => _character.LeadershipModifiers.Aloofness,
+        var l when l.StartsWith("Cruelty") => _character.LeadershipModifiers.Cruelty,
+        var l when l.StartsWith("Has a stronghold") => _character.LeadershipModifiers.HasStronghold,
+        var l when l.StartsWith("Moves around") => _character.LeadershipModifiers.MovesAroundALot,
+        _ => _character.LeadershipModifiers.CausedFollowerDeaths,
+    };
+
+    private void SetLeadershipFlag(string label, bool value)
+    {
+        var m = _character.LeadershipModifiers;
+        switch (label)
+        {
+            case var l when l.StartsWith("Great renown"): m.GreatRenown = value; break;
+            case var l when l.StartsWith("Fairness"): m.FairnessAndGenerosity = value; break;
+            case var l when l.StartsWith("Special power"): m.SpecialPower = value; break;
+            case var l when l.StartsWith("Failure"): m.Failure = value; break;
+            case var l when l.StartsWith("Aloofness"): m.Aloofness = value; break;
+            case var l when l.StartsWith("Cruelty"): m.Cruelty = value; break;
+            case var l when l.StartsWith("Has a stronghold"): m.HasStronghold = value; break;
+            case var l when l.StartsWith("Moves around"): m.MovesAroundALot = value; break;
+            default: m.CausedFollowerDeaths = value; break;
+        }
+        OnCharacterChanged();
+    }
+
+    private void SetCohortDeaths(int value)
+    {
+        _character.LeadershipModifiers.CohortDeathsCaused = Math.Max(0, value);
+        OnCharacterChanged();
+    }
+
     /// Highest follower level worth showing. Epic Leadership pushes this past the base table's
     /// 6th, and the halving rule past the epic table's 10th, so it cannot be a constant.
     private int HighestFollowerLevel() => Math.Max(1, _state?.Followers.HighestLevel ?? 1);

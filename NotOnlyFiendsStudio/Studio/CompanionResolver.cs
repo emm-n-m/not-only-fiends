@@ -131,6 +131,11 @@ public class CompanionResolver
             };
 
             var companionState = _engine.Evaluate(companion);
+
+            // Must precede the cohort-level check below, which reads MaxCohortLevel.
+            if (link.LinkType == "leadership_cohort")
+                ApplyDifferentAlignmentCohortPenalty(result.MasterState, companionState);
+
             if (IsFamiliarLinkType(link.LinkType))
                 ApplyFamiliarMasterStats(result.MasterState, companionState, _engine);
 
@@ -180,6 +185,24 @@ public class CompanionResolver
         }
 
         return link.EffectiveLevelFormula.Evaluate(master);
+    }
+
+    /// <summary>
+    /// SRD Leadership modifiers: "Recruits a cohort of a different alignment -1". The engine cannot
+    /// see this during replay — it needs the cohort — so it lands here, and only the cohort score
+    /// and the cohort level derived from it move. Follower counts are untouched: the penalty is in
+    /// the cohort-only group.
+    /// </summary>
+    private static void ApplyDifferentAlignmentCohortPenalty(CharacterState master, CharacterState cohort)
+    {
+        if (master.Alignment == cohort.Alignment)
+            return;
+
+        master.LeadershipCohortScore -= 1;
+        master.LeadershipModifierNotes.Add("Recruits a cohort of a different alignment (cohort only) -1");
+        master.MaxCohortLevel = Math.Min(
+            LeadershipTables.LookupCohortLevelFor(master.Feats, master.LeadershipCohortScore),
+            master.TotalHD - 1);
     }
 
     private static bool IsFamiliarLinkType(string linkType) =>

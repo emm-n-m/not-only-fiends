@@ -369,6 +369,163 @@ public class LeadershipTests
         Assert.Equal(20, withEpic.MaxCohortLevel);            // table 20th, under level 21 - 1
     }
 
+    // ---------- Leadership modifiers ----------
+
+    /// <summary>
+    /// SRD Leadership Modifiers. Reputation applies whoever the leader is recruiting; the other two
+    /// groups apply to cohorts or to followers but not both, so a character has two effective
+    /// scores, not one.
+    /// </summary>
+    [Fact]
+    public void ReputationAppliesToBothScores_TheOtherGroupsToOne()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        var master = BuildFighterWithLeadership(levels: 10, cha: 16);   // base score 13
+        master.LeadershipModifiers = new LeadershipModifiers
+        {
+            GreatRenown = true,             // +2 both
+            Cruelty = true,                 // -2 both
+            HasStronghold = true,           // +2 followers only
+            CohortDeathsCaused = 1,         // -2 cohorts only
+        };
+
+        var state = engine.Evaluate(master);
+
+        Assert.Equal(13, state.LeadershipScore);            // base is unchanged
+        Assert.Equal(13 + 2 - 2 - 2, state.LeadershipCohortScore);
+        Assert.Equal(13 + 2 - 2 + 2, state.LeadershipFollowerScore);
+    }
+
+    /// <summary>"Caused the death of a cohort -2" is cumulative per cohort killed.</summary>
+    [Fact]
+    public void CohortDeathsAreCumulative()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        var master = BuildFighterWithLeadership(levels: 10, cha: 16);
+        master.LeadershipModifiers = new LeadershipModifiers { CohortDeathsCaused = 3 };
+
+        var state = engine.Evaluate(master);
+
+        Assert.Equal(13 - 6, state.LeadershipCohortScore);
+        Assert.Equal(13, state.LeadershipFollowerScore);   // cohort-only group
+    }
+
+    /// <summary>
+    /// "Has a familiar, special mount, or animal companion -2" is derivable, so it is computed
+    /// rather than trusted as an input — and it is in the cohort-only group.
+    /// </summary>
+    [Fact]
+    public void KeepingAFamiliarCostsTwoOnTheCohortScoreOnly()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        // A wizard has a familiar slot from 1st level; a fighter has none.
+        var fighter = BuildFighterWithLeadership(levels: 10, cha: 16);
+        var withoutFamiliar = engine.Evaluate(fighter);
+        Assert.Equal(withoutFamiliar.LeadershipScore, withoutFamiliar.LeadershipCohortScore);
+
+        var wizard = new Character
+        {
+            Name = "Wizard",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 16, WIS = 10, CHA = 16 },
+            Ticks = Enumerable.Range(0, 10).Select(i =>
+                i == 5
+                    ? new Tick
+                    {
+                        DriverId = "class:wizard",
+                        Choices = new TickChoices { FeatIds = new List<string> { "feat:leadership" } }
+                    }
+                    : new Tick { DriverId = "class:wizard" }).ToList()
+        };
+
+        var state = engine.Evaluate(wizard);
+
+        Assert.Contains(state.CompanionSlots, slot => slot.LinkType == "familiar");
+        Assert.Equal(state.LeadershipScore - 2, state.LeadershipCohortScore);
+        Assert.Equal(state.LeadershipScore, state.LeadershipFollowerScore);
+        Assert.Contains(state.LeadershipModifierNotes, note => note.Contains("familiar"));
+    }
+
+    /// <summary>
+    /// "Recruits a cohort of a different alignment -1" needs the cohort, so the engine cannot see
+    /// it during replay — CompanionResolver applies it, and only to the cohort side.
+    /// </summary>
+    [Fact]
+    public void ADifferentlyAlignedCohortCostsOneOnTheCohortScoreOnly()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        var master = BuildFighterWithLeadership(levels: 10, cha: 16);
+        master.Alignment = Alignment.LG;
+        master.CompanionLinks = new List<CompanionLink>
+        {
+            new()
+            {
+                LinkType = "leadership_cohort",
+                CompanionId = "cohort",
+                EffectiveLevelFormula = new Formula("min(TotalHD - 2, LeadershipScore - 2)")
+            }
+        };
+
+        Character Cohort(Alignment alignment) => new()
+        {
+            Name = "Cohort",
+            RaceId = "race:human",
+            Alignment = alignment,
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 5).Select(_ => new Tick { DriverId = "class:fighter" }).ToList()
+        };
+
+        var same = new CompanionResolver(engine, _ => Cohort(Alignment.LG)).Build(master).MasterState;
+        var different = new CompanionResolver(engine, _ => Cohort(Alignment.CE)).Build(master).MasterState;
+
+        Assert.Equal(same.LeadershipCohortScore - 1, different.LeadershipCohortScore);
+        Assert.Equal(same.LeadershipFollowerScore, different.LeadershipFollowerScore);
+        Assert.Contains(different.LeadershipModifierNotes, note => note.Contains("different alignment"));
+    }
+
+    /// <summary>
+    /// The whole point of splitting the scores: the two tables get different inputs. A leader with
+    /// every positive modifier and Epic Leadership fields the follower row for the higher score.
+    /// </summary>
+    [Fact]
+    public void TheTwoScoresDriveTheirOwnTables()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        var master = BuildFighterWithLeadership(levels: 21, cha: 28);   // base 21 + 9 = 30
+        master.Ticks[^1].Choices.FeatIds = new List<string> { "feat:epic_leadership" };
+        master.LeadershipModifiers = new LeadershipModifiers
+        {
+            GreatRenown = true,
+            FairnessAndGenerosity = true,
+            SpecialPower = true,
+            HasStronghold = true,
+        };
+
+        var state = engine.Evaluate(master);
+
+        Assert.Equal(30, state.LeadershipScore);
+        Assert.Equal(34, state.LeadershipCohortScore);      // +4 reputation
+        Assert.Equal(36, state.LeadershipFollowerScore);    // +4 reputation, +2 stronghold
+
+        // Table: Epic Leadership row 36 — 660/66/33/17/9/5/3/2/1 — not row 34's.
+        Assert.Equal(660, state.Followers.Level1);
+        Assert.Equal(2, state.Followers.At(8));
+        // Cohort level comes from row 34: 22nd, under the own-level cap of 20... which wins.
+        Assert.Equal(20, state.MaxCohortLevel);
+    }
+
     private static Character BuildFighterWithLeadership(int levels, int cha)
     {
         // Feat schedule: fighter gets bonus feats at L1, L2, L4, L6, L8, ...
