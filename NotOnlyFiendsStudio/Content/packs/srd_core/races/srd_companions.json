@@ -300,7 +300,16 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:balance",
+      "skill:climb",
+      "skill:hide",
+      "skill:jump",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_hawk",

@@ -1,24 +1,67 @@
 # Known issues
 
-## 27 animal companions still have no class skills
+## TODO: animal companions have their class skills but not their racial skill bonuses
 
-The Animal type grants no class-skill list of its own — a creature's class skills are the skills
-named in its own statblock — so an animal with none has every rank it buys charged at cross-class
-rate. The ten familiar-adjacent races were fixed on 2026-08-09 and the three snakes shortly after
-(a 5 HD Int-3 viper gets 1 point per HD and 4 at first, 8 in total, which is exactly what 8 ranks
-of Hide costs as a class skill and half what it costs cross-class). The rest of
-`srd_animal_companions*.json` and `srd_companions.json` are still untouched.
+Class skills were the part that mattered and are **done** — the Animal type grants no list of its
+own, so a creature's class skills are the ones named in its statblock, and an animal without them
+is charged cross-class for every rank. All 41 companion and familiar races now carry theirs, which
+cleared the phantom overspend on eight roster characters.
 
-Two traps make a bulk extraction from the SRD unsafe, both hit on the first attempt:
+The racial *bonuses* below are extracted but **not applied**. They change a printed total and
+nothing else — no budget, no warning — so they are the lower-value half, and they are also where
+all the extraction risk sits.
 
-- **`monstersDitoDo.html` runs every dire animal in one table**, so slicing per anchor bleeds
-  across entries — a dire bat came out with Swim, Climb +8 and Survival +4 lifted from its
-  neighbours. Skill *names* are safe to take from an interleaved statblock (they do not vary by
-  column) but bonuses are not.
-- **Some bonuses are conditional**: the polar bear's "+12 on Hide checks *in snowy areas*", the
-  owl's Spot in shadowy illumination, the cat's Hide in tall grass. The engine has no situational
-  modifiers, so these must be dropped rather than applied flat.
+| race | SRD anchor | class skills | racial bonuses |
+|:--|:--|:--|:--|
+| `ape` | `ape` | climb, listen, spot | climb +8 |
+| `badger` | `badger` | escape_artist, listen, spot | escape_artist +4 |
+| `bear_black` | `black-bear` | climb, listen, spot, swim | swim +4 |
+| `bear_brown` | `brown-bear` | listen, spot, swim | swim +4 |
+| `bear_polar` | `polar-bear` | listen, spot, swim | hide +12* |
+| `bear_dire` | `dire-bear` | listen, spot, swim | — |
+| `boar` | `boar` | listen, spot | — |
+| `camel` | `camel` | listen, spot | — |
+| `crocodile` | `crocodile` | hide, listen, spot, swim | hide +4* |
+| `dire_bat` | `dire-bat` | hide, listen, move_silently, spot | listen +4, spot +4 |
+| `dire_lion` | `dire-lion` | hide, listen, move_silently, spot | hide +4, move_silently +4 |
+| `dire_wolf` | `dire-wolf` | hide, listen, move_silently, spot, survival | hide +2*, listen +2*, move_silently +2*, spot +2*, survival +4* |
+| `dog` | `dog` | jump, listen, spot, survival | jump +4*, survival +4* |
+| `riding_dog` | `dog` | jump, listen, spot, survival | jump +4*, survival +4* |
+| `eagle` | `eagle` | listen, spot | spot +8 |
+| `elephant` | `elephant` | listen, spot | — |
+| `heavy_warhorse` | `horse` | listen, spot | — |
+| `horse_heavy` | `horse` | listen, spot | — |
+| `horse_light` | `horse` | listen, spot | — |
+| `leopard` | `leopard` | balance, climb, hide, jump, listen, move_silently, spot | balance +8, climb +8, hide +4, jump +8, move_silently +4 |
+| `lion` | `lion` | balance, hide, listen, move_silently, spot | balance +4, hide +4, move_silently +4 |
+| `monkey` | `monkey` | climb, hide, listen, spot | balance +8, climb +8 |
+| `pony` | `pony` | listen, spot | — |
+| `warpony` | `pony` | listen, spot | — |
+| `tiger` | `tiger` | balance, hide, listen, move_silently, spot, swim | balance +4, hide +4, move_silently +4 |
+| `tiger_dire` | `dire-tiger` | hide, jump, listen, move_silently, spot, swim | hide +4, move_silently +4 |
+| `wolf` | `wolf` | hide, listen, move_silently, spot, survival | survival +4* |
+| `wolverine` | `wolverine` | climb, listen, spot | climb +8 |
 
+Verify each row against the source before applying:
+
+- **`*` marks a bonus my heuristic thinks is conditional, and it is unreliable.** The dog's Jump +4
+  is flat while its Survival +4 is "when tracking by scent"; both are starred. The polar bear's
+  Hide +12 is genuinely conditional ("in snowy areas"), as are the owl's Spot in shadowy
+  illumination and the cat's Hide in tall grass. Conditional bonuses have no representation in the
+  engine and must be dropped rather than applied flat.
+- **`dog`/`riding_dog`, the three horses and the two ponies share one statblock anchor**, so they
+  share a row; the SRD entries may differ by column.
+- `bear_dire` and `dire_bat` show no racial-bonus prose in their slice — possibly correct,
+  possibly another slicing artifact.
+
+Entries must be bounded by the *next anchor*, not the next `<h3>`: slicing to `<h3>` bleeds across
+the interleaved dire-animal table and gave a dire bat Swim and Climb +8 belonging to its
+neighbours. Watch for stray spaces after the sign too — the monkey's `Balance + 12` defeated a
+`[+\-]\d` strip and silently dropped Balance from its skill list.
+
+Three companion races are not animals and have no statblock in either file, so they are untouched
+and unaudited: `companion_elemental_air_small`, `companion_elemental_water_small`,
+`companion_shadow`.
 ## TODO: animal tricks are unmodelled, and import as unmatched class abilities
 
 A `.pcg` records trained tricks as class abilities — "Animal Trick ~ Attack", "~ Defend", "~ Fetch"

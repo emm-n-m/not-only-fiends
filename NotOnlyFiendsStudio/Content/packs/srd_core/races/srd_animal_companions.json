@@ -53,7 +53,12 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:escape_artist",
+      "skill:listen",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_camel",
@@ -92,7 +97,11 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_dog",
@@ -139,7 +148,13 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:jump",
+      "skill:listen",
+      "skill:spot",
+      "skill:survival"
+    ]
   },
   {
     "id": "race:companion_riding_dog",
@@ -186,7 +201,13 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:jump",
+      "skill:listen",
+      "skill:spot",
+      "skill:survival"
+    ]
   },
   {
     "id": "race:companion_eagle",
@@ -231,7 +252,11 @@
         "value": 8
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_horse_light",
@@ -278,7 +303,11 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_horse_heavy",
@@ -325,7 +354,11 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_pony",
@@ -372,7 +405,11 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_wolf",
@@ -427,7 +464,14 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:hide",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:spot",
+      "skill:survival"
+    ]
   },
   {
     "id": "race:companion_boar",
@@ -483,7 +527,11 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_monkey",
@@ -518,7 +566,14 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:balance",
+      "skill:climb",
+      "skill:hide",
+      "skill:listen",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_heavy_warhorse",
@@ -573,7 +628,11 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_warpony",
@@ -628,6 +687,10 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot"
+    ]
   }
 ]

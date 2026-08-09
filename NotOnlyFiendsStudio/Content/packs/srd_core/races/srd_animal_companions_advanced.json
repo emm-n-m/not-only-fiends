@@ -46,7 +46,12 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:climb",
+      "skill:listen",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_bear_black",
@@ -96,7 +101,13 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:climb",
+      "skill:listen",
+      "skill:spot",
+      "skill:swim"
+    ]
   },
   {
     "id": "race:companion_dire_bat",
@@ -145,7 +156,13 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:hide",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_snake_constrictor",
@@ -269,7 +286,12 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:climb",
+      "skill:listen",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_crocodile",
@@ -326,7 +348,13 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:hide",
+      "skill:listen",
+      "skill:spot",
+      "skill:swim"
+    ]
   },
   {
     "id": "race:companion_bear_brown",
@@ -383,7 +411,12 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot",
+      "skill:swim"
+    ]
   },
   {
     "id": "race:companion_dire_wolf",
@@ -439,7 +472,14 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:hide",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:spot",
+      "skill:survival"
+    ]
   },
   {
     "id": "race:companion_lion",
@@ -511,7 +551,14 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:balance",
+      "skill:hide",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_tiger",
@@ -583,7 +630,15 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:balance",
+      "skill:hide",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:spot",
+      "skill:swim"
+    ]
   },
   {
     "id": "race:companion_bear_polar",
@@ -640,7 +695,12 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot",
+      "skill:swim"
+    ]
   },
   {
     "id": "race:companion_dire_lion",
@@ -712,7 +772,13 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:hide",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_bear_dire",
@@ -768,7 +834,12 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot",
+      "skill:swim"
+    ]
   },
   {
     "id": "race:companion_elephant",
@@ -824,7 +895,11 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:listen",
+      "skill:spot"
+    ]
   },
   {
     "id": "race:companion_tiger_dire",
@@ -896,6 +971,14 @@
         }
       }
     ],
-    "scalingFormulas": []
+    "scalingFormulas": [],
+    "racialClassSkillAdditions": [
+      "skill:hide",
+      "skill:jump",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:spot",
+      "skill:swim"
+    ]
   }
 ]
