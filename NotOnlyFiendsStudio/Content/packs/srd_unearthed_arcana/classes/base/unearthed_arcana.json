@@ -1,326 +1,813 @@
 [
-{
-  "$type": "HDDriver",
-  "kind": "Class",
-  "id": "class:cloistered_cleric",
-  "name": "Cloistered Cleric",
-  "hitDie": 6,
-  "skillPointsPerLevel": 6,
-  "classSkills": [
-    "skill:concentration", "skill:craft", "skill:decipher_script", "skill:diplomacy", "skill:heal",
-    "skill:knowledge",
-    "skill:profession", "skill:speak_language", "skill:spellcraft"
-  ],
-  "babProgression": "poor",
-  "saveProgression": {
-    "fort": "good",
-    "ref": "poor",
-    "will": "good"
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:cloistered_cleric",
+    "name": "Cloistered Cleric",
+    "hitDie": 6,
+    "skillPointsPerLevel": 6,
+    "classSkills": [
+      "skill:concentration",
+      "skill:craft",
+      "skill:decipher_script",
+      "skill:diplomacy",
+      "skill:heal",
+      "skill:knowledge",
+      "skill:profession",
+      "skill:speak_language",
+      "skill:spellcraft"
+    ],
+    "babProgression": "poor",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "poor",
+      "will": "good"
+    },
+    "spellcasting": {
+      "castingType": "divine",
+      "castingStat": "wis",
+      "spellListSources": [
+        "class:cleric"
+      ],
+      "spellsPerDay": {
+        "1": {
+          "0": 3,
+          "1": 1
+        },
+        "2": {
+          "0": 4,
+          "1": 2
+        },
+        "3": {
+          "0": 4,
+          "1": 2,
+          "2": 1
+        },
+        "4": {
+          "0": 5,
+          "1": 3,
+          "2": 2
+        },
+        "5": {
+          "0": 5,
+          "1": 3,
+          "2": 2,
+          "3": 1
+        },
+        "6": {
+          "0": 5,
+          "1": 3,
+          "2": 3,
+          "3": 2
+        },
+        "7": {
+          "0": 6,
+          "1": 4,
+          "2": 3,
+          "3": 2,
+          "4": 1
+        },
+        "8": {
+          "0": 6,
+          "1": 4,
+          "2": 3,
+          "3": 3,
+          "4": 2
+        },
+        "9": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 3,
+          "4": 2,
+          "5": 1
+        },
+        "10": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 3,
+          "4": 3,
+          "5": 2
+        },
+        "11": {
+          "0": 6,
+          "1": 5,
+          "2": 4,
+          "3": 4,
+          "4": 3,
+          "5": 2,
+          "6": 1
+        },
+        "12": {
+          "0": 6,
+          "1": 5,
+          "2": 4,
+          "3": 4,
+          "4": 3,
+          "5": 3,
+          "6": 2
+        },
+        "13": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 4,
+          "4": 4,
+          "5": 3,
+          "6": 2,
+          "7": 1
+        },
+        "14": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 4,
+          "4": 4,
+          "5": 3,
+          "6": 3,
+          "7": 2
+        },
+        "15": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 4,
+          "5": 4,
+          "6": 3,
+          "7": 2,
+          "8": 1
+        },
+        "16": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 4,
+          "5": 4,
+          "6": 3,
+          "7": 3,
+          "8": 2
+        },
+        "17": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 5,
+          "5": 4,
+          "6": 4,
+          "7": 3,
+          "8": 2,
+          "9": 1
+        },
+        "18": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 5,
+          "5": 4,
+          "6": 4,
+          "7": 3,
+          "8": 3,
+          "9": 2
+        },
+        "19": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 5,
+          "5": 5,
+          "6": 4,
+          "7": 4,
+          "8": 3,
+          "9": 3
+        },
+        "20": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 5,
+          "5": 5,
+          "6": 4,
+          "7": 4,
+          "8": 4,
+          "9": 4
+        }
+      }
+    },
+    "perLevelPermabuffs": [],
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:simple_weapon_proficiency"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:armor_proficiency_light"
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "cc_lore",
+            "name": "Lore",
+            "description": "Like a bard's bardic knowledge, using cleric level + INT modifier."
+          }
+        },
+        {
+          "$type": "GrantDomainSelection",
+          "count": 3
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "turn_undead",
+            "name": "Turn Undead",
+            "description": "Turn or destroy undead creatures."
+          }
+        }
+      ]
+    },
+    "prerequisites": []
   },
-  "spellcasting": {
-    "castingType": "divine",
-    "castingStat": "wis",
-    "spellListSources": ["class:cleric"],
-    "spellsPerDay": {
-      "1":  { "0": 3, "1": 1 },
-      "2":  { "0": 4, "1": 2 },
-      "3":  { "0": 4, "1": 2, "2": 1 },
-      "4":  { "0": 5, "1": 3, "2": 2 },
-      "5":  { "0": 5, "1": 3, "2": 2, "3": 1 },
-      "6":  { "0": 5, "1": 3, "2": 3, "3": 2 },
-      "7":  { "0": 6, "1": 4, "2": 3, "3": 2, "4": 1 },
-      "8":  { "0": 6, "1": 4, "2": 3, "3": 3, "4": 2 },
-      "9":  { "0": 6, "1": 4, "2": 4, "3": 3, "4": 2, "5": 1 },
-      "10": { "0": 6, "1": 4, "2": 4, "3": 3, "4": 3, "5": 2 },
-      "11": { "0": 6, "1": 5, "2": 4, "3": 4, "4": 3, "5": 2, "6": 1 },
-      "12": { "0": 6, "1": 5, "2": 4, "3": 4, "4": 3, "5": 3, "6": 2 },
-      "13": { "0": 6, "1": 5, "2": 5, "3": 4, "4": 4, "5": 3, "6": 2, "7": 1 },
-      "14": { "0": 6, "1": 5, "2": 5, "3": 4, "4": 4, "5": 3, "6": 3, "7": 2 },
-      "15": { "0": 6, "1": 5, "2": 5, "3": 5, "4": 4, "5": 4, "6": 3, "7": 2, "8": 1 },
-      "16": { "0": 6, "1": 5, "2": 5, "3": 5, "4": 4, "5": 4, "6": 3, "7": 3, "8": 2 },
-      "17": { "0": 6, "1": 5, "2": 5, "3": 5, "4": 5, "5": 4, "6": 4, "7": 3, "8": 2, "9": 1 },
-      "18": { "0": 6, "1": 5, "2": 5, "3": 5, "4": 5, "5": 4, "6": 4, "7": 3, "8": 3, "9": 2 },
-      "19": { "0": 6, "1": 5, "2": 5, "3": 5, "4": 5, "5": 5, "6": 4, "7": 4, "8": 3, "9": 3 },
-      "20": { "0": 6, "1": 5, "2": 5, "3": 5, "4": 5, "5": 5, "6": 4, "7": 4, "8": 4, "9": 4 }
-    }
-  },
-  "perLevelPermabuffs": [],
-  "levelPermabuffs": {
-    "1": [
-      { "$type": "GrantBonusFeat", "featId": "feat:simple_weapon_proficiency" },
-      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_light" },
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:paladin_of_tyranny",
+    "name": "Paladin of Tyranny",
+    "hitDie": 10,
+    "skillPointsPerLevel": 2,
+    "classSkills": [
+      "skill:concentration",
+      "skill:craft",
+      "skill:diplomacy",
+      "skill:handle_animal",
+      "skill:heal",
+      "skill:knowledge_nobility",
+      "skill:knowledge_religion",
+      "skill:profession",
+      "skill:ride",
+      "skill:sense_motive"
+    ],
+    "babProgression": "good",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "poor",
+      "will": "poor"
+    },
+    "spellcasting": {
+      "castingType": "divine",
+      "castingStat": "wis",
+      "spellsPerDay": {
+        "4": {
+          "1": 0
+        },
+        "5": {
+          "1": 0
+        },
+        "6": {
+          "1": 1
+        },
+        "7": {
+          "1": 1
+        },
+        "8": {
+          "1": 1,
+          "2": 0
+        },
+        "9": {
+          "1": 1,
+          "2": 0
+        },
+        "10": {
+          "1": 1,
+          "2": 1
+        },
+        "11": {
+          "1": 1,
+          "2": 1,
+          "3": 0
+        },
+        "12": {
+          "1": 1,
+          "2": 1,
+          "3": 1
+        },
+        "13": {
+          "1": 1,
+          "2": 1,
+          "3": 1
+        },
+        "14": {
+          "1": 2,
+          "2": 1,
+          "3": 1,
+          "4": 0
+        },
+        "15": {
+          "1": 2,
+          "2": 1,
+          "3": 1,
+          "4": 1
+        },
+        "16": {
+          "1": 2,
+          "2": 2,
+          "3": 1,
+          "4": 1
+        },
+        "17": {
+          "1": 2,
+          "2": 2,
+          "3": 2,
+          "4": 1
+        },
+        "18": {
+          "1": 3,
+          "2": 2,
+          "3": 2,
+          "4": 1
+        },
+        "19": {
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2
+        },
+        "20": {
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 3
+        }
+      }
+    },
+    "perLevelPermabuffs": [],
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:simple_weapon_proficiency"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:weapon_proficiency_martial"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:armor_proficiency_light"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:armor_proficiency_medium"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:armor_proficiency_heavy"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:shield_proficiency"
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pot_aura_evil",
+            "name": "Aura of Evil",
+            "description": "Evil aura power equals class level."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pot_detect_good",
+            "name": "Detect Good",
+            "description": "At-will detect good as spell-like ability."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pot_smite_good",
+            "name": "Smite Good",
+            "description": "1/day, +CHA to attack, +level to damage vs good. Extra uses at levels 5, 10, 15, 20."
+          }
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pot_divine_grace",
+            "name": "Divine Grace",
+            "description": "Add CHA bonus to all saving throws."
+          }
+        },
+        {
+          "$type": "GrantAbilityModifierToSaves",
+          "sourceId": "pot_divine_grace",
+          "name": "Divine Grace",
+          "ability": "CHA"
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pot_deadly_touch",
+            "name": "Deadly Touch",
+            "description": "Touch attack dealing class level x CHA mod damage per day. Fort DC 10 + level/2 + CHA for half."
+          }
+        }
+      ],
+      "3": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pot_divine_health",
+            "name": "Divine Health",
+            "description": "Immune to all diseases, including supernatural and magical diseases."
+          }
+        },
+        {
+          "$type": "GrantImmunity",
+          "immunity": "disease"
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pot_aura_despair",
+            "name": "Aura of Despair",
+            "description": "10-ft aura; enemies take -2 to all saving throws."
+          }
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pot_rebuke_undead",
+            "name": "Rebuke Undead",
+            "description": "Rebuke undead as evil cleric of level -3."
+          }
+        }
+      ],
+      "5": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pot_special_mount",
+            "name": "Special Mount",
+            "description": "Gain a fiendish heavy warhorse as a special mount."
+          }
+        }
+      ],
+      "6": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pot_cause_disease",
+            "name": "Cause Disease",
+            "description": "Cause disease as spell-like ability, uses/week = level/3 - 1."
+          }
+        }
+      ]
+    },
+    "prerequisites": [
       {
-        "$type": "GrantAbility",
-        "ability": { "id": "cc_lore", "name": "Lore", "description": "Like a bard's bardic knowledge, using cleric level + INT modifier." }
-      },
-      {
-        "$type": "GrantDomainSelection",
-        "count": 3
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "turn_undead", "name": "Turn Undead", "description": "Turn or destroy undead creatures." }
+        "$type": "AlignmentReq",
+        "allowed": [
+          "lE"
+        ]
       }
     ]
   },
-  "prerequisites": []
-},
-{
-  "$type": "HDDriver",
-  "kind": "Class",
-  "id": "class:paladin_of_tyranny",
-  "name": "Paladin of Tyranny",
-  "hitDie": 10,
-  "skillPointsPerLevel": 2,
-  "classSkills": [
-    "skill:concentration", "skill:craft", "skill:diplomacy", "skill:handle_animal", "skill:heal",
-    "skill:knowledge_nobility", "skill:knowledge_religion", "skill:profession", "skill:ride",
-    "skill:sense_motive"
-  ],
-  "babProgression": "good",
-  "saveProgression": {
-    "fort": "good",
-    "ref": "poor",
-    "will": "poor"
-  },
-  "spellcasting": {
-    "castingType": "divine",
-    "castingStat": "wis",
-    "spellsPerDay": {
-      "4":  { "1": 0 },
-      "5":  { "1": 0 },
-      "6":  { "1": 1 },
-      "7":  { "1": 1 },
-      "8":  { "1": 1, "2": 0 },
-      "9":  { "1": 1, "2": 0 },
-      "10": { "1": 1, "2": 1 },
-      "11": { "1": 1, "2": 1, "3": 0 },
-      "12": { "1": 1, "2": 1, "3": 1 },
-      "13": { "1": 1, "2": 1, "3": 1 },
-      "14": { "1": 2, "2": 1, "3": 1, "4": 0 },
-      "15": { "1": 2, "2": 1, "3": 1, "4": 1 },
-      "16": { "1": 2, "2": 2, "3": 1, "4": 1 },
-      "17": { "1": 2, "2": 2, "3": 2, "4": 1 },
-      "18": { "1": 3, "2": 2, "3": 2, "4": 1 },
-      "19": { "1": 3, "2": 3, "3": 3, "4": 2 },
-      "20": { "1": 3, "2": 3, "3": 3, "4": 3 }
-    }
-  },
-  "perLevelPermabuffs": [],
-  "levelPermabuffs": {
-    "1": [
-      { "$type": "GrantBonusFeat", "featId": "feat:simple_weapon_proficiency" },
-      { "$type": "GrantBonusFeat", "featId": "feat:weapon_proficiency_martial" },
-      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_light" },
-      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_medium" },
-      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_heavy" },
-      { "$type": "GrantBonusFeat", "featId": "feat:shield_proficiency" },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pot_aura_evil", "name": "Aura of Evil", "description": "Evil aura power equals class level." }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pot_detect_good", "name": "Detect Good", "description": "At-will detect good as spell-like ability." }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pot_smite_good", "name": "Smite Good", "description": "1/day, +CHA to attack, +level to damage vs good. Extra uses at levels 5, 10, 15, 20." }
-      }
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:planar_ranger",
+    "name": "Planar Ranger",
+    "hitDie": 8,
+    "skillPointsPerLevel": 6,
+    "classSkills": [
+      "skill:climb",
+      "skill:concentration",
+      "skill:craft",
+      "skill:handle_animal",
+      "skill:heal",
+      "skill:hide",
+      "skill:jump",
+      "skill:knowledge_geography",
+      "skill:knowledge_planes",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:profession",
+      "skill:ride",
+      "skill:search",
+      "skill:speak_language",
+      "skill:spot",
+      "skill:survival",
+      "skill:swim",
+      "skill:use_rope"
     ],
-    "2": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pot_divine_grace", "name": "Divine Grace", "description": "Add CHA bonus to all saving throws." }
-      },
-      { "$type": "GrantAbilityModifierToSaves", "sourceId": "pot_divine_grace", "name": "Divine Grace", "ability": "CHA" },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pot_deadly_touch", "name": "Deadly Touch", "description": "Touch attack dealing class level x CHA mod damage per day. Fort DC 10 + level/2 + CHA for half." }
+    "babProgression": "good",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "good",
+      "will": "poor"
+    },
+    "spellcasting": {
+      "castingType": "divine",
+      "castingStat": "wis",
+      "spellListSources": [
+        "class:ranger"
+      ],
+      "spellsPerDay": {
+        "4": {
+          "1": 0
+        },
+        "5": {
+          "1": 0
+        },
+        "6": {
+          "1": 1
+        },
+        "7": {
+          "1": 1
+        },
+        "8": {
+          "1": 1,
+          "2": 0
+        },
+        "9": {
+          "1": 1,
+          "2": 0
+        },
+        "10": {
+          "1": 1,
+          "2": 1
+        },
+        "11": {
+          "1": 1,
+          "2": 1,
+          "3": 0
+        },
+        "12": {
+          "1": 1,
+          "2": 1,
+          "3": 1
+        },
+        "13": {
+          "1": 1,
+          "2": 1,
+          "3": 1
+        },
+        "14": {
+          "1": 2,
+          "2": 1,
+          "3": 1,
+          "4": 0
+        },
+        "15": {
+          "1": 2,
+          "2": 1,
+          "3": 1,
+          "4": 1
+        },
+        "16": {
+          "1": 2,
+          "2": 2,
+          "3": 1,
+          "4": 1
+        },
+        "17": {
+          "1": 2,
+          "2": 2,
+          "3": 2,
+          "4": 1
+        },
+        "18": {
+          "1": 3,
+          "2": 2,
+          "3": 2,
+          "4": 1
+        },
+        "19": {
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2
+        },
+        "20": {
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 3
+        }
       }
-    ],
-    "3": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pot_divine_health", "name": "Divine Health", "description": "Immune to all diseases, including supernatural and magical diseases." }
-      },
-      { "$type": "GrantImmunity", "immunity": "disease" },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pot_aura_despair", "name": "Aura of Despair", "description": "10-ft aura; enemies take -2 to all saving throws." }
-      }
-    ],
-    "4": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pot_rebuke_undead", "name": "Rebuke Undead", "description": "Rebuke undead as evil cleric of level -3." }
-      }
-    ],
-    "5": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pot_special_mount", "name": "Special Mount", "description": "Gain a fiendish heavy warhorse as a special mount." }
-      }
-    ],
-    "6": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pot_cause_disease", "name": "Cause Disease", "description": "Cause disease as spell-like ability, uses/week = level/3 - 1." }
-      }
-    ]
-  },
-  "prerequisites": [
-    { "$type": "AlignmentReq", "allowed": ["lE"] }
-  ]
-},
-{
-  "$type": "HDDriver",
-  "kind": "Class",
-  "id": "class:planar_ranger",
-  "name": "Planar Ranger",
-  "hitDie": 8,
-  "skillPointsPerLevel": 6,
-  "classSkills": [
-    "skill:climb", "skill:concentration", "skill:craft", "skill:handle_animal", "skill:heal",
-    "skill:hide", "skill:jump", "skill:knowledge_geography", "skill:knowledge_planes",
-    "skill:listen", "skill:move_silently", "skill:profession", "skill:ride", "skill:search",
-    "skill:speak_language", "skill:spot", "skill:survival", "skill:swim", "skill:use_rope"
-  ],
-  "babProgression": "good",
-  "saveProgression": {
-    "fort": "good",
-    "ref": "good",
-    "will": "poor"
-  },
-  "spellcasting": {
-    "castingType": "divine",
-    "castingStat": "wis",
-    "spellListSources": ["class:ranger"],
-    "spellsPerDay": {
-      "4":  { "1": 0 },
-      "5":  { "1": 0 },
-      "6":  { "1": 1 },
-      "7":  { "1": 1 },
-      "8":  { "1": 1, "2": 0 },
-      "9":  { "1": 1, "2": 0 },
-      "10": { "1": 1, "2": 1 },
-      "11": { "1": 1, "2": 1, "3": 0 },
-      "12": { "1": 1, "2": 1, "3": 1 },
-      "13": { "1": 1, "2": 1, "3": 1 },
-      "14": { "1": 2, "2": 1, "3": 1, "4": 0 },
-      "15": { "1": 2, "2": 1, "3": 1, "4": 1 },
-      "16": { "1": 2, "2": 2, "3": 1, "4": 1 },
-      "17": { "1": 2, "2": 2, "3": 2, "4": 1 },
-      "18": { "1": 3, "2": 2, "3": 2, "4": 1 },
-      "19": { "1": 3, "2": 3, "3": 3, "4": 2 },
-      "20": { "1": 3, "2": 3, "3": 3, "4": 3 }
-    }
-  },
-  "perLevelPermabuffs": [],
-  "levelPermabuffs": {
-    "1": [
-      { "$type": "GrantBonusFeat", "featId": "feat:simple_weapon_proficiency" },
-      { "$type": "GrantBonusFeat", "featId": "feat:weapon_proficiency_martial" },
-      { "$type": "GrantBonusFeat", "featId": "feat:armor_proficiency_light" },
-      { "$type": "GrantBonusFeat", "featId": "feat:shield_proficiency" },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_favored_enemy", "name": "Favored Enemy", "description": "Select a favored enemy type. +2 bonus on Bluff, Listen, Sense Motive, Spot, Survival checks and weapon damage rolls." }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_wild_empathy", "name": "Wild Empathy", "description": "Improve attitude of an animal, as Diplomacy for people." }
-      },
-      {
-        "$type": "GrantBonusFeat",
-        "featId": "feat:track"
-      }
-    ],
-    "2": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_combat_style", "name": "Combat Style", "description": "Select archery or two-weapon combat style." }
-      }
-    ],
-    "3": [
-      {
-        "$type": "GrantBonusFeat",
-        "featId": "feat:endurance"
-      }
-    ],
-    "4": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_animal_companion", "name": "Animal Companion", "description": "Gain an animal companion." }
-      }
-    ],
-    "5": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_favored_enemy_2", "name": "Favored Enemy", "description": "Select an additional favored enemy." }
-      }
-    ],
-    "6": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_improved_combat_style", "name": "Improved Combat Style", "description": "Improved version of selected combat style." }
-      }
-    ],
-    "7": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_woodland_stride", "name": "Woodland Stride", "description": "Move through natural thorns, briars, and similar terrain at normal speed without damage." }
-      }
-    ],
-    "8": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_swift_tracker", "name": "Swift Tracker", "description": "Move at normal speed while following tracks without penalty." }
-      }
-    ],
-    "9": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_evasion", "name": "Evasion", "description": "On successful Reflex save for half damage, take no damage instead." }
-      }
-    ],
-    "10": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_favored_enemy_3", "name": "Favored Enemy", "description": "Select an additional favored enemy." }
-      }
-    ],
-    "11": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_combat_style_mastery", "name": "Combat Style Mastery", "description": "Mastery of selected combat style." }
-      }
-    ],
-    "13": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_camouflage", "name": "Camouflage", "description": "Use Hide skill in any sort of natural terrain." }
-      }
-    ],
-    "15": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_favored_enemy_4", "name": "Favored Enemy", "description": "Select an additional favored enemy." }
-      }
-    ],
-    "17": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_hide_in_plain_sight", "name": "Hide in Plain Sight", "description": "Use Hide skill even while being observed in natural terrain." }
-      }
-    ],
-    "20": [
-      {
-        "$type": "GrantAbility",
-        "ability": { "id": "pr_favored_enemy_5", "name": "Favored Enemy", "description": "Select an additional favored enemy." }
-      }
-    ]
-  },
-  "prerequisites": []
-}
+    },
+    "perLevelPermabuffs": [],
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:simple_weapon_proficiency"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:weapon_proficiency_martial"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:armor_proficiency_light"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:shield_proficiency"
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_favored_enemy",
+            "name": "Favored Enemy",
+            "description": "Select a favored enemy type. +2 bonus on Bluff, Listen, Sense Motive, Spot, Survival checks and weapon damage rolls."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_wild_empathy",
+            "name": "Wild Empathy",
+            "description": "Improve attitude of an animal, as Diplomacy for people."
+          }
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:track"
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_combat_style",
+            "name": "Combat Style",
+            "description": "Select archery or two-weapon combat style."
+          }
+        },
+        {
+          "$type": "GrantClassFeatureSelection",
+          "featureType": "class_feature:ranger_combat_style"
+        }
+      ],
+      "3": [
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:endurance"
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_animal_companion",
+            "name": "Animal Companion",
+            "description": "Gain an animal companion."
+          }
+        },
+        {
+          "$type": "GrantCompanionSlot",
+          "linkType": "animal_companion",
+          "classFeatureType": "class_feature:animal_companion_options",
+          "effectiveLevelFormula": {
+            "expression": "EffectiveClassLevel(druid) + min(max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) / 2, max(0, max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) - 3) * 2)"
+          }
+        }
+      ],
+      "5": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_favored_enemy_2",
+            "name": "Favored Enemy",
+            "description": "Select an additional favored enemy."
+          }
+        }
+      ],
+      "6": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_improved_combat_style",
+            "name": "Improved Combat Style",
+            "description": "Improved version of selected combat style."
+          }
+        },
+        {
+          "$type": "ApplyClassFeatureOptionBenefits",
+          "featureType": "class_feature:ranger_combat_style",
+          "benefitSet": "improved"
+        }
+      ],
+      "7": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_woodland_stride",
+            "name": "Woodland Stride",
+            "description": "Move through natural thorns, briars, and similar terrain at normal speed without damage."
+          }
+        }
+      ],
+      "8": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_swift_tracker",
+            "name": "Swift Tracker",
+            "description": "Move at normal speed while following tracks without penalty."
+          }
+        }
+      ],
+      "9": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_evasion",
+            "name": "Evasion",
+            "description": "On successful Reflex save for half damage, take no damage instead."
+          }
+        }
+      ],
+      "10": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_favored_enemy_3",
+            "name": "Favored Enemy",
+            "description": "Select an additional favored enemy."
+          }
+        }
+      ],
+      "11": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_combat_style_mastery",
+            "name": "Combat Style Mastery",
+            "description": "Mastery of selected combat style."
+          }
+        },
+        {
+          "$type": "ApplyClassFeatureOptionBenefits",
+          "featureType": "class_feature:ranger_combat_style",
+          "benefitSet": "mastery"
+        }
+      ],
+      "13": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_camouflage",
+            "name": "Camouflage",
+            "description": "Use Hide skill in any sort of natural terrain."
+          }
+        }
+      ],
+      "15": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_favored_enemy_4",
+            "name": "Favored Enemy",
+            "description": "Select an additional favored enemy."
+          }
+        }
+      ],
+      "17": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_hide_in_plain_sight",
+            "name": "Hide in Plain Sight",
+            "description": "Use Hide skill even while being observed in natural terrain."
+          }
+        }
+      ],
+      "20": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "pr_favored_enemy_5",
+            "name": "Favored Enemy",
+            "description": "Select an additional favored enemy."
+          }
+        }
+      ]
+    },
+    "prerequisites": []
+  }
 ]

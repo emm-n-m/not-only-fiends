@@ -1,325 +1,325 @@
 [
-{
-  "$type": "HDDriver",
-  "kind": "Class",
-  "id": "class:ranger",
-  "name": "Ranger",
-  "hitDie": 8,
-  "skillPointsPerLevel": 6,
-  "classSkills": [
-    "skill:climb",
-    "skill:concentration",
-    "skill:craft",
-    "skill:handle_animal",
-    "skill:heal",
-    "skill:hide",
-    "skill:jump",
-    "skill:knowledge_dungeoneering",
-    "skill:knowledge_geography",
-    "skill:knowledge_nature",
-    "skill:listen",
-    "skill:move_silently",
-    "skill:profession",
-    "skill:ride",
-    "skill:search",
-    "skill:spot",
-    "skill:survival",
-    "skill:swim",
-    "skill:use_rope"
-  ],
-  "babProgression": "good",
-  "saveProgression": {
-    "fort": "good",
-    "ref": "good",
-    "will": "poor"
-  },
-  "spellcasting": {
-    "castingType": "divine",
-    "castingStat": "wis",
-    "spellsPerDay": {
-      "4": {
-        "0": 0,
-        "1": 0
-      },
-      "5": {
-        "0": 0,
-        "1": 0
-      },
-      "6": {
-        "0": 0,
-        "1": 1
-      },
-      "7": {
-        "0": 0,
-        "1": 1
-      },
-      "8": {
-        "0": 0,
-        "1": 1,
-        "2": 0
-      },
-      "9": {
-        "0": 0,
-        "1": 1,
-        "2": 0
-      },
-      "10": {
-        "0": 0,
-        "1": 1,
-        "2": 1
-      },
-      "11": {
-        "0": 0,
-        "1": 1,
-        "2": 1,
-        "3": 0
-      },
-      "12": {
-        "0": 0,
-        "1": 1,
-        "2": 1,
-        "3": 1
-      },
-      "13": {
-        "0": 0,
-        "1": 1,
-        "2": 1,
-        "3": 1
-      },
-      "14": {
-        "0": 0,
-        "1": 2,
-        "2": 1,
-        "3": 1,
-        "4": 0
-      },
-      "15": {
-        "0": 0,
-        "1": 2,
-        "2": 1,
-        "3": 1,
-        "4": 1
-      },
-      "16": {
-        "0": 0,
-        "1": 2,
-        "2": 2,
-        "3": 1,
-        "4": 1
-      },
-      "17": {
-        "0": 0,
-        "1": 2,
-        "2": 2,
-        "3": 2,
-        "4": 1
-      },
-      "18": {
-        "0": 0,
-        "1": 3,
-        "2": 2,
-        "3": 2,
-        "4": 1
-      },
-      "19": {
-        "0": 0,
-        "1": 3,
-        "2": 3,
-        "3": 3,
-        "4": 2
-      },
-      "20": {
-        "0": 0,
-        "1": 3,
-        "2": 3,
-        "3": 3,
-        "4": 3
-      }
-    }
-  },
-  "levelPermabuffs": {
-    "1": [
-      {
-        "$type": "GrantBonusFeat",
-        "featId": "feat:simple_weapon_proficiency"
-      },
-      {
-        "$type": "GrantBonusFeat",
-        "featId": "feat:weapon_proficiency_martial"
-      },
-      {
-        "$type": "GrantBonusFeat",
-        "featId": "feat:armor_proficiency_light"
-      },
-      {
-        "$type": "GrantBonusFeat",
-        "featId": "feat:shield_proficiency"
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "weapon_and_armor_proficiency",
-          "name": "Weapon and Armor Proficiency",
-          "description": "Proficient with all simple and martial weapons, light armor, and shields (except tower)."
-        }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "favored_enemy",
-          "name": "Favored Enemy",
-          "description": "Select a creature type; gain +2 bonus on Bluff, Listen, Sense Motive, Spot, and Survival checks and weapon damage against that type."
-        }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "track",
-          "name": "Track",
-          "description": "Gain Track as a bonus feat."
-        }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "wild_empathy",
-          "name": "Wild Empathy",
-          "description": "Can improve attitude of an animal, similar to a Diplomacy check."
-        }
-      }
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:ranger",
+    "name": "Ranger",
+    "hitDie": 8,
+    "skillPointsPerLevel": 6,
+    "classSkills": [
+      "skill:climb",
+      "skill:concentration",
+      "skill:craft",
+      "skill:handle_animal",
+      "skill:heal",
+      "skill:hide",
+      "skill:jump",
+      "skill:knowledge_dungeoneering",
+      "skill:knowledge_geography",
+      "skill:knowledge_nature",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:profession",
+      "skill:ride",
+      "skill:search",
+      "skill:spot",
+      "skill:survival",
+      "skill:swim",
+      "skill:use_rope"
     ],
-    "2": [
-      {
-        "$type": "GrantClassFeatureSelection",
-        "featureType": "class_feature:ranger_combat_style"
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "combat_style",
-          "name": "Combat Style",
-          "description": "Choose archery or two-weapon combat style. Gain a bonus feat appropriate to the chosen style, usable in light or no armor."
+    "babProgression": "good",
+    "saveProgression": {
+      "fort": "good",
+      "ref": "good",
+      "will": "poor"
+    },
+    "spellcasting": {
+      "castingType": "divine",
+      "castingStat": "wis",
+      "spellsPerDay": {
+        "4": {
+          "0": 0,
+          "1": 0
+        },
+        "5": {
+          "0": 0,
+          "1": 0
+        },
+        "6": {
+          "0": 0,
+          "1": 1
+        },
+        "7": {
+          "0": 0,
+          "1": 1
+        },
+        "8": {
+          "0": 0,
+          "1": 1,
+          "2": 0
+        },
+        "9": {
+          "0": 0,
+          "1": 1,
+          "2": 0
+        },
+        "10": {
+          "0": 0,
+          "1": 1,
+          "2": 1
+        },
+        "11": {
+          "0": 0,
+          "1": 1,
+          "2": 1,
+          "3": 0
+        },
+        "12": {
+          "0": 0,
+          "1": 1,
+          "2": 1,
+          "3": 1
+        },
+        "13": {
+          "0": 0,
+          "1": 1,
+          "2": 1,
+          "3": 1
+        },
+        "14": {
+          "0": 0,
+          "1": 2,
+          "2": 1,
+          "3": 1,
+          "4": 0
+        },
+        "15": {
+          "0": 0,
+          "1": 2,
+          "2": 1,
+          "3": 1,
+          "4": 1
+        },
+        "16": {
+          "0": 0,
+          "1": 2,
+          "2": 2,
+          "3": 1,
+          "4": 1
+        },
+        "17": {
+          "0": 0,
+          "1": 2,
+          "2": 2,
+          "3": 2,
+          "4": 1
+        },
+        "18": {
+          "0": 0,
+          "1": 3,
+          "2": 2,
+          "3": 2,
+          "4": 1
+        },
+        "19": {
+          "0": 0,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2
+        },
+        "20": {
+          "0": 0,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 3
         }
       }
-    ],
-    "3": [
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "endurance",
-          "name": "Endurance",
-          "description": "Gain Endurance as a bonus feat."
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:simple_weapon_proficiency"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:weapon_proficiency_martial"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:armor_proficiency_light"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:shield_proficiency"
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with all simple and martial weapons, light armor, and shields (except tower)."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "favored_enemy",
+            "name": "Favored Enemy",
+            "description": "Select a creature type; gain +2 bonus on Bluff, Listen, Sense Motive, Spot, and Survival checks and weapon damage against that type."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "track",
+            "name": "Track",
+            "description": "Gain Track as a bonus feat."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "wild_empathy",
+            "name": "Wild Empathy",
+            "description": "Can improve attitude of an animal, similar to a Diplomacy check."
+          }
         }
-      }
-    ],
-    "4": [
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "animal_companion",
-          "name": "Animal Companion",
-          "description": "Gain an animal companion, as a druid of level equal to ranger level - 3."
+      ],
+      "2": [
+        {
+          "$type": "GrantClassFeatureSelection",
+          "featureType": "class_feature:ranger_combat_style"
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "combat_style",
+            "name": "Combat Style",
+            "description": "Choose archery or two-weapon combat style. Gain a bonus feat appropriate to the chosen style, usable in light or no armor."
+          }
         }
-      },
-      {
-        "$type": "GrantCompanionSlot",
-        "linkType": "animal_companion",
-        "classFeatureType": "class_feature:animal_companion_options",
-        "effectiveLevelFormula": {
-          "expression": "max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)"
+      ],
+      "3": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "endurance",
+            "name": "Endurance",
+            "description": "Gain Endurance as a bonus feat."
+          }
         }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "spells",
-          "name": "Spells",
-          "description": "Casts divine spells drawn from the ranger spell list, beginning at 4th level, using Wisdom as the casting stat."
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "animal_companion",
+            "name": "Animal Companion",
+            "description": "Gain an animal companion, as a druid of level equal to ranger level - 3."
+          }
+        },
+        {
+          "$type": "GrantCompanionSlot",
+          "linkType": "animal_companion",
+          "classFeatureType": "class_feature:animal_companion_options",
+          "effectiveLevelFormula": {
+            "expression": "EffectiveClassLevel(druid) + min(max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) / 2, max(0, max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) - 3) * 2)"
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells",
+            "name": "Spells",
+            "description": "Casts divine spells drawn from the ranger spell list, beginning at 4th level, using Wisdom as the casting stat."
+          }
         }
-      }
-    ],
-    "6": [
-      {
-        "$type": "ApplyClassFeatureOptionBenefits",
-        "featureType": "class_feature:ranger_combat_style",
-        "benefitSet": "improved"
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "improved_combat_style",
-          "name": "Improved Combat Style",
-          "description": "Gain a second bonus feat appropriate to chosen combat style, usable in light or no armor."
+      ],
+      "6": [
+        {
+          "$type": "ApplyClassFeatureOptionBenefits",
+          "featureType": "class_feature:ranger_combat_style",
+          "benefitSet": "improved"
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "improved_combat_style",
+            "name": "Improved Combat Style",
+            "description": "Gain a second bonus feat appropriate to chosen combat style, usable in light or no armor."
+          }
         }
-      }
-    ],
-    "7": [
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "woodland_stride",
-          "name": "Woodland Stride",
-          "description": "Move through natural thorns, briars, and overgrown areas at normal speed without damage."
+      ],
+      "7": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "woodland_stride",
+            "name": "Woodland Stride",
+            "description": "Move through natural thorns, briars, and overgrown areas at normal speed without damage."
+          }
         }
-      }
-    ],
-    "8": [
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "swift_tracker",
-          "name": "Swift Tracker",
-          "description": "Can move at normal speed while following tracks without taking the normal -5 penalty."
+      ],
+      "8": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "swift_tracker",
+            "name": "Swift Tracker",
+            "description": "Can move at normal speed while following tracks without taking the normal -5 penalty."
+          }
         }
-      }
-    ],
-    "9": [
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "evasion",
-          "name": "Evasion",
-          "description": "On a successful Reflex save against an area attack, takes no damage instead of half."
+      ],
+      "9": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "evasion",
+            "name": "Evasion",
+            "description": "On a successful Reflex save against an area attack, takes no damage instead of half."
+          }
         }
-      }
-    ],
-    "11": [
-      {
-        "$type": "ApplyClassFeatureOptionBenefits",
-        "featureType": "class_feature:ranger_combat_style",
-        "benefitSet": "mastery"
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "combat_style_mastery",
-          "name": "Combat Style Mastery",
-          "description": "Gain a third bonus feat appropriate to chosen combat style, usable in any armor."
+      ],
+      "11": [
+        {
+          "$type": "ApplyClassFeatureOptionBenefits",
+          "featureType": "class_feature:ranger_combat_style",
+          "benefitSet": "mastery"
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "combat_style_mastery",
+            "name": "Combat Style Mastery",
+            "description": "Gain a third bonus feat appropriate to chosen combat style, usable in any armor."
+          }
         }
-      }
-    ],
-    "13": [
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "camouflage",
-          "name": "Camouflage",
-          "description": "Can use the Hide skill in any natural terrain, even without cover or concealment."
+      ],
+      "13": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "camouflage",
+            "name": "Camouflage",
+            "description": "Can use the Hide skill in any natural terrain, even without cover or concealment."
+          }
         }
-      }
-    ],
-    "17": [
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "hide_in_plain_sight",
-          "name": "Hide in Plain Sight",
-          "description": "Can use the Hide skill even while being observed, in any natural terrain."
+      ],
+      "17": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "hide_in_plain_sight",
+            "name": "Hide in Plain Sight",
+            "description": "Can use the Hide skill even while being observed, in any natural terrain."
+          }
         }
-      }
-    ]
-  },
-  "perLevelPermabuffs": [],
-  "prerequisites": []
-}
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": []
+  }
 ]

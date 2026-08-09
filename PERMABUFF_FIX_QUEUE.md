@@ -89,6 +89,13 @@ materials repo's `CONTENT_GAPS.md`.
 - **`feat:epic_leadership` did nothing, and the audit could not see it** — fixed 2026-08-09. It
   had an empty `grantedPermabuffs` *and no description*, so every description-based sweep skipped
   it. It is the reason the third sweep below exists.
+- **The first run's keyword list was too narrow.** It matched nouns (immunity, resistance, "+2")
+  but not verbs, so `pr_animal_companion` — "Gain an animal companion" — and `pr_combat_style` —
+  "Select archery or two-weapon combat style" — were never even offered as candidates. Both were
+  real bugs: a planar ranger reached 4th level and the builder reported that no HD granted a
+  companion slot. Fixed 2026-08-09; the widened sweep returns 433 candidates rather than 310, so
+  **the 138-item list below is a floor, not a ceiling** — re-run before calling the queue complete.
+
 - **284 objects share that blind spot** (empty `grantedPermabuffs`, no description, mostly epic
   feats). The audit prompts now emit them under a `NO-DESCRIPTION` heading, but they cannot be
   judged by comparing a description to its neighbours — they need `verify-content`, which has an

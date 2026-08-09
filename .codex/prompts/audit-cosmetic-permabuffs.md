@@ -46,7 +46,10 @@ env=dict(l.strip().split('=',1) for l in open('.env') if '=' in l and not l.star
 ROOTS=[('public','NotOnlyFiendsStudio/Content')]
 if env.get('EXTRA_PACKS_PATH'): ROOTS.append(('private',env['EXTRA_PACKS_PATH']))
 mech=re.compile(r'(immun|resist|damage reduction|bonus (on|to)|\+\d|spell resistance|'
-                r'fast healing|regenerat|natural armor|speed|darkvision)',re.I)
+                r'fast healing|regenerat|natural armor|speed|darkvision|'
+                # verbs matter as much as nouns: "Gain an animal companion" and "Select
+                # archery or two-weapon combat style" are both mechanics with no keyword.
+                r'\bgain|\bselect|\bchoose|companion|proficien|per day)',re.I)
 for tag,root in ROOTS:
     for f in sorted(glob.glob(root+'/**/*.json',recursive=True)):
         try: d=json.load(open(f,encoding='utf-8-sig'))
@@ -64,7 +67,7 @@ for tag,root in ROOTS:
 PY
 ```
 
-Expect 310 lines: 251 tagged `public`, 59 tagged `private`. If you get 251, `.env` was not read
+Expect 433 lines: 353 tagged `public`, 80 tagged `private`. If you get 353, `.env` was not read
 and you are missing the private packs — stop and fix that before continuing.
 
 Then run this second sweep, for anything that describes a benefit but grants nothing:

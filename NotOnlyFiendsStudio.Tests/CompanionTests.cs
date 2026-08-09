@@ -1204,6 +1204,60 @@ public class CompanionTests
         }
     };
 
+    /// <summary>
+    /// SRD Unearthed Arcana: "The planar ranger has all the standard ranger class features, except
+    /// as noted below", and Animal Companion is one of the entries it keeps (in a celestial or
+    /// fiendish variant). Its content carried the feature as a description with no mechanics, so a
+    /// planar ranger reached 4th level and the builder reported that no HD granted a companion
+    /// slot at all.
+    /// </summary>
+    [Fact]
+    public void PlanarRanger4_GrantsAnAnimalCompanionSlotLikeARanger()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        Character Build(int levels) => new()
+        {
+            Name = "Planar ranger",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 12, CHA = 10 },
+            Ticks = Enumerable.Range(0, levels)
+                .Select(_ => new Tick { DriverId = "class:planar_ranger" }).ToList()
+        };
+
+        // The ability arrives at 4th, exactly as for a ranger.
+        Assert.DoesNotContain(engine.Evaluate(Build(3)).CompanionSlots,
+            slot => slot.LinkType == "animal_companion");
+
+        var state = engine.Evaluate(Build(4));
+        var slot = Assert.Single(state.CompanionSlots, s => s.LinkType == "animal_companion");
+        // "the ranger's effective druid level is one-half his ranger level" — 4/2 = 2.
+        Assert.Equal(2, slot.EffectiveLevel);
+    }
+
+    /// <summary>A planar ranger keeps the ranger's combat style choice too.</summary>
+    [Fact]
+    public void PlanarRanger2_OffersTheRangerCombatStyleChoice()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        var state = engine.Evaluate(new Character
+        {
+            Name = "Planar ranger",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 12, CHA = 10 },
+            Ticks = Enumerable.Range(0, 2)
+                .Select(_ => new Tick { DriverId = "class:planar_ranger" }).ToList()
+        });
+
+        Assert.True(state.PendingClassFeatureSelections
+            .ContainsKey("class_feature:ranger_combat_style"));
+    }
+
     private static HDDriver BuildFighterDriver() => new()
     {
         Kind = DriverKind.Class,
@@ -2182,7 +2236,9 @@ public class CompanionTests
         var registry = TestContentHelper.LoadAllPacks();
         var engine = new ReplayStudio(registry);
 
-        // Sanity: druid 17 / ranger 4 → max(17, 17+4-3) = 18 effective AC level.
+        // SRD ranger: "the ranger's effective druid level is one-half his ranger level", and the
+        // ability only arrives at 4th. So druid 17 + ranger 4/2 = 19, not the 17+4-3 = 18 the
+        // legacy expression produced by counting ranger levels one-for-one past 3rd.
         // (ECL exceeds 20, but tests the formula at high levels.)
         var character = new Character
         {
@@ -2196,7 +2252,7 @@ public class CompanionTests
 
         var state = engine.Evaluate(character);
         var slot = Assert.Single(state.CompanionSlots);
-        Assert.Equal(18, slot.EffectiveLevel);
+        Assert.Equal(19, slot.EffectiveLevel);
     }
 
     [Fact]

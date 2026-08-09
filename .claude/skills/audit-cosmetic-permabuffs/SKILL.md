@@ -58,8 +58,11 @@ NotOnlyFiendsStudio/Content/**/*.json      # public (OGL) — findings and fixes
 $EXTRA_PACKS_PATH/**/*.json                # private packs — findings belong in the materials repo
 ```
 
-As of 2026-08-09 the sweep below returns **310 candidates** — 251 public across 46 files, 59
-private across 15 files, out of 1,031 `GrantAbility` instances in total. Most are legitimate (see the traps). Take one pack,
+As of 2026-08-09 the sweep below returns **433 candidates** — 353 public, 80 private, out of
+1,031 `GrantAbility` instances in total. The first run used a narrower keyword list and returned
+310; it missed `pr_animal_companion` ("Gain an animal companion") and `pr_combat_style` ("Select
+archery or two-weapon combat style"), both real content bugs, because a mechanic can be stated
+with a verb and no keyword at all. Most are legitimate (see the traps). Take one pack,
 or one content type, at a time.
 
 ## Finding candidates
@@ -70,7 +73,10 @@ import json,glob,os,re
 # For the private packs, read EXTRA_PACKS_PATH out of .env — it is not an environment variable.
 root='NotOnlyFiendsStudio/Content'
 mech=re.compile(r'(immun|resist|damage reduction|bonus (on|to)|\+\d|spell resistance|'
-                r'fast healing|regenerat|natural armor|speed|darkvision)',re.I)
+                r'fast healing|regenerat|natural armor|speed|darkvision|'
+                # verbs matter as much as nouns: "Gain an animal companion" and "Select
+                # archery or two-weapon combat style" are both mechanics with no keyword.
+                r'\bgain|\bselect|\bchoose|companion|proficien|per day)',re.I)
 for f in glob.glob(root+'/**/*.json',recursive=True):
     try: d=json.load(open(f,encoding='utf-8-sig'))
     except Exception: continue
