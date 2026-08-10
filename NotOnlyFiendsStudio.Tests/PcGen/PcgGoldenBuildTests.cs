@@ -382,11 +382,14 @@ public class PcgGoldenBuildTests
 
         // Racial HD are laid down first, then class levels — and ClassLevels counts only the
         // latter, even though both are HD drivers.
+        // Her druid levels are the Elemental Druid Option, a substitution class the .pcg records
+        // on the level row rather than on the CLASS row, so it resolves to its own driver.
+        Assert.Equal("Elemental Druid Option", build.Source.Levels[6].SubstitutionClass);
         Assert.Equal(
-            Enumerable.Repeat("racial_hd:fey", 6).Concat(Enumerable.Repeat("class:druid", 6)),
+            Enumerable.Repeat("racial_hd:fey", 6).Concat(Enumerable.Repeat("class:elemental_druid", 6)),
             state.HDList);
-        Assert.Equal(new[] { "class:druid" }, state.ClassLevels.Keys);
-        Assert.Equal(6, state.ClassLevels["class:druid"]);
+        Assert.Equal(new[] { "class:elemental_druid" }, state.ClassLevels.Keys);
+        Assert.Equal(6, state.ClassLevels["class:elemental_druid"]);
         Assert.Equal(6, state.HitDice.Count(die => die.DieSize == 6)); // fey d6
         Assert.Equal(6, state.HitDice.Count(die => die.DieSize == 8)); // druid d8
 
@@ -400,18 +403,27 @@ public class PcgGoldenBuildTests
             GoodSave(6) + GoodSave(6));
 
         // A nymph casts as a 7th-level druid innately; six class levels stack on top of that
-        // racial caster level rather than restarting the progression at 1.
+        // racial caster level rather than restarting the progression at 1. The race says
+        // "class:druid" and she has none — the levels are the variant's — so this only holds
+        // because a rule naming a base class reaches its variants. One caster, not two.
         var casting = Assert.Single(state.Spellcasting).Value;
-        Assert.Equal("class:druid", casting.ClassId);
+        Assert.Equal("class:elemental_druid", casting.ClassId);
         Assert.Equal(7 + 6, casting.CasterLevel);
         Assert.Equal(7, casting.MaxSpellLevel);
         Assert.Equal(SpellAcquisition.FullList, casting.Acquisition);
 
+        // The substitution level's one domain, spent on Plant — which is on the variant's list,
+        // so no complaint — with a cleric-style bonus slot at every level she can cast.
+        Assert.Equal(new[] { "domain:plant" }, state.Domains);
+        Assert.Equal("class:elemental_druid", state.DomainOwners["domain:plant"]);
+        Assert.Equal(Enumerable.Range(1, 7), casting.DomainBonusSlots.Keys.Order());
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("is not on"));
+
         AssertHitPointsFollowSourceRolls(build);
 
-        // Known reconstruction gap, asserted so it stays visible: PCGen credits racial-HD skill
-        // points this engine does not, so the source sheet's ranks overspend the computed pool.
-        Assert.Contains(state.Warnings, w => w.Message.Contains("more skill points than available"));
+        // The PCGen MONCSKILL list gives Nymph all of its trained skills as class skills. The
+        // race data now mirrors that list, so the imported source ranks fit the replayed pool.
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("more skill points than available"));
     }
 
     // ---------------------------------------------------------------

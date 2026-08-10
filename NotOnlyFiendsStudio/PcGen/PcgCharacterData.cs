@@ -44,6 +44,14 @@ public class PcgLevelEntry
     public int SkillsGained { get; set; }
     public string? AbilityIncrease { get; set; }
     public List<string> SpellcasterChoices { get; set; } = new();
+
+    /// <summary>
+    /// A PCGen substitution class taken in place of this level of the base class, e.g.
+    /// <c>CLASSABILITIESLEVEL:Druid=1|SUBSTITUTIONLEVEL:Elemental Druid Option</c>. Null for the
+    /// ordinary case. Substitution is per level, not per class: a character can take one
+    /// substituted level and leave the rest of its levels standard.
+    /// </summary>
+    public string? SubstitutionClass { get; set; }
 }
 
 public class PcgSkillEntry

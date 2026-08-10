@@ -309,10 +309,37 @@ public class PcgIdMapper
 
         (pcgenClass, driverId) = (string.Empty, string.Empty);
         return false;
+
     }
 
     public static bool IsClassSelectingAcf(string abilityKey) =>
         ClassSelectingAcf.ContainsKey(abilityKey);
+
+    /// <summary>
+    /// PCGen substitution classes that resolve to a driver of their own, keyed by the name on the
+    /// level row's <c>SUBSTITUTIONLEVEL:</c> field. Substitution is per level in PCGen and
+    /// per class here, which is only equivalent while a substitution class differs from its base
+    /// at one level — true of the entries below. A substitution class that changed several levels
+    /// would need the character's substituted levels tracked individually instead.
+    /// </summary>
+    private static readonly Dictionary<string, (string PcgenClass, string DriverId)> SubstitutionClasses =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Elemental Druid Option"] = ("Druid", "class:elemental_druid"),
+        };
+
+    public static bool TryGetSubstitutionClass(
+        string substitutionName, out string pcgenClass, out string driverId)
+    {
+        if (SubstitutionClasses.TryGetValue(substitutionName, out var swap))
+        {
+            (pcgenClass, driverId) = swap;
+            return true;
+        }
+
+        (pcgenClass, driverId) = (string.Empty, string.Empty);
+        return false;
+    }
 
     public string? MapClass(string pcgenClass)
     {

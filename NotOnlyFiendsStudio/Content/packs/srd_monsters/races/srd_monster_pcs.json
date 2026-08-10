@@ -24,6 +24,13 @@
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:monstrous_humanoid",
+    "racialClassSkillRemovals": [
+      "skill:climb",
+      "skill:craft",
+      "skill:move_silently",
+      "skill:search",
+      "skill:survival"
+    ],
     "racialPermabuffs": [
       {
         "$type": "GrantAbility",
@@ -111,6 +118,12 @@
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:monstrous_humanoid",
+    "racialClassSkillRemovals": [
+      "skill:craft",
+      "skill:move_silently",
+      "skill:search",
+      "skill:survival"
+    ],
     "racialPermabuffs": [
       {
         "$type": "GrantAbility",

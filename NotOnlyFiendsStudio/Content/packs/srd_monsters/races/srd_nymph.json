@@ -26,6 +26,21 @@
       "sylvan"
     ],
     "racialHDDriverId": "racial_hd:fey",
+    "racialClassSkillAdditions": [
+      "skill:concentration",
+      "skill:diplomacy",
+      "skill:escape_artist",
+      "skill:handle_animal",
+      "skill:heal",
+      "skill:hide",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:ride",
+      "skill:sense_motive",
+      "skill:spot",
+      "skill:swim",
+      "skill:use_rope"
+    ],
     "racialPermabuffs": [
       {
         "$type": "ModifyAttribute",

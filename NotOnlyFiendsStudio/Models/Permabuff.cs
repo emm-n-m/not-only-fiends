@@ -699,6 +699,13 @@ public class GrantDomainSelection : Permabuff
     /// </summary>
     public bool AsSpellListSources { get; set; }
 
+    /// <summary>
+    /// Domains this grant may be spent on. Null or empty means any domain, which is the cleric's
+    /// case. A class that narrows the list — Secrets of Theurgy's elemental druid, which may take
+    /// only an elemental domain or Plant — names them here.
+    /// </summary>
+    public List<string> AllowedDomainIds { get; set; } = new();
+
     public override void Apply(PermabuffContext ctx)
     {
         var owner = ClassId ?? ctx.CurrentDriverId ?? OrphanOwner;
@@ -706,6 +713,16 @@ public class GrantDomainSelection : Permabuff
             ctx.State.PendingDomainSelections.GetValueOrDefault(owner) + Count;
         if (AsSpellListSources)
             ctx.State.SpellListSourceDomainOwners.Add(owner);
+        if (AllowedDomainIds.Count > 0)
+        {
+            // Union rather than replace: a character with two granting sources may spend either
+            // grant on either source's list, and the engine does not track which slot is which.
+            if (!ctx.State.DomainSelectionRestrictions.TryGetValue(owner, out var allowed))
+                ctx.State.DomainSelectionRestrictions[owner] = allowed = new List<string>();
+            foreach (var domainId in AllowedDomainIds)
+                if (!allowed.Contains(domainId, StringComparer.Ordinal))
+                    allowed.Add(domainId);
+        }
     }
 }
 

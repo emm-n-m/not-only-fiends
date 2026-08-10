@@ -37,6 +37,12 @@ public class ReplayStudio
         state.Alignment = character.Alignment;
         state.Deity = string.IsNullOrWhiteSpace(character.Deity) ? null : character.Deity;
 
+        // Mirror the variant→base map onto the state so formulas can resolve it without a
+        // registry. Cheap: it is only the handful of drivers that declare a base.
+        foreach (var hd in _content.GetAllDrivers().OfType<HDDriver>())
+            if (hd.VariantOf != null)
+                state.ClassVariantBases[hd.Id] = hd.VariantOf;
+
         // Companion-side: surface origin so templates/formulas can read MasterLevel.
         if (character.CompanionOrigin != null)
         {
@@ -149,7 +155,7 @@ public class ReplayStudio
             // c. Compute effective level (actual + bonuses from templates/feats)
             var effectiveLevel = driverLevel;
             foreach (var rule in state.EffectiveLevelRules.Where(r =>
-                r.TargetDriverId == tick.DriverId && r.Scope == EffectiveLevelScope.ClassFeatures))
+                RuleTargetsDriver(r, tick.DriverId) && r.Scope == EffectiveLevelScope.ClassFeatures))
                 effectiveLevel += rule.BonusFormula.Evaluate(state);
             var previousEffective = effectiveHighWater.GetValueOrDefault(tick.DriverId, 0);
             effectiveHighWater[tick.DriverId] = effectiveLevel;
@@ -161,7 +167,12 @@ public class ReplayStudio
             // seed with its effective (stacked) caster level, so no double counting occurs.
             if (!racialSpellcastingSeeded && driver is HDDriver clsHd && clsHd.Kind == DriverKind.Class)
             {
-                FinalizeRacialSpellcasting(ctx, race);
+                // The whole tick list, not just the classes ticked so far: a variant taken later
+                // still has to own the seed, or its racial levels land on the abandoned base id.
+                FinalizeRacialSpellcasting(ctx, race, character.Ticks
+                    .Select(t => t.DriverId)
+                    .Distinct(StringComparer.Ordinal)
+                    .ToList());
                 racialSpellcastingSeeded = true;
             }
 
@@ -264,7 +275,7 @@ public class ReplayStudio
 
                 var otherEffective = otherActualLevel;
                 foreach (var rule in state.EffectiveLevelRules.Where(r =>
-                    r.TargetDriverId == otherDriverId && r.Scope == EffectiveLevelScope.ClassFeatures))
+                    RuleTargetsDriver(r, otherDriverId) && r.Scope == EffectiveLevelScope.ClassFeatures))
                     otherEffective += rule.BonusFormula.Evaluate(state);
 
                 var otherPrev = effectiveHighWater.GetValueOrDefault(otherDriverId, 0);
@@ -329,7 +340,10 @@ public class ReplayStudio
         // ARE taken, the class tick's UpdateSpellcasting already seeded state.Spellcasting
         // using featureLevel = actualLevel + EffectiveLevelRule (registered at race
         // creation), so this step skips the class and leaves the stacked value in place.
-        FinalizeRacialSpellcasting(ctx, race);
+        FinalizeRacialSpellcasting(ctx, race, character.Ticks
+            .Select(t => t.DriverId)
+            .Distinct(StringComparer.Ordinal)
+            .ToList());
 
         // 8. Tail pass — skill synergies and skill totals. Must run last: it reads the final
         // ability scores, which equipment (step 5) can still move.
@@ -725,11 +739,19 @@ public class ReplayStudio
     /// target class has no state.Spellcasting entry yet (i.e. character took no class levels
     /// of it). Runs after all ticks so that formulas like RacialHD() see the final HD count.
     /// </summary>
-    private void FinalizeRacialSpellcasting(PermabuffContext ctx, RaceDefinition race)
+    private void FinalizeRacialSpellcasting(
+        PermabuffContext ctx, RaceDefinition race, IReadOnlyCollection<string> classDriverIds)
     {
         foreach (var buff in race.RacialPermabuffs.OfType<GrantRacialSpellcasting>())
         {
-            if (ctx.State.Spellcasting.ContainsKey(buff.ClassId))
+            // "Casts as a 7th-level druid" seeds a caster the character's own druid levels then
+            // overwrite with the stacked total. A variant druid overwrites a different key, so
+            // the seed has to be laid down under the variant's id or the racial levels are
+            // counted twice — once in the abandoned seed, once in the variant's caster.
+            var classId = classDriverIds
+                .FirstOrDefault(id => VariantBaseOf(id) == buff.ClassId) ?? buff.ClassId;
+
+            if (ctx.State.Spellcasting.ContainsKey(classId))
                 continue;
 
             var level = (int)buff.LevelFormula.Evaluate(ctx.State);
@@ -763,7 +785,7 @@ public class ReplayStudio
 
             new UpdateSpellcasting
             {
-                ClassId = buff.ClassId,
+                ClassId = classId,
                 CastingType = hd.Spellcasting.CastingType,
                 CastingStat = hd.Spellcasting.CastingStat,
                 CasterLevel = level,
@@ -771,6 +793,19 @@ public class ReplayStudio
                 SpellsKnown = sk,
                 ProgressionRef = hd.Spellcasting,
             }.Apply(ctx);
+        }
+    }
+
+    /// <summary>The class a driver is a variant of, or null when it is not a variant.</summary>
+    private string? VariantBaseOf(string driverId)
+    {
+        try
+        {
+            return (_content.GetDriver(driverId) as HDDriver)?.VariantOf;
+        }
+        catch (KeyNotFoundException)
+        {
+            return null;
         }
     }
 
@@ -1144,6 +1179,20 @@ public class ReplayStudio
             {
                 state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown domain '{domainId}'" });
                 continue;
+            }
+
+            // A class that narrows its domain list keeps the pick — the .pcg is the record of
+            // what was played — but says so, the same as an unmet feat prerequisite.
+            if (state.DomainSelectionRestrictions.TryGetValue(ownerClassId, out var allowedDomains)
+                && allowedDomains.Count > 0
+                && !allowedDomains.Contains(domainId, StringComparer.Ordinal))
+            {
+                state.Warnings.Add(new Warning
+                {
+                    TickIndex = state.TotalHD,
+                    Message = $"domain '{domainId}' is not on {ownerClassId}'s list "
+                        + $"({string.Join(", ", allowedDomains)})"
+                });
             }
 
             state.Domains.Add(domainId);
@@ -2097,6 +2146,27 @@ public class ReplayStudio
     /// "fighter_bonus" tag carries that second axis, so a feat qualifies via either the
     /// dedicated type or the tag — not merely by being General.
     /// </summary>
+    /// <summary>
+    /// Whether an effective-level rule aimed at a class reaches the given driver. A rule naming a
+    /// base class reaches its variants too — see <see cref="HDDriver.VariantOf"/>. A driver the
+    /// registry cannot resolve falls back to an exact id match rather than throwing: an unknown
+    /// driver id has already been reported where it was ticked.
+    /// </summary>
+    private bool RuleTargetsDriver(EffectiveLevelRule rule, string driverId)
+    {
+        if (rule.TargetDriverId == driverId)
+            return true;
+
+        try
+        {
+            return _content.GetDriver(driverId) is HDDriver hd && hd.Targets(rule);
+        }
+        catch (KeyNotFoundException)
+        {
+            return false;
+        }
+    }
+
     public static bool FeatMatchesRestriction(FeatDefinition? feat, string restriction) => restriction switch
     {
         "fighter_bonus" => feat != null

@@ -279,4 +279,75 @@ public class DomainTests
         Assert.Equal(2, state.PendingDomainSelections["class:cleric"]);
         Assert.Equal(1, state.PendingDomainSelections["class:contemplative"]);
     }
+
+    [Fact]
+    public void GrantDomainSelection_WithNoAllowedList_LeavesTheChoiceUnrestricted()
+    {
+        var state = new CharacterState();
+        var ctx = new PermabuffContext(state, GameRules.Standard35e()) { CurrentDriverId = "class:cleric" };
+
+        new GrantDomainSelection { Count = 2 }.Apply(ctx);
+
+        Assert.Empty(state.DomainSelectionRestrictions);
+    }
+
+    /// <summary>
+    /// A class that narrows its domain list keeps an off-list pick — an imported .pcg is the
+    /// record of what was played — but says so, the way an unmet feat prerequisite does.
+    /// </summary>
+    [Fact]
+    public void RestrictedDomainGrant_KeepsAnOffListPickAndWarns()
+    {
+        var (registry, engine) = CreateStudio();
+        registry.RegisterDriver(new HDDriver
+        {
+            Kind = DriverKind.Class,
+            Id = "class:narrow_domain_caster",
+            Name = "Narrow Domain Caster",
+            HitDie = 8,
+            SkillPointsPerLevel = 2,
+            SaveProgression = new SaveProgression(),
+            LevelPermabuffs = new Dictionary<int, List<Permabuff>>
+            {
+                [1] = new()
+                {
+                    new GrantDomainSelection
+                    {
+                        Count = 1,
+                        AllowedDomainIds = new List<string> { "domain:fire", "domain:water" },
+                    },
+                },
+            },
+        });
+
+        Character Build(string domainId) => new()
+        {
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 14, CHA = 10 },
+            Ticks = new List<Tick>
+            {
+                new()
+                {
+                    DriverId = "class:narrow_domain_caster",
+                    Choices = new TickChoices
+                    {
+                        ClassFeatureChoices = new Dictionary<string, List<string>>
+                        {
+                            ["domains"] = new() { domainId },
+                        },
+                    },
+                },
+            },
+        };
+
+        var onList = engine.Evaluate(Build("domain:fire"));
+        Assert.Equal(new[] { "domain:fire" }, onList.Domains);
+        Assert.DoesNotContain(onList.Warnings, w => w.Message.Contains("is not on"));
+
+        var offList = engine.Evaluate(Build("domain:war"));
+        Assert.Equal(new[] { "domain:war" }, offList.Domains);
+        var warning = Assert.Single(offList.Warnings, w => w.Message.Contains("is not on"));
+        Assert.Contains("domain:war", warning.Message);
+        Assert.Contains("domain:fire", warning.Message);
+    }
 }

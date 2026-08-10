@@ -24,6 +24,15 @@
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:outsider",
+    "racialClassSkillAdditions": [
+      "skill:concentration",
+      "skill:diplomacy",
+      "skill:jump",
+      "skill:knowledge",
+      "skill:spellcraft",
+      "skill:tumble",
+      "skill:use_magic_device"
+    ],
     "racialPermabuffs": [
       {
         "$type": "ModifyAttribute",

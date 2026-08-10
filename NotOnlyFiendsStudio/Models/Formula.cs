@@ -128,9 +128,13 @@ internal class FunctionNode : FormulaNode
                 if (Args.Count != 1 || Args[0] is not IdentifierNode effectiveClassId)
                     throw new FormulaException("EffectiveClassLevel() requires exactly one class ID argument");
                 var effectiveTarget = $"class:{effectiveClassId.Name}";
+                // A rule naming the base class also raises its variants — the Unseelie Champion
+                // says "your ranger level", and cannot know the character took a planar ranger.
+                var effectiveBase = state.ClassVariantBases.GetValueOrDefault(effectiveTarget);
                 return state.ClassLevels.GetValueOrDefault(effectiveTarget)
                     + state.EffectiveLevelRules
-                        .Where(rule => rule.TargetDriverId == effectiveTarget
+                        .Where(rule => (rule.TargetDriverId == effectiveTarget
+                                        || rule.TargetDriverId == effectiveBase)
                                     && rule.Scope == EffectiveLevelScope.ClassFeatures)
                         .Sum(rule => rule.BonusFormula.Evaluate(state));
 

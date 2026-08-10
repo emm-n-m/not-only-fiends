@@ -507,6 +507,10 @@
           "type": "string",
           "description": "Display name (e.g., 'Fighter', 'Eldritch Knight')."
         },
+        "variantOf": {
+          "type": "string",
+          "description": "For a variant class (UA's cloistered cleric, planar ranger, paladin variants, druid-like bard), the id of the class it varies. Effective-level rules aimed at the base class apply to the variant too — a nymph casts as a 7th-level druid whichever druid she is. Does not merge level counts: ClassLevel() and EffectiveClassLevel() stay literal."
+        },
         "hitDie": {
           "type": "integer",
           "enum": [4, 6, 8, 10, 12],

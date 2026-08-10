@@ -183,6 +183,17 @@ currently invisible because `feat:toughness` is itself a no-op (`ModifyAttribute
 so the +3 is missing either way. `AttributeTarget.HitPoints` exists but is documented as
 post-evaluation only, so a correct fix needs a hit-point grant that survives the CON tail pass.
 
+## A spell exclusion cannot depend on a choice the character made
+
+`SpellcastingProgression.SpellListExclusions` is a fixed list authored on the driver, which suits
+the paladin of freedom (it always loses the same five spells) and nothing else. A class that
+excludes spells *as a consequence of a pick* has no representation: Secrets of Theurgy's elemental
+druid loses the opposed domain's spells, so which spells go depends on whether the character took
+Air, Earth, Fire, Water or Plant. Nor could a rule be written against the domain's theme — 3.5e
+descriptors are elemental and alignment tags, and there is no "animal" or "plant" descriptor to
+filter on. The gain half of such a variant is enforceable (`GrantDomainSelection.AllowedDomainIds`
+restricts the pick); the loss half is description text only.
+
 ## Epic class progression is unmodelled except for Arcane Trickster
 
 `LevelPermabuffs` is keyed by class level and every class stops at its non-epic maximum, so no

@@ -196,6 +196,10 @@ public static class PcgParser
         if (fields.TryGetValue("SKILLSGAINED", out var sgStr) && int.TryParse(sgStr, out var sg))
             entry.SkillsGained = sg;
 
+        if (fields.TryGetValue("SUBSTITUTIONLEVEL", out var substitution)
+            && !string.IsNullOrWhiteSpace(substitution))
+            entry.SubstitutionClass = substitution.Trim();
+
         if (fields.TryGetValue("PRESTAT", out var preStat))
         {
             var statEq = preStat.IndexOf('=');

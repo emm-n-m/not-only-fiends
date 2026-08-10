@@ -1,238 +1,480 @@
 [
-{
-  "$type": "HDDriver",
-  "kind": "Class",
-  "id": "class:druid_like_bard",
-  "name": "Druid-Like Bard",
-  "hitDie": 6,
-  "skillPointsPerLevel": 6,
-  "classSkills": [
-    "skill:appraise",
-    "skill:balance",
-    "skill:bluff",
-    "skill:climb",
-    "skill:concentration",
-    "skill:craft",
-    "skill:decipher_script",
-    "skill:diplomacy",
-    "skill:disguise",
-    "skill:escape_artist",
-    "skill:gather_information",
-    "skill:hide",
-    "skill:jump",
-    "skill:knowledge",
-    "skill:listen",
-    "skill:move_silently",
-    "skill:perform",
-    "skill:profession",
-    "skill:sense_motive",
-    "skill:sleight_of_hand",
-    "skill:speak_language",
-    "skill:spellcraft",
-    "skill:swim",
-    "skill:tumble",
-    "skill:use_magic_device"
-  ],
-  "babProgression": "average",
-  "saveProgression": {
-    "fort": "poor",
-    "ref": "good",
-    "will": "good"
-  },
-  "spellcasting": {
-    "castingType": "arcane",
-    "castingStat": "cha",
-    "spellListSources": ["class:bard"],
-    "spellsPerDay": {
-      "1": { "0": 2 },
-      "2": { "0": 3, "1": 0 },
-      "3": { "0": 3, "1": 1 },
-      "4": { "0": 3, "1": 2, "2": 0 },
-      "5": { "0": 3, "1": 3, "2": 1 },
-      "6": { "0": 3, "1": 3, "2": 2 },
-      "7": { "0": 3, "1": 3, "2": 2, "3": 0 },
-      "8": { "0": 3, "1": 3, "2": 3, "3": 1 },
-      "9": { "0": 3, "1": 3, "2": 3, "3": 2 },
-      "10": { "0": 3, "1": 3, "2": 3, "3": 2, "4": 0 },
-      "11": { "0": 3, "1": 3, "2": 3, "3": 3, "4": 1 },
-      "12": { "0": 3, "1": 3, "2": 3, "3": 3, "4": 2 },
-      "13": { "0": 3, "1": 3, "2": 3, "3": 3, "4": 2, "5": 0 },
-      "14": { "0": 4, "1": 3, "2": 3, "3": 3, "4": 3, "5": 1 },
-      "15": { "0": 4, "1": 4, "2": 3, "3": 3, "4": 3, "5": 2 },
-      "16": { "0": 4, "1": 4, "2": 4, "3": 3, "4": 3, "5": 2, "6": 0 },
-      "17": { "0": 4, "1": 4, "2": 4, "3": 4, "4": 3, "5": 3, "6": 1 },
-      "18": { "0": 4, "1": 4, "2": 4, "3": 4, "4": 4, "5": 3, "6": 2 },
-      "19": { "0": 4, "1": 4, "2": 4, "3": 4, "4": 4, "5": 4, "6": 3 },
-      "20": { "0": 4, "1": 4, "2": 4, "3": 4, "4": 4, "5": 4, "6": 4 }
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:druid_like_bard",
+    "name": "Druid-Like Bard",
+    "variantOf": "class:bard",
+    "hitDie": 6,
+    "skillPointsPerLevel": 6,
+    "classSkills": [
+      "skill:appraise",
+      "skill:balance",
+      "skill:bluff",
+      "skill:climb",
+      "skill:concentration",
+      "skill:craft",
+      "skill:decipher_script",
+      "skill:diplomacy",
+      "skill:disguise",
+      "skill:escape_artist",
+      "skill:gather_information",
+      "skill:hide",
+      "skill:jump",
+      "skill:knowledge",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:perform",
+      "skill:profession",
+      "skill:sense_motive",
+      "skill:sleight_of_hand",
+      "skill:speak_language",
+      "skill:spellcraft",
+      "skill:swim",
+      "skill:tumble",
+      "skill:use_magic_device"
+    ],
+    "babProgression": "average",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "good",
+      "will": "good"
     },
-    "spellsKnown": {
-      "1": { "0": 4 },
-      "2": { "0": 5, "1": 2 },
-      "3": { "0": 6, "1": 3 },
-      "4": { "0": 6, "1": 3, "2": 2 },
-      "5": { "0": 6, "1": 4, "2": 3 },
-      "6": { "0": 6, "1": 4, "2": 3 },
-      "7": { "0": 6, "1": 4, "2": 4, "3": 2 },
-      "8": { "0": 6, "1": 4, "2": 4, "3": 3 },
-      "9": { "0": 6, "1": 4, "2": 4, "3": 3 },
-      "10": { "0": 6, "1": 4, "2": 4, "3": 4, "4": 2 },
-      "11": { "0": 6, "1": 4, "2": 4, "3": 4, "4": 3 },
-      "12": { "0": 6, "1": 4, "2": 4, "3": 4, "4": 3 },
-      "13": { "0": 6, "1": 4, "2": 4, "3": 4, "4": 4, "5": 2 },
-      "14": { "0": 6, "1": 4, "2": 4, "3": 4, "4": 4, "5": 3 },
-      "15": { "0": 6, "1": 4, "2": 4, "3": 4, "4": 4, "5": 3 },
-      "16": { "0": 6, "1": 5, "2": 4, "3": 4, "4": 4, "5": 4, "6": 2 },
-      "17": { "0": 6, "1": 5, "2": 5, "3": 4, "4": 4, "5": 4, "6": 3 },
-      "18": { "0": 6, "1": 5, "2": 5, "3": 5, "4": 4, "5": 4, "6": 3 },
-      "19": { "0": 6, "1": 5, "2": 5, "3": 5, "4": 5, "5": 4, "6": 4 },
-      "20": { "0": 6, "1": 5, "2": 5, "3": 5, "4": 5, "5": 5, "6": 4 }
-    }
-  },
-  "levelPermabuffs": {
-    "1": [
-      {
-        "$type": "GrantBonusFeat",
-        "featId": "feat:simple_weapon_proficiency"
-      },
-      {
-        "$type": "GrantBonusFeat",
-        "featId": "feat:armor_proficiency_light"
-      },
-      {
-        "$type": "GrantBonusFeat",
-        "featId": "feat:shield_proficiency"
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "weapon_and_armor_proficiency",
-          "name": "Weapon and Armor Proficiency",
-          "description": "Proficient with all simple weapons, plus longsword, rapier, sap, short sword, shortbow, and whip. Proficient with light armor and shields (except tower)."
+    "spellcasting": {
+      "castingType": "arcane",
+      "castingStat": "cha",
+      "spellListSources": [
+        "class:bard"
+      ],
+      "spellsPerDay": {
+        "1": {
+          "0": 2
+        },
+        "2": {
+          "0": 3,
+          "1": 0
+        },
+        "3": {
+          "0": 3,
+          "1": 1
+        },
+        "4": {
+          "0": 3,
+          "1": 2,
+          "2": 0
+        },
+        "5": {
+          "0": 3,
+          "1": 3,
+          "2": 1
+        },
+        "6": {
+          "0": 3,
+          "1": 3,
+          "2": 2
+        },
+        "7": {
+          "0": 3,
+          "1": 3,
+          "2": 2,
+          "3": 0
+        },
+        "8": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 1
+        },
+        "9": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 2
+        },
+        "10": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 2,
+          "4": 0
+        },
+        "11": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 1
+        },
+        "12": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2
+        },
+        "13": {
+          "0": 3,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 2,
+          "5": 0
+        },
+        "14": {
+          "0": 4,
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 3,
+          "5": 1
+        },
+        "15": {
+          "0": 4,
+          "1": 4,
+          "2": 3,
+          "3": 3,
+          "4": 3,
+          "5": 2
+        },
+        "16": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 0
+        },
+        "17": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 3,
+          "5": 3,
+          "6": 1
+        },
+        "18": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 3,
+          "6": 2
+        },
+        "19": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 3
+        },
+        "20": {
+          "0": 4,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 4
         }
       },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "spells",
-          "name": "Spells",
-          "description": "Casts arcane spells drawn from the bard spell list, using Charisma as the casting stat. Can cast in light armor without arcane spell failure."
-        }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "bardic_music",
-          "name": "Bardic Music",
-          "description": "Can use music or poetics to produce magical effects on those nearby."
-        }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "countersong",
-          "name": "Countersong",
-          "description": "With 3 or more Perform ranks, creatures within 30 feet may use the bard's Perform check in place of saves against sonic or language-dependent magical attacks; lasts up to 10 rounds."
-        }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "fascinate",
-          "name": "Fascinate",
-          "description": "With 3 or more Perform ranks, fascinate creatures within 90 feet using a Perform check as the Will save DC; affects one additional creature per three bard levels beyond 1st."
-        }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "animal_companion",
-          "name": "Animal Companion",
-          "description": "Gain an animal companion as a druid of the same level."
-        }
-      },
-      {
-        "$type": "GrantCompanionSlot",
-        "linkType": "animal_companion",
-        "classFeatureType": "class_feature:animal_companion_options",
-        "effectiveLevelFormula": {
-          "expression": "EffectiveClassLevel(druid) + EffectiveClassLevel(druid_like_bard) + min(max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) / 2, max(0, max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) - 3) * 2)"
-        }
-      },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "nature_sense",
-          "name": "Nature Sense",
-          "description": "+2 bonus on Knowledge (nature) and Survival checks."
-        }
-      },
-      { "$type": "GrantSkillBonus", "skillId": "skill:knowledge_nature", "value": 2 },
-      { "$type": "GrantSkillBonus", "skillId": "skill:survival", "value": 2 },
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "wild_empathy",
-          "name": "Wild Empathy",
-          "description": "Can improve the attitude of an animal, similar to a Diplomacy check."
+      "spellsKnown": {
+        "1": {
+          "0": 4
+        },
+        "2": {
+          "0": 5,
+          "1": 2
+        },
+        "3": {
+          "0": 6,
+          "1": 3
+        },
+        "4": {
+          "0": 6,
+          "1": 3,
+          "2": 2
+        },
+        "5": {
+          "0": 6,
+          "1": 4,
+          "2": 3
+        },
+        "6": {
+          "0": 6,
+          "1": 4,
+          "2": 3
+        },
+        "7": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 2
+        },
+        "8": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 3
+        },
+        "9": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 3
+        },
+        "10": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 2
+        },
+        "11": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 3
+        },
+        "12": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 3
+        },
+        "13": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 2
+        },
+        "14": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 3
+        },
+        "15": {
+          "0": 6,
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 3
+        },
+        "16": {
+          "0": 6,
+          "1": 5,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 2
+        },
+        "17": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 4,
+          "4": 4,
+          "5": 4,
+          "6": 3
+        },
+        "18": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 4,
+          "5": 4,
+          "6": 3
+        },
+        "19": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 5,
+          "5": 4,
+          "6": 4
+        },
+        "20": {
+          "0": 6,
+          "1": 5,
+          "2": 5,
+          "3": 5,
+          "4": 5,
+          "5": 5,
+          "6": 4
         }
       }
-    ],
-    "4": [
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "resist_natures_lure",
-          "name": "Resist Nature's Lure",
-          "description": "+4 bonus on saves against spell-like abilities of fey."
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:simple_weapon_proficiency"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:armor_proficiency_light"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:shield_proficiency"
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Proficient with all simple weapons, plus longsword, rapier, sap, short sword, shortbow, and whip. Proficient with light armor and shields (except tower)."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "spells",
+            "name": "Spells",
+            "description": "Casts arcane spells drawn from the bard spell list, using Charisma as the casting stat. Can cast in light armor without arcane spell failure."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "bardic_music",
+            "name": "Bardic Music",
+            "description": "Can use music or poetics to produce magical effects on those nearby."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "countersong",
+            "name": "Countersong",
+            "description": "With 3 or more Perform ranks, creatures within 30 feet may use the bard's Perform check in place of saves against sonic or language-dependent magical attacks; lasts up to 10 rounds."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "fascinate",
+            "name": "Fascinate",
+            "description": "With 3 or more Perform ranks, fascinate creatures within 90 feet using a Perform check as the Will save DC; affects one additional creature per three bard levels beyond 1st."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "animal_companion",
+            "name": "Animal Companion",
+            "description": "Gain an animal companion as a druid of the same level."
+          }
+        },
+        {
+          "$type": "GrantCompanionSlot",
+          "linkType": "animal_companion",
+          "classFeatureType": "class_feature:animal_companion_options",
+          "effectiveLevelFormula": {
+            "expression": "EffectiveClassLevel(druid) + EffectiveClassLevel(druid_like_bard) + min(max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) / 2, max(0, max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) - 3) * 2)"
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "nature_sense",
+            "name": "Nature Sense",
+            "description": "+2 bonus on Knowledge (nature) and Survival checks."
+          }
+        },
+        {
+          "$type": "GrantSkillBonus",
+          "skillId": "skill:knowledge_nature",
+          "value": 2
+        },
+        {
+          "$type": "GrantSkillBonus",
+          "skillId": "skill:survival",
+          "value": 2
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "wild_empathy",
+            "name": "Wild Empathy",
+            "description": "Can improve the attitude of an animal, similar to a Diplomacy check."
+          }
         }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "resist_natures_lure",
+            "name": "Resist Nature's Lure",
+            "description": "+4 bonus on saves against spell-like abilities of fey."
+          }
+        }
+      ],
+      "6": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "bard_suggestion",
+            "name": "Suggestion",
+            "description": "With 9 or more Perform ranks, use suggestion on a creature already fascinated; Will DC 10 + half bard level + Charisma modifier. This does not consume a bardic music use."
+          }
+        }
+      ],
+      "12": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "song_of_freedom",
+            "name": "Song of Freedom",
+            "description": "With 15 or more Perform ranks, concentrate and perform for 1 minute to create break enchantment at bard caster level for one target within 30 feet; cannot target self."
+          }
+        }
+      ],
+      "18": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "bard_mass_suggestion",
+            "name": "Mass Suggestion",
+            "description": "With 21 or more Perform ranks, simultaneously use Suggestion on any number of creatures already fascinated."
+          }
+        }
+      ]
+    },
+    "perLevelPermabuffs": [
+      {
+        "$type": "ModifyCounter",
+        "counterId": "bardic_music_uses"
       }
     ],
-    "6": [
+    "prerequisites": [
       {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "bard_suggestion",
-          "name": "Suggestion",
-          "description": "With 9 or more Perform ranks, use suggestion on a creature already fascinated; Will DC 10 + half bard level + Charisma modifier. This does not consume a bardic music use."
-        }
-      }
-    ],
-    "12": [
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "song_of_freedom",
-          "name": "Song of Freedom",
-          "description": "With 15 or more Perform ranks, concentrate and perform for 1 minute to create break enchantment at bard caster level for one target within 30 feet; cannot target self."
-        }
-      }
-    ],
-    "18": [
-      {
-        "$type": "GrantAbility",
-        "ability": {
-          "id": "bard_mass_suggestion",
-          "name": "Mass Suggestion",
-          "description": "With 21 or more Perform ranks, simultaneously use Suggestion on any number of creatures already fascinated."
-        }
+        "$type": "AlignmentReq",
+        "allowed": [
+          "cE",
+          "cG",
+          "cN",
+          "n",
+          "nE",
+          "nG"
+        ]
       }
     ]
-  },
-  "perLevelPermabuffs": [
-    { "$type": "ModifyCounter", "counterId": "bardic_music_uses" }
-  ],
-  "prerequisites": [
-    {
-      "$type": "AlignmentReq",
-      "allowed": [
-        "cE",
-        "cG",
-        "cN",
-        "n",
-        "nE",
-        "nG"
-      ]
-    }
-  ]
-}
+  }
 ]

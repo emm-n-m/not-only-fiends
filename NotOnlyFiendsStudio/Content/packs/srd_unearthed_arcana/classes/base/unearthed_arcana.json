@@ -4,6 +4,7 @@
     "kind": "Class",
     "id": "class:cloistered_cleric",
     "name": "Cloistered Cleric",
+    "variantOf": "class:cleric",
     "hitDie": 6,
     "skillPointsPerLevel": 6,
     "classSkills": [
@@ -240,6 +241,7 @@
     "kind": "Class",
     "id": "class:paladin_of_tyranny",
     "name": "Paladin of Tyranny",
+    "variantOf": "class:paladin",
     "hitDie": 10,
     "skillPointsPerLevel": 2,
     "classSkills": [
@@ -490,6 +492,7 @@
     "kind": "Class",
     "id": "class:planar_ranger",
     "name": "Planar Ranger",
+    "variantOf": "class:ranger",
     "hitDie": 8,
     "skillPointsPerLevel": 6,
     "classSkills": [

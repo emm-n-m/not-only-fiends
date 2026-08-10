@@ -28,6 +28,21 @@ public class ViolationEffect
 public class HDDriver : Driver
 {
     public DriverKind Kind { get; set; }
+
+    /// <summary>
+    /// The class this driver is a variant of, e.g. <c>class:bard</c> for the druid-like bard.
+    /// A variant is its own driver, because that is the only way to express the features a
+    /// variant drops — but the rest of the game still calls it by its base class's name. A nymph
+    /// "casts as a 7th-level druid" whichever druid she is, and a template that raises "your
+    /// ranger level" cannot know which ranger the character took. Rules targeting the base
+    /// therefore apply to the variant too; see <see cref="EffectiveLevelRule"/>.
+    ///
+    /// This is one-directional and one level deep: it does not make base levels count as variant
+    /// levels, and it does not merge the two in <c>ClassLevel()</c> or <c>EffectiveClassLevel()</c>,
+    /// which stay literal about which class was taken.
+    /// </summary>
+    public string? VariantOf { get; set; }
+
     public int HitDie { get; set; }
     public int SkillPointsPerLevel { get; set; }
     public List<string> ClassSkills { get; set; } = new();
@@ -40,11 +55,19 @@ public class HDDriver : Driver
     public Dictionary<int, List<Permabuff>> LevelPermabuffs { get; set; } = new();
     public List<Permabuff> PerLevelPermabuffs { get; set; } = new();
 
+    /// <summary>
+    /// Whether an effective-level rule aimed at a class applies to this driver — true for the
+    /// driver itself and for the class it is a <see cref="VariantOf"/>.
+    /// </summary>
+    public bool Targets(EffectiveLevelRule rule) =>
+        rule.TargetDriverId == Id
+        || (VariantOf != null && rule.TargetDriverId == VariantOf);
+
     public override List<Permabuff> GetPermabuffs(CharacterState state, int driverLevel, GameRules rules, int? effectiveLevel = null, int previousEffectiveLevel = 0)
     {
         var featureLevel = effectiveLevel ?? driverLevel;
         var spellcastingLevel = featureLevel + state.EffectiveLevelRules
-            .Where(rule => rule.TargetDriverId == Id && rule.Scope == EffectiveLevelScope.SpellcastingOnly)
+            .Where(rule => Targets(rule) && rule.Scope == EffectiveLevelScope.SpellcastingOnly)
             .Sum(rule => rule.BonusFormula.Evaluate(state));
         // When no effective level override, default high-water to driverLevel-1 (normal single-level behavior)
         if (effectiveLevel == null)

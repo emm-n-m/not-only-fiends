@@ -62,6 +62,25 @@ public static class PcgConverter
                 classOverrides[pcgenClass] = driverId;
         }
 
+        // A substitution class says the same thing from the level row rather than an ability row.
+        var unmappedSubstitutions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var level in data.Levels)
+        {
+            if (level.SubstitutionClass == null)
+                continue;
+
+            if (PcgIdMapper.TryGetSubstitutionClass(
+                    level.SubstitutionClass, out var pcgenClass, out var driverId))
+                classOverrides[pcgenClass] = driverId;
+            else
+                unmappedSubstitutions.Add(level.SubstitutionClass);
+        }
+
+        foreach (var substitution in unmappedSubstitutions.OrderBy(name => name, StringComparer.Ordinal))
+            result.Warnings.Add(
+                $"Substitution class '{substitution}' has no engine mapping — "
+                + "the base class was built instead");
+
         string? MapClass(string? pcgenClass) =>
             pcgenClass != null && classOverrides.TryGetValue(pcgenClass, out var overridden)
                 ? overridden

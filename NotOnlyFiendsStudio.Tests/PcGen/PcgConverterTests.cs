@@ -1082,6 +1082,52 @@ public class PcgConverterTests
         Assert.DoesNotContain(result.Warnings, w => w.Contains("Bard Variant"));
     }
 
+    private static PcgCharacterData DruidData(string? substitutionClass) => new()
+    {
+        CharacterName = "Test Druid",
+        Race = "Human",
+        Alignment = "N",
+        BaseStats = new() { ["WIS"] = 16 },
+        Classes = new() { new PcgClassEntry { Name = "Druid", Level = 2 } },
+        Levels = new()
+        {
+            new PcgLevelEntry { ClassName = "Druid", ClassLevel = 1, SubstitutionClass = substitutionClass },
+            new PcgLevelEntry { ClassName = "Druid", ClassLevel = 2 },
+        },
+    };
+
+    /// <summary>
+    /// A substitution class rides on the level row rather than the CLASS row, so the class name
+    /// alone cannot resolve the driver — the same problem the bard's ACF has, from a different tag.
+    /// </summary>
+    [Fact]
+    public void Convert_SubstitutionLevel_SelectsTheSubstitutionClassDriver()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        if (registry.GetAllDrivers().All(d => d.Id != "class:elemental_druid"))
+            return; // private packs unavailable
+
+        var result = PcgConverter.Convert(
+            DruidData("Elemental Druid Option"), new PcgIdMapper(), registry);
+
+        Assert.All(result.Character.Ticks, tick => Assert.Equal("class:elemental_druid", tick.DriverId));
+        Assert.DoesNotContain(result.Warnings, w => w.Contains("Substitution class"));
+    }
+
+    /// <summary>An unknown substitution builds the base class, and says it did.</summary>
+    [Fact]
+    public void Convert_UnmappedSubstitutionLevel_BuildsTheBaseClassAndWarns()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+
+        var result = PcgConverter.Convert(
+            DruidData("Some Unextracted Druid Option"), new PcgIdMapper(), registry);
+
+        Assert.All(result.Character.Ticks, tick => Assert.Equal("class:druid", tick.DriverId));
+        Assert.Contains(result.Warnings,
+            w => w.Contains("Substitution class 'Some Unextracted Druid Option'"));
+    }
+
     /// <summary>
     /// The import regression converts a whole corpus through one <see cref="PcgIdMapper"/>, so a
     /// variant resolved for one character must not follow the mapper onto the next.

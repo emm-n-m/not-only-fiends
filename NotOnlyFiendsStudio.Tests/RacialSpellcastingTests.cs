@@ -159,4 +159,71 @@ public class RacialSpellcastingTests
         Assert.Equal(12, sc!.CasterLevel);
         Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("no matching spellcasting class"));
     }
+
+    /// <summary>
+    /// A nymph "casts as a 7th-level druid", and the race names <c>class:druid</c>. A variant
+    /// druid is still a druid for that purpose, so the racial levels must stack onto the
+    /// variant's caster rather than stranding a second caster under the base class's id.
+    /// </summary>
+    [Fact]
+    public void RacialCasting_StacksOntoAVariantOfTheClassItNames()
+    {
+        var registry = TestContentHelper.LoadBundledPacks();
+        var druid = (HDDriver)registry.GetDriver("class:druid");
+        registry.RegisterDriver(new HDDriver
+        {
+            Kind = DriverKind.Class,
+            Id = "class:test_druid_variant",
+            Name = "Test Druid Variant",
+            VariantOf = "class:druid",
+            HitDie = druid.HitDie,
+            SkillPointsPerLevel = druid.SkillPointsPerLevel,
+            ClassSkills = druid.ClassSkills,
+            BABProgression = druid.BABProgression,
+            SaveProgression = druid.SaveProgression,
+            Spellcasting = druid.Spellcasting,
+        });
+
+        var engine = new ReplayStudio(registry);
+        var baseline = engine.Evaluate(BuildRacial("race:nymph", "racial_hd:fey", 6, "class:druid", 6));
+        var variant = engine.Evaluate(
+            BuildRacial("race:nymph", "racial_hd:fey", 6, "class:test_druid_variant", 6));
+
+        var expected = Assert.Single(baseline.Spellcasting).Value.CasterLevel;
+        var actual = Assert.Single(variant.Spellcasting).Value;
+        Assert.Equal("class:test_druid_variant", actual.ClassId);
+        Assert.Equal(expected, actual.CasterLevel);
+    }
+
+    /// <summary>
+    /// EffectiveClassLevel follows the same alias, and only downhill: a rule naming the base
+    /// raises the variant, a rule naming the variant leaves the base alone. Both directions
+    /// matter — the Unseelie Champion says "your ranger level" and must reach a planar ranger,
+    /// while a rule written for the variant must not inflate an ordinary ranger beside it.
+    /// </summary>
+    [Fact]
+    public void EffectiveClassLevel_FollowsTheVariantAliasInOneDirectionOnly()
+    {
+        static CharacterState State(string leveledClass, string ruleTarget)
+        {
+            var state = new CharacterState
+            {
+                ClassVariantBases = { ["class:planar_ranger"] = "class:ranger" },
+            };
+            state.ClassLevels[leveledClass] = 4;
+            state.EffectiveLevelRules.Add(new EffectiveLevelRule
+            {
+                TargetDriverId = ruleTarget,
+                BonusFormula = new Formula("9"),
+                Scope = EffectiveLevelScope.ClassFeatures,
+            });
+            return state;
+        }
+
+        var ruleOnBase = State("class:planar_ranger", "class:ranger");
+        Assert.Equal(4 + 9, new Formula("EffectiveClassLevel(planar_ranger)").Evaluate(ruleOnBase));
+
+        var ruleOnVariant = State("class:ranger", "class:planar_ranger");
+        Assert.Equal(4, new Formula("EffectiveClassLevel(ranger)").Evaluate(ruleOnVariant));
+    }
 }

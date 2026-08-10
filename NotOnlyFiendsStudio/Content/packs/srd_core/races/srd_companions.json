@@ -770,6 +770,9 @@
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:undead",
+    "racialClassSkillRemovals": [
+      "skill:move_silently"
+    ],
     "racialPermabuffs": [
       {
         "$type": "GrantAbility",

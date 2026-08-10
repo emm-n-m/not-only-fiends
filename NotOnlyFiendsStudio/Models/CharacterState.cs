@@ -165,6 +165,19 @@ public class CharacterState
     public Dictionary<string, int> PendingDomainSelections { get; set; } = new();
 
     /// <summary>
+    /// Domains a granting class may spend its picks on, keyed by the same classId. Absent means
+    /// unrestricted, which is the usual case; present means the class named a shorter list.
+    /// </summary>
+    public Dictionary<string, List<string>> DomainSelectionRestrictions { get; set; } = new();
+
+    /// <summary>
+    /// Variant class id → the class it varies, mirrored from <see cref="HDDriver.VariantOf"/> so
+    /// formulas can resolve it without the registry. Read by <c>EffectiveClassLevel()</c>: a rule
+    /// raising "your ranger level" reaches a planar ranger too.
+    /// </summary>
+    public Dictionary<string, string> ClassVariantBases { get; set; } = new();
+
+    /// <summary>
     /// Requests from <see cref="GrantDomainSpellLikeAbilities"/>, fulfilled by a tail pass once the
     /// domain list is final. Transient scaffolding, not a computed result.
     /// </summary>
