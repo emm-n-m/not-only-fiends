@@ -50,6 +50,23 @@ public static class PcgConverter
     public static PcgConversionResult Convert(PcgCharacterData data, PcgIdMapper mapper, ContentRegistry? registry = null)
     {
         var result = new PcgConversionResult();
+
+        // An alternate class feature can decide which driver a class row resolves to, and it has
+        // to be read before anything resolves a class name: ticks, skill purchases and spell rows
+        // all map the class, and a druid-like bard's spells are still filed under "Bard". The
+        // overrides are local to this conversion — the mapper is shared across a corpus.
+        var classOverrides = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var ability in data.ClassAbilities)
+        {
+            if (PcgIdMapper.TryGetClassSelectingAcf(ability.Key, out var pcgenClass, out var driverId))
+                classOverrides[pcgenClass] = driverId;
+        }
+
+        string? MapClass(string? pcgenClass) =>
+            pcgenClass != null && classOverrides.TryGetValue(pcgenClass, out var overridden)
+                ? overridden
+                : pcgenClass == null ? null : mapper.MapClass(pcgenClass);
+
         // PCGen uses TN for true neutral, while the engine calls that enum value N.
         // Keep neutral as the fallback: Enum.TryParse resets an out parameter to the
         // enum default on failure, which is LG for Alignment.
@@ -198,7 +215,7 @@ public static class PcgConverter
                 }
                 continue;
             }
-            var preferredDriver = skill.BoughtClass != null ? mapper.MapClass(skill.BoughtClass) : null;
+            var preferredDriver = skill.BoughtClass != null ? MapClass(skill.BoughtClass) : null;
             skillBuys.Add((skillId, preferredDriver, (int)(skill.Ranks * 2)));
         }
 
@@ -258,11 +275,11 @@ public static class PcgConverter
             }
             domainSelections.Add((
                 domainId,
-                string.IsNullOrWhiteSpace(domain.SourceClass) ? null : mapper.MapClass(domain.SourceClass),
+                string.IsNullOrWhiteSpace(domain.SourceClass) ? null : MapClass(domain.SourceClass),
                 domain.SourceLevel));
         }
 
-        var wizardClass = data.Classes.FirstOrDefault(c => mapper.MapClass(c.Name) == "class:wizard");
+        var wizardClass = data.Classes.FirstOrDefault(c => MapClass(c.Name) == "class:wizard");
 
         // Build ticks from level entries, tracking which level-up ability increases
         // the engine will re-apply so we can subtract them from the imported STAT values.
@@ -272,7 +289,7 @@ public static class PcgConverter
         for (int i = 0; i < data.Levels.Count; i++)
         {
             var level = data.Levels[i];
-            var driverId = mapper.MapClass(level.ClassName);
+            var driverId = MapClass(level.ClassName);
 
             if (driverId == null)
             {
@@ -387,7 +404,7 @@ public static class PcgConverter
             if (!isKnownBook && !isSpellbook)
                 continue;
 
-            var classId = mapper.MapClass(spell.ClassName);
+            var classId = MapClass(spell.ClassName);
             if (classId == null)
             {
                 if (reportedSpellSources.Add(spell.ClassName))
@@ -731,6 +748,11 @@ public static class PcgConverter
 
         foreach (var ability in data.ClassAbilities)
         {
+            // Already consumed at the top of Convert, where it chose the class's driver.
+            // There is no per-tick selection left to make.
+            if (PcgIdMapper.IsClassSelectingAcf(ability.Key))
+                continue;
+
             var mapped = MapClassAbility(ability, registry);
             if (mapped == null)
             {

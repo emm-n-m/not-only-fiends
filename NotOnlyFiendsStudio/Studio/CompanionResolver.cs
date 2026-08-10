@@ -33,19 +33,32 @@ public class CompanionResolver
     /// level" grants its rule to every ranger id, since it cannot know which one the character
     /// took — summing would then count the same bonus once per variant. The cost is that levels
     /// split across two ranger variants count only as the larger, which no real build does.
+    ///
+    /// The druid-like bard is added rather than max'd: its levels are a separate class's, not a
+    /// relabelling of the druid's, and Unearthed Arcana gives it the companion "as druid" with no
+    /// reduction (PCGen: <c>BONUS:VAR|CompanionLVL|BardLVL</c>).
     /// </summary>
     public const string AnimalCompanionLevelExpression =
-        "EffectiveClassLevel(druid) " +
+        "EffectiveClassLevel(druid) + EffectiveClassLevel(druid_like_bard) " +
         "+ min(max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) / 2, " +
         "max(0, max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) - 3) * 2)";
 
     /// <summary>
-    /// The expression imports used before the half-level rule was applied. It counted a ranger's
-    /// levels one-for-one past 3rd (ranger 20 → 17 instead of 10) and ignored ranger variants
-    /// entirely, so a planar ranger's companion resolved to level 0 and gained no scaling at all.
+    /// Expressions <see cref="AnimalCompanionLevelExpression"/} has replaced, still present in
+    /// saves written before each change. Matching one means the save predates a fix rather than
+    /// carrying a deliberately authored progression, so it is re-evaluated with the current rule
+    /// instead of needing a re-import:
+    ///   - the first counted a ranger's levels one-for-one past 3rd (ranger 20 → 17 instead of 10)
+    ///     and ignored ranger variants, so a planar ranger's companion resolved to 0;
+    ///   - the second had no druid-like bard term, so that variant's companion resolved to 0.
     /// </summary>
-    private const string LegacyAnimalCompanionExpression =
-        "max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)";
+    private static readonly string[] SupersededAnimalCompanionExpressions =
+    {
+        "max(ClassLevel(druid), ClassLevel(druid) + ClassLevel(ranger) - 3)",
+        "EffectiveClassLevel(druid) "
+        + "+ min(max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) / 2, "
+        + "max(0, max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) - 3) * 2)",
+    };
 
     private readonly ReplayStudio _engine;
     private readonly Func<string, Character?> _lookup;
@@ -184,10 +197,11 @@ public class CompanionResolver
             return new Formula("ClassLevel(wizard) + ClassLevel(sorcerer)").Evaluate(master);
         }
 
-        // Same migration for the pre-half-level animal companion expression, so saves written
-        // before the fix stop under-advancing their companions without needing a re-import.
+        // Same migration for every superseded animal companion expression, so saves written
+        // before a fix stop under-advancing their companions without needing a re-import.
         if (link.LinkType == "animal_companion"
-            && link.EffectiveLevelFormula.Expression == LegacyAnimalCompanionExpression)
+            && SupersededAnimalCompanionExpressions.Contains(
+                link.EffectiveLevelFormula.Expression, StringComparer.Ordinal))
         {
             return new Formula(AnimalCompanionLevelExpression).Evaluate(master);
         }

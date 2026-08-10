@@ -1023,4 +1023,79 @@ public class PcgConverterTests
         Assert.Contains("draconic", reloaded.SourceLanguageIds);
         Assert.Equal(6, reloaded.SourceLanguageIds.Count);
     }
+
+    // --- Alternate class features that decide the driver -------------------------
+
+    private static PcgCharacterData BardData(string variantKey) => new()
+    {
+        CharacterName = $"Test {variantKey}",
+        Race = "Human",
+        Alignment = "CN",
+        BaseStats = new() { ["CHA"] = 16 },
+        Classes = new() { new PcgClassEntry { Name = "Bard", Level = 2 } },
+        Levels = new()
+        {
+            new PcgLevelEntry { ClassName = "Bard", ClassLevel = 1 },
+            new PcgLevelEntry { ClassName = "Bard", ClassLevel = 2 },
+        },
+        Skills = new() { new PcgSkillEntry { Name = "Perform", Ranks = 5.0, BoughtClass = "Bard" } },
+        Spells = new()
+        {
+            new PcgSpellEntry
+            {
+                Name = "Charm Person", ClassName = "Bard", SpellLevel = 1, Book = "Known Spells",
+            },
+        },
+        ClassAbilities = new() { new PcgClassAbilityEntry { Category = "ACF", Key = variantKey } },
+    };
+
+    /// <summary>
+    /// The .pcg still says <c>CLASS:Bard</c> — only the ACF row distinguishes the variant — so
+    /// everything filed under the class name has to follow the swap, spell rows included.
+    /// </summary>
+    [Fact]
+    public void Convert_DruidLikeBardAcf_SelectsTheVariantDriverForEverythingNamingTheClass()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+
+        var result = PcgConverter.Convert(
+            BardData("Bard Variant ~ Druid-like Bard"), new PcgIdMapper(), registry);
+
+        Assert.All(result.Character.Ticks, tick => Assert.Equal("class:druid_like_bard", tick.DriverId));
+        Assert.All(
+            result.Character.Ticks.SelectMany(t => t.Choices.SpellSelections ?? new()),
+            spell => Assert.Equal("class:druid_like_bard", spell.ClassId));
+        Assert.Empty(result.DroppedClassAbilities);
+    }
+
+    /// <summary>"Regular Bard" selects no variant, and must not be reported as an unmatched pick.</summary>
+    [Fact]
+    public void Convert_RegularBardAcf_KeepsTheBaseClassAndDoesNotWarn()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+
+        var result = PcgConverter.Convert(
+            BardData("Bard Variant ~ Regular Bard"), new PcgIdMapper(), registry);
+
+        Assert.All(result.Character.Ticks, tick => Assert.Equal("class:bard", tick.DriverId));
+        Assert.Empty(result.DroppedClassAbilities);
+        Assert.DoesNotContain(result.Warnings, w => w.Contains("Bard Variant"));
+    }
+
+    /// <summary>
+    /// The import regression converts a whole corpus through one <see cref="PcgIdMapper"/>, so a
+    /// variant resolved for one character must not follow the mapper onto the next.
+    /// </summary>
+    [Fact]
+    public void Convert_ClassSelectingAcf_DoesNotLeakAcrossCharactersSharingAMapper()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var mapper = new PcgIdMapper();
+
+        PcgConverter.Convert(BardData("Bard Variant ~ Druid-like Bard"), mapper, registry);
+        var plainBard = PcgConverter.Convert(
+            BardData("Bard Variant ~ Regular Bard"), mapper, registry);
+
+        Assert.All(plainBard.Character.Ticks, tick => Assert.Equal("class:bard", tick.DriverId));
+    }
 }

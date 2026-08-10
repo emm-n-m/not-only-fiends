@@ -273,6 +273,47 @@ public class PcgIdMapper
         return bare == null ? null : "race:" + bare;
     }
 
+    /// <summary>
+    /// Unearthed Arcana alternate class features that decide which driver a class row resolves to.
+    /// PCGen keeps the base class on the CLASS row and records the variant as a separate ACF
+    /// ability, so the class name alone cannot answer it — a "Druid-like Bard" is still
+    /// <c>CLASS:Bard</c>. The engine models a variant as its own driver (as it does the paladin
+    /// variants and the cloistered cleric), because that is the only way to express what the
+    /// variant *loses*. Keyed by the ACF's PCGen KEY. "Regular Bard" is listed too: it selects no
+    /// variant, and naming it here is what stops it being reported as an unmatched selection.
+    ///
+    /// This is deliberately static and read-only. The resolved swap is per character, and
+    /// PcgIdMapper instances are shared across a whole corpus by the import regression — holding
+    /// the swap here would let one character's variant follow the mapper onto the next.
+    /// </summary>
+    private static readonly Dictionary<string, (string PcgenClass, string DriverId)> ClassSelectingAcf =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            // PCGen writes this one variant two ways — from the bard's own variant pool and from
+            // its generic ACF pool — quoting the same UA paragraph in both. Same variant, same
+            // driver. (The two disagree on the companion's level: the generic row halves it,
+            // which UA does not say for the bard. See CONTENT_GAPS.md.)
+            ["Bard Variant ~ Druid-like Bard"] = ("Bard", "class:druid_like_bard"),
+            ["Bard ~ Animal Companion"] = ("Bard", "class:druid_like_bard"),
+            ["Bard Variant ~ Regular Bard"] = ("Bard", "class:bard"),
+        };
+
+    public static bool TryGetClassSelectingAcf(
+        string abilityKey, out string pcgenClass, out string driverId)
+    {
+        if (ClassSelectingAcf.TryGetValue(abilityKey, out var swap))
+        {
+            (pcgenClass, driverId) = swap;
+            return true;
+        }
+
+        (pcgenClass, driverId) = (string.Empty, string.Empty);
+        return false;
+    }
+
+    public static bool IsClassSelectingAcf(string abilityKey) =>
+        ClassSelectingAcf.ContainsKey(abilityKey);
+
     public string? MapClass(string pcgenClass)
     {
         return ClassMap.GetValueOrDefault(pcgenClass);
