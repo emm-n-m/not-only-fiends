@@ -32,6 +32,33 @@ Your question for every candidate is exactly one thing:
 You are **not** checking the description against the D&D rules. You are not checking it against any
 book. You only compare the description to the JSON sitting next to it in the same file.
 
+### The one thing this audit cannot see — flag it, do not judge it
+
+Because the description is your standard, **a description that is itself wrong passes cleanly.**
+Two undead templates claimed undead "use CHA for HP and Fort saves" — a rule from a different game
+— and a previous run of this audit said nothing about them, because the permabuffs beside them
+matched the sentence well enough.
+
+You cannot tell a true rule from an invented one, and you must not try. Instead, **flag** it so a
+source-checking audit can. This is mechanical, not a judgement call:
+
+> If a description asserts a rule that is unusual or surprising, add `RULE-SUSPECT` to that row —
+> **whatever verdict you gave it**, including BY-DESIGN. Never let `RULE-SUSPECT` change the
+> verdict, and never omit it because the row is otherwise fine.
+
+Flag on any of these, which are the shapes that have gone wrong before:
+
+- one ability score substituting for another — "uses CHA for HP", "CHA instead of CON",
+  "applies X modifier in place of Y";
+- a creature-type trait stated as a substitution rather than an absence (3.5e undead simply have
+  **no** Constitution score — nothing replaces it);
+- "counts as", "treated as", "stacks with", "instead of" applied to a core rule;
+- a number that looks like a house rule or another edition, or wording you cannot match to
+  anything else in the same pack.
+
+When in doubt, flag. `RULE-SUSPECT` costs a reviewer one lookup; a fabricated rule that survives
+gets copied into the next extraction.
+
 ---
 
 ## Step 1 — collect candidates
@@ -218,6 +245,11 @@ Group by verdict, then by pack. Use this shape per finding:
 
 End the report with a count table: CONTENT-BUG / ENGINE-GAP / BY-DESIGN / NO-DESCRIPTION, split
 public vs private.
+
+Then a separate `RULE-SUSPECT` section listing every row you flagged, each with its verbatim
+description and the file it came from. These are not findings of this audit — they are handoffs to
+`verify-content` (public packs) or `verify-content-lst` (private packs), which have a source to
+check them against. Say so in the section header, so nobody reads them as bugs you proved.
 
 ## Rules for the report
 
