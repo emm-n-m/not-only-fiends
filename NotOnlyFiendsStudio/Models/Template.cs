@@ -25,6 +25,23 @@ public class TemplateDriver
     public List<DerivedSpeedRule> DerivedSpeedRules { get; set; } = new();
     public int RacialHitDieSizeAdjustment { get; set; }
     public int? RacialHitDieMaximum { get; set; }
+
+    /// <summary>
+    /// "A lich has a +5 natural armor bonus <em>or the base creature's natural armor bonus,
+    /// whichever is better</em>" — a floor, where <see cref="NaturalArmor"/> is a delta. The
+    /// distinction is the difference between a lich troll at 5 and a lich troll at 10: the
+    /// vampire really does say "the base creature's natural armor bonus improves by +6", and the
+    /// lich really does not.
+    /// </summary>
+    public int? NaturalArmorFloor { get; set; }
+
+    /// <summary>
+    /// "Increase all current and future Hit Dice to d12s" — the undead templates' hit-die rule,
+    /// which pays for having no Constitution score. Unlike
+    /// <see cref="RacialHitDieSizeAdjustment"/> this reaches class hit dice too, and it is a
+    /// floor rather than a delta: a d12 barbarian is unaffected, and a d6 bard becomes d12.
+    /// </summary>
+    public int? HitDieSizeFloor { get; set; }
     public int LevelAdjustment { get; set; }
     public List<NaturalAttack> NaturalAttacks { get; set; } = new();
     public List<Permabuff> CreationPermabuffs { get; set; } = new();

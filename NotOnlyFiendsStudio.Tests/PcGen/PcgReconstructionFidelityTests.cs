@@ -197,32 +197,30 @@ public class PcgReconstructionFidelityTests
     }
 
     /// <summary>
-    /// PCGen re-rolls hit dice when a template changes the die size — a lich's bard levels are
-    /// stored as d12 rolls. This engine keeps the class driver's die and preserves the source
-    /// roll rather than clamping it, so the reconstruction stays faithful to the played character
-    /// while flagging the discrepancy.
+    /// A lich's bard levels are stored as d12 rolls, because the template says "increase all
+    /// current and future Hit Dice to d12s" — the undead's compensation for having no
+    /// Constitution score. Every roll is preserved verbatim, and none of them is out of range,
+    /// because the engine raises the dice the same way PCGen did.
     /// </summary>
     [RequiresPcgFixturesFact]
-    public void HitPointRollsOutsideTheDriverDie_ArePreservedAndWarned()
+    public void LichHitPointRolls_ArePreservedAndFitTheRaisedDie()
     {
         var (source, result) = ConvertNamed("Lich Recruiter.pcg");
         var state = new ReplayStudio(SharedRegistry.Value).Evaluate(result.Character);
 
+        // The fixture only exercises this if it really does hold rolls a bard's d6 cannot make.
         var oversized = source.Levels
             .Select((level, index) => (level.HitPoints, hd: index + 1))
             .Where(l => l.HitPoints > 6)
             .ToList();
-
         Assert.NotEmpty(oversized);
+
         // Preserved, not clamped.
         foreach (var (hitPoints, hd) in oversized)
             Assert.Equal(hitPoints, result.Character.Ticks[hd - 1].Choices.HitPointsRolled);
-        // And reported once per affected level, naming the die it exceeded.
-        foreach (var (_, hd) in oversized)
-        {
-            Assert.Contains(state.Warnings, w =>
-                w.TickIndex == hd && w.Message.Contains("outside d6; preserved as source input"));
-        }
+
+        Assert.All(state.HitDice, die => Assert.Equal(12, die.DieSize));
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("outside d"));
     }
 
     /// <summary>

@@ -383,8 +383,7 @@ public class ReplayStudio
             if (spellcasting.Acquisition == SpellAcquisition.Developed)
                 continue;
 
-            var abilityModifier = AbilityScoreSet.Modifier(
-                state.AbilityScores.GetScore(spellcasting.CastingStat));
+            var abilityModifier = state.AbilityModifier(spellcasting.CastingStat);
             foreach (var spellLevel in spellcasting.SpellsPerDay.Keys.Where(level => level >= 1))
             {
                 var bonus = GameRules.BonusSpellSlots(abilityModifier, spellLevel);
@@ -525,7 +524,7 @@ public class ReplayStudio
 
     private void FinalizeHitPoints(CharacterState state)
     {
-        var conMod = AbilityScoreSet.Modifier(state.AbilityScores.CON);
+        var conMod = state.AbilityModifier(Ability.CON);
         state.HP = state.HitDice.Select((hitDie, index) =>
         {
             var roll = hitDie.SavedRoll
@@ -545,8 +544,7 @@ public class ReplayStudio
         var state = ctx.State;
         if (state.PendingDomainSLAGrants.Count == 0) return;
 
-        var saveMod = AbilityScoreSet.Modifier(state.AbilityScores.GetScore(
-            state.PendingDomainSLAGrants[0].SaveAbility));
+        var saveMod = state.AbilityModifier(state.PendingDomainSLAGrants[0].SaveAbility);
 
         // A spell can sit in two of the character's domains; grant it once, at its best tier.
         var granted = new Dictionary<string, (int SpellLevel, string Uses, string DomainName)>();
@@ -714,7 +712,7 @@ public class ReplayStudio
             var abilityMod = 0;
             if (_content.TryGetSkill(skillId, out var def) && def != null
                 && Enum.TryParse<Ability>(def.KeyAbility, ignoreCase: true, out var keyAbility))
-                abilityMod = AbilityScoreSet.Modifier(state.AbilityScores.GetScore(keyAbility));
+                abilityMod = state.AbilityModifier(keyAbility);
 
             // Hide is the one skill with a size modifier, and it is not the AC/attack one — a
             // Diminutive toad hides at +12, not +4. Kept out of SkillBonuses so that dictionary
@@ -839,7 +837,7 @@ public class ReplayStudio
         if (state.Feats.Contains("feat:leadership"))
         {
             state.LeadershipScore = state.TotalHD
-                                    + AbilityScoreSet.Modifier(state.AbilityScores.CHA)
+                                    + state.AbilityModifier(Ability.CHA)
                                     + state.LeadershipScoreModifier;
 
             // Epic Leadership replaces the table rather than adding to it: "The character attracts
@@ -1039,6 +1037,8 @@ public class ReplayStudio
             state.IsLiving = CreatureTypes.IsLiving(state.Type);
 
         state.RacialHitDieSizeAdjustment += template.RacialHitDieSizeAdjustment;
+        if (template.HitDieSizeFloor.HasValue)
+            state.HitDieSizeFloor = Math.Max(state.HitDieSizeFloor, template.HitDieSizeFloor.Value);
 
         foreach (var subtype in template.SubtypeAdditions)
             state.Subtypes.Add(subtype);
@@ -1058,6 +1058,8 @@ public class ReplayStudio
 
         if (template.NaturalArmor.HasValue)
             state.NaturalArmor += template.NaturalArmor.Value;
+        if (template.NaturalArmorFloor.HasValue)
+            state.NaturalArmor = Math.Max(state.NaturalArmor, template.NaturalArmorFloor.Value);
 
         foreach (var (mode, speed) in template.SpeedModifiers)
         {
@@ -1288,7 +1290,7 @@ public class ReplayStudio
 
             var classLevel = state.ClassLevels.GetValueOrDefault(sc.ClassId);
             var limit = SpellbookSpellsAllowed(
-                classLevel, AbilityScoreSet.Modifier(state.AbilityScores.GetScore(sc.CastingStat)));
+                classLevel, state.AbilityModifier(sc.CastingStat));
 
             if (chosen > limit)
                 state.Warnings.Add(new Warning
@@ -2023,8 +2025,11 @@ public class ReplayStudio
         var twoWeaponFighting = state.Feats.Contains("feat:two_weapon_fighting");
 
         var bab = state.EffectiveBAB;
-        var strMod = AbilityScoreSet.Modifier(state.AbilityScores.STR);
-        var dexMod = AbilityScoreSet.Modifier(state.AbilityScores.DEX);
+        var strMod = state.AbilityModifier(Ability.STR);
+        var dexMod = state.AbilityModifier(Ability.DEX);
+        // SRD, incorporeal subtype: "It has no Strength score, so its Dexterity modifier applies
+        // to both its melee attacks and its ranged attacks." Damage keeps the nonability's +0.
+        var meleeAttackMod = state.HasAbility(Ability.STR) ? strMod : dexMod;
 
         // Generic typed attack bonus aggregation (excluding the weapon's own enhancement).
         int typedAttackBonus = 0;
@@ -2050,22 +2055,22 @@ public class ReplayStudio
             else { mainPenalty = -6; offPenalty = -10; }
         }
 
-        state.AttackLines.Add(BuildLine(mainHand, bab, strMod, dexMod, typedAttackBonus,
+        state.AttackLines.Add(BuildLine(mainHand, bab, strMod, dexMod, meleeAttackMod, typedAttackBonus,
             attackPenalty: mainPenalty,
             isOffHand: false));
 
         if (offHand != null)
         {
-            state.AttackLines.Add(BuildLine(offHand, bab, strMod, dexMod, typedAttackBonus,
+            state.AttackLines.Add(BuildLine(offHand, bab, strMod, dexMod, meleeAttackMod, typedAttackBonus,
                 attackPenalty: offPenalty,
                 isOffHand: true));
         }
     }
 
-    private static AttackLine BuildLine(WeaponContribution w, int bab, int strMod, int dexMod, int typedAttackBonus, int attackPenalty, bool isOffHand)
+    private static AttackLine BuildLine(WeaponContribution w, int bab, int strMod, int dexMod, int meleeAttackMod, int typedAttackBonus, int attackPenalty, bool isOffHand)
     {
         var profile = w.Profile;
-        var abilityMod = profile.Ranged && !profile.Thrown ? dexMod : strMod;
+        var abilityMod = profile.Ranged && !profile.Thrown ? dexMod : meleeAttackMod;
         var damageMod = profile.Ranged && !profile.Thrown
             ? 0
             : (isOffHand ? FloorDivBy2(strMod) : (w.TwoHanded ? (strMod * 3) / 2 : strMod));

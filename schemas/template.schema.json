@@ -317,6 +317,15 @@
           "$ref": "#/$defs/FlightManeuverability",
           "description": "Flight maneuverability grade granted or replaced by this template."
         },
+        "naturalArmorFloor": {
+          "type": ["integer", "null"],
+          "description": "Natural armor the creature has at minimum — the lich's '+5 natural armor bonus or the base creature's, whichever is better'. Use this rather than naturalArmor when the template says 'whichever is better'; naturalArmor is for 'improves by +N'."
+        },
+        "hitDieSizeFloor": {
+          "type": ["integer", "null"],
+          "enum": [4, 6, 8, 10, 12, null],
+          "description": "Smallest die any of the creature's Hit Dice may roll, class levels included — the undead templates' 'increase all current and future Hit Dice to d12s'. A floor, not a delta: a d12 base is unaffected. Omit or null if the template does not change hit die size."
+        },
         "levelAdjustment": {
           "type": "integer",
           "minimum": 0,

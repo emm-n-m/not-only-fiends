@@ -1,92 +1,181 @@
 [
-{
-  "id": "template:lich",
-  "name": "Lich",
-  "typeOverride": "undead",
-  "subtypeAdditions": ["augmented"],
-  "abilityModifiers": { "str": 0, "dex": 0, "con": 0, "int": 2, "wis": 2, "cha": 2 },
-  "naturalArmor": 5,
-  "levelAdjustment": 4,
-  "creationPermabuffs": [
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "lich_undead_traits", "name": "Undead Traits", "description": "No Constitution score. Uses CHA for HP and Fort saves. Immune to poison, sleep, paralysis, stunning, disease, death effects, critical hits, nonlethal damage, ability drain, energy drain, fatigue, exhaustion, and any effect requiring a Fortitude save unless it also works on objects. Darkvision 60 ft." }
+  {
+    "id": "template:lich",
+    "name": "Lich",
+    "typeOverride": "undead",
+    "hitDieSizeFloor": 12,
+    "subtypeAdditions": [
+      "augmented"
+    ],
+    "abilityModifiers": {
+      "str": 0,
+      "dex": 0,
+      "con": 0,
+      "int": 2,
+      "wis": 2,
+      "cha": 2
     },
-    { "$type": "GrantImmunity", "immunity": "poison" },
-    { "$type": "GrantImmunity", "immunity": "sleep" },
-    { "$type": "GrantImmunity", "immunity": "paralysis" },
-    { "$type": "GrantImmunity", "immunity": "stunning" },
-    { "$type": "GrantImmunity", "immunity": "disease" },
-    { "$type": "GrantImmunity", "immunity": "death effects" },
-    { "$type": "GrantImmunity", "immunity": "critical hits" },
-    { "$type": "GrantImmunity", "immunity": "nonlethal damage" },
-    { "$type": "GrantImmunity", "immunity": "ability drain" },
-    { "$type": "GrantImmunity", "immunity": "energy drain" },
-    { "$type": "GrantImmunity", "immunity": "fatigue" },
-    { "$type": "GrantImmunity", "immunity": "exhaustion" },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "lich_fear_aura", "name": "Fear Aura (Su)", "description": "Creatures of less than 5 HD in a 60-foot radius that look at the lich must succeed on a Will save (DC 10 + 1/2 lich's HD + lich's CHA modifier) or be affected as by a fear spell from a sorcerer of the lich's level. A creature that saves cannot be affected again by the same lich's aura for 24 hours." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "lich_touch_attack", "name": "Touch Attack (Su)", "description": "Once per round touch attack using negative energy deals 1d8+5 points of damage to living creatures; a Will save (DC 10 + 1/2 lich's HD + lich's CHA modifier) halves the damage." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "lich_paralyzing_touch", "name": "Paralyzing Touch (Su)", "description": "Any living creature hit by the lich's touch attack must succeed on a Fortitude save (DC 10 + 1/2 lich's HD + lich's CHA modifier) or be permanently paralyzed. Remove paralysis or any spell that removes a curse frees the victim; the effect cannot be dispelled." }
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "lich_turn_resistance", "name": "+4 Turn Resistance (Ex)", "description": "A lich has +4 turn resistance." }
-    },
-    {
-      "$type": "GrantDR", "value": 15, "bypassedBy": "bludgeoning and magic"
-    },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "lich_immunities", "name": "Immunities (Ex)", "description": "Immune to cold, electricity, polymorph (though it can use polymorph effects on itself), and mind-affecting attacks." }
-    },
-    { "$type": "GrantImmunity", "immunity": "cold" },
-    { "$type": "GrantImmunity", "immunity": "electricity" },
-    { "$type": "GrantImmunity", "immunity": "polymorph" },
-    { "$type": "GrantImmunity", "immunity": "mind-affecting" },
-    {
-      "$type": "GrantAbility",
-      "ability": { "id": "lich_rejuvenation", "name": "Rejuvenation (Su)", "description": "Unless its phylactery is located and destroyed, a lich reappears 1d10 days after its apparent death, rebuilt by the life force stored in its phylactery." }
-    },
-    {
-      "$type": "GrantSkillBonus",
-      "skillId": "skill:hide",
-      "value": 8
-    },
-    {
-      "$type": "GrantSkillBonus",
-      "skillId": "skill:listen",
-      "value": 8
-    },
-    {
-      "$type": "GrantSkillBonus",
-      "skillId": "skill:move_silently",
-      "value": 8
-    },
-    {
-      "$type": "GrantSkillBonus",
-      "skillId": "skill:search",
-      "value": 8
-    },
-    {
-      "$type": "GrantSkillBonus",
-      "skillId": "skill:sense_motive",
-      "value": 8
-    },
-    {
-      "$type": "GrantSkillBonus",
-      "skillId": "skill:spot",
-      "value": 8
-    }
-  ],
-  "scalingPermabuffs": {},
-  "scalingFormulas": []
-}
+    "naturalArmorFloor": 5,
+    "levelAdjustment": 4,
+    "creationPermabuffs": [
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "lich_undead_traits",
+          "name": "Undead Traits",
+          "description": "No Constitution score, so no Constitution modifier applies to hit points or Fortitude saves. Immune to all mind-affecting effects, poison, sleep, paralysis, stunning, disease, death effects, critical hits, nonlethal damage, ability drain, energy drain, fatigue, exhaustion, damage to its physical ability scores, and any effect requiring a Fortitude save unless it also works on objects or is harmless. Negative energy heals it; it cannot heal on its own if it has no Intelligence score. Darkvision 60 ft."
+        }
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "poison"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "sleep"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "paralysis"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "stunning"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "disease"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "death effects"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "critical hits"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "nonlethal damage"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "ability drain"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "energy drain"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "fatigue"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "exhaustion"
+      },
+      {
+        "$type": "GrantSpecialAttack",
+        "attack": {
+          "id": "lich_fear_aura",
+          "name": "Fear Aura (Su)",
+          "description": "Creatures of less than 5 HD in a 60-foot radius that look at the lich must succeed on a Will save (DC 10 + 1/2 lich's HD + lich's CHA modifier) or be affected as by a fear spell from a sorcerer of the lich's level. A creature that saves cannot be affected again by the same lich's aura for 24 hours."
+        }
+      },
+      {
+        "$type": "GrantSpecialAttack",
+        "attack": {
+          "id": "lich_touch_attack",
+          "name": "Touch Attack (Su)",
+          "usesPerDay": "1/round",
+          "description": "A supernatural touch attack, not a natural weapon: it is taken once per round and gains no iterative attacks. Negative energy deals 1d8+5 points of damage to living creatures; a Will save (DC 10 + 1/2 lich's HD + lich's CHA modifier) halves the damage. A lich armed with a weapon may use the touch as a secondary attack. Unlike vampiric touch it heals the lich nothing."
+        }
+      },
+      {
+        "$type": "GrantSpecialAttack",
+        "attack": {
+          "id": "lich_paralyzing_touch",
+          "name": "Paralyzing Touch (Su)",
+          "description": "A rider on the touch attack above rather than a separate action. Any living creature hit must succeed on a Fortitude save (DC 10 + 1/2 lich's HD + lich's CHA modifier) or be permanently paralyzed — remove paralysis or any spell that removes a curse frees the victim, and the effect cannot be dispelled. A DC 20 Spot or DC 15 Heal check reveals that a victim who seems dead is still alive."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "lich_turn_resistance",
+          "name": "+4 Turn Resistance (Ex)",
+          "description": "A lich has +4 turn resistance."
+        }
+      },
+      {
+        "$type": "GrantDR",
+        "value": 15,
+        "bypassedBy": "bludgeoning and magic"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "lich_immunities",
+          "name": "Immunities (Ex)",
+          "description": "Immune to cold, electricity, polymorph (though it can use polymorph effects on itself), and mind-affecting attacks."
+        }
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "cold"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "electricity"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "polymorph"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "mind-affecting"
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "lich_rejuvenation",
+          "name": "Rejuvenation (Su)",
+          "description": "Unless its phylactery is located and destroyed, a lich reappears 1d10 days after its apparent death, rebuilt by the life force stored in its phylactery."
+        }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:hide",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:listen",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:search",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:sense_motive",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:spot",
+        "value": 8
+      }
+    ],
+    "scalingPermabuffs": {},
+    "scalingFormulas": []
+  }
 ]

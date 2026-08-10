@@ -69,6 +69,9 @@ public class AddHitDie : Permabuff
         if (ctx.CurrentDriverKind == DriverKind.RacialHD)
             dieSize = Math.Min(ctx.CurrentRacialHitDieMaximum ?? int.MaxValue,
                 dieSize + state.RacialHitDieSizeAdjustment);
+        // An undead template raises every die, class levels included, after any racial
+        // adjustment and its cap — "increase all current and future Hit Dice to d12s".
+        dieSize = Math.Max(dieSize, state.HitDieSizeFloor);
         var importedRoll = ctx.CurrentTickChoices?.HitPointsRolled;
         if (importedRoll.HasValue && (importedRoll.Value < 1 || importedRoll.Value > dieSize))
         {
@@ -85,7 +88,7 @@ public class AddHitDie : Permabuff
             IsRacial = ctx.CurrentDriverKind == DriverKind.RacialHD,
             SavedRoll = importedRoll,
         });
-        var conMod = AbilityScoreSet.Modifier(state.AbilityScores.CON);
+        var conMod = state.AbilityModifier(Ability.CON);
         var roll = importedRoll
             ?? ((ctx.Rules.FirstHDMaxHP && state.TotalHD == 1) ? dieSize : (dieSize / 2 + 1));
         state.HP += Math.Max(1, roll + conMod);
@@ -164,7 +167,7 @@ public class GrantSkillPoints : Permabuff
     public override void Apply(PermabuffContext ctx)
     {
         var state = ctx.State;
-        var intMod = AbilityScoreSet.Modifier(state.AbilityScores.INT);
+        var intMod = state.AbilityModifier(Ability.INT);
         var points = Math.Max(1, BasePoints + intMod);
         if (state.TotalHD == 1)
             points *= ctx.Rules.FirstHDSkillMultiplier;

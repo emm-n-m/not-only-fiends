@@ -141,12 +141,15 @@ else if (_state != null && _character != null)
                             <tbody>
                                 @foreach (var ability in Enum.GetValues<Ability>())
                                 {
-                                    var score = _state.AbilityScores.GetScore(ability);
-                                    var mod = AbilityScoreSet.Modifier(score);
+                                    @* A nonability is an absence, not a zero: an undead has no
+                                       Constitution and an incorporeal creature no Strength, and
+                                       the sheet says so rather than printing a placeholder. *@
+                                    var has = _state.HasAbility(ability);
+                                    var mod = _state.AbilityModifier(ability);
                                     <tr>
                                         <td>@ability</td>
-                                        <td>@score</td>
-                                        <td>@(mod >= 0 ? $"+{mod}" : mod.ToString())</td>
+                                        <td>@(has ? _state.AbilityScores.GetScore(ability).ToString() : "—")</td>
+                                        <td>@(has ? (mod >= 0 ? $"+{mod}" : mod.ToString()) : "—")</td>
                                     </tr>
                                 }
                             </tbody>

@@ -183,6 +183,53 @@ currently invisible because `feat:toughness` is itself a no-op (`ModifyAttribute
 so the +3 is missing either way. `AttributeTarget.HitPoints` exists but is documented as
 post-evaluation only, so a correct fix needs a hit-point grant that survives the CON tail pass.
 
+## The undead templates were extracted with invented rules
+
+Found 2026-08-10 while chasing a hit-die bug, and the reason to re-audit the rest of that batch
+rather than trust it. Corrected:
+
+- **`template:lich` and `template:undead` both claimed undead "use CHA for HP and Fort saves"**
+  (the generic one added "and CON-based abilities"). That is a Pathfinder rule; the 3.5 SRD undead
+  entry says only "No Constitution score", with the d12 Hit Die as the compensation. Rewriting the
+  descriptions also restored three traits the extraction had dropped — immunity to mind-affecting
+  effects, immunity to damage to physical ability scores, and healing from negative energy.
+- **The lich's natural armor was additive.** The SRD gives it "+5 natural armor bonus *or the base
+  creature's, whichever is better*", while the vampire's really does say "improves by +6" — the
+  same-looking number with opposite arithmetic. Hence `naturalArmorFloor` beside `naturalArmor`.
+- **The lich's Fear Aura, Touch Attack and Paralyzing Touch were plain abilities.** They are
+  Special Attacks in the SRD and are now `GrantSpecialAttack`. The touch is supernatural and taken
+  once per round: it is deliberately *not* a natural attack, which would wrongly earn it iteratives.
+
+Still outstanding on `template:vampire`, unfixed: **Children of the Night is missing entirely**,
+and its five special attacks (blood drain, children of the night, dominate, create spawn, energy
+drain) are all authored as abilities rather than special attacks, so the SRD's own split does not
+survive into the sheet.
+
+Unmodelled for every template, not a mis-extraction: turn resistance has no turning system behind
+it, and Challenge Rating, Treasure, Organization and Advancement are not represented at all. A
+type-changing template adds the `augmented` subtype but not the original type alongside it, so a
+lich reads as "undead (augmented)" rather than "undead (augmented humanoid)".
+
+## Nonabilities are modelled for modifiers, not for their other consequences
+
+Undead and constructs have no Constitution and incorporeal creatures no Strength, and as of
+2026-08-10 every modifier read goes through `CharacterState.AbilityModifier`, which returns +0 for
+an absent ability — so hit points, saves, skills and attacks are right, and an incorporeal
+creature attacks with Dexterity. The rest of the SRD's Nonabilities paragraph is not modelled:
+automatically failing checks keyed to the missing ability, immunity to ability damage/drain and to
+anything requiring a Fortitude save, and being unable to tire. Carrying capacity still reads the
+placeholder score, which is meaningless for a creature that "can't exert force" — the SRD gives no
+capacity for a nonability, so nothing was invented.
+
+The score itself is left as the source recorded it and rendered as `—`; it is not zeroed, because
+the SRD is explicit that these creatures "do not have an ability score of 0 — they lack the
+ability altogether", and a stored 0 would read as a real score to anything that missed the flag.
+
+Related: the lich template's own description claims undead "use CHA for HP and Fort saves". That
+is a Pathfinder rule, not 3.5 — the SRD undead entry says only "No Constitution score", and the
+d12 Hit Die is the compensation. The description should be corrected when the undead-traits entry
+in [PERMABUFF_FIX_QUEUE.md](PERMABUFF_FIX_QUEUE.md) is worked.
+
 ## A spell exclusion cannot depend on a choice the character made
 
 `SpellcastingProgression.SpellListExclusions` is a fixed list authored on the driver, which suits

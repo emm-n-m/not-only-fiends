@@ -260,6 +260,189 @@ public class TemplateTests
     }
 
     /// <summary>
+    /// The SRD splits a template's additions into "Special Attacks" and "Special Qualities", and
+    /// the engine has a list for each. The lich's touch is the reason the distinction matters: it
+    /// is a supernatural attack taken once per round, not a natural weapon, so it must not sit
+    /// among the abilities as inert prose — nor should it ever reach the attack lines, which
+    /// would hand it iteratives it does not get.
+    /// </summary>
+    [Fact]
+    public void LichAttacksAreSpecialAttacks_NotAbilitiesAndNotNaturalWeapons()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var state = new ReplayStudio(registry).Evaluate(Templated("race:human", "template:lich"));
+
+        foreach (var id in new[] { "lich_touch_attack", "lich_paralyzing_touch", "lich_fear_aura" })
+        {
+            Assert.Contains(state.SpecialAttacks, attack => attack.Id == id);
+            Assert.DoesNotContain(state.Abilities, ability => ability.Id == id);
+        }
+
+        Assert.Equal("1/round",
+            Assert.Single(state.SpecialAttacks, a => a.Id == "lich_touch_attack").UsesPerDay);
+
+        // No natural weapon, so nothing lands in the attack lines and no iteratives are implied.
+        Assert.DoesNotContain(state.NaturalAttacks, attack => attack.Name.Contains("ouch"));
+
+        // What the SRD files under Special Qualities stays an ability.
+        foreach (var id in new[] { "lich_turn_resistance", "lich_rejuvenation", "lich_immunities" })
+            Assert.Contains(state.Abilities, ability => ability.Id == id);
+    }
+
+    /// <summary>
+    /// The two undead templates word their natural armor differently and mean it. A lich has
+    /// "a +5 natural armor bonus <em>or the base creature's, whichever is better</em>"; a vampire's
+    /// base natural armor "<em>improves by</em> +6". Applied to a creature that already has
+    /// natural armor the two diverge, and applied to one that has none they agree — which is why
+    /// the whole corpus is silent on this and a test has to say it.
+    /// </summary>
+    [Fact]
+    public void LichNaturalArmorIsAFloorWhileVampireNaturalArmorIsAnIncrease()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        // race:medusa is the corpus's handy base with natural armor of its own.
+        var plain = engine.Evaluate(Templated("race:medusa"));
+        Assert.True(plain.NaturalArmor > 0, "fixture race must have natural armor for this to bite");
+
+        Assert.Equal(Math.Max(plain.NaturalArmor, 5), engine.Evaluate(Templated("race:medusa", "template:lich")).NaturalArmor);
+        Assert.Equal(plain.NaturalArmor + 6, engine.Evaluate(Templated("race:medusa", "template:vampire")).NaturalArmor);
+
+        // With no natural armor to beat, the lich's floor is simply the +5.
+        Assert.Equal(0, engine.Evaluate(Templated("race:human")).NaturalArmor);
+        Assert.Equal(5, engine.Evaluate(Templated("race:human", "template:lich")).NaturalArmor);
+    }
+
+    private static Character Templated(string raceId, params string[] templateIds) => new()
+    {
+        RaceId = raceId,
+        TemplateIds = templateIds.ToList(),
+        BaseAbilityScores = new AbilityScoreSet
+        {
+            STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10
+        },
+        Ticks = new List<Tick> { new() { DriverId = "class:fighter" } },
+    };
+
+    /// <summary>
+    /// SRD Nonabilities: "These creatures do not have an ability score of 0 — they lack the
+    /// ability altogether. The modifier for a nonability is +0." Undead have no Constitution and
+    /// incorporeal creatures no Strength, so a placeholder score must not reach hit points,
+    /// Fortitude saves or the skills keyed to it. The placeholder here is deliberately low
+    /// enough to be visible if it leaks: Con 3 would be −4 a die.
+    /// </summary>
+    [Fact]
+    public void UndeadTemplate_RemovesConstitutionRatherThanScoringItLow()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        Character Build(params string[] templateIds) => new()
+        {
+            RaceId = "race:human",
+            TemplateIds = templateIds.ToList(),
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 10, CON = 3, INT = 10, WIS = 10, CHA = 10
+            },
+            Ticks = Enumerable.Range(0, 4)
+                .Select(_ => new Tick { DriverId = "class:fighter", Choices = new TickChoices { HitPointsRolled = 6 } })
+                .ToList(),
+        };
+
+        var living = engine.Evaluate(Build());
+        Assert.True(living.HasAbility(Ability.CON));
+        Assert.Equal(-4, living.AbilityModifier(Ability.CON));
+
+        var undead = engine.Evaluate(Build("template:lich"));
+        Assert.False(undead.HasAbility(Ability.CON));
+        Assert.Equal(0, undead.AbilityModifier(Ability.CON));
+
+        // The score itself is still whatever the source carried — the sheet renders the absence.
+        Assert.Equal(3, undead.AbilityScores.CON);
+
+        // Four d12 rolls of 6, at +0 rather than −4 a die.
+        Assert.Equal(4 * 6, undead.HP);
+        Assert.Equal(living.EffectiveSaves.Fort + 4, undead.EffectiveSaves.Fort);
+    }
+
+    /// <summary>
+    /// The incorporeal subtype takes Strength the same way: "It has no Strength score, so its
+    /// Dexterity modifier applies to both its melee attacks and its ranged attacks."
+    /// race:companion_shadow is undead *and* incorporeal, so it should lack both.
+    /// </summary>
+    [Fact]
+    public void IncorporealUndead_LacksBothStrengthAndConstitution()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var state = new ReplayStudio(registry).Evaluate(new Character
+        {
+            RaceId = "race:companion_shadow",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 3, DEX = 14, CON = 3, INT = 10, WIS = 10, CHA = 10
+            },
+            Ticks = new List<Tick> { new() { DriverId = "racial_hd:undead" } },
+        });
+
+        Assert.False(state.HasAbility(Ability.STR));
+        Assert.False(state.HasAbility(Ability.CON));
+        Assert.Equal(0, state.AbilityModifier(Ability.STR));
+        Assert.Equal(0, state.AbilityModifier(Ability.CON));
+        // Dexterity is untouched — an incorporeal creature very much has one, and reads through
+        // the accessor exactly as the plain modifier of its (racially adjusted) score.
+        Assert.True(state.HasAbility(Ability.DEX));
+        Assert.Equal(
+            AbilityScoreSet.Modifier(state.AbilityScores.DEX),
+            state.AbilityModifier(Ability.DEX));
+    }
+
+    /// <summary>
+    /// "Increase all current and future Hit Dice to d12s" — the undead templates' side of the
+    /// bargain for having no Constitution score. It reaches class hit dice, which is what makes
+    /// it different from the racial-only adjustment a half-dragon applies, and it is a floor: a
+    /// d12 barbarian is already there. A wizard whose dice stayed d4 makes every hit-point roll
+    /// on an imported undead read as out of range.
+    /// </summary>
+    [Theory]
+    [InlineData("template:lich")]
+    [InlineData("template:vampire")]
+    [InlineData("template:undead")]
+    public void UndeadTemplate_RaisesEveryHitDieToD12(string templateId)
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        Character Build(string classId, params string[] templateIds) => new()
+        {
+            RaceId = "race:human",
+            TemplateIds = templateIds.ToList(),
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 12, DEX = 12, CON = 12, INT = 12, WIS = 12, CHA = 12
+            },
+            Ticks = Enumerable.Range(0, 3)
+                .Select(_ => new Tick { DriverId = classId })
+                .ToList(),
+        };
+
+        // A d4 class is raised all the way; a d12 class was already there and does not change.
+        Assert.All(engine.Evaluate(Build("class:wizard")).HitDice, die => Assert.Equal(4, die.DieSize));
+        Assert.All(engine.Evaluate(Build("class:wizard", templateId)).HitDice,
+            die => Assert.Equal(12, die.DieSize));
+        Assert.All(engine.Evaluate(Build("class:barbarian", templateId)).HitDice,
+            die => Assert.Equal(12, die.DieSize));
+
+        // And an imported roll a d4 could never produce stops being reported as out of range.
+        var imported = Build("class:wizard", templateId);
+        foreach (var tick in imported.Ticks)
+            tick.Choices.HitPointsRolled = 11;
+        Assert.DoesNotContain(engine.Evaluate(imported).Warnings,
+            w => w.Message.Contains("outside d"));
+    }
+
+    /// <summary>
     /// The race path has the same rule. race:companion_shadow is undead and carries the
     /// incorporeal subtype, and authors neither flag — both must still come out right.
     /// </summary>

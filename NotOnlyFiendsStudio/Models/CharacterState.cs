@@ -24,6 +24,12 @@ public class CharacterState
     public List<string> HDList { get; set; } = new();
     public List<HitDieEntry> HitDice { get; set; } = new();
     public int RacialHitDieSizeAdjustment { get; set; }
+
+    /// <summary>
+    /// Smallest hit die any of this creature's HD may roll, from an undead template's "increase
+    /// all current and future Hit Dice to d12s". Zero when nothing has raised it.
+    /// </summary>
+    public int HitDieSizeFloor { get; set; }
     public Dictionary<string, int> ClassLevels { get; set; } = new();
 
     // Effective level rules — templates/feats can grant bonus effective levels for class features
@@ -71,17 +77,41 @@ public class CharacterState
         .DistinctBy(bonus => bonus.SourceId, StringComparer.Ordinal)
         .Sum(bonus =>
         {
-            var modifier = AbilityScoreSet.Modifier(AbilityScores.GetScore(bonus.Ability));
+            var modifier = AbilityModifier(bonus.Ability);
             return bonus.PositiveOnly ? Math.Max(0, modifier) : modifier;
         });
+
+    /// <summary>
+    /// Whether the creature has this ability score at all. SRD "Nonabilities": some creatures
+    /// lack an ability entirely rather than having a score of 0. Undead and constructs have no
+    /// Constitution — the d12 Hit Die is what pays for it — and an incorporeal creature has no
+    /// Strength, using Dexterity for its attacks instead.
+    ///
+    /// Derived from what the creature is, for the same reason <see cref="IsLiving"/> and
+    /// <see cref="IsCorporeal"/> are: content that had to restate it would drift from the type.
+    /// </summary>
+    public bool HasAbility(Ability ability) => ability switch
+    {
+        Ability.CON => IsLiving,
+        Ability.STR => IsCorporeal,
+        _ => true,
+    };
+
+    /// <summary>
+    /// The modifier for an ability, which is +0 for a nonability — not the −5 its placeholder
+    /// score would otherwise produce. Every rule that reads an ability modifier goes through
+    /// here so a missing ability cannot leak in as a penalty.
+    /// </summary>
+    public int AbilityModifier(Ability ability) =>
+        HasAbility(ability) ? AbilityScoreSet.Modifier(AbilityScores.GetScore(ability)) : 0;
 
     // Effective totals (base + epic)
     public int EffectiveBAB => BaseBAB + EpicAttackBonus;
     public SaveSet EffectiveSaves => new()
     {
-        Fort = BaseSaves.Fort + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.CON) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Fort),
-        Ref = BaseSaves.Ref + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.DEX) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Ref),
-        Will = BaseSaves.Will + EpicSaveBonus + AbilityScoreSet.Modifier(AbilityScores.WIS) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Will)
+        Fort = BaseSaves.Fort + EpicSaveBonus + AbilityModifier(Ability.CON) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Fort),
+        Ref = BaseSaves.Ref + EpicSaveBonus + AbilityModifier(Ability.DEX) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Ref),
+        Will = BaseSaves.Will + EpicSaveBonus + AbilityModifier(Ability.WIS) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Will)
     };
 
     private int SaveBonusTotal(SaveTarget target) =>

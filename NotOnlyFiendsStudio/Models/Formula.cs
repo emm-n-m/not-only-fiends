@@ -108,7 +108,7 @@ internal class FunctionNode : FormulaNode
             case "Mod":
                 if (Args.Count != 1 || Args[0] is not AbilityRefNode abilityMod)
                     throw new FormulaException("Mod() requires exactly one ability argument");
-                return AbilityScoreSet.Modifier(state.AbilityScores.GetScore(abilityMod.Ability));
+                return state.AbilityModifier(abilityMod.Ability);
 
             case "Score":
                 if (Args.Count != 1 || Args[0] is not AbilityRefNode abilityScore)

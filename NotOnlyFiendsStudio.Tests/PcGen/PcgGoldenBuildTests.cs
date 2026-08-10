@@ -68,10 +68,14 @@ public class PcgGoldenBuildTests
     /// verbatim as a character input, the *final* Constitution modifier is applied to each die, and
     /// no die contributes less than 1. Asserting it per archetype is what makes an HP regression
     /// point at the archetype that broke rather than at a corpus-wide total.
+    ///
+    /// The Constitution modifier is read through the nonability rule, so an undead — which has no
+    /// Constitution score at all — contributes +0 per die rather than whatever its placeholder
+    /// score would have produced.
     /// </summary>
     private static void AssertHitPointsFollowSourceRolls(Build build)
     {
-        var conMod = AbilityScoreSet.Modifier(build.State.AbilityScores.CON);
+        var conMod = build.State.AbilityModifier(Ability.CON);
         var expected = build.Source.Levels.Sum(level => Math.Max(1, level.HitPoints + conMod));
         Assert.Equal(expected, build.State.HP);
     }
@@ -446,6 +450,13 @@ public class PcgGoldenBuildTests
         Assert.False(state.IsLiving);
         Assert.True(state.IsCorporeal);
 
+        // "No Constitution score" — a nonability, not a zero, so its modifier is +0 and nothing
+        // it feeds (hit points, Fortitude, Concentration) may read the placeholder the .pcg
+        // carries. Strength is untouched: this lich is corporeal.
+        Assert.False(state.HasAbility(Ability.CON));
+        Assert.Equal(0, state.AbilityModifier(Ability.CON));
+        Assert.True(state.HasAbility(Ability.STR));
+
         // Lich is a +4 level adjustment on top of 13 class levels.
         Assert.Equal(13, state.TotalHD);
         Assert.Equal(4, state.LevelAdjustment);
@@ -464,17 +475,13 @@ public class PcgGoldenBuildTests
 
         AssertHitPointsFollowSourceRolls(build);
 
-        // PCGen re-rolls a lich's hit dice as d12 and stores the rolled values; this engine keeps
-        // the bard's d6 driver and preserves the out-of-range rolls as source input rather than
-        // clamping them, warning once per affected level. Assert both halves.
-        var outOfRange = build.Source.Levels
-            .Select((level, index) => (level, hd: index + 1))
-            .Where(l => l.level.HitPoints > 6)
-            .Select(l => l.hd)
-            .ToList();
-        Assert.NotEmpty(outOfRange);
-        Assert.All(state.Warnings, w => Assert.Contains("outside d6; preserved as source input", w.Message));
-        Assert.Equal(outOfRange.Count, state.Warnings.Count);
+        // "Hit Dice: Increase all current and future Hit Dice to d12s" — what an undead gets in
+        // exchange for having no Constitution score. It reaches the bard's class levels, not just
+        // racial HD, so a lich bard rolls d12 throughout, which is what PCGen recorded: the
+        // fixture holds rolls a d6 could not produce, and none of them is out of range here.
+        Assert.All(state.HitDice, die => Assert.Equal(12, die.DieSize));
+        Assert.Contains(build.Source.Levels, level => level.HitPoints > 6);
+        Assert.Empty(state.Warnings);
     }
 
     // ---------------------------------------------------------------
