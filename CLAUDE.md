@@ -18,9 +18,14 @@ Custom subagents in `.claude/agents/` for autonomous content pipeline work:
 
 - `verify-content` — Diffs content JSON against the SRD HTML mirror and reports mismatches with quoted sources. Report-only; never edits. Ground truth is the mirror, never model recall — content with no SRD page is explicitly out of scope. Tier 1 (all 48 public-pack drivers) done 2026-07-27; races/feats/domains and spells remain.
 - `verify-content-lst` — The private-pack sibling of `verify-content`: diffs extra-pack JSON against the PCGen LST data set (`PCGEN_DATA_PATH`). LSTs are community transcriptions, so findings carry a JSON-BUG / LST-SUSPECT / UNRESOLVABLE verdict. The two Fiendish Codex packs have no LSTs and are audited against the PDFs at `SOURCE_PDFS_PATH` instead.
-- `audit-cosmetic-permabuffs` — Finds content whose mechanics live only in a `GrantAbility` description and were never encoded, so the engine treats them as flavour text. Compares each description against the permabuffs beside it, not against any source, and reports CONTENT-BUG / ENGINE-GAP / BY-DESIGN. A Codex-targeted version of the same procedure lives at `.codex/prompts/audit-cosmetic-permabuffs.md`; keep the two in step.
+- `audit-cosmetic-permabuffs` — Finds content whose mechanics live only in a `GrantAbility` description and were never encoded, so the engine treats them as flavour text. Compares each description against the permabuffs beside it, not against any source, and reports CONTENT-BUG / ENGINE-GAP / BY-DESIGN. A Codex-targeted version of the same procedure lives at `.codex/prompts/audit-cosmetic-permabuffs.md`; keep the two in step. Note its blind spot: a description that is itself invented passes cleanly, so only the two `verify-*` skills can catch fabricated rules.
 - `audit-agent-api` — Builds a character end-to-end using only the REST API, to find discoverability gaps, silently-accepted illegal input, and oversized payloads. Run after API or engine changes.
 - `gap-analysis` — Runs PCGen character reconstruction tests to report buildability status and missing content.
+
+**Fixing a character the user reports** —
+
+- `debug-pcg-import` — Diagnoses an imported PCGen character that came out wrong. Sorts the report into importer bug / missing content / wrong source sheet, and carries the `.pcg` tags that have bitten the importer (`~` compound keys, `CATEGORY:FEAT` on class bonus feat pools, `SUBSTITUTIONLEVEL`, class-replacing ACFs, `USERPOOL` budgets). Finish on `pcg-baseline`.
+- `pcg-baseline` — The 56-character import regression. The diff is the only thing that reports collateral damage from a one-character fix; read every per-character block, not just the headline.
 
 Outstanding work from these audits is tracked in [KNOWN_ISSUES.md](KNOWN_ISSUES.md). Content
 gaps are split by licensing: [CONTENT_GAPS.md](CONTENT_GAPS.md) tracks SRD-pack gaps here;

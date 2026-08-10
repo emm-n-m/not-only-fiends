@@ -16,6 +16,16 @@ match the source?"*; this one asks *"does the JSON **do** what its own descripti
 question answerable without any external source, because the description and the permabuffs sit
 side by side in the same file.
 
+### What this skill cannot see
+
+Taking the description as the standard is also the blind spot: **a description that is itself
+wrong passes cleanly.** Two undead templates claimed undead "use CHA for HP and Fort saves" — a
+Pathfinder rule with no counterpart in the 3.5 SRD — and this audit had nothing to say about
+them, because their permabuffs matched the sentence beside them faithfully enough. Content that
+is clean here can still be fiction. Only `verify-content` (SRD) or `verify-content-lst` (LSTs)
+can tell, so a description that asserts an unusual rule is worth passing to one of them rather
+than marking BY-DESIGN.
+
 There is a Codex-targeted version of this procedure at
 `.codex/prompts/audit-cosmetic-permabuffs.md`. Keep the two in step when either changes.
 

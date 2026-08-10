@@ -44,12 +44,58 @@ parse with `encoding='utf-8-sig'`.
    Commit the updated baseline in the private repo with a message saying *why* the values
    moved. Never update to silence a diff you can't explain.
 
+   **Accepting is the user's call, not yours.** Surface the diff and its arithmetic and wait,
+   unless they have already said to accept.
+
 4. **Converted character JSONs** are written to `CHARACTERS_PATH` for the Feed app but
    existing files are preserved (in-UI edits). `PCG_OVERWRITE_CHARACTERS=1` forces
    re-conversion — ask the user first; it clobbers their edits.
+
+## Check the baseline is the one you think it is
+
+Before trusting a diff, confirm what it is measured against:
+
+```bash
+cd "$EXTRA_PACKS_PATH" && git status --short test-reports/
+head -5 test-reports/pcg_import_report.diff.md   # "Baseline generated:" timestamp
+```
+
+A dirty `pcg_import_report.json` means somebody regenerated it — another agent, another machine,
+or the user. Then "0 regressions" only means *0 since that run*, and a change of yours may already
+be baked in. Both happened in one session on 2026-08-10. If you need the true cumulative diff,
+copy the working baseline aside, `git checkout` the committed one, and re-run.
+
+## Read the diff for damage, not just for your change
+
+The per-character sections are the point. Two bugs in one session were invisible to 1,200 unit
+tests and obvious here:
+
+- **Cross-character contamination.** Four bards changed class when only one should have — a
+  variant resolved for one character had leaked onto later ones through shared importer state.
+  Any character in the diff you did not expect is this until proven otherwise.
+- **A value that moved the wrong way.** A caster level split 13 → 7 + 6 because a rule keyed on
+  a base class stopped matching. The headline said "0 regressions" throughout: it counts
+  OK→WARN status changes, not wrong numbers.
+
+So read every per-character block and account for each line, including in characters you were
+not working on. `Audit signals added` is where new warnings hide.
 
 ## Gotcha
 
 Content-convention changes (ID prefixes, renames) must also be applied to the private packs
 repo (`EXTRA_PACKS_PATH`) — it is a separate git repo that main-repo sweeps do not touch.
 A miss shows up here as OK→WARN regressions with private-pack names in the dropped tallies.
+
+## When a test fails alongside the baseline
+
+A test that *explains* why the engine differs from its source is a suspect, not a specification.
+Three in one session encoded bugs as intentional behaviour, each with a confident comment:
+
+> "PCGen re-rolls a lich's hit dice as d12 … this engine keeps the bard's d6 driver and preserves
+> the out-of-range rolls as source input rather than clamping them, warning once per affected
+> level."
+
+PCGen was right and the engine was wrong — the SRD lich template says to raise all Hit Dice.
+Before updating an expected value, re-derive it from the source the way `AGENTS.md` §Assertion
+discipline requires, and re-read the comment: if it argues that the .pcg is mistaken, check that
+claim against the SRD first.

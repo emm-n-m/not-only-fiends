@@ -58,6 +58,46 @@ Racial HD drivers: for creature-type bases, read the type in [monsterTypes.html]
 3. For prestige classes, parse the Requirements block into typed prerequisites.
 4. Write output and test as in steps 7–8 above.
 
+## Variant classes get their own driver
+
+A variant of an existing class — the UA cloistered cleric, planar ranger, paladin variants,
+druid-like bard, or a supplement's substitution class — is a **separate `HDDriver`**, not a flag
+or a class feature on the base. It is the only shape that can express the half of a variant that
+*removes* features: the engine has no way to take a granted ability away afterwards, so "loses
+bardic knowledge and inspire courage" is expressed by simply not being there.
+
+Four things go with that decision:
+
+1. **`variantOf: "class:<base>"`.** Rules aimed at the base class reach the variant through it —
+   a nymph "casts as a 7th-level druid" whichever druid she is, and a template that raises "your
+   ranger level" cannot know which ranger was taken. Omitting it silently splits the character
+   into two casters. It is one-directional and does not merge level counts: `ClassLevel()` and
+   `EffectiveClassLevel()` stay literal about which class was taken.
+2. **`spellListSources: ["class:<base>"]`** rather than a second copy of the spell list. The
+   variant's `spellsPerDay`/`spellsKnown` tables do have to be copied — guard them with a test
+   that compares the two drivers field by field instead of restating the table, so the copy
+   cannot drift.
+3. **Anything the base class's id appears in** may need the variant beside it. Formulas naming a
+   class (`EffectiveClassLevel(ranger)` in the animal-companion expression) are *not* covered by
+   `variantOf` and must name the variant explicitly. Conversely, content that already hand-listed
+   a variant next to its base becomes a double-count once `variantOf` exists — check for that.
+4. **The importer needs to know.** PCGen usually keeps the base class on the `CLASS:` row and
+   records the variant separately, so the class name alone cannot resolve the driver. See
+   `debug-pcg-import`; the mapping tables are `PcgIdMapper.ClassSelectingAcf` (alternate class
+   features) and `PcgIdMapper.SubstitutionClasses` (substitution levels).
+
+Where the variant's content lives follows the source, not the base class: an SRD/UA variant goes
+in the public pack beside its base, a third-party one goes in its own pack in the private repo.
+
+## Epic progression is per-class data, and mostly absent
+
+`levelPermabuffs` is keyed by class level and nothing stops it going past 20 (or past 10 for a
+prestige class) — but almost nothing does, so epic bonus feats and epic class features are
+missing across the board. When a character needs them, the SRD pages are `epicClasses.html` and
+`epicPrestigeClasses.html`, and PCGen's `rsrd_classes_prestige_epic.lst` gives the cadence
+directly (`14:REPEATLEVEL:4` = every four levels from 14th). Add explicit entries for the levels
+you need and say in the commit how far you went — the cap is arbitrary, not a rule.
+
 ## Key conventions
 
 - Class IDs: `class:<snake_case>` (`class:fighter`, `class:eldritch_knight`).

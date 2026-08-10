@@ -71,6 +71,50 @@ Templates genuinely **not** in the mirror (use PDF): wraith, and any supplement 
 3. For scaling abilities that depend on total HD, use the Formula DSL: `"TotalHD + 11"`, `"max(10, TotalHD)"`. Thresholds that fire at specific HD use thresholds; per-tick recalculations use ScalingFormulas.
 4. Write output and test as in steps 5–6 above.
 
+## Read the verbs, not just the numbers
+
+Two templates can print the same number and mean opposite arithmetic. The SRD says which in the
+verb, and getting it wrong is invisible on any base creature that happens to have a zero there —
+which is how both of these survived until someone applied them to a creature that didn't.
+
+| SRD wording | Field | Example |
+|---|---|---|
+| "improves by +6" / "increase by" | `naturalArmor` (additive) | vampire |
+| "+5 … **or the base creature's, whichever is better**" | `naturalArmorFloor` | lich |
+| "increase all current and future Hit Dice to d12s" | `hitDieSizeFloor: 12` | lich, vampire, undead |
+| "Hit Dice increase by 2 steps" (racial HD only) | `racialHitDieSizeAdjustment` | half-dragon |
+
+`hitDieSizeFloor` reaches **class** hit dice, which is the whole point for an acquired template
+on a PC — a lich bard rolls d12, not d6. `racialHitDieSizeAdjustment` does not.
+
+## Special Attacks and Special Qualities are different lists
+
+The SRD splits a template's additions under those two headings and the engine has a list for
+each. Follow the source's own split:
+
+- `<b>Special Attacks</b>` → `GrantSpecialAttack` (`state.SpecialAttacks`), with `usesPerDay`
+  carrying the frequency verbatim — `"1/day"`, `"1/round"`.
+- `<b>Special Qualities</b>` → `GrantAbility`, or a structured permabuff where one exists
+  (`GrantDR`, `GrantImmunity`, `ModifyAttribute` for resistances).
+
+A supernatural attack is **not** a natural weapon. The lich's touch is taken once per round and
+gains no iterative attacks, so it must not go in `naturalAttacks` — that would hand it iteratives
+it does not get. Reserve `naturalAttacks` for actual natural weaponry (claw, bite, slam).
+
+## Do not restate what the type already derives
+
+Some traits follow from the creature type or a subtype and the engine derives them. Authoring
+them again produces content that can disagree with the engine later:
+
+- **Life state** — from the type (undead and constructs are not living).
+- **Corporeality** — from the `incorporeal` subtype.
+- **Nonabilities** — undead and constructs have no Constitution, incorporeal creatures no
+  Strength. The modifier is +0, and the SRD is explicit that this is *not* a score of 0, so do
+  **not** author `con: 0` expecting it to mean "none".
+
+Do describe them in the traits text, since that is what the sheet shows — just do not try to
+implement them in the template.
+
 ## Key conventions
 
 - Template IDs: `template:<snake_case>` (`template:half_fiend`, `template:ghost`).
