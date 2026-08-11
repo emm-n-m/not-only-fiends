@@ -1354,9 +1354,19 @@ else
                         <h5>Abilities</h5>
                         @foreach (var ab in Enum.GetValues<Ability>())
                         {
-                            var score = _state.AbilityScores.GetScore(ab);
-                            var mod = AbilityScoreSet.Modifier(score);
-                            <span>@ab: @score (@(mod >= 0 ? "+" : "")@mod) </span>
+                            @* A nonability is an absence, not a zero — an undead has no
+                               Constitution and an incorporeal creature no Strength. Same
+                               rendering as the sheet. *@
+                            if (_state.HasAbility(ab))
+                            {
+                                var score = _state.AbilityScores.GetScore(ab);
+                                var mod = _state.AbilityModifier(ab);
+                                <span>@ab: @score (@(mod >= 0 ? "+" : "")@mod) </span>
+                            }
+                            else
+                            {
+                                <span>@ab: — </span>
+                            }
                         }
                     </div>
                     <div class="col-md-3">
