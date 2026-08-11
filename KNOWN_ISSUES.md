@@ -261,21 +261,43 @@ cleanly — the builder reports "14 unspent":
 | PCGen's own per-level record | 40 | 10 each | 11 each | **162** |
 
 The SRD compensates for this in the template text itself — "Do not recalculate base attack bonus,
-saves, or skill points" — which is what PCGen implements. But the same entry says "increase **all
-current and future** Hit Dice to d12s", so an acquired template is genuinely part retroactive and
-part feed-forward, and the fix has to keep the split:
+saves, or skill points" — which is what PCGen implements.
 
-- **Feed forward from the acquisition HD**: ability modifiers, and anything accrued per tick that
-  reads them. Skill points are the only such quantity today; BAB and saves are progression-derived
-  and already unaffected.
-- **Still retroactive**: hit die size, creature type and everything derived from it (life state,
-  corporeality, nonabilities), natural armor, DR, immunities, level adjustment.
+**Nothing about an acquired template reaches backwards in time.** At 8th level this character is a
+human bard working towards lichdom, and evaluating the timeline at HD 8 must say so: living,
+Int 17, d6 Hit Dice. That is the whole point of replaying a timeline rather than storing a
+snapshot — one authoritative sheet answers "what was she at 8th?" and "what is she now?", where
+PCGen needs a separate sheet per level.
+
+The one thing to be careful of is that a template firing at HD 12 may still *restate* quantities
+already laid down by that same evaluation. "Increase **all current and future** Hit Dice to d12s"
+means that at the moment she becomes a lich, dice she rolled at 1st through 11th become d12 —
+which is not the template applying at HD 1, it is the template applying at HD 12 and rewriting
+what is on the sheet then. Evaluated at HD 8 those dice are still d6.
+
+So the split the implementation needs is between quantities that are *re-derived* from the
+finished character and quantities *accrued* per tick:
+
+- **Accrued per tick, and never re-opened** — skill points, and anything else banked at the level
+  it was earned. These read the ability scores as they were at that tick. BAB and saves are
+  progression-derived and already immune.
+- **Re-derived from the state at the evaluated HD** — hit die size and hit points, creature type
+  and everything following from it (life state, corporeality, nonabilities), natural armor, DR,
+  immunities, level adjustment. These are correct automatically once the template fires at the
+  right tick, because they are computed rather than accumulated.
 
 Nothing records *when* it was acquired. The `.pcg` has no acquisition level and PCGen does not
 model one, so this is new character input — a decision owed, placed the way a tome is placed, and
 an import cannot derive it. Lich Recruiter cannot even disambiguate her own: 11th, 12th and 13th
 all yield 162, because the +2 only moves the modifier across the same boundary the character
-would have crossed anyway.
+would have crossed anyway. Import fidelity is not the goal here; modelling the character
+truthfully is, and where the two disagree the timeline wins.
+
+The same mechanism is owed to mid-career changes that are *not* templates the player places. A
+Dark Temptress becomes an Outsider (Evil, Chaotic) on reaching Dark Temptress 10 — same kind of
+event, but pinned to a class level, so it needs no decision and can be authored on the class.
+Whatever shape the acquisition support takes should cover both, since a type change at 10th has
+exactly the same "what was she at 8th?" question behind it.
 
 ## Nonabilities are modelled for modifiers, not for their other consequences
 
