@@ -244,6 +244,10 @@ outside the current model.
 
 ## An acquired template applies from creation, so it pays for levels taken before it
 
+> **Being worked from [HANDOFF_ACQUIRED_TEMPLATES.md](HANDOFF_ACQUIRED_TEMPLATES.md)** — that
+> file is the brief: model, code pointers, acceptance criteria and guard rails. This section is
+> the background analysis behind it.
+
 A template is applied before the first HD tick, whatever it is. That is right for an inherited
 template — a half-fiend was always a half-fiend — and wrong for an acquired one. Lichdom needs
 caster level 11 to make the phylactery, so a character reaches 11th level as a living creature
