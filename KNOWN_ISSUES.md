@@ -294,10 +294,17 @@ would have crossed anyway. Import fidelity is not the goal here; modelling the c
 truthfully is, and where the two disagree the timeline wins.
 
 The same mechanism is owed to mid-career changes that are *not* templates the player places. A
-Dark Temptress becomes an Outsider (Evil, Chaotic) on reaching Dark Temptress 10 — same kind of
-event, but pinned to a class level, so it needs no decision and can be authored on the class.
-Whatever shape the acquisition support takes should cover both, since a type change at 10th has
-exactly the same "what was she at 8th?" question behind it.
+prestige-class capstone that changes creature type is the same kind of event, but pinned to a
+class level, so it needs no decision and can be authored on the class. Whatever shape the
+acquisition support takes should cover both, since a type change at 10th has exactly the same
+"what was she at 8th?" question behind it.
+
+**There is a ready-made acceptance test.** The corpus holds one character as *two* PCGen sheets —
+before and after a capstone that changes her type and adds several templates — because PCGen
+cannot express both from one record. That is the case this feature exists to collapse: importing
+the later sheet and evaluating the timeline at the earlier HD should reproduce the earlier sheet,
+with no second character stored. The pairing is named in the private materials repo's
+`CONTENT_GAPS.md` (the classes and templates involved are not OGC).
 
 ## Nonabilities are modelled for modifiers, not for their other consequences
 
