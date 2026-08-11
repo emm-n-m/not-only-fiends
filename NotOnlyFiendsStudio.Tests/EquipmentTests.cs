@@ -69,6 +69,68 @@ public class EquipmentTests
     }
 
     [Fact]
+    public void StaticWondrousItemBonuses_ApplyTheirPrintedEffects()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var character = BuildFighter(1);
+        character.Equipment.Add(new EquipmentEntry { ContentId = "wondrous:lens_of_detection" });
+        character.Equipment.Add(new EquipmentEntry { ContentId = "wondrous:necklace_of_adaptation" });
+        character.Equipment.Add(new EquipmentEntry { ContentId = "wondrous:periapt_of_health" });
+        character.Equipment.Add(new EquipmentEntry { ContentId = "wondrous:periapt_of_proof_against_poison" });
+        character.Equipment.Add(new EquipmentEntry { ContentId = "wondrous:robe_of_eyes" });
+        character.Equipment.Add(new EquipmentEntry { ContentId = "shield:shield_of_the_sun" });
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        Assert.Equal(15, state.SkillBonuses["skill:search"]);
+        Assert.Equal(10, state.SkillBonuses["skill:spot"]);
+        Assert.Contains("harmful vapors and gases", state.Immunities);
+        Assert.Contains("disease", state.Immunities);
+        Assert.Contains("poison", state.Immunities);
+        Assert.Equal(15, state.SpellResistance);
+        Assert.Equal(10, state.Resistances["acid"]);
+        Assert.Equal(10, state.Resistances["cold"]);
+        Assert.Equal(10, state.Resistances["electricity"]);
+        Assert.Equal(10, state.Resistances["fire"]);
+        Assert.Equal(10, state.Resistances["sonic"]);
+    }
+
+    [Fact]
+    public void PersistentTypedCombatBonusesApplyToFinalAcAndAttacks()
+    {
+        var character = BuildFighter(level: 1);
+        character.PermanentEvents.Add(new PermanentEvent
+        {
+            BeforeTick = 0,
+            Permabuffs = new List<Permabuff>
+            {
+                new GrantTypedBonus { Target = BonusTarget.AC, BonusType = BonusType.Dodge, Value = new Formula("1") },
+                new GrantTypedBonus { Target = BonusTarget.Attack, BonusType = BonusType.Untyped, Value = new Formula("1") },
+                new GrantTypedBonus { Target = BonusTarget.Damage, BonusType = BonusType.Untyped, Value = new Formula("2") }
+            }
+        });
+        character.Equipment.Add(new EquipmentEntry
+        {
+            ItemId = "Test Sword",
+            Permabuffs = new List<Permabuff>
+            {
+                new GrantWeaponLine
+                {
+                    Profile = new WeaponProfile { Damage = "1d6" },
+                    DisplayName = "Test Sword"
+                }
+            }
+        });
+
+        var state = new ReplayStudio(BuildRegistry()).Evaluate(character);
+        var attack = Assert.Single(state.AttackLines);
+
+        Assert.Equal(13, state.AC.Total);
+        Assert.Equal(new[] { 5 }, attack.Bonuses); // BAB 1 + STR 3 + persistent attack +1
+        Assert.Equal("1d6+5", attack.Damage); // STR 3 + persistent damage +2
+    }
+
+    [Fact]
     public void NegativeDexterityStillAppliesWhileFlatFooted()
     {
         var state = new ReplayStudio(BuildRegistry()).Evaluate(BuildFighter(level: 1, dex: 8));

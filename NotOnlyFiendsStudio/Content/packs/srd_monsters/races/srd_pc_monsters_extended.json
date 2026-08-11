@@ -1587,6 +1587,7 @@
           "description": "Ignore the first 10 points of fire damage per attack."
         }
       },
+      { "$type": "ModifyAttribute", "target": "Resistance", "resistanceElement": "fire", "value": 10 },
       {
         "$type": "GrantAbility",
         "ability": {

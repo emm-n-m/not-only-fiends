@@ -32,9 +32,8 @@ public class LeadershipTests
         var slot = Assert.Single(state.CompanionSlots);
         Assert.Equal("leadership_cohort", slot.LinkType);
         Assert.Equal("feat:leadership", slot.Granter);
-        // The slot's own formula is authored in content and still arithmetic — see KNOWN_ISSUES,
-        // formulas cannot do the table lookup that MaxCohortLevel now uses.
-        Assert.Equal(4, slot.EffectiveLevel); // min(6-2, 8-2) = 4
+        // The slot follows the same table-derived cap as the warning and companion resolver.
+        Assert.Equal(state.MaxCohortLevel, slot.EffectiveLevel);
     }
 
     [Fact]

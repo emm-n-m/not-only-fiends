@@ -143,6 +143,14 @@
         "immunity": "exhaustion"
       },
       {
+        "$type": "GrantImmunity",
+        "immunity": "physical ability damage"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "Fortitude effects (unless harmless or affects objects)"
+      },
+      {
         "$type": "GrantAbility",
         "ability": {
           "id": "undead_darkvision_60",
@@ -173,6 +181,21 @@
     "naturalArmor": 6,
     "levelAdjustment": 8,
     "creationPermabuffs": [
+      { "$type": "GrantImmunity", "immunity": "mind-affecting" },
+      { "$type": "GrantImmunity", "immunity": "poison" },
+      { "$type": "GrantImmunity", "immunity": "sleep" },
+      { "$type": "GrantImmunity", "immunity": "paralysis" },
+      { "$type": "GrantImmunity", "immunity": "stunning" },
+      { "$type": "GrantImmunity", "immunity": "disease" },
+      { "$type": "GrantImmunity", "immunity": "death effects" },
+      { "$type": "GrantImmunity", "immunity": "critical hits" },
+      { "$type": "GrantImmunity", "immunity": "nonlethal damage" },
+      { "$type": "GrantImmunity", "immunity": "ability drain" },
+      { "$type": "GrantImmunity", "immunity": "energy drain" },
+      { "$type": "GrantImmunity", "immunity": "fatigue" },
+      { "$type": "GrantImmunity", "immunity": "exhaustion" },
+      { "$type": "GrantImmunity", "immunity": "physical ability damage" },
+      { "$type": "GrantImmunity", "immunity": "Fortitude effects (unless harmless or affects objects)" },
       {
         "$type": "GrantDR",
         "value": 10,
@@ -198,6 +221,7 @@
           "description": "Regains 5 HP per round as long as it has at least 1 HP."
         }
       },
+      { "$type": "GrantFastHealing", "value": 5 },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -206,6 +230,7 @@
           "description": "+4 bonus on checks to resist being turned."
         }
       },
+      { "$type": "GrantTurnResistance", "value": 4 },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -215,32 +240,40 @@
         }
       },
       {
-        "$type": "GrantAbility",
-        "ability": {
+        "$type": "GrantSpecialAttack",
+        "attack": {
           "id": "vampire_blood_drain",
           "name": "Blood Drain",
           "description": "Drains blood from a pinned opponent, dealing 1d4 CON drain per round."
         }
       },
       {
-        "$type": "GrantAbility",
-        "ability": {
+        "$type": "GrantSpecialAttack",
+        "attack": {
+          "id": "vampire_children_of_the_night",
+          "name": "Children of the Night",
+          "description": "Once per day, calls forth 1d6+1 rat swarms, 1d4+1 bat swarms, or a pack of 3d6 wolves. The creatures arrive in 2d6 rounds and serve for 1 hour."
+        }
+      },
+      {
+        "$type": "GrantSpecialAttack",
+        "attack": {
           "id": "vampire_energy_drain",
           "name": "Energy Drain",
           "description": "Living creatures hit by slam gain two negative levels. Fort DC 10 + 1/2 HD + CHA to remove after 24 hours."
         }
       },
       {
-        "$type": "GrantAbility",
-        "ability": {
+        "$type": "GrantSpecialAttack",
+        "attack": {
           "id": "vampire_dominate",
           "name": "Dominate",
           "description": "Dominate person as a standard action, gaze range 30 ft. Will DC 10 + 1/2 HD + CHA negates."
         }
       },
       {
-        "$type": "GrantAbility",
-        "ability": {
+        "$type": "GrantSpecialAttack",
+        "attack": {
           "id": "vampire_create_spawn",
           "name": "Create Spawn",
           "description": "Humanoid or monstrous humanoid slain by energy drain rises as a vampire spawn (or full vampire if HD 5+) in 1d4 days."

@@ -10,7 +10,9 @@
         "value": 21
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "ModifyAttribute", "target": "HitPoints", "value": 30 }
+    ],
     "repeatable": true
   },
   {
@@ -24,7 +26,9 @@
         "value": 21
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "Attack", "bonusType": "Untyped", "value": { "expression": "1" } }
+    ],
     "repeatable": true
   },
   {

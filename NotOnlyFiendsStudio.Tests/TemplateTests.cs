@@ -289,6 +289,21 @@ public class TemplateTests
             Assert.Contains(state.Abilities, ability => ability.Id == id);
     }
 
+    [Fact]
+    public void VampireSpecialAttacksAreRecordedAsSpecialAttacks()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var state = new ReplayStudio(registry).Evaluate(Templated("race:human", "template:vampire"));
+
+        foreach (var id in new[]
+                 { "vampire_blood_drain", "vampire_children_of_the_night", "vampire_dominate",
+                   "vampire_create_spawn", "vampire_energy_drain" })
+        {
+            Assert.Contains(state.SpecialAttacks, attack => attack.Id == id);
+            Assert.DoesNotContain(state.Abilities, ability => ability.Id == id);
+        }
+    }
+
     /// <summary>
     /// The two undead templates word their natural armor differently and mean it. A lich has
     /// "a +5 natural armor bonus <em>or the base creature's, whichever is better</em>"; a vampire's
@@ -367,6 +382,19 @@ public class TemplateTests
         Assert.Equal(living.EffectiveSaves.Fort + 4, undead.EffectiveSaves.Fort);
     }
 
+    [Theory]
+    [InlineData("template:undead")]
+    [InlineData("template:lich")]
+    [InlineData("template:vampire")]
+    public void UndeadTemplates_ExposeCoreNonabilityImmunities(string templateId)
+    {
+        var state = new ReplayStudio(TestContentHelper.LoadAllPacks()).Evaluate(
+            Templated("race:human", templateId));
+
+        Assert.Contains("physical ability damage", state.Immunities);
+        Assert.Contains("Fortitude effects (unless harmless or affects objects)", state.Immunities);
+    }
+
     /// <summary>
     /// The incorporeal subtype takes Strength the same way: "It has no Strength score, so its
     /// Dexterity modifier applies to both its melee attacks and its ranged attacks."
@@ -396,6 +424,27 @@ public class TemplateTests
         Assert.Equal(
             AbilityScoreSet.Modifier(state.AbilityScores.DEX),
             state.AbilityModifier(Ability.DEX));
+    }
+
+    [Fact]
+    public void IncorporealCreature_HasNoCarryingCapacity()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var state = new ReplayStudio(registry).Evaluate(new Character
+        {
+            RaceId = "race:companion_shadow",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 18, DEX = 14, CON = 3, INT = 10, WIS = 10, CHA = 10
+            },
+            Ticks = new List<Tick> { new() { DriverId = "racial_hd:undead" } },
+        });
+
+        Assert.False(state.HasAbility(Ability.STR));
+        Assert.Equal(0, state.Encumbrance.LightMax);
+        Assert.Equal(0, state.Encumbrance.MediumMax);
+        Assert.Equal(0, state.Encumbrance.HeavyMax);
+        Assert.Equal(LoadCategory.Light, state.Encumbrance.Load);
     }
 
     /// <summary>

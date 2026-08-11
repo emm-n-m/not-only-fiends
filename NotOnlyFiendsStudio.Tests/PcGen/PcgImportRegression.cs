@@ -141,8 +141,13 @@ public class PcgImportRegression
                             .Select(kv => $"{kv.Key}|" + string.Join(
                                 ",", kv.Value.DomainBonusSlots.OrderBy(s => s.Key)
                                     .Select(s => $"{s.Key}:{s.Value}")))
-                            .OrderBy(s => s, StringComparer.Ordinal)
+                                    .OrderBy(s => s, StringComparer.Ordinal)
                             .ToList(),
+                    LeadershipScore = state?.LeadershipScore ?? 0,
+                    MaxCohortLevel = state?.MaxCohortLevel ?? 0,
+                    Followers = state == null
+                        ? new()
+                        : new Dictionary<int, int>(state.Followers.ByLevel),
                 });
             }
             catch (Exception ex)
@@ -527,6 +532,9 @@ public class PcgImportRegression
         var selectedSpellsResolved = b.SelectedSpells.Except(f.SelectedSpells, StringComparer.Ordinal).ToList();
         var languagesAdded = f.Languages.Except(b.Languages, StringComparer.OrdinalIgnoreCase).ToList();
         var languagesResolved = b.Languages.Except(f.Languages, StringComparer.OrdinalIgnoreCase).ToList();
+        var leadershipScoreChanged = b.LeadershipScore != f.LeadershipScore;
+        var maxCohortLevelChanged = b.MaxCohortLevel != f.MaxCohortLevel;
+        var followersChanged = DictChanged(b.Followers, f.Followers);
 
         var anyChange = oldStatus != newStatus
             || warnAdded.Count > 0 || warnResolved.Count > 0
@@ -544,7 +552,8 @@ public class PcgImportRegression
             || allFeatsAdded.Count > 0 || allFeatsResolved.Count > 0
             || skillTotalsChanged || acquisitionChanged
             || selectedSpellsAdded.Count > 0 || selectedSpellsResolved.Count > 0
-            || languagesAdded.Count > 0 || languagesResolved.Count > 0;
+            || languagesAdded.Count > 0 || languagesResolved.Count > 0
+            || leadershipScoreChanged || maxCohortLevelChanged || followersChanged;
 
         if (!anyChange) return null;
 
@@ -605,6 +614,15 @@ public class PcgImportRegression
             SelectedSpellsResolved = selectedSpellsResolved,
             LanguagesAdded = languagesAdded,
             LanguagesResolved = languagesResolved,
+            LeadershipScoreChanged = leadershipScoreChanged,
+            OldLeadershipScore = b.LeadershipScore,
+            NewLeadershipScore = f.LeadershipScore,
+            MaxCohortLevelChanged = maxCohortLevelChanged,
+            OldMaxCohortLevel = b.MaxCohortLevel,
+            NewMaxCohortLevel = f.MaxCohortLevel,
+            FollowersChanged = followersChanged,
+            OldFollowers = b.Followers,
+            NewFollowers = f.Followers,
         };
     }
 
@@ -615,13 +633,13 @@ public class PcgImportRegression
         return a.Fort == b.Fort && a.Ref == b.Ref && a.Will == b.Will;
     }
 
-    private static bool DictChanged<TValue>(Dictionary<string, TValue> a, Dictionary<string, TValue> b)
-        where TValue : IEquatable<TValue>
+    private static bool DictChanged<TKey, TValue>(Dictionary<TKey, TValue> a, Dictionary<TKey, TValue> b)
+        where TKey : notnull
     {
         if (a.Count != b.Count) return true;
         foreach (var (key, value) in a)
         {
-            if (!b.TryGetValue(key, out var other) || !value.Equals(other)) return true;
+            if (!b.TryGetValue(key, out var other) || !EqualityComparer<TValue>.Default.Equals(value, other)) return true;
         }
         return false;
     }
@@ -712,6 +730,12 @@ public class PcgImportRegression
                 WriteListChange(sb, "Selected spells resolved", c.SelectedSpellsResolved);
                 WriteListChange(sb, "Languages added", c.LanguagesAdded);
                 WriteListChange(sb, "Languages resolved", c.LanguagesResolved);
+                if (c.LeadershipScoreChanged)
+                    WriteScalarChange(sb, "Leadership score", c.OldLeadershipScore, c.NewLeadershipScore);
+                if (c.MaxCohortLevelChanged)
+                    WriteScalarChange(sb, "Max cohort level", c.OldMaxCohortLevel, c.NewMaxCohortLevel);
+                if (c.FollowersChanged)
+                    WriteDictChange(sb, "Followers", c.OldFollowers, c.NewFollowers);
                 WriteListChange(sb, "Feats added", c.AllFeatsAdded);
                 WriteListChange(sb, "Feats resolved", c.AllFeatsResolved);
                 WriteListChange(sb, "Warnings added", c.WarningsAdded);
@@ -813,11 +837,12 @@ public class PcgImportRegression
         sb.AppendLine($"- **{label}:** `{oldValue}` → `{newValue}`");
     }
 
-    private static void WriteDictChange<TValue>(StringBuilder sb, string label, Dictionary<string, TValue> oldDict, Dictionary<string, TValue> newDict)
-        where TValue : IEquatable<TValue>
+    private static void WriteDictChange<TKey, TValue>(StringBuilder sb, string label,
+        Dictionary<TKey, TValue> oldDict, Dictionary<TKey, TValue> newDict)
+        where TKey : notnull
     {
-        var keys = oldDict.Keys.Union(newDict.Keys, StringComparer.OrdinalIgnoreCase)
-            .OrderBy(k => k, StringComparer.OrdinalIgnoreCase);
+        var keys = oldDict.Keys.Union(newDict.Keys, EqualityComparer<TKey>.Default)
+            .OrderBy(k => k.ToString(), StringComparer.OrdinalIgnoreCase);
         var parts = new List<string>();
         foreach (var key in keys)
         {
@@ -935,6 +960,9 @@ public class PcgImportRegression
         public bool IsLiving { get; set; }
         public bool IsCorporeal { get; set; }
         public List<string> DomainBonusSlots { get; set; } = new();
+        public int LeadershipScore { get; set; }
+        public int MaxCohortLevel { get; set; }
+        public Dictionary<int, int> Followers { get; set; } = new();
     }
 
     private sealed class ParseFailure
@@ -1023,6 +1051,15 @@ public class PcgImportRegression
         public List<string> SelectedSpellsResolved { get; set; } = new();
         public List<string> LanguagesAdded { get; set; } = new();
         public List<string> LanguagesResolved { get; set; } = new();
+        public bool LeadershipScoreChanged { get; set; }
+        public int OldLeadershipScore { get; set; }
+        public int NewLeadershipScore { get; set; }
+        public bool MaxCohortLevelChanged { get; set; }
+        public int OldMaxCohortLevel { get; set; }
+        public int NewMaxCohortLevel { get; set; }
+        public bool FollowersChanged { get; set; }
+        public Dictionary<int, int> OldFollowers { get; set; } = new();
+        public Dictionary<int, int> NewFollowers { get; set; } = new();
     }
 
     private sealed class TallyDelta

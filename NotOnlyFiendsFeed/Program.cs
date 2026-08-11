@@ -18,6 +18,10 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     options.SerializerOptions.WriteIndented = true;
     options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    // Agents must not receive a successful response for a request field the API never reads.
+    // TickChoices deliberately has [JsonExtensionData] for per-choice diagnostics; this setting
+    // still rejects unknown fields on the request/character/tick objects themselves.
+    options.SerializerOptions.UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow;
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 });
 
@@ -57,6 +61,24 @@ app.Use(async (context, next) =>
             // The inner JsonException names the offending property path and value, which is
             // the part a caller actually needs to fix.
             Message = ex.InnerException?.Message ?? ex.Message
+        });
+    }
+});
+
+// JsonUnmappedMemberHandling.Disallow is enforced by Minimal API binding before the endpoint
+// delegate runs. In that path ASP.NET Core writes a bare 400, so add the same actionable error
+// envelope used by the endpoint wrappers when the framework rejected an API body without one.
+app.UseStatusCodePages(async statusContext =>
+{
+    var context = statusContext.HttpContext;
+    if (context.Request.Path.StartsWithSegments("/api")
+        && context.Response.StatusCode == StatusCodes.Status400BadRequest)
+    {
+        context.Response.ContentType = "application/json; charset=utf-8";
+        await context.Response.WriteAsJsonAsync(new ErrorResponse
+        {
+            Code = "malformed_request",
+            Message = "Request JSON contains an unknown field or has an invalid shape."
         });
     }
 });

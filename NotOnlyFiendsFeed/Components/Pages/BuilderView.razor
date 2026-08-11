@@ -692,6 +692,11 @@ else
                             var currentPick = !string.IsNullOrEmpty(featureType)
                                 ? tick.Choices.ClassFeatureChoices?.GetValueOrDefault(featureType)?.FirstOrDefault()
                                 : null;
+                            var currentTemplate = tick.Choices.CompanionTemplateChoices
+                                ?.GetValueOrDefault(capturedSlot.LinkType);
+                            var planarTemplates = capturedSlot.LinkType == "animal_companion"
+                                ? PlanarAnimalCompanionTemplates().ToList()
+                                : new List<TemplateDriver>();
                             <div class="mt-2 p-2 border rounded bg-light">
                                 <div>
                                     <small class="text-muted">
@@ -719,6 +724,19 @@ else
                                 else
                                 {
                                     <div class="mt-1"><small class="text-danger">No option pool '@featureType' found in content.</small></div>
+                                }
+                                @if (planarTemplates.Count > 0)
+                                {
+                                    <label class="form-label small mt-2 mb-0">Planar companion template (optional)</label>
+                                    <select class="form-select form-select-sm" style="max-width:360px"
+                                            value="@(currentTemplate ?? "")"
+                                            @onchange="(e) => SetCompanionTemplateOnTick(index, capturedSlot.LinkType, e.Value?.ToString())">
+                                        <option value="">Normal animal</option>
+                                        @foreach (var template in planarTemplates)
+                                        {
+                                            <option value="@template.Id">@template.Name — planar ranger option</option>
+                                        }
+                                    </select>
                                 }
                             </div>
                         }

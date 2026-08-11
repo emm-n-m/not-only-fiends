@@ -298,6 +298,31 @@
           "name": "Rake",
           "description": "Two rake attacks at +6 melee for 1d3+1 each."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:balance",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:climb",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:hide",
+        "value": 4
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:jump",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
+        "value": 4
       }
     ],
     "scalingFormulas": [],
@@ -491,6 +516,7 @@
           "description": "Regain 2 hit points per round."
         }
       },
+      { "$type": "GrantFastHealing", "value": 2 },
       {
         "$type": "GrantImmunity",
         "immunity": "poison"
@@ -578,6 +604,7 @@
     "speeds": {
       "fly": 100
     },
+    "flyManeuverability": "perfect",
     "abilityModifiers": {
       "str": 0,
       "dex": 6,
@@ -590,6 +617,9 @@
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:elemental_air",
+    "naturalAttacks": [
+      { "name": "Slam", "damage": "1d4", "count": 1, "isPrimary": true }
+    ],
     "racialPermabuffs": [
       {
         "$type": "ModifyAttribute",
@@ -605,16 +635,16 @@
         }
       },
       {
-        "$type": "GrantAbility",
-        "ability": {
+        "$type": "GrantSpecialAttack",
+        "attack": {
           "id": "air_elem_air_mastery",
           "name": "Air Mastery",
           "description": "Airborne creatures take -1 on attack and damage rolls against an air elemental."
         }
       },
       {
-        "$type": "GrantAbility",
-        "ability": {
+        "$type": "GrantSpecialAttack",
+        "attack": {
           "id": "air_elem_whirlwind",
           "name": "Whirlwind",
           "description": "Transform into whirlwind once per 10 minutes, 1 round per 2 HD."
@@ -677,6 +707,9 @@
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:elemental_water",
+    "naturalAttacks": [
+      { "name": "Slam", "damage": "1d6", "count": 1, "isPrimary": true }
+    ],
     "racialPermabuffs": [
       {
         "$type": "ModifyAttribute",
@@ -692,24 +725,24 @@
         }
       },
       {
-        "$type": "GrantAbility",
-        "ability": {
+        "$type": "GrantSpecialAttack",
+        "attack": {
           "id": "water_elem_water_mastery",
           "name": "Water Mastery",
           "description": "+1 attack and damage when both combatants touch water; -4 when on ground."
         }
       },
       {
-        "$type": "GrantAbility",
-        "ability": {
+        "$type": "GrantSpecialAttack",
+        "attack": {
           "id": "water_elem_drench",
           "name": "Drench",
           "description": "Touch extinguishes nonmagical fires of Large or smaller. Dispel magical fire as dispel magic (CL = HD)."
         }
       },
       {
-        "$type": "GrantAbility",
-        "ability": {
+        "$type": "GrantSpecialAttack",
+        "attack": {
           "id": "water_elem_vortex",
           "name": "Vortex",
           "description": "Transform into whirlpool once per 10 minutes (underwater only), 1 round per 2 HD."
@@ -758,6 +791,7 @@
     "speeds": {
       "fly": 40
     },
+    "flyManeuverability": "good",
     "abilityModifiers": {
       "str": 0,
       "dex": 4,
@@ -775,6 +809,15 @@
     ],
     "racialPermabuffs": [
       {
+        "$type": "GrantTypedBonus",
+        "target": "ac",
+        "bonusType": "deflection",
+        "value": { "expression": "1" }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "skill:listen", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "skill:spot", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "skill:search", "value": 4 },
+      {
         "$type": "GrantAbility",
         "ability": {
           "id": "shadow_darkvision_60",
@@ -791,16 +834,16 @@
         }
       },
       {
-        "$type": "GrantAbility",
-        "ability": {
+        "$type": "GrantSpecialAttack",
+        "attack": {
           "id": "shadow_str_damage",
           "name": "Strength Damage",
           "description": "Incorporeal touch deals 1d6 Strength damage. Target reduced to Str 0 dies."
         }
       },
       {
-        "$type": "GrantAbility",
-        "ability": {
+        "$type": "GrantSpecialAttack",
+        "attack": {
           "id": "shadow_create_spawn",
           "name": "Create Spawn",
           "description": "Humanoid killed by Strength damage becomes a shadow in 1d4 rounds."
@@ -814,6 +857,7 @@
           "description": "+2 bonus on checks to resist being turned."
         }
       },
+      { "$type": "GrantTurnResistance", "value": 2 },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -822,39 +866,16 @@
           "description": "Immune to mind-affecting effects, poison, sleep, paralysis, stunning, disease, death effects, and critical hits."
         }
       },
-      {
-        "$type": "GrantImmunity",
-        "immunity": "mind-affecting"
-      },
-      {
-        "$type": "GrantImmunity",
-        "immunity": "poison"
-      },
-      {
-        "$type": "GrantImmunity",
-        "immunity": "sleep"
-      },
-      {
-        "$type": "GrantImmunity",
-        "immunity": "paralysis"
-      },
-      {
-        "$type": "GrantImmunity",
-        "immunity": "stunning"
-      },
-      {
-        "$type": "GrantImmunity",
-        "immunity": "disease"
-      },
-      {
-        "$type": "GrantImmunity",
-        "immunity": "death effects"
-      },
-      {
-        "$type": "GrantImmunity",
-        "immunity": "critical hits"
-      }
+      { "$type": "GrantImmunity", "immunity": "mind-affecting" },
+      { "$type": "GrantImmunity", "immunity": "poison" },
+      { "$type": "GrantImmunity", "immunity": "sleep" },
+      { "$type": "GrantImmunity", "immunity": "paralysis" },
+      { "$type": "GrantImmunity", "immunity": "stunning" },
+      { "$type": "GrantImmunity", "immunity": "disease" },
+      { "$type": "GrantImmunity", "immunity": "death effects" },
+      { "$type": "GrantImmunity", "immunity": "critical hits" }
     ],
+    "naturalAttacks": [],
     "scalingFormulas": []
   },
   {
@@ -922,6 +943,7 @@
           "description": "Regain 2 hit points per round."
         }
       },
+      { "$type": "GrantFastHealing", "value": 2 },
       {
         "$type": "GrantImmunity",
         "immunity": "poison"

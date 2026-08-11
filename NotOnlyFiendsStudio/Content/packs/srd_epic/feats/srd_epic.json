@@ -947,7 +947,15 @@
         "value": 21
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantSelectedWeaponBonus",
+        "selectionPrefix": "feat:epic_weapon_focus",
+        "target": "Attack",
+        "bonusType": "Untyped",
+        "value": { "expression": "2" }
+      }
+    ],
     "repeatable": true,
     "selectionRequired": "weapon"
   },
@@ -973,7 +981,15 @@
         "value": 21
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantSelectedWeaponBonus",
+        "selectionPrefix": "feat:epic_weapon_specialization",
+        "target": "Damage",
+        "bonusType": "Untyped",
+        "value": { "expression": "4" }
+      }
+    ],
     "repeatable": true,
     "selectionRequired": "weapon"
   },
@@ -1059,7 +1075,9 @@
         "value": 21
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantFastHealing", "value": 3 }
+    ],
     "repeatable": true
   },
   {

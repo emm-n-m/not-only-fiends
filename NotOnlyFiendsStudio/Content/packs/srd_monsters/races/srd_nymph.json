@@ -80,6 +80,7 @@
         }
       },
       { "$type": "GrantAbilityModifierToSaves", "sourceId": "nymph_unearthly_grace", "name": "Unearthly Grace", "ability": "CHA" },
+      { "$type": "GrantACBonus", "sourceId": "nymph_unearthly_grace", "name": "Unearthly Grace", "ability": "CHA", "bonusType": "Deflection" },
       {
         "$type": "GrantAbility",
         "ability": {

@@ -320,6 +320,65 @@ public class AgentApiServiceTests
         }
     }
 
+    [RequiresPrivatePacksFact]
+    public void NextStep_RestrictedDomainGroupOnlyExposesLegalDomains()
+    {
+        var response = SharedService.Value.GetNextStep(new NextStepRequest
+        {
+            Character = new Character
+            {
+                RaceId = "race:human",
+                BaseAbilityScores = new AbilityScoreSet
+                {
+                    STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 16, CHA = 10
+                },
+                Ticks = new List<Tick> { new() { DriverId = "class:elemental_druid" } }
+            }
+        });
+
+        var group = Assert.Single(response.CurrentPendingChoices.DomainChoices,
+            choice => choice.OwnerClassId == "class:elemental_druid");
+        var optionIds = group.Options!.Select(option => option.Id).ToHashSet(StringComparer.Ordinal);
+
+        Assert.Equal(
+            new[] { "domain:air", "domain:earth", "domain:fire", "domain:plant", "domain:water" },
+            optionIds.OrderBy(id => id, StringComparer.Ordinal));
+    }
+
+    [Fact]
+    public void NextStepCurrentPendingChoicesExposeFamiliarSelectionKeyAndOptions()
+    {
+        var character = CreateLevelZeroHuman();
+        character.Ticks.Add(new Tick { DriverId = "class:wizard", Choices = new TickChoices() });
+
+        var response = SharedService.Value.GetNextStep(new NextStepRequest { Character = character });
+        var familiar = Assert.Single(response.CurrentPendingChoices.ClassFeatureChoices,
+            group => group.FeatureType == "class_feature:familiar_options");
+
+        Assert.Equal("Familiar Options", familiar.FeatureName);
+        Assert.Contains(familiar.Options!, option => option.Id == "race:companion_bat");
+        // FeatureType is the exact TickChoices.ClassFeatureChoices key used to submit the pick.
+        Assert.Contains("class_feature:familiar_options", familiar.FeatureType);
+    }
+
+    [Fact]
+    public void NextStepExposesPlanarRangerCompanionTemplateChoices()
+    {
+        var character = CreateLevelZeroHuman();
+        character.Alignment = Alignment.N;
+        character.Ticks = Enumerable.Range(0, 4)
+            .Select(_ => new Tick { DriverId = "class:planar_ranger", Choices = new TickChoices() })
+            .ToList();
+
+        var response = SharedService.Value.GetNextStep(new NextStepRequest { Character = character });
+        var templates = Assert.Single(response.CurrentPendingChoices.CompanionTemplateChoices,
+            group => group.LinkType == "animal_companion");
+
+        Assert.Equal("companionTemplateChoices[animal_companion]", templates.ChoiceKey);
+        Assert.Contains(templates.Options, option => option.Id == "template:celestial");
+        Assert.Contains(templates.Options, option => option.Id == "template:fiendish");
+    }
+
     [Fact]
     public void NextStepCurrentPendingChoicesStayFullyPopulated()
     {

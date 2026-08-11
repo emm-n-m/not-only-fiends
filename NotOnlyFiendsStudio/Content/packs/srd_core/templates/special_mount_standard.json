@@ -32,7 +32,8 @@
       { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 2 },
       { "$type": "ModifyAttribute", "target": "abilityScore", "abilityScore": "STR", "value": 1 },
       { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 9 },
-      { "$type": "GrantAbility", "ability": { "id": "mount_spell_resistance", "name": "Spell Resistance", "description": "Spell resistance equal to paladin level + 5." } }
+      { "$type": "GrantAbility", "ability": { "id": "mount_spell_resistance", "name": "Spell Resistance", "description": "Spell resistance equal to paladin level + 5." } },
+      { "$type": "GrantTypedBonus", "target": "SR", "bonusType": "Untyped", "value": { "expression": "MasterLevel + 5" } }
     ]
   }
 }

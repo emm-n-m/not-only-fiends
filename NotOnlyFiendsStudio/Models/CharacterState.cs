@@ -62,6 +62,12 @@ public class CharacterState
     public List<AbilitySaveBonus> AbilitySaveBonuses { get; set; } = new();
 
     /// <summary>
+    /// Ability-derived AC bonuses that must be evaluated after final ability scores and worn
+    /// equipment are known. Examples are monk Wisdom AC and nymph Charisma deflection.
+    /// </summary>
+    public List<AbilityACBonus> AbilityACBonuses { get; set; } = new();
+
+    /// <summary>
     /// Permanent typed save bonuses from feats and racial/class features. They are kept separate
     /// from progression so the normal 3.5e stacking rule (highest bonus of each type) still
     /// applies when several sources grant the same save bonus.
@@ -124,6 +130,10 @@ public class CharacterState
     // HP
     public int HP { get; set; }
 
+    /// <summary>Flat hit-point grants that must survive the Constitution tail pass.</summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public int FlatHitPointBonuses { get; set; }
+
     // Skills — ranks stored as half-ranks (int). 5 ranks = 10, 2.5 ranks = 5.
     public Dictionary<string, int> SkillHalfRanks { get; set; } = new();
     public HashSet<string> ClassSkills { get; set; } = new();
@@ -131,6 +141,8 @@ public class CharacterState
     public HashSet<string> CurrentTickClassSkills { get; set; } = new();
     public int UnspentSkillPoints { get; set; }
     public int MaxHalfRanks { get; set; }
+    /// <summary>Per-HD accruals that explain the skill-point pool to API callers and the UI.</summary>
+    public List<SkillPointAccrual> SkillPointAccruals { get; set; } = new();
     /// <summary>Racial/misc skill bonuses (separate from ranks). Keyed by skill ID.</summary>
     public Dictionary<string, int> SkillBonuses { get; set; } = new();
     /// <summary>
@@ -201,6 +213,21 @@ public class CharacterState
     public Dictionary<string, List<string>> DomainSelectionRestrictions { get; set; } = new();
 
     /// <summary>
+    /// Spell-list exclusions created by a domain choice. The outer key is the affected class or
+    /// list id and the value contains spell ids that are unavailable after that choice. This is
+    /// separate from the static <see cref="HDDriver.Spellcasting"/> exclusions because a domain
+    /// choice is a character decision made during replay.
+    /// </summary>
+    public Dictionary<string, HashSet<string>> DynamicSpellListExclusions { get; set; } = new();
+
+    /// <summary>Selected-domain → opposed-domain rules declared by granting content.</summary>
+    public Dictionary<string, Dictionary<string, string>> DomainSpellListExclusionRules { get; set; } = new();
+
+    /// <summary>Returns whether replay has removed a spell from this class/list for this character.</summary>
+    public bool IsSpellExcludedFromList(string spellListId, string spellId) =>
+        DynamicSpellListExclusions.GetValueOrDefault(spellListId)?.Contains(spellId) == true;
+
+    /// <summary>
     /// Variant class id → the class it varies, mirrored from <see cref="HDDriver.VariantOf"/> so
     /// formulas can resolve it without the registry. Read by <c>EffectiveClassLevel()</c>: a rule
     /// raising "your ranger level" reaches a planar ranger too.
@@ -245,6 +272,10 @@ public class CharacterState
     public Dictionary<string, int> Resistances { get; set; } = new();
     public List<DREntry> DamageReduction { get; set; } = new();
     public int? SpellResistance { get; set; }
+    /// <summary>Hit points regained at the start of each turn, when the creature has at least 1 HP.</summary>
+    public int FastHealing { get; set; }
+    /// <summary>Bonus on checks to resist being turned or rebuked.</summary>
+    public int TurnResistance { get; set; }
 
     // Movement
     /// <summary>Permanent speeds before armor/load reductions.</summary>
@@ -257,6 +288,13 @@ public class CharacterState
     public ArmorClass AC { get; set; } = new();
     public List<AttackLine> AttackLines { get; set; } = new();
     public EncumbranceState Encumbrance { get; set; } = new();
+    /// <summary>
+    /// Typed AC/attack/damage contributions granted by feats, class features, templates, or
+    /// permanent events. Equipment uses the transient <see cref="EquipmentPass"/> collector;
+    /// these survive until the same final combat pass runs.
+    /// </summary>
+    public List<TypedBonusContribution> PersistentBonusContributions { get; set; } = new();
+    public List<WeaponBonusContribution> WeaponBonusContributions { get; set; } = new();
 
     // Companions/familiars/mounts/cohorts (master-side accumulator).
     // One entry per granter; tail pass recomputes EffectiveLevel against final state.
@@ -321,6 +359,15 @@ public class Warning
         TickIndex.HasValue ? $"HD {TickIndex}: {Message}" : Message;
 }
 
+public class SkillPointAccrual
+{
+    public string Source { get; set; } = string.Empty;
+    public int BasePoints { get; set; }
+    public int IntelligenceModifier { get; set; }
+    public int FirstHdMultiplier { get; set; } = 1;
+    public int Points { get; set; }
+}
+
 public class CompanionSlotState
 {
     public string LinkType { get; set; } = string.Empty;
@@ -329,6 +376,7 @@ public class CompanionSlotState
     public Formula EffectiveLevelFormula { get; set; } = new();
     public int EffectiveLevel { get; set; }                   // recomputed in tail pass
     public string? SelectedSpecies { get; set; }
+    public string? SelectedTemplateId { get; set; }
 }
 
 /// <summary>
@@ -463,6 +511,18 @@ public class AbilitySaveBonus
     /// penalty is not carried over to saves. Content can opt out for a feature that says otherwise.
     /// </summary>
     public bool PositiveOnly { get; set; } = true;
+}
+
+public class AbilityACBonus
+{
+    public string SourceId { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public Ability? Ability { get; set; }
+    public BonusType BonusType { get; set; } = BonusType.Untyped;
+    public Formula Value { get; set; } = new();
+    public bool PositiveOnly { get; set; } = true;
+    public bool RequiresUnarmored { get; set; }
+    public bool RequiresUnencumbered { get; set; }
 }
 
 public class SaveBonus
@@ -664,6 +724,21 @@ public class EquipmentPass
     }
 }
 
+public class TypedBonusContribution
+{
+    public BonusTarget Target { get; set; }
+    public BonusType BonusType { get; set; }
+    public int Value { get; set; }
+}
+
+public class WeaponBonusContribution
+{
+    public string WeaponId { get; set; } = string.Empty;
+    public BonusTarget Target { get; set; }
+    public BonusType BonusType { get; set; }
+    public int Value { get; set; }
+}
+
 public class ArmorContribution
 {
     public ArmorProfile Profile { get; set; } = new();
@@ -672,6 +747,7 @@ public class ArmorContribution
 
 public class WeaponContribution
 {
+    public string ItemId { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;
     public WeaponProfile Profile { get; set; } = new();
     public int EnhancementBonus { get; set; }

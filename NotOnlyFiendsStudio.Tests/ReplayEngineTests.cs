@@ -92,7 +92,7 @@ public class ReplayStudioTests
         // so the fixture has to declare the ones it exercises.
         foreach (var (id, ability) in new[]
                  {
-                     ("skill:climb", "str"), ("jump", "str"), ("skill:swim", "str"),
+                     ("skill:climb", "str"), ("jump", "str"), ("skill:jump", "str"), ("skill:swim", "str"),
                      ("skill:bluff", "cha"), ("skill:hide", "dex"), ("skill:move_silently", "dex"),
                      ("skill:intimidate", "cha"), ("skill:ride", "dex"), ("skill:spot", "wis"),
                      ("skill:listen", "wis"), ("skill:tumble", "dex"), ("skill:concentration", "con"),
@@ -935,6 +935,64 @@ public class ReplayStudioTests
         // At HD 3, event has fired (before tick 2 = before HD 3)
         var stateAt3 = engine.Evaluate(character, upToHD: 3);
         Assert.Equal(12, stateAt3.AbilityScores.CON);
+    }
+
+    [Fact]
+    public void PermanentEvent_AfterLastTick_AppliesBeforeFinalization()
+    {
+        var registry = CreateContentRegistry();
+        var character = new Character
+        {
+            Name = "Post-Level Tome",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 14, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick> { new() { DriverId = "class:fighter" } },
+            PermanentEvents = new List<PermanentEvent>
+            {
+                new()
+                {
+                    BeforeTick = 1,
+                    Permabuffs = new List<Permabuff>
+                    {
+                        new ModifyAttribute { Target = AttributeTarget.AbilityScore, AbilityScore = Ability.CON, Value = 2 }
+                    }
+                }
+            }
+        };
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        Assert.Equal(16, state.AbilityScores.CON);
+        Assert.Equal(13, state.HP); // d10 + CON modifier 3, after the event
+    }
+
+    [Fact]
+    public void UnknownTickChoice_IsReportedInsteadOfSilentlyIgnored()
+    {
+        var character = new Character
+        {
+            Name = "Unknown Choice",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick>
+            {
+                new()
+                {
+                    DriverId = "class:fighter",
+                    Choices = new TickChoices
+                    {
+                        UnknownChoices = new Dictionary<string, System.Text.Json.JsonElement>
+                        {
+                            ["domainIds"] = default
+                        }
+                    }
+                }
+            }
+        };
+
+        var state = new ReplayStudio(CreateContentRegistry()).Evaluate(character);
+
+        Assert.Contains(state.Warnings, warning => warning.Message.Contains("domainIds", StringComparison.Ordinal));
     }
 
     [Fact]

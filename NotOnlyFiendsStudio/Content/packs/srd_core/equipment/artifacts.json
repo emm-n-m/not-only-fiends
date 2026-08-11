@@ -126,6 +126,14 @@
     "priceCp": 0,
     "description": "A +5 heavy shield that grants spellcasting as a 20th-level paladin with Wisdom 20, spell resistance 15, and resistance 10 to five energy types. Its owner owes an annual quest to a lawful good deity.",
     "armor": { "kind": "shield", "armorBonus": 7, "maxDex": null, "checkPenalty": -1, "arcaneFailurePct": 15, "speed30": 30, "speed20": 20 },
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "SR", "bonusType": "Enhancement", "value": { "expression": "15" } },
+      { "$type": "ModifyAttribute", "target": "Resistance", "resistanceElement": "acid", "value": 10 },
+      { "$type": "ModifyAttribute", "target": "Resistance", "resistanceElement": "cold", "value": 10 },
+      { "$type": "ModifyAttribute", "target": "Resistance", "resistanceElement": "electricity", "value": 10 },
+      { "$type": "ModifyAttribute", "target": "Resistance", "resistanceElement": "fire", "value": 10 },
+      { "$type": "ModifyAttribute", "target": "Resistance", "resistanceElement": "sonic", "value": 10 }
+    ],
     "tags": ["magic", "artifact", "major_artifact", "unpriced", "good", "lawful"]
   },
   {

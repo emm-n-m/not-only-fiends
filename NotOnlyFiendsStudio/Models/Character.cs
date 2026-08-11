@@ -111,7 +111,13 @@ public class Character
                     ? null
                     : t.Choices.ClassFeatureChoices.ToDictionary(
                         kv => kv.Key,
-                        kv => new List<string>(kv.Value))
+                        kv => new List<string>(kv.Value)),
+                CompanionTemplateChoices = t.Choices.CompanionTemplateChoices == null
+                    ? null
+                    : new Dictionary<string, string>(t.Choices.CompanionTemplateChoices),
+                UnknownChoices = t.Choices.UnknownChoices == null
+                    ? null
+                    : new Dictionary<string, System.Text.Json.JsonElement>(t.Choices.UnknownChoices)
             }
         }).ToList(),
         PermanentEvents = PermanentEvents.Select(e => new PermanentEvent
@@ -217,6 +223,8 @@ public class CharacterSheet
     public Dictionary<string, int> Resistances { get; set; } = new();
     public List<DREntry> DamageReduction { get; set; } = new();
     public int? SpellResistance { get; set; }
+    public int FastHealing { get; set; }
+    public int TurnResistance { get; set; }
     public int NaturalArmor { get; set; }
     public Dictionary<string, List<string>> ClassFeatureSelections { get; set; } = new();
     public List<PreparedSpellSelection> PreparedSpellSelections { get; set; } = new();
@@ -254,6 +262,8 @@ public class CharacterSheet
         Resistances = state.Resistances,
         DamageReduction = state.DamageReduction,
         SpellResistance = state.SpellResistance,
+        FastHealing = state.FastHealing,
+        TurnResistance = state.TurnResistance,
         NaturalArmor = state.NaturalArmor,
         ClassFeatureSelections = state.ClassFeatureSelections,
         PreparedSpellSelections = state.PreparedSpellSelections.Select(selection => new PreparedSpellSelection
@@ -334,6 +344,17 @@ public class TickChoices
     public List<SkillAllocation>? SkillAllocations { get; set; }
     public List<SpellSelection>? SpellSelections { get; set; }
     public Dictionary<string, List<string>>? ClassFeatureChoices { get; set; }
+
+    /// <summary>
+    /// Template applied to a companion slot, keyed by link type. This is separate from the
+    /// species choice because a planar ranger may choose a celestial or fiendish version of a
+    /// normal animal, and the template belongs on the linked companion character.
+    /// </summary>
+    public Dictionary<string, string>? CompanionTemplateChoices { get; set; }
+
+    /// <summary>Preserves misspelled choice fields so replay can report that they were ignored.</summary>
+    [System.Text.Json.Serialization.JsonExtensionData]
+    public Dictionary<string, System.Text.Json.JsonElement>? UnknownChoices { get; set; }
 }
 
 public class AbilityScoreSet

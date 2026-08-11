@@ -17,7 +17,13 @@
     "description": "You gain damage reduction 3/bludgeoning. Your skin imposes an armor check penalty of 2 (which stacks with the armor check penalty from armor and shield). Spelltouched feat (prerequisite: exposure to stoneskin or iron body spell.)",
     "type": "general",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantDR",
+        "value": 3,
+        "bypassedBy": "bludgeoning"
+      }
+    ],
     "repeatable": false,
     "tags": [
       "spelltouched"

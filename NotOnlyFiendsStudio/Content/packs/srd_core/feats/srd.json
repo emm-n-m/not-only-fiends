@@ -968,7 +968,7 @@
         "linkType": "leadership_cohort",
         "classFeatureType": "",
         "effectiveLevelFormula": {
-          "expression": "min(TotalHD - 2, LeadershipScore - 2)"
+          "expression": "CohortLevel()"
         }
       }
     ],

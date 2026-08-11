@@ -75,6 +75,14 @@
         "immunity": "exhaustion"
       },
       {
+        "$type": "GrantImmunity",
+        "immunity": "physical ability damage"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "Fortitude effects (unless harmless or affects objects)"
+      },
+      {
         "$type": "GrantSpecialAttack",
         "attack": {
           "id": "lich_fear_aura",
@@ -107,6 +115,7 @@
           "description": "A lich has +4 turn resistance."
         }
       },
+      { "$type": "GrantTurnResistance", "value": 4 },
       {
         "$type": "GrantDR",
         "value": 15,

@@ -11,6 +11,12 @@ JSON is usable as written. Verify each against the SRD before applying anyway �
 a description to its neighbours, not to the rules, so it cannot tell a correct description from a
 wrong one.
 
+**Status on 2026-08-10:** this is a historical snapshot, not a count of current defects. The
+follow-up fixes have already covered several queue entries, including Loremaster save/health
+secrets, epic save feats, monk and paladin immunities, druid Nature Sense/Venom Immunity,
+community/healing domain mechanics, vampire/lich traits, and Dwarven Defender AC/DR. Re-run the
+audit before choosing the next item; do not assume every row below is still missing.
+
 Priority below is **blast radius on the current 55-character roster first, then rule centrality**.
 Roster counts are from 2026-08-09.
 
@@ -41,13 +47,13 @@ the game and will be wrong for the first character who does.
 |--:|:--|:--|
 | 2 | `feats/general.json` | `great_fortitude`, `lightning_reflexes` — +2 to a save each |
 | 3 | `feats/epic.json` | `epic_fortitude`, `epic_reflexes`, `epic_will` — +4 to a save each |
-| 3 | `classes/base/monk.json` | `purity_of_body`, `diamond_body`, `perfect_self` — disease/poison immunities |
+| 3 | `classes/base/monk.json` | `purity_of_body`, `diamond_body`, and Perfect Self DR/type change (**fixed**) |
 | 2 | `classes/base/paladin.json` | `aura_of_courage`, `divine_health` |
 | 4 | `paladin_variants.json`, `unearthed_arcana.json` | the same two on the three UA paladin variants |
-| 3 | `classes/prestige/dragon_disciple.json` | natural armour increase, wings, apotheosis |
-| 2 | `classes/prestige/{duelist,dwarven_defender}.json` | `grace`, `damage_reduction` |
+| 3 | `classes/prestige/dragon_disciple.json` | ability boosts, claws/bite, natural armour (**fixed**); dragon-variety breath/energy, blindsense range, and apotheosis type/vision remain conditional or unmodelled |
+| 2 | `classes/prestige/{duelist,dwarven_defender}.json` | `grace`, `damage_reduction` (**Dwarven Defender DR and AC fixed; Duelist Grace remains conditional**) |
 | 2 | `domains/srd.json`, `domains/srd_deity.json` | healing and community domain powers |
-| 1 | `templates/half_fiend.json` | poison immunity |
+| 1 | `templates/half_fiend.json` | poison immunity (**fixed**) |
 
 ## Tier 3 — races
 
@@ -60,7 +66,7 @@ are the template for the rest.
 | 6 | `races/srd_dragons.json` — red dragon fire/sleep immunity and DR, both size variants |
 | 5 | `srd_monsters/races/srd_monster_pcs.json` — gargoyle, janni, svirfneblin, forest gnome |
 | 5 | `srd_monsters/races/srd_monsters.json` — aranea, hell hound racial skill bonuses |
-| 3 | `races/srd_companions.json` — air/water elemental and shadow traits |
+| 3 | `races/srd_companions.json` — air/water elemental and shadow traits (**flat movement, attacks, skills, and AC fixed; situational/combat-resolution traits remain**) |
 | 2 | `races/srd_core_races.json` — gnome craft alchemy, halfling lucky |
 | 2 | `srd_monsters/races/srd_nymph.json` — unearthly grace, DR cold iron |
 | 1 | `srd_pc_monsters_extended.json` — shambling mound plant traits |

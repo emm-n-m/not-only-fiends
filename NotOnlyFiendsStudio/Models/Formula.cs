@@ -159,6 +159,11 @@ internal class FunctionNode : FormulaNode
                     throw new FormulaException("max() requires exactly two arguments");
                 return Math.Max(Args[0].Evaluate(state), Args[1].Evaluate(state));
 
+            case "CohortLevel":
+                if (Args.Count != 0)
+                    throw new FormulaException("CohortLevel() takes no arguments");
+                return state.MaxCohortLevel;
+
             default:
                 throw new FormulaException($"Unknown function: {Name}");
         }

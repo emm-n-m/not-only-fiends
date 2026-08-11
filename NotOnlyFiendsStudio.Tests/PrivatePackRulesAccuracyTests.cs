@@ -11,6 +11,80 @@ namespace NotOnlyFiendsStudio.Tests;
 /// </summary>
 public class PrivatePackRulesAccuracyTests
 {
+    // PCGen witnesses:
+    // - tome_of_horrors_languages.lst: Daemonic TYPE:Spoken
+    // - faeries_races.lst: AUTO:LANG|Fae|Fey|Shadow
+    // - pf18_race.lst: AUTO:LANG|Drow Sign Language|Dwarven|Undercommon
+    [RequiresPrivatePacksFact]
+    public void PrivateLanguageCatalog_ContainsTheCorpusLanguages()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        var languages = registry.GetAllLanguages().Select(language => language.Id).ToHashSet();
+
+        Assert.Superset(new HashSet<string>
+        {
+            "daemonic",
+            "fae",
+            "fey",
+            "shadow",
+            "drow_sign_language"
+        }, languages);
+    }
+
+    // mongoose_publishing/encyclopaedia_divine/fey_magic/fey_skills.lst:7:
+    // Knowledge (Reverie) KEYSTAT:INT USEUNTRAINED:NO.
+    [RequiresPrivatePacksFact]
+    public void KnowledgeReverie_MatchesTheFeyMagicSkillEntry()
+    {
+        var skill = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable()
+            .GetAllSkills()
+            .Single(skill => skill.Id == "skill:knowledge_reverie");
+
+        Assert.Equal("Knowledge (Reverie)", skill.Name);
+        Assert.Equal("int", skill.KeyAbility);
+        Assert.True(skill.TrainedOnly);
+        Assert.False(skill.ArmorCheckPenalty);
+        Assert.Equal("skill:knowledge", skill.ParentSkill);
+    }
+
+    // silverthorne_games/.../sevenstrangespells_spells.lst:8:
+    // CLASSES:Sorcerer,Wizard=1 SCHOOL:Illusion SUBSCHOOL:Pattern
+    // DESCRIPTOR:Mind-Affecting COMPS:V, S, M.
+    // lions_den_press/.../planarmagic_spells.lst:29:
+    // CLASSES:Druid,Elemental Fire,Sorcerer,Wizard=0 SCHOOL:Evocation DESCRIPTOR:Fire.
+    // malhavoc_press/.../completeeldritch_spells.lst:233:
+    // CLASSES:Bard,Cleric,Sorcerer,Sorcerer (Monte Cook's),Wizard=0 SCHOOL:Transmutation.
+    [RequiresPrivatePacksFact]
+    public void PrivateSpellGapFixes_MatchExistingClassMappings()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+
+        var pastel = registry.GetSpell("spell:pastel_color_spray");
+        Assert.Equal("illusion", pastel.School);
+        Assert.Equal("pattern", pastel.Subschool);
+        Assert.Contains("mind-affecting", pastel.Descriptors);
+        Assert.Equal(1, pastel.ClassLevels["class:sorcerer"]);
+        Assert.Equal(1, pastel.ClassLevels["class:wizard"]);
+        Assert.True(pastel.Components.Verbal);
+        Assert.True(pastel.Components.Somatic);
+        Assert.Equal("yes", pastel.SpellResistance);
+
+        var ember = registry.GetSpell("spell:ember");
+        Assert.Equal("evocation", ember.School);
+        Assert.Contains("fire", ember.Descriptors);
+        Assert.Equal(0, ember.ClassLevels["class:druid"]);
+        Assert.Equal(0, ember.ClassLevels["class:sorcerer"]);
+        Assert.Equal(0, ember.ClassLevels["class:wizard"]);
+
+        var transcribe = registry.GetSpell("spell:transcribe");
+        Assert.Equal("transmutation", transcribe.School);
+        Assert.Equal(0, transcribe.ClassLevels["class:bard"]);
+        Assert.Equal(0, transcribe.ClassLevels["class:cleric"]);
+        Assert.Equal(0, transcribe.ClassLevels["class:sorcerer"]);
+        Assert.Equal(0, transcribe.ClassLevels["class:wizard"]);
+        Assert.Equal("One piece of paper or parchment up to 1 foot square", transcribe.Target);
+    }
+
     private static MinSkillRanks SkillPrereq(string driverId, string skillId)
     {
         var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();

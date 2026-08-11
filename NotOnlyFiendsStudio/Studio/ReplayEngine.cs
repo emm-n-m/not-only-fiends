@@ -215,9 +215,20 @@ public class ReplayStudio
             if (race.BonusSkillPointsPerHD > 0)
             {
                 var bonus = race.BonusSkillPointsPerHD;
+                var multiplier = 1;
                 if (state.TotalHD == 1)
-                    bonus *= _rules.RacialBonusSkillFirstHDMultiplier;
+                {
+                    multiplier = _rules.RacialBonusSkillFirstHDMultiplier;
+                    bonus *= multiplier;
+                }
                 state.UnspentSkillPoints += bonus;
+                state.SkillPointAccruals.Add(new SkillPointAccrual
+                {
+                    Source = race.Id,
+                    BasePoints = race.BonusSkillPointsPerHD,
+                    FirstHdMultiplier = multiplier,
+                    Points = bonus
+                });
             }
 
             // h. Race scaling abilities
@@ -295,6 +306,16 @@ public class ReplayStudio
             }
         }
 
+        // A permanent event at the end of the timeline is a valid "after the last
+        // level" event. Apply it before the post-tick passes so its effects are visible
+        // to equipment, hit points, skills, and other final derived values.
+        if (maxTick == character.Ticks.Count)
+        {
+            foreach (var evt in character.PermanentEvents.Where(e => e.BeforeTick >= maxTick))
+                foreach (var buff in evt.Permabuffs)
+                    buff.Apply(ctx);
+        }
+
         foreach (var (tickIndex, driverName, prerequisite) in deferredDriverFeatPrerequisites)
         {
             if (!prerequisite.IsMet(state))
@@ -333,7 +354,7 @@ public class ReplayStudio
         }
 
         // 6. Tail pass — companion / leadership finalization.
-        FinalizeCompanionAndLeadership(ctx, character);
+        FinalizeCompanionAndLeadership(ctx, character, maxTick);
 
         // 7. Seed racial spellcasting (e.g. Aranea Sorc N, Ghaele Cleric 14) for
         // characters that never take a level of the target class. When class levels
@@ -434,7 +455,7 @@ public class ReplayStudio
                 && IsDomainSpell(state, selection);
             var legalLevel = selection.SlotKind == PreparedSpellSlotKind.Domain
                 ? isDomainSpell
-                : _content.TryGetSpellLevelForList(spell, selection.ClassId, out var classSpellLevel)
+                : TryGetSpellLevelForList(state, spell, selection.ClassId, out var classSpellLevel)
                     && classSpellLevel == selection.SpellLevel;
             if (spellcasting.Acquisition == SpellAcquisition.Spellbook && selection.SlotKind != PreparedSpellSlotKind.Domain)
             {
@@ -505,6 +526,18 @@ public class ReplayStudio
         return false;
     }
 
+    private bool TryGetSpellLevelForList(CharacterState state, SpellDefinition spell, string spellListId,
+        out int level)
+    {
+        if (state.IsSpellExcludedFromList(spellListId, spell.Id))
+        {
+            level = 0;
+            return false;
+        }
+
+        return _content.TryGetSpellLevelForList(spell, spellListId, out level);
+    }
+
     private static bool IsFeatBasedPrerequisite(Prerequisite prerequisite) => prerequisite switch
     {
         HasFeat => true,
@@ -532,7 +565,7 @@ public class ReplayStudio
                     ? hitDie.DieSize
                     : hitDie.DieSize / 2 + 1);
             return Math.Max(1, roll + conMod);
-        }).Sum();
+        }).Sum() + state.FlatHitPointBonuses;
     }
 
     /// <summary>
@@ -815,7 +848,7 @@ public class ReplayStudio
     ///  (c) On the companion side: fires every template's CompanionScalingPermabuffs whose
     ///      key &lt;= state.EffectiveMasterLevel.
     /// </summary>
-    private void FinalizeCompanionAndLeadership(PermabuffContext ctx, Character character)
+    private void FinalizeCompanionAndLeadership(PermabuffContext ctx, Character character, int maxTick)
     {
         var state = ctx.State;
 
@@ -831,6 +864,8 @@ public class ReplayStudio
                 // First pick wins for this slot (multi-slot of same featureType not yet supported).
                 slot.SelectedSpecies = picks[0];
             }
+
+            ApplyCompanionTemplateChoice(state, character, slot, maxTick);
         }
 
         // (b) Leadership finalization.
@@ -870,6 +905,73 @@ public class ReplayStudio
                     buff.Apply(ctx);
             }
         }
+    }
+
+    private void ApplyCompanionTemplateChoice(
+        CharacterState state,
+        Character character,
+        CompanionSlotState slot,
+        int maxTick)
+    {
+        if (slot.LinkType != "animal_companion")
+            return;
+
+        var templateId = character.Ticks
+            .Take(maxTick)
+            .Select(tick => tick.Choices.CompanionTemplateChoices?.GetValueOrDefault(slot.LinkType))
+            .LastOrDefault(id => !string.IsNullOrWhiteSpace(id));
+        if (string.IsNullOrWhiteSpace(templateId))
+            return;
+
+        if (state.ClassLevels.GetValueOrDefault("class:planar_ranger") <= 0)
+        {
+            state.Warnings.Add(new Warning
+            {
+                TickIndex = state.TotalHD,
+                Message = $"companion template '{templateId}' requires a planar ranger animal companion"
+            });
+            return;
+        }
+
+        if (templateId is not ("template:celestial" or "template:fiendish"))
+        {
+            state.Warnings.Add(new Warning
+            {
+                TickIndex = state.TotalHD,
+                Message = $"unsupported planar ranger companion template '{templateId}'"
+            });
+            return;
+        }
+
+        TemplateDriver template;
+        try
+        {
+            template = _content.GetTemplate(templateId);
+        }
+        catch (KeyNotFoundException)
+        {
+            state.Warnings.Add(new Warning
+            {
+                TickIndex = state.TotalHD,
+                Message = $"unknown companion template '{templateId}'"
+            });
+            return;
+        }
+
+        var isGood = state.Alignment is Alignment.LG or Alignment.NG or Alignment.CG;
+        var isEvil = state.Alignment is Alignment.LE or Alignment.NE or Alignment.CE;
+        if ((templateId == "template:celestial" && isEvil)
+            || (templateId == "template:fiendish" && isGood))
+        {
+            state.Warnings.Add(new Warning
+            {
+                TickIndex = state.TotalHD,
+                Message = $"companion template '{template.Name}' is not allowed for planar ranger alignment {state.Alignment}"
+            });
+            return;
+        }
+
+        slot.SelectedTemplateId = templateId;
     }
 
     private void ApplyRace(PermabuffContext ctx, RaceDefinition race)
@@ -1199,6 +1301,16 @@ public class ReplayStudio
 
             state.Domains.Add(domainId);
             state.DomainOwners[domainId] = ownerClassId;
+            if (state.DomainSpellListExclusionRules.TryGetValue(ownerClassId, out var opposedDomains)
+                && opposedDomains.TryGetValue(domainId, out var opposedDomainId)
+                && _content.TryGetDomain(opposedDomainId, out var opposedDomain)
+                && opposedDomain != null)
+            {
+                if (!state.DynamicSpellListExclusions.TryGetValue(ownerClassId, out var excludedSpellIds))
+                    state.DynamicSpellListExclusions[ownerClassId] = excludedSpellIds = new HashSet<string>(StringComparer.Ordinal);
+                excludedSpellIds.UnionWith(opposedDomain.BonusSpells.Values);
+            }
+
             if (state.PendingDomainSelections.GetValueOrDefault(ownerClassId) > 0)
             {
                 state.PendingDomainSelections[ownerClassId]--;
@@ -1333,6 +1445,14 @@ public class ReplayStudio
     private void ApplyTickChoices(PermabuffContext ctx, TickChoices choices)
     {
         var state = ctx.State;
+
+        if (choices.UnknownChoices is { Count: > 0 })
+            foreach (var key in choices.UnknownChoices.Keys.OrderBy(key => key, StringComparer.Ordinal))
+                state.Warnings.Add(new Warning
+                {
+                    TickIndex = state.TotalHD,
+                    Message = $"unknown tick choice '{key}' ignored; use the documented choice fields"
+                });
 
         // Level advancement buys skill ranks before selecting feats. A feat gained at this HD may
         // therefore use ranks bought at this HD to satisfy its prerequisites (PHB advancement
@@ -1520,7 +1640,7 @@ public class ReplayStudio
                     // sources and that class's exclusions are applied together. Extra sources
                     // granted dynamically are additive and resolve directly.
                     var matchingLevels = new[] { routedClassId }
-                        .Select(source => _content.TryGetSpellLevelForList(spellDef, source, out var lvl) ? (int?)lvl : null)
+                        .Select(source => TryGetSpellLevelForList(state, spellDef, source, out var lvl) ? (int?)lvl : null)
                         .Concat(extraListSources
                             .Select(source => _content.TryGetSpellLevelForSource(spellDef, source, out var lvl) ? (int?)lvl : null))
                         .Where(lvl => lvl.HasValue)
@@ -1562,7 +1682,12 @@ public class ReplayStudio
 
                 if (!_content.TryGetClassFeature(featureType, out var featureDef) || featureDef == null)
                 {
-                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown class feature type '{featureType}'" });
+                    var validKeys = string.Join(", ", state.PendingClassFeatureSelections.Keys.OrderBy(key => key, StringComparer.Ordinal));
+                    state.Warnings.Add(new Warning
+                    {
+                        TickIndex = state.TotalHD,
+                        Message = $"unknown class feature type '{featureType}'{(validKeys.Length == 0 ? string.Empty : $"; valid pending keys: {validKeys}")}"
+                    });
                     continue;
                 }
 
@@ -1631,7 +1756,10 @@ public class ReplayStudio
             // Unknown ids would otherwise silently consume skill points and materialise
             // a phantom skill on the sheet, so surface them the way unknown feats are.
             if (!_content.TryGetSkill(alloc.SkillId, out _))
+            {
                 state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"unknown skill '{alloc.SkillId}'" });
+                continue;
+            }
 
             state.SkillHalfRanks.TryAdd(alloc.SkillId, 0);
             var newTotal = state.SkillHalfRanks[alloc.SkillId] + alloc.HalfRanks;
@@ -1864,6 +1992,7 @@ public class ReplayStudio
                     {
                         var weapon = new WeaponContribution
                         {
+                            ItemId = item.ContentId ?? item.ItemId,
                             Profile = def.Weapon,
                             EnhancementBonus = item.EnhancementBonusOverride ?? def.EnhancementBonus,
                             MainHand = item.MainHand,
@@ -1876,6 +2005,7 @@ public class ReplayStudio
                         {
                             pass.Weapons.Add(new WeaponContribution
                             {
+                                ItemId = item.ContentId ?? item.ItemId,
                                 Profile = def.Weapon,
                                 EnhancementBonus = item.EnhancementBonusOverride ?? def.EnhancementBonus,
                                 MainHand = false,
@@ -1907,6 +2037,19 @@ public class ReplayStudio
 
     private void FinalizeEquipment(CharacterState state, EquipmentPass pass)
     {
+        var typedContributions = state.PersistentBonusContributions
+            .Select(contribution => (
+                Target: contribution.Target,
+                BonusType: contribution.BonusType,
+                Value: contribution.Value))
+            .Concat(pass.Contributions.SelectMany(entry => entry.Value.Select(value =>
+                (
+                    Target: entry.Key.Target,
+                    BonusType: entry.Key.Type,
+                    Value: value))))
+            .GroupBy(entry => (entry.Target, entry.BonusType))
+            .ToDictionary(group => group.Key, group => group.Select(entry => entry.Value).ToList());
+
         // --- Skill bonuses (typed per skill; two competence bonuses do not stack) ---
         foreach (var (key, values) in pass.SkillContributions)
         {
@@ -1917,7 +2060,7 @@ public class ReplayStudio
         }
 
         // --- Ability score bonuses (typed; e.g., +4 enhancement STR from gauntlets) ---
-        foreach (var (key, values) in pass.Contributions)
+        foreach (var (key, values) in typedContributions)
         {
             var (target, type) = key;
             var agg = BonusStack.Aggregate(type, values);
@@ -1963,14 +2106,14 @@ public class ReplayStudio
         if (bestShield != null) state.AC.Components[BonusType.Shield] = bestShield.Profile.ArmorBonus;
 
         // Aggregate AC typed contributions (deflection, dodge, natural enhancement, etc.).
-        foreach (var (key, values) in pass.Contributions)
+        foreach (var (key, values) in typedContributions)
         {
             if (key.Target != BonusTarget.AC) continue;
-            var agg = BonusStack.Aggregate(key.Type, values);
+            var agg = BonusStack.Aggregate(key.BonusType, values);
             if (agg == 0) continue;
-            state.AC.Components[key.Type] =
-                state.AC.Components.GetValueOrDefault(key.Type) +
-                (BonusStack.IsStacking(key.Type) ? agg : Math.Max(0, agg - state.AC.Components.GetValueOrDefault(key.Type)));
+                state.AC.Components[key.BonusType] =
+                state.AC.Components.GetValueOrDefault(key.BonusType) +
+                (BonusStack.IsStacking(key.BonusType) ? agg : Math.Max(0, agg - state.AC.Components.GetValueOrDefault(key.BonusType)));
         }
 
         // Carry natural armor that race/template applied to state.NaturalArmor.
@@ -2003,10 +2146,72 @@ public class ReplayStudio
         state.AC.FlatFooted = 10 + flatComponents + Math.Min(0, dexContrib);
 
         // --- Attack lines from equipped weapons ---
-        FinalizeAttackLines(state, pass);
+        FinalizeAttackLines(state, pass, typedContributions);
 
         // --- Encumbrance + speed reduction ---
         FinalizeEncumbrance(state, pass, armorContribs, shieldContribs);
+
+        // Ability-derived AC features are evaluated only after equipment and load are final.
+        // This is what makes the monk's unarmored/unencumbered condition real rather than a
+        // permanent bonus that incorrectly survives putting on armor.
+        ApplyAbilityACBonuses(state, armorContribs, shieldContribs);
+        RecalculateArmorClass(state);
+    }
+
+    private static void ApplyAbilityACBonuses(
+        CharacterState state,
+        List<ArmorContribution> armors,
+        List<ArmorContribution> shields)
+    {
+        var unarmored = armors.Count == 0 && shields.Count == 0;
+        var unencumbered = state.Encumbrance.Load == LoadCategory.Light;
+
+        var values = state.AbilityACBonuses
+            .Where(bonus => (!bonus.RequiresUnarmored || unarmored)
+                && (!bonus.RequiresUnencumbered || unencumbered))
+            .GroupBy(bonus => bonus.BonusType)
+            .ToDictionary(
+                group => group.Key,
+                group => group.Select(bonus =>
+                {
+                    var value = bonus.Value.Evaluate(state);
+                    if (bonus.Ability.HasValue)
+                    {
+                        var modifier = state.AbilityModifier(bonus.Ability.Value);
+                        value += bonus.PositiveOnly ? Math.Max(0, modifier) : modifier;
+                    }
+                    return value;
+                }).ToList());
+
+        foreach (var (bonusType, contributions) in values)
+        {
+            var value = BonusStack.Aggregate(bonusType, contributions);
+            if (value == 0) continue;
+            state.AC.Components[bonusType] = BonusStack.IsStacking(bonusType)
+                ? state.AC.Components.GetValueOrDefault(bonusType) + value
+                : Math.Max(state.AC.Components.GetValueOrDefault(bonusType), value);
+        }
+    }
+
+    private static void RecalculateArmorClass(CharacterState state)
+    {
+        var componentTotal = state.AC.Components.Values.Sum();
+        state.AC.Total = 10 + componentTotal + state.AC.DexContribution;
+        var touchExcluded = new HashSet<BonusType>
+        {
+            BonusType.Armor,
+            BonusType.Shield,
+            BonusType.Natural,
+            BonusType.NaturalEnhancement
+        };
+        var touchSum = state.AC.Components
+            .Where(kv => !touchExcluded.Contains(kv.Key))
+            .Sum(kv => kv.Value);
+        state.AC.Touch = 10 + touchSum + state.AC.DexContribution;
+        var flatComponents = state.AC.Components
+            .Where(kv => kv.Key != BonusType.Dodge)
+            .Sum(kv => kv.Value);
+        state.AC.FlatFooted = 10 + flatComponents + Math.Min(0, state.AC.DexContribution);
     }
 
     private static void AddAbility(CharacterState state, Ability ability, int value)
@@ -2015,7 +2220,10 @@ public class ReplayStudio
         state.AbilityScores.SetScore(ability, current + value);
     }
 
-    private void FinalizeAttackLines(CharacterState state, EquipmentPass pass)
+    private void FinalizeAttackLines(
+        CharacterState state,
+        EquipmentPass pass,
+        Dictionary<(BonusTarget Target, BonusType BonusType), List<int>> typedContributions)
     {
         state.AttackLines.Clear();
         if (pass.Weapons.Count == 0) return;
@@ -2033,10 +2241,16 @@ public class ReplayStudio
 
         // Generic typed attack bonus aggregation (excluding the weapon's own enhancement).
         int typedAttackBonus = 0;
-        foreach (var (key, values) in pass.Contributions)
+        foreach (var (key, values) in typedContributions)
         {
             if (key.Target != BonusTarget.Attack) continue;
-            typedAttackBonus += BonusStack.Aggregate(key.Type, values);
+            typedAttackBonus += BonusStack.Aggregate(key.BonusType, values);
+        }
+        var typedDamageBonus = 0;
+        foreach (var (key, values) in typedContributions)
+        {
+            if (key.Target != BonusTarget.Damage) continue;
+            typedDamageBonus += BonusStack.Aggregate(key.BonusType, values);
         }
         typedAttackBonus += _rules.CalculateSizeModifier(state.Size);
 
@@ -2056,32 +2270,44 @@ public class ReplayStudio
         }
 
         state.AttackLines.Add(BuildLine(mainHand, bab, strMod, dexMod, meleeAttackMod, typedAttackBonus,
+            typedDamageBonus + WeaponBonus(state, mainHand, BonusTarget.Damage),
+            WeaponBonus(state, mainHand, BonusTarget.Attack),
             attackPenalty: mainPenalty,
             isOffHand: false));
 
         if (offHand != null)
         {
             state.AttackLines.Add(BuildLine(offHand, bab, strMod, dexMod, meleeAttackMod, typedAttackBonus,
+                typedDamageBonus + WeaponBonus(state, offHand, BonusTarget.Damage),
+                WeaponBonus(state, offHand, BonusTarget.Attack),
                 attackPenalty: offPenalty,
                 isOffHand: true));
         }
     }
 
-    private static AttackLine BuildLine(WeaponContribution w, int bab, int strMod, int dexMod, int meleeAttackMod, int typedAttackBonus, int attackPenalty, bool isOffHand)
+    private static int WeaponBonus(CharacterState state, WeaponContribution weapon, BonusTarget target)
+    {
+        return state.WeaponBonusContributions
+            .Where(contribution => contribution.WeaponId == weapon.ItemId && contribution.Target == target)
+            .GroupBy(contribution => contribution.BonusType)
+            .Sum(group => BonusStack.Aggregate(group.Key, group.Select(contribution => contribution.Value)));
+    }
+
+    private static AttackLine BuildLine(WeaponContribution w, int bab, int strMod, int dexMod, int meleeAttackMod, int typedAttackBonus, int typedDamageBonus, int weaponAttackBonus, int attackPenalty, bool isOffHand)
     {
         var profile = w.Profile;
         var abilityMod = profile.Ranged && !profile.Thrown ? dexMod : meleeAttackMod;
         var damageMod = profile.Ranged && !profile.Thrown
             ? 0
             : (isOffHand ? FloorDivBy2(strMod) : (w.TwoHanded ? (strMod * 3) / 2 : strMod));
-        var attackBase = bab + abilityMod + w.EnhancementBonus + typedAttackBonus + attackPenalty;
+        var attackBase = bab + abilityMod + w.EnhancementBonus + typedAttackBonus + weaponAttackBonus + attackPenalty;
 
         var iterations = isOffHand ? 1 : IterativeCount(bab);
         var bonuses = new List<int>();
         for (int i = 0; i < iterations; i++)
             bonuses.Add(attackBase - 5 * i);
 
-        var damageBonus = damageMod + w.EnhancementBonus;
+        var damageBonus = damageMod + w.EnhancementBonus + typedDamageBonus;
         var damageStr = damageBonus == 0
             ? profile.Damage
             : (damageBonus > 0 ? $"{profile.Damage}+{damageBonus}" : $"{profile.Damage}{damageBonus}");
@@ -2113,7 +2339,11 @@ public class ReplayStudio
 
     private void FinalizeEncumbrance(CharacterState state, EquipmentPass pass, List<ArmorContribution> armors, List<ArmorContribution> shields)
     {
-        var (light, medium, heavy) = _rules.GetCarryingCapacity(state.AbilityScores.STR);
+        // A nonability is not a score of zero and cannot use the carrying-capacity table.
+        // In particular, incorporeal creatures have no Strength and "cannot exert force".
+        var (light, medium, heavy) = state.HasAbility(Ability.STR)
+            ? _rules.GetCarryingCapacity(state.AbilityScores.STR)
+            : (0, 0, 0);
         state.Encumbrance.LightMax = light;
         state.Encumbrance.MediumMax = medium;
         state.Encumbrance.HeavyMax = heavy;

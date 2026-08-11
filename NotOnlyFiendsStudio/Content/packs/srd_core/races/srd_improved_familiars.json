@@ -154,6 +154,7 @@
           "description": "Regain 2 hit points per round."
         }
       },
+      { "$type": "GrantFastHealing", "value": 2 },
       {
         "$type": "GrantImmunity",
         "immunity": "poison"

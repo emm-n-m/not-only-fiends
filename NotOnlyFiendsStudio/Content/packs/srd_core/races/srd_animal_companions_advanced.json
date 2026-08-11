@@ -44,6 +44,11 @@
           "name": "Scent",
           "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:climb",
+        "value": 8
       }
     ],
     "scalingFormulas": [],
@@ -99,6 +104,11 @@
           "name": "Scent",
           "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:swim",
+        "value": 4
       }
     ],
     "scalingFormulas": [],
@@ -284,6 +294,11 @@
           "name": "Rage",
           "description": "When wounded: +4 Str, +4 Con, +2 Will, -2 AC for the duration of the encounter."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:climb",
+        "value": 8
       }
     ],
     "scalingFormulas": [],
@@ -409,6 +424,11 @@
           "name": "Improved Grab",
           "description": "On a successful claw, can start a grapple as a free action without provoking attacks of opportunity."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:swim",
+        "value": 4
       }
     ],
     "scalingFormulas": [],
@@ -470,7 +490,11 @@
           "name": "Trip",
           "description": "On a successful bite, can attempt to trip as a free action without provoking attacks of opportunity."
         }
-      }
+      },
+      { "$type": "GrantSkillBonus", "skillId": "skill:hide", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "skill:listen", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "skill:move_silently", "value": 2 },
+      { "$type": "GrantSkillBonus", "skillId": "skill:spot", "value": 2 }
     ],
     "scalingFormulas": [],
     "racialClassSkillAdditions": [
@@ -549,6 +573,21 @@
           "name": "Rake",
           "description": "Two rake attacks for 1d4+3 each while grappling."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:balance",
+        "value": 4
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:hide",
+        "value": 4
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
+        "value": 4
       }
     ],
     "scalingFormulas": [],
@@ -628,6 +667,21 @@
           "name": "Rake",
           "description": "Two rake attacks for 1d8+3 each while grappling."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:balance",
+        "value": 4
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:hide",
+        "value": 4
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
+        "value": 4
       }
     ],
     "scalingFormulas": [],
@@ -770,6 +824,16 @@
           "name": "Rake",
           "description": "Two rake attacks for 1d4+5 each while grappling."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:hide",
+        "value": 4
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
+        "value": 4
       }
     ],
     "scalingFormulas": [],
@@ -969,6 +1033,16 @@
           "name": "Rake",
           "description": "Two rake attacks for 2d4+4 each while grappling."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:hide",
+        "value": 4
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
+        "value": 4
       }
     ],
     "scalingFormulas": [],

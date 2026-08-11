@@ -353,6 +353,29 @@ public class PcgConverterTests
     }
 
     [Fact]
+    public void Convert_AnimalTricksAreIgnoredAsCreatureProperties()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var data = new PcgCharacterData
+        {
+            Race = "Human",
+            BaseStats = new() { ["INT"] = 10 },
+            Classes = new() { new() { Name = "Fighter", Level = 1 } },
+            Levels = new() { new() { ClassName = "Fighter", ClassLevel = 1 } },
+            ClassAbilities = new()
+            {
+                new() { Key = "Animal Trick ~ Attack", AppliedTo = "Attack" },
+                new() { Key = "Animal Trick ~ Fetch", AppliedTo = "Fetch" }
+            }
+        };
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+
+        Assert.Empty(result.DroppedClassAbilities);
+        Assert.DoesNotContain(result.Warnings, warning => warning.Contains("Animal Trick", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void Convert_HitPointRolls_AreStoredOnTheirTicks()
     {
         var data = CreateClericData();

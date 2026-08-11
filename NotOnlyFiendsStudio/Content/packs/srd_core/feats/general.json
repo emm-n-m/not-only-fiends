@@ -96,9 +96,8 @@
     "grantedPermabuffs": [
       {
         "$type": "ModifyAttribute",
-        "target": "AbilityScore",
-        "abilityScore": "CON",
-        "value": 0
+        "target": "HitPoints",
+        "value": 3
       }
     ],
     "repeatable": true
@@ -117,7 +116,15 @@
         "value": 1
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantSelectedWeaponBonus",
+        "selectionPrefix": "feat:weapon_focus",
+        "target": "Attack",
+        "bonusType": "Untyped",
+        "value": { "expression": "1" }
+      }
+    ],
     "repeatable": true,
     "selectionRequired": "weapon"
   },
@@ -148,7 +155,9 @@
         "value": 13
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantTypedBonus", "target": "AC", "bonusType": "Dodge", "value": { "expression": "1" } }
+    ],
     "repeatable": false
   },
   {

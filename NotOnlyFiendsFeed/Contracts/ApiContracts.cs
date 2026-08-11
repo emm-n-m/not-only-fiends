@@ -255,6 +255,15 @@ public sealed class NextStepResponse
     public CharacterSheet CurrentSheet { get; set; } = new();
     public PendingChoicesDto CurrentPendingChoices { get; set; } = new();
     public List<DriverPreviewDto> DriverPreviews { get; set; } = new();
+    public List<DriverExclusionDto> ExcludedDrivers { get; set; } = new();
+    public List<string> UnknownDriverIds { get; set; } = new();
+    public List<SkillPointAccrual> SkillPointAccruals { get; set; } = new();
+}
+
+public sealed class DriverExclusionDto
+{
+    public DriverSummaryDto Driver { get; set; } = new();
+    public List<string> Reasons { get; set; } = new();
 }
 
 public sealed class DriverPreviewDto
@@ -292,6 +301,23 @@ public sealed class PendingChoicesDto
     public List<SpellSelectionChoiceGroupDto> SpellChoices { get; set; } = new();
     public List<PreparedSpellChoiceGroupDto> PreparedSpellChoices { get; set; } = new();
     public List<SpellcastingSummaryDto> SpellLists { get; set; } = new();
+    public List<CompanionTemplateChoiceGroupDto> CompanionTemplateChoices { get; set; } = new();
+}
+
+public sealed class CompanionTemplateChoiceGroupDto
+{
+    public string LinkType { get; set; } = string.Empty;
+    public string ChoiceKey { get; set; } = "companionTemplateChoices";
+    public int Count { get; set; } = 1;
+    public string? ExistingSelection { get; set; }
+    public List<CompanionTemplateOptionDto> Options { get; set; } = new();
+}
+
+public sealed class CompanionTemplateOptionDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
 }
 
 public sealed class FeatChoiceGroupDto

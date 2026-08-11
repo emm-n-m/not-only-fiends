@@ -77,6 +77,16 @@ public class PcgGoldenBuildTests
     {
         var conMod = build.State.AbilityModifier(Ability.CON);
         var expected = build.Source.Levels.Sum(level => Math.Max(1, level.HitPoints + conMod));
+
+        // Flat HP sources are separate from die rolls: ordinary Toughness feats and
+        // Loremaster's Secret Health both grant the SRD's +3 hit points.
+        var toughnessFeats = build.Source.Feats.Count(feat =>
+            feat.Key.Equals("Toughness", StringComparison.OrdinalIgnoreCase));
+        var secretHealth = build.Source.ClassAbilities.Count(ability =>
+            (ability.Key.Contains("Secret Health", StringComparison.OrdinalIgnoreCase)
+             || (ability.Key.Contains("Secret", StringComparison.OrdinalIgnoreCase)
+                 && ability.AppliedTo?.Contains("Health", StringComparison.OrdinalIgnoreCase) == true)));
+        expected += 3 * (toughnessFeats + secretHealth);
         Assert.Equal(expected, build.State.HP);
     }
 

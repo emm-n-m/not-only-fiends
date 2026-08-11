@@ -109,4 +109,46 @@ public class ArchfiendSpellListTests
         Assert.True(HasNotOnListWarning(state, "spell:haste"),
             "The cleric-list template must not make arcane-only spells legal for an Archfiend");
     }
+
+    [RequiresPrivatePacksFact]
+    public void ElementalDruid_OpposedDomainSpellsAreRemovedFromInheritedDruidList()
+    {
+        var content = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        Assert.True(content.TryGetDomain("domain:air", out var opposedDomain));
+        var excludedSpellId = opposedDomain!.BonusSpells[1];
+        Assert.True(content.TryGetSpell(excludedSpellId, out var excludedSpell));
+        Assert.True(content.TryGetSpellLevelForList(excludedSpell!, "class:elemental_druid", out var excludedLevel));
+
+        var character = new Character
+        {
+            Name = "Elemental druid spell-list probe",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 12, INT = 10, WIS = 20, CHA = 10 },
+            Ticks = new()
+            {
+                new()
+                {
+                    DriverId = "class:elemental_druid",
+                    Choices = new TickChoices
+                    {
+                        ClassFeatureChoices = new Dictionary<string, List<string>>
+                        {
+                            ["domains"] = new() { "domain:earth" }
+                        },
+                        SpellSelections = new()
+                        {
+                            new() { ClassId = "class:elemental_druid", SpellLevel = excludedLevel, SpellId = excludedSpellId }
+                        }
+                    }
+                }
+            }
+        };
+
+        var state = new ReplayStudio(content).Evaluate(character);
+
+        Assert.Contains(excludedSpellId, state.DynamicSpellListExclusions["class:elemental_druid"]);
+        Assert.Contains(state.Warnings, warning => warning.Message.Contains(
+            $"spell '{excludedSpellId}' is not on the class:elemental_druid spell list"));
+        Assert.Equal(1, state.Spellcasting["class:elemental_druid"].DomainBonusSlots[1]);
+    }
 }

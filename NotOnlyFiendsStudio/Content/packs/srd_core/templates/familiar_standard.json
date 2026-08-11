@@ -37,7 +37,8 @@
     "11": [
       { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },
       { "$type": "SetAttribute", "target": "abilityScore", "abilityScore": "INT", "value": 11 },
-      { "$type": "GrantAbility", "ability": { "id": "fam_spell_resistance", "name": "Spell Resistance", "description": "Spell resistance equal to master's level + 5." } }
+      { "$type": "GrantAbility", "ability": { "id": "fam_spell_resistance", "name": "Spell Resistance", "description": "Spell resistance equal to master's level + 5." } },
+      { "$type": "GrantTypedBonus", "target": "SR", "bonusType": "Untyped", "value": { "expression": "MasterLevel + 5" } }
     ],
     "13": [
       { "$type": "ModifyAttribute", "target": "naturalArmor", "value": 1 },

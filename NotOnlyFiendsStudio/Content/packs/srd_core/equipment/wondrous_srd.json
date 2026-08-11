@@ -1876,7 +1876,9 @@
     "priceCp": 350000,
     "description": "This circular prism enables its user to detect minute details, granting a +5 bonus on Search checks. It also aids in following tracks, adding a +5 bonus on Survival checks when tracking. The lens is about 6 inches in diameter and set in a frame with a handle. Moderate divination; CL 9th; Craft Wondrous Item, true seeing",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantSkillBonus", "skillId": "skill:search", "value": 5 }
+    ],
     "tags": [
       "wondrous",
       "cl9"
@@ -2285,7 +2287,9 @@
     "priceCp": 900000,
     "description": "This necklace is a heavy chain with a platinum medallion. The magic of the necklace wraps the wearer in a shell of fresh air, making him immune to all harmful vapors and gases (such as cloudkill and stinking cloud effects, as well as inhaled poisons) and allowing him to breathe, even underwater or in a vacuum. Moderate transmutation; CL 7th; Craft Wondrous Item, alter self",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantImmunity", "immunity": "harmful vapors and gases" }
+    ],
     "tags": [
       "wondrous",
       "cl7"
@@ -2480,7 +2484,9 @@
     "priceCp": 750000,
     "description": "The wearer of this blue gem on a silver chain is immune to disease, including supernatural diseases. Faint conjuration; CL 5th; Craft Wondrous Item, remove disease",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantImmunity", "immunity": "disease" }
+    ],
     "tags": [
       "wondrous",
       "cl5"
@@ -2495,7 +2501,9 @@
     "priceCp": 2700000,
     "description": "This item is a brilliant-cut black gem on a delicate silver chain. The wearer is immune to poison, although poisons still active when the periapt is first donned still run their course. Faint conjuration; CL 5th; Craft Wondrous Item, neutralize poison",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantImmunity", "immunity": "poison" }
+    ],
     "tags": [
       "wondrous",
       "cl5"
@@ -2711,7 +2719,10 @@
     "priceCp": 12000000,
     "description": "This valuable garment appears to be a normal robe until it is put on. Its wearer is able to see in all directions at the same moment due to scores of visible, magical eyelike patterns that adorn the robe. She also gains 120-foot darkvision. The robe of eyes sees all forms of invisible or ethereal things within 120 feet. The wearer of a robe of eyes gains a +10 competence bonus on Search checks and Spot checks. She retains her Dexterity bonus to AC even when flat-footed, and she can’t be flanked. However, she is not able to avert her eyes or close her eyes when confronted by a creature with a gaze attack. A light or continual flame spell cast directly on a robe of eyes causes it to be blinded for 1d3 minutes. A daylight spell blinds it for 2d4 minutes. Moderate divination; CL 11th; Craft Wondrous Item, true seeing",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      { "$type": "GrantSkillBonus", "skillId": "skill:search", "value": 10 },
+      { "$type": "GrantSkillBonus", "skillId": "skill:spot", "value": 10 }
+    ],
     "tags": [
       "wondrous",
       "cl11"

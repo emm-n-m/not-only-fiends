@@ -272,7 +272,8 @@ public partial class BuilderView
             {
                 var availableCount = _spells.Count(spell =>
                     Content.Registry.TryGetSpellLevelForList(spell, spellListId, out var level)
-                    && level <= sc.MaxSpellLevel);
+                    && level <= sc.MaxSpellLevel
+                    && !state.IsSpellExcludedFromList(spellListId, spell.Id));
                 summaries.Add(new TickSpellSummary(spellListId, sc.MaxSpellLevel, availableCount, IsDomainList: false));
             }
             foreach (var domainId in state.Domains.OrderBy(d => d))
@@ -836,7 +837,8 @@ public partial class BuilderView
     // instead of a picker, so the panel still says something useful about the class's reach.
     private int AvailableSpellCount(string spellListId, int maxSpellLevel) =>
         _spells.Count(s => Content.Registry.TryGetSpellLevelForList(s, spellListId, out var lvl)
-            && lvl <= maxSpellLevel);
+            && lvl <= maxSpellLevel
+            && !(_state?.IsSpellExcludedFromList(spellListId, s.Id) ?? false));
 
     private static string PreparedSpellSlotLabel(PreparedSpellSlotKind slotKind) => slotKind switch
     {
@@ -893,7 +895,8 @@ public partial class BuilderView
         {
             var specialty = WizardSchools.Specialty(_state);
             options = _spells.Where(spell =>
-                Content.Registry.TryGetSpellLevelForList(spell, classId, out var level)
+                !(_state.IsSpellExcludedFromList(classId, spell.Id))
+                && Content.Registry.TryGetSpellLevelForList(spell, classId, out var level)
                 && level == spellLevel
                 && string.Equals(spell.School, specialty, StringComparison.OrdinalIgnoreCase));
         }
@@ -908,7 +911,8 @@ public partial class BuilderView
         else
         {
             options = _spells.Where(spell =>
-                Content.Registry.TryGetSpellLevelForList(spell, classId, out var level)
+                !(_state.IsSpellExcludedFromList(classId, spell.Id))
+                && Content.Registry.TryGetSpellLevelForList(spell, classId, out var level)
                 && level == spellLevel);
         }
 
@@ -1486,6 +1490,7 @@ public partial class BuilderView
             })
             .Where(entry => entry.Level >= 1
                 && entry.Level <= spellcasting.MaxSpellLevel
+                && !(_state?.IsSpellExcludedFromList(classId, entry.Spell.Id) ?? false)
                 && !prohibited.Contains(entry.Spell.School)
                 && !selected.Contains(entry.Spell.Id))
             .OrderBy(entry => entry.Level)
@@ -1527,6 +1532,33 @@ public partial class BuilderView
         tick.Choices.ClassFeatureChoices ??= new Dictionary<string, List<string>>();
         tick.Choices.ClassFeatureChoices[classFeatureType] = new List<string> { raceId };
         OnCharacterChanged();
+    }
+
+    private void SetCompanionTemplateOnTick(int tickIndex, string linkType, string? templateId)
+    {
+        var choices = _character.Ticks[tickIndex].Choices;
+        choices.CompanionTemplateChoices ??= new Dictionary<string, string>();
+        if (string.IsNullOrWhiteSpace(templateId))
+            choices.CompanionTemplateChoices.Remove(linkType);
+        else
+            choices.CompanionTemplateChoices[linkType] = templateId;
+
+        if (choices.CompanionTemplateChoices.Count == 0)
+            choices.CompanionTemplateChoices = null;
+        OnCharacterChanged();
+    }
+
+    private IEnumerable<TemplateDriver> PlanarAnimalCompanionTemplates()
+    {
+        if (_state?.ClassLevels.GetValueOrDefault("class:planar_ranger") <= 0)
+            return Enumerable.Empty<TemplateDriver>();
+
+        var isGood = _character.Alignment is Alignment.LG or Alignment.NG or Alignment.CG;
+        var isEvil = _character.Alignment is Alignment.LE or Alignment.NE or Alignment.CE;
+        return _templates
+            .Where(template => template.Id is "template:celestial" or "template:fiendish")
+            .Where(template => template.Id == "template:celestial" ? !isEvil : !isGood)
+            .OrderBy(template => template.Name);
     }
 
     private static readonly Dictionary<string, string> CompanionDefaultTemplateByLinkType = new()
@@ -1571,6 +1603,12 @@ public partial class BuilderView
             && _templates.Any(t => t.Id == templateId))
         {
             companion.TemplateIds.Add(templateId);
+        }
+
+        if (!string.IsNullOrEmpty(slot.SelectedTemplateId)
+            && _templates.Any(t => t.Id == slot.SelectedTemplateId))
+        {
+            companion.TemplateIds.Add(slot.SelectedTemplateId);
         }
 
         if (CompanionRacialHdByLinkType.TryGetValue(slot.LinkType, out var racialHdDriverId))

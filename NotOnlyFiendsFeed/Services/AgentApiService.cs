@@ -294,6 +294,14 @@ public sealed class AgentApiService
 
     public CharacterMutationResponseDto EvaluateAndEnvelope(string id, Character character)
     {
+        for (var index = 0; index < character.CompanionLinks.Count; index++)
+        {
+            var link = character.CompanionLinks[index];
+            if (string.IsNullOrWhiteSpace(link.LinkType) || string.IsNullOrWhiteSpace(link.CompanionId))
+                throw new ArgumentException(
+                    $"companionLinks[{index}] requires both linkType and companionId");
+        }
+
         var state = _replayStudio.Evaluate(character);
         var sheet = CharacterSheet.FromState(state);
         character.Sheet = sheet;
@@ -378,7 +386,10 @@ public sealed class AgentApiService
             CurrentState = currentState,
             CurrentSheet = CharacterSheet.FromState(currentState),
             CurrentPendingChoices = BuildPendingChoices(currentState),
-            DriverPreviews = new List<DriverPreviewDto>()
+            DriverPreviews = new List<DriverPreviewDto>(),
+            ExcludedDrivers = GetExcludedDrivers(currentState, request.Character, candidateIds),
+            UnknownDriverIds = GetUnknownDriverIds(candidateIds),
+            SkillPointAccruals = currentState.SkillPointAccruals.ToList()
         };
     }
 
@@ -456,7 +467,10 @@ public sealed class AgentApiService
             CurrentState = currentState,
             CurrentSheet = CharacterSheet.FromState(currentState),
             CurrentPendingChoices = BuildPendingChoices(currentState),
-            DriverPreviews = previews
+            DriverPreviews = previews,
+            ExcludedDrivers = GetExcludedDrivers(currentState, request.Character, candidateIds),
+            UnknownDriverIds = GetUnknownDriverIds(candidateIds),
+            SkillPointAccruals = currentState.SkillPointAccruals.ToList()
         };
     }
 
@@ -505,6 +519,49 @@ public sealed class AgentApiService
             .ThenBy(driver => driver.Name);
     }
 
+    private List<DriverExclusionDto> GetExcludedDrivers(
+        CharacterState state,
+        Character character,
+        HashSet<string>? candidateIds)
+    {
+        var takenLevels = character.Ticks
+            .GroupBy(tick => tick.DriverId)
+            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
+
+        return _content.GetAllDrivers()
+            .OfType<HDDriver>()
+            .Where(driver => candidateIds == null || candidateIds.Contains(driver.Id))
+            .Select(driver =>
+            {
+                var reasons = new List<string>();
+                var taken = takenLevels.GetValueOrDefault(driver.Id);
+                if (driver.MaxLevel.HasValue && taken >= driver.MaxLevel.Value)
+                    reasons.Add($"maximum level {driver.MaxLevel.Value} already reached");
+                reasons.AddRange(driver.Prerequisites
+                    .Where(prerequisite => !prerequisite.IsMet(state))
+                    .Select(prerequisite => $"prerequisite unmet: {prerequisite.Description}"));
+                return (driver, reasons);
+            })
+            .Where(entry => entry.reasons.Count > 0)
+            .Select(entry => new DriverExclusionDto
+            {
+                Driver = MapDriver(entry.driver),
+                Reasons = entry.reasons
+            })
+            .OrderBy(entry => entry.Driver.Kind)
+            .ThenBy(entry => entry.Driver.Name)
+            .ToList();
+    }
+
+    private List<string> GetUnknownDriverIds(HashSet<string>? candidateIds)
+    {
+        if (candidateIds == null)
+            return new List<string>();
+
+        var known = _content.GetAllDrivers().Select(driver => driver.Id).ToHashSet(StringComparer.Ordinal);
+        return candidateIds.Where(id => !known.Contains(id)).OrderBy(id => id, StringComparer.Ordinal).ToList();
+    }
+
     private PendingChoicesDto BuildPendingChoices(CharacterState state, OptionDetail optionDetail = OptionDetail.Full) => new()
     {
         FeatChoices = state.FeatSlots
@@ -515,7 +572,7 @@ public sealed class AgentApiService
         DomainChoices = state.PendingDomainSelections
             .Where(entry => entry.Value > 0)
             .OrderBy(entry => entry.Key)
-            .Select(entry => BuildDomainChoiceGroup(entry.Key, entry.Value, optionDetail))
+            .Select(entry => BuildDomainChoiceGroup(state, entry.Key, entry.Value, optionDetail))
             .ToList(),
         ClassFeatureChoices = state.PendingClassFeatureSelections
             .Where(entry => entry.Value > 0)
@@ -524,6 +581,7 @@ public sealed class AgentApiService
             .ToList(),
         SpellChoices = BuildSpellSelectionChoiceGroups(state, optionDetail),
         PreparedSpellChoices = BuildPreparedSpellChoiceGroups(state, optionDetail),
+        CompanionTemplateChoices = BuildCompanionTemplateChoiceGroups(state),
         SpellLists = state.Spellcasting.Values
             .OrderBy(spellcasting => spellcasting.ClassId)
             .Select(spellcasting => new SpellcastingSummaryDto
@@ -542,6 +600,44 @@ public sealed class AgentApiService
             })
             .ToList()
     };
+
+    private List<CompanionTemplateChoiceGroupDto> BuildCompanionTemplateChoiceGroups(CharacterState state)
+    {
+        if (state.ClassLevels.GetValueOrDefault("class:planar_ranger") <= 0)
+            return new List<CompanionTemplateChoiceGroupDto>();
+
+        var isGood = state.Alignment is Alignment.LG or Alignment.NG or Alignment.CG;
+        var isEvil = state.Alignment is Alignment.LE or Alignment.NE or Alignment.CE;
+        var options = _content.GetAllTemplates()
+            .Where(template => template.Id is "template:celestial" or "template:fiendish")
+            .Where(template => template.Id == "template:celestial" ? !isEvil : !isGood)
+            .OrderBy(template => template.Name)
+            .Select(template => new CompanionTemplateOptionDto
+            {
+                Id = template.Id,
+                Name = template.Name,
+                Description = "Apply this template to the selected normal animal companion."
+            })
+            .ToList();
+
+        return state.CompanionSlots
+            .Where(slot => slot.LinkType == "animal_companion")
+            .GroupBy(slot => slot.LinkType, StringComparer.Ordinal)
+            .Select(group => new CompanionTemplateChoiceGroupDto
+            {
+                LinkType = group.Key,
+                ChoiceKey = $"companionTemplateChoices[{group.Key}]",
+                ExistingSelection = group.Select(slot => slot.SelectedTemplateId)
+                    .FirstOrDefault(selection => !string.IsNullOrEmpty(selection)),
+                Options = options.Select(option => new CompanionTemplateOptionDto
+                {
+                    Id = option.Id,
+                    Name = option.Name,
+                    Description = option.Description
+                }).ToList()
+            })
+            .ToList();
+    }
 
     private List<SpellSelectionChoiceGroupDto> BuildSpellSelectionChoiceGroups(
         CharacterState state,
@@ -564,6 +660,7 @@ public sealed class AgentApiService
             var remaining = Math.Max(0, spellbookLimit - selectedCount);
 
             var legalSpells = _content.GetSpellsForList(spellcasting.ClassId, spellcasting.MaxSpellLevel)
+                .Where(spell => !state.IsSpellExcludedFromList(spellcasting.ClassId, spell.Id))
                 .Where(spell => !WizardSchools.IsProhibited(state, spell.School))
                 .Select(spell =>
                 {
@@ -679,7 +776,8 @@ public sealed class AgentApiService
         {
             var specialty = WizardSchools.Specialty(state);
             options = _content.GetSpellsForList(spellcasting.ClassId, spellcasting.MaxSpellLevel)
-                .Where(spell => _content.TryGetSpellLevelForList(spell, spellcasting.ClassId, out var level)
+                .Where(spell => !state.IsSpellExcludedFromList(spellcasting.ClassId, spell.Id)
+                    && _content.TryGetSpellLevelForList(spell, spellcasting.ClassId, out var level)
                     && level == spellLevel
                     && string.Equals(spell.School, specialty, StringComparison.OrdinalIgnoreCase));
         }
@@ -694,7 +792,8 @@ public sealed class AgentApiService
         else
         {
             options = _content.GetSpellsForList(spellcasting.ClassId, spellcasting.MaxSpellLevel)
-                .Where(spell => _content.TryGetSpellLevelForList(spell, spellcasting.ClassId, out var level)
+                .Where(spell => !state.IsSpellExcludedFromList(spellcasting.ClassId, spell.Id)
+                    && _content.TryGetSpellLevelForList(spell, spellcasting.ClassId, out var level)
                     && level == spellLevel);
         }
 
@@ -704,20 +803,29 @@ public sealed class AgentApiService
             .DistinctBy(spell => spell.Id);
     }
 
-    private DomainChoiceGroupDto BuildDomainChoiceGroup(string ownerClassId, int count, OptionDetail optionDetail)
+    private DomainChoiceGroupDto BuildDomainChoiceGroup(
+        CharacterState state, string ownerClassId, int count, OptionDetail optionDetail)
     {
-        var options = _content.GetAllDomains().OrderBy(domain => domain.Name).ToList();
+        var options = _content.GetAllDomains();
+        if (state.DomainSelectionRestrictions.TryGetValue(ownerClassId, out var allowedDomainIds)
+            && allowedDomainIds.Count > 0)
+        {
+            options = options
+                .Where(domain => allowedDomainIds.Contains(domain.Id, StringComparer.Ordinal));
+        }
+
+        var orderedOptions = options.OrderBy(domain => domain.Name).ToList();
 
         return new DomainChoiceGroupDto
         {
             OwnerClassId = ownerClassId,
             Count = count,
-            OptionCount = options.Count,
+            OptionCount = orderedOptions.Count,
             OptionIds = optionDetail == OptionDetail.Ids
-                ? options.Select(domain => domain.Id).ToList()
+                ? orderedOptions.Select(domain => domain.Id).ToList()
                 : null,
             Options = optionDetail == OptionDetail.Full
-                ? options.Select(domain => MapSummary(domain.Id, domain.Name, domain.Description)).ToList()
+                ? orderedOptions.Select(domain => MapSummary(domain.Id, domain.Name, domain.Description)).ToList()
                 : null
         };
     }

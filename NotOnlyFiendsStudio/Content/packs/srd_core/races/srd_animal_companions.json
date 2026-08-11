@@ -51,6 +51,11 @@
           "name": "Rage",
           "description": "When wounded: +4 Str, +4 Con, +2 Will, -2 AC for the duration of the encounter."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:escape_artist",
+        "value": 4
       }
     ],
     "scalingFormulas": [],
@@ -146,6 +151,11 @@
           "name": "Scent",
           "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:jump",
+        "value": 4
       }
     ],
     "scalingFormulas": [],
@@ -199,6 +209,11 @@
           "name": "Scent",
           "description": "Can detect approaching enemies, sniff out hidden foes, and track by sense of smell."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:jump",
+        "value": 4
       }
     ],
     "scalingFormulas": [],
@@ -564,6 +579,16 @@
           "name": "Low-Light Vision",
           "description": "Can see twice as far as a human in dim light."
         }
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:balance",
+        "value": 8
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:climb",
+        "value": 8
       }
     ],
     "scalingFormulas": [],

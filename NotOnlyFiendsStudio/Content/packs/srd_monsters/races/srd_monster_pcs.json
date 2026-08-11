@@ -149,6 +149,9 @@
           "description": "Because they have no true sight, grimlocks are immune to gaze attacks, visual effects, illusions, and other forms of attack that rely on sight."
         }
       },
+      { "$type": "GrantImmunity", "immunity": "gaze attacks" },
+      { "$type": "GrantImmunity", "immunity": "visual effects" },
+      { "$type": "GrantImmunity", "immunity": "illusions" },
       {
         "$type": "ModifyAttribute",
         "target": "naturalArmor",

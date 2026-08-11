@@ -51,6 +51,16 @@
         }
       },
       {
+        "$type": "GrantACBonus",
+        "sourceId": "monk:ac_bonus",
+        "name": "Monk AC Bonus",
+        "ability": "WIS",
+        "bonusType": "Untyped",
+        "value": { "expression": "min(4, ClassLevel(monk) / 5)" },
+        "requiresUnarmored": true,
+        "requiresUnencumbered": true
+      },
+      {
         "$type": "GrantAbility",
         "ability": {
           "id": "flurry_of_blows",
@@ -181,6 +191,12 @@
           "name": "Diamond Soul",
           "description": "Gain spell resistance equal to monk level + 10."
         }
+      },
+      {
+        "$type": "GrantTypedBonus",
+        "target": "SR",
+        "bonusType": "Untyped",
+        "value": { "expression": "ClassLevel(monk) + 10" }
       }
     ],
     "15": [
@@ -230,6 +246,7 @@
           "description": "Type changes to outsider. Gain damage reduction 10/magic."
         }
       },
+      { "$type": "SetCreatureType", "type": "Outsider" },
       { "$type": "GrantDR", "value": 10, "bypassedBy": "magic" }
     ]
   },

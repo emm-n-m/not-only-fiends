@@ -15,7 +15,15 @@
         "value": 4
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantSelectedWeaponBonus",
+        "selectionPrefix": "feat:weapon_specialization",
+        "target": "Damage",
+        "bonusType": "Untyped",
+        "value": { "expression": "2" }
+      }
+    ],
     "repeatable": true,
     "selectionRequired": "weapon"
   },
@@ -35,7 +43,15 @@
         "value": 8
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantSelectedWeaponBonus",
+        "selectionPrefix": "feat:greater_weapon_focus",
+        "target": "Attack",
+        "bonusType": "Untyped",
+        "value": { "expression": "1" }
+      }
+    ],
     "repeatable": true,
     "selectionRequired": "weapon"
   },
@@ -59,7 +75,15 @@
         "value": 12
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantSelectedWeaponBonus",
+        "selectionPrefix": "feat:greater_weapon_specialization",
+        "target": "Damage",
+        "bonusType": "Untyped",
+        "value": { "expression": "2" }
+      }
+    ],
     "repeatable": true,
     "selectionRequired": "weapon"
   }

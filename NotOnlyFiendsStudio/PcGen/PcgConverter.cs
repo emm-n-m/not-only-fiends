@@ -756,6 +756,8 @@ public static class PcgConverter
         {
             foreach (var ability in data.ClassAbilities)
             {
+                if (IsAnimalTrick(ability))
+                    continue;
                 result.DroppedClassAbilities.Add(ability.Key);
                 result.Warnings.Add($"Class ability '{ability.Key}' was not resolved because content validation was unavailable");
             }
@@ -767,6 +769,14 @@ public static class PcgConverter
 
         foreach (var ability in data.ClassAbilities)
         {
+            // PCGen stores trained animal tricks in the class-ability section even
+            // though they are creature properties, not class-feature choices. The
+            // engine does not model the trick capacity yet, so deliberately ignore
+            // these entries instead of reporting harmless import noise as a missing
+            // class feature.
+            if (IsAnimalTrick(ability))
+                continue;
+
             // Already consumed at the top of Convert, where it chose the class's driver.
             // There is no per-tick selection left to make.
             if (PcgIdMapper.IsClassSelectingAcf(ability.Key))
@@ -802,6 +812,10 @@ public static class PcgConverter
             usedGrantTicks.Add((grant.FeatureType, grant.TickIndex));
         }
     }
+
+    private static bool IsAnimalTrick(PcgClassAbilityEntry ability) =>
+        ability.Key.StartsWith("Animal Trick", StringComparison.OrdinalIgnoreCase)
+        || ability.AppliedTo?.StartsWith("Animal Trick", StringComparison.OrdinalIgnoreCase) == true;
 
     private static List<ClassFeatureGrantTick> BuildClassFeatureGrantTicks(
         List<Tick> ticks,

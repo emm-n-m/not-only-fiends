@@ -28,7 +28,11 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(GrantEffectiveLevels), "GrantEffectiveLevels")]
 [JsonDerivedType(typeof(ModifyCounter), "ModifyCounter")]
 [JsonDerivedType(typeof(GrantImmunity), "GrantImmunity")]
+[JsonDerivedType(typeof(GrantFastHealing), "GrantFastHealing")]
+[JsonDerivedType(typeof(GrantTurnResistance), "GrantTurnResistance")]
+[JsonDerivedType(typeof(GrantNaturalAttack), "GrantNaturalAttack")]
 [JsonDerivedType(typeof(GrantAbilityModifierToSaves), "GrantAbilityModifierToSaves")]
+[JsonDerivedType(typeof(GrantACBonus), "GrantACBonus")]
 [JsonDerivedType(typeof(GrantSaveBonus), "GrantSaveBonus")]
 [JsonDerivedType(typeof(GrantDR), "GrantDR")]
 [JsonDerivedType(typeof(GrantSkillBonus), "GrantSkillBonus")]
@@ -38,6 +42,7 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(GrantCompanionSlot), "GrantCompanionSlot")]
 [JsonDerivedType(typeof(ModifyLeadershipScore), "ModifyLeadershipScore")]
 [JsonDerivedType(typeof(GrantTypedBonus), "GrantTypedBonus")]
+[JsonDerivedType(typeof(GrantSelectedWeaponBonus), "GrantSelectedWeaponBonus")]
 [JsonDerivedType(typeof(GrantEquipmentSkillBonus), "GrantEquipmentSkillBonus")]
 [JsonDerivedType(typeof(GrantArmorProfile), "GrantArmorProfile")]
 [JsonDerivedType(typeof(GrantWeaponLine), "GrantWeaponLine")]
@@ -45,6 +50,7 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(GrantLanguageSlot), "GrantLanguageSlot")]
 [JsonDerivedType(typeof(GrantMovement), "GrantMovement")]
 [JsonDerivedType(typeof(ModifyMovement), "ModifyMovement")]
+[JsonDerivedType(typeof(SetCreatureType), "SetCreatureType")]
 public abstract class Permabuff
 {
     public abstract void Apply(PermabuffContext ctx);
@@ -169,9 +175,17 @@ public class GrantSkillPoints : Permabuff
         var state = ctx.State;
         var intMod = state.AbilityModifier(Ability.INT);
         var points = Math.Max(1, BasePoints + intMod);
-        if (state.TotalHD == 1)
-            points *= ctx.Rules.FirstHDSkillMultiplier;
+        var multiplier = state.TotalHD == 1 ? ctx.Rules.FirstHDSkillMultiplier : 1;
+        points *= multiplier;
         state.UnspentSkillPoints += points;
+        state.SkillPointAccruals.Add(new SkillPointAccrual
+        {
+            Source = ctx.CurrentDriverId ?? string.Empty,
+            BasePoints = BasePoints,
+            IntelligenceModifier = intMod,
+            FirstHdMultiplier = multiplier,
+            Points = points
+        });
     }
 }
 
@@ -313,6 +327,32 @@ public class GrantSpecialAttack : Permabuff
 {
     public SpecialAttack Attack { get; set; } = new();
     public override void Apply(PermabuffContext ctx) => ctx.State.SpecialAttacks.Add(Attack);
+}
+
+/// <summary>
+/// Adds a natural attack when the creature does not already have one with the same name.
+/// This models rules such as Dragon Disciple's "if he does not already have them" wording while
+/// preserving a stronger base attack supplied by the race or a template.
+/// </summary>
+public class GrantNaturalAttack : Permabuff
+{
+    public NaturalAttack Attack { get; set; } = new();
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        if (string.IsNullOrWhiteSpace(Attack.Name)
+            || ctx.State.NaturalAttacks.Any(existing =>
+                string.Equals(existing.Name, Attack.Name, StringComparison.OrdinalIgnoreCase)))
+            return;
+
+        ctx.State.NaturalAttacks.Add(new NaturalAttack
+        {
+            Name = Attack.Name,
+            Damage = Attack.Damage,
+            Count = Attack.Count,
+            IsPrimary = Attack.IsPrimary
+        });
+    }
 }
 
 public class GrantCasterLevelModifier : Permabuff
@@ -459,6 +499,9 @@ public class ModifyAttribute : Permabuff
                 state.BaseSaves.Will += Value;
                 break;
             case AttributeTarget.HitPoints:
+                state.FlatHitPointBonuses += Value;
+                // ApplyToFinishedState uses the same permabuff path after the normal
+                // hit-point tail pass, so keep the visible snapshot in sync as well.
                 state.HP += Value;
                 break;
         }
@@ -709,6 +752,14 @@ public class GrantDomainSelection : Permabuff
     /// </summary>
     public List<string> AllowedDomainIds { get; set; } = new();
 
+    /// <summary>
+    /// Optional selected-domain → opposed-domain mapping. The opposed domain's bonus spell ids
+    /// are removed from the granting class's spell list after the selection is made. This models
+    /// variant classes whose spell list changes based on a domain choice without baking a
+    /// character-specific exclusion into the shared class definition.
+    /// </summary>
+    public Dictionary<string, string> OpposedDomainIds { get; set; } = new();
+
     public override void Apply(PermabuffContext ctx)
     {
         var owner = ClassId ?? ctx.CurrentDriverId ?? OrphanOwner;
@@ -725,6 +776,16 @@ public class GrantDomainSelection : Permabuff
             foreach (var domainId in AllowedDomainIds)
                 if (!allowed.Contains(domainId, StringComparer.Ordinal))
                     allowed.Add(domainId);
+        }
+        if (OpposedDomainIds.Count > 0)
+        {
+            if (!ctx.State.DomainSpellListExclusionRules.TryGetValue(owner, out var opposed))
+                ctx.State.DomainSpellListExclusionRules[owner] = opposed = new Dictionary<string, string>();
+            foreach (var (selectedDomainId, opposedDomainId) in OpposedDomainIds)
+            {
+                if (!string.IsNullOrWhiteSpace(selectedDomainId) && !string.IsNullOrWhiteSpace(opposedDomainId))
+                    opposed[selectedDomainId] = opposedDomainId;
+            }
         }
     }
 }
@@ -848,6 +909,38 @@ public class GrantAbilityModifierToSaves : Permabuff
     }
 }
 
+/// <summary>
+/// Defers an ability-derived Armor Class bonus until the final combat pass, after base scores,
+/// permanent events, and equipment are known. Supports both unconditional deflection bonuses
+/// (such as a nymph's Unearthly Grace) and the monk's unarmored/unencumbered AC bonus.
+/// </summary>
+public class GrantACBonus : Permabuff
+{
+    public string SourceId { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public Ability? Ability { get; set; }
+    public BonusType BonusType { get; set; } = BonusType.Untyped;
+    public Formula Value { get; set; } = new();
+    public bool PositiveOnly { get; set; } = true;
+    public bool RequiresUnarmored { get; set; }
+    public bool RequiresUnencumbered { get; set; }
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        ctx.State.AbilityACBonuses.Add(new AbilityACBonus
+        {
+            SourceId = SourceId,
+            Name = Name,
+            Ability = Ability,
+            BonusType = BonusType,
+            Value = Value,
+            PositiveOnly = PositiveOnly,
+            RequiresUnarmored = RequiresUnarmored,
+            RequiresUnencumbered = RequiresUnencumbered,
+        });
+    }
+}
+
 public class GrantSaveBonus : Permabuff
 {
     public SaveTarget Target { get; set; }
@@ -875,6 +968,24 @@ public class GrantImmunity : Permabuff
     }
 }
 
+/// <summary>Sets the creature's fast-healing rate to the highest granted value.</summary>
+public class GrantFastHealing : Permabuff
+{
+    public int Value { get; set; }
+
+    public override void Apply(PermabuffContext ctx) =>
+        ctx.State.FastHealing = Math.Max(ctx.State.FastHealing, Value);
+}
+
+/// <summary>Records the creature's bonus on checks to resist being turned or rebuked.</summary>
+public class GrantTurnResistance : Permabuff
+{
+    public int Value { get; set; }
+
+    public override void Apply(PermabuffContext ctx) =>
+        ctx.State.TurnResistance = Math.Max(ctx.State.TurnResistance, Value);
+}
+
 public class GrantDR : Permabuff
 {
     public int Value { get; set; }
@@ -890,6 +1001,18 @@ public class GrantDR : Permabuff
             existing.Value = Math.Max(existing.Value, Value);
         else
             ctx.State.DamageReduction.Add(new DREntry { Value = Value, BypassedBy = BypassedBy });
+    }
+}
+
+/// <summary>Changes the creature type when a class feature or template says it does so.</summary>
+public class SetCreatureType : Permabuff
+{
+    public CreatureType Type { get; set; }
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        ctx.State.Type = Type;
+        ctx.State.IsLiving = CreatureTypes.IsLiving(Type);
     }
 }
 
@@ -1005,6 +1128,21 @@ public class GrantTypedBonus : Permabuff
             ctx.EquipmentPass.Add(Target, BonusType, v);
             return;
         }
+
+        // AC, attack, and damage are finalized after all ticks and equipment. Keep
+        // non-equipment grants in the same typed track so feats and class features obey
+        // the same stacking rules as items.
+        if (Target is BonusTarget.AC or BonusTarget.Attack or BonusTarget.Damage)
+        {
+            ctx.State.PersistentBonusContributions.Add(new TypedBonusContribution
+            {
+                Target = Target,
+                BonusType = BonusType,
+                Value = v
+            });
+            return;
+        }
+
         ApplyDirect(ctx.State, v);
     }
 
@@ -1028,7 +1166,7 @@ public class GrantTypedBonus : Permabuff
             case BonusTarget.AbilityInt: AddAbility(state, Ability.INT, v); break;
             case BonusTarget.AbilityWis: AddAbility(state, Ability.WIS, v); break;
             case BonusTarget.AbilityCha: AddAbility(state, Ability.CHA, v); break;
-            // AC / Attack / Damage / SkillRanks are only meaningful in equipment pass
+            // SkillRanks is only meaningful in equipment pass.
         }
     }
 
@@ -1046,6 +1184,43 @@ public class GrantTypedBonus : Permabuff
             case SaveTarget.Ref: state.BaseSaves.Ref += value; break;
             case SaveTarget.Will: state.BaseSaves.Will += value; break;
         }
+    }
+}
+
+/// <summary>
+/// Applies a typed attack or damage bonus to the weapon selected by a repeatable weapon feat.
+/// Selection IDs are stored as variants such as <c>feat:weapon_focus_weapon:longsword</c>; the
+/// equipment pass later matches the <c>weapon:longsword</c> suffix to the equipped weapon's
+/// content ID.
+/// </summary>
+public class GrantSelectedWeaponBonus : Permabuff
+{
+    public string SelectionPrefix { get; set; } = string.Empty;
+    public BonusTarget Target { get; set; } = BonusTarget.Attack;
+    public BonusType BonusType { get; set; } = BonusType.Untyped;
+    public Formula Value { get; set; } = new();
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        var featId = ctx.CurrentFeatId;
+        if (string.IsNullOrWhiteSpace(featId) || string.IsNullOrWhiteSpace(SelectionPrefix))
+            return;
+
+        var prefix = SelectionPrefix + "_";
+        if (!featId.StartsWith(prefix, StringComparison.Ordinal))
+            return;
+
+        var weaponId = featId[prefix.Length..];
+        if (string.IsNullOrWhiteSpace(weaponId))
+            return;
+
+        ctx.State.WeaponBonusContributions.Add(new WeaponBonusContribution
+        {
+            WeaponId = weaponId,
+            Target = Target,
+            BonusType = BonusType,
+            Value = Value.Evaluate(ctx.State)
+        });
     }
 }
 
@@ -1088,6 +1263,7 @@ public class GrantArmorProfile : Permabuff
 
 public class GrantWeaponLine : Permabuff
 {
+    public string ItemId { get; set; } = string.Empty;
     public WeaponProfile Profile { get; set; } = new();
     public int EnhancementBonus { get; set; }
     public bool MainHand { get; set; } = true;
@@ -1099,6 +1275,7 @@ public class GrantWeaponLine : Permabuff
         if (ctx.EquipmentPass != null)
             ctx.EquipmentPass.Weapons.Add(new WeaponContribution
             {
+                ItemId = ItemId,
                 Profile = Profile,
                 EnhancementBonus = EnhancementBonus,
                 MainHand = MainHand,

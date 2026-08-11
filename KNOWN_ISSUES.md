@@ -1,54 +1,56 @@
 # Known issues
 
-## TODO: animal companions have their class skills but not their racial skill bonuses
+## Conditional animal companion racial skill bonuses are unmodelled
 
 Class skills were the part that mattered and are **done** — the Animal type grants no list of its
 own, so a creature's class skills are the ones named in its statblock, and an animal without them
 is charged cross-class for every rank. All 41 companion and familiar races now carry theirs, which
 cleared the phantom overspend on eight roster characters.
 
-The racial *bonuses* below are extracted but **not applied**. They change a printed total and
-nothing else — no budget, no warning — so they are the lower-value half, and they are also where
-all the extraction risk sits.
+The racial *bonuses* below change a printed total and nothing else — no budget, no warning — so
+they are the lower-value half, and they are also where all the extraction risk sits. Every flat
+bonus identified in these statblocks is now applied and covered by a regression. The remaining
+entries are either conditional bonuses or statblocks with no racial-bonus prose; conditional
+bonuses remain excluded because the character model has no terrain, illumination, or tracking
+context.
 
 | race | SRD anchor | class skills | racial bonuses |
 |:--|:--|:--|:--|
-| `ape` | `ape` | climb, listen, spot | climb +8 |
-| `badger` | `badger` | escape_artist, listen, spot | escape_artist +4 |
-| `bear_black` | `black-bear` | climb, listen, spot, swim | swim +4 |
-| `bear_brown` | `brown-bear` | listen, spot, swim | swim +4 |
-| `bear_polar` | `polar-bear` | listen, spot, swim | hide +12* |
+| `ape` | `ape` | climb, listen, spot | climb +8 (**applied**) |
+| `badger` | `badger` | escape_artist, listen, spot | escape_artist +4 (**applied**) |
+| `bear_black` | `black-bear` | climb, listen, spot, swim | swim +4 (**applied**) |
+| `bear_brown` | `brown-bear` | listen, spot, swim | swim +4 (**applied**) |
+| `bear_polar` | `polar-bear` | listen, spot, swim | hide +12 (snowy areas; conditional) |
 | `bear_dire` | `dire-bear` | listen, spot, swim | — |
 | `boar` | `boar` | listen, spot | — |
 | `camel` | `camel` | listen, spot | — |
-| `crocodile` | `crocodile` | hide, listen, spot, swim | hide +4* |
-| `dire_bat` | `dire-bat` | hide, listen, move_silently, spot | listen +4, spot +4 |
-| `dire_lion` | `dire-lion` | hide, listen, move_silently, spot | hide +4, move_silently +4 |
-| `dire_wolf` | `dire-wolf` | hide, listen, move_silently, spot, survival | hide +2*, listen +2*, move_silently +2*, spot +2*, survival +4* |
-| `dog` | `dog` | jump, listen, spot, survival | jump +4*, survival +4* |
-| `riding_dog` | `dog` | jump, listen, spot, survival | jump +4*, survival +4* |
-| `eagle` | `eagle` | listen, spot | spot +8 |
+| `crocodile` | `crocodile` | hide, listen, spot, swim | hide +4 (tall grass; conditional) |
+| `dire_bat` | `dire-bat` | hide, listen, move_silently, spot | listen +4, spot +4 (blindsense; conditional) |
+| `dire_lion` | `dire-lion` | hide, listen, move_silently, spot | hide +4, move_silently +4 (**applied**) |
+| `dire_wolf` | `dire-wolf` | hide, listen, move_silently, spot, survival | hide +2, listen +2, move_silently +2, spot +2, survival +4* (**flat bonuses applied**) |
+| `dog` | `dog` | jump, listen, spot, survival | jump +4 (**applied**), survival +4 (scent tracking; conditional) |
+| `riding_dog` | `dog` | jump, listen, spot, survival | jump +4 (**applied**), survival +4 (scent tracking; conditional) |
+| `eagle` | `eagle` | listen, spot | spot +8 (**applied**) |
 | `elephant` | `elephant` | listen, spot | — |
 | `heavy_warhorse` | `horse` | listen, spot | — |
 | `horse_heavy` | `horse` | listen, spot | — |
 | `horse_light` | `horse` | listen, spot | — |
-| `leopard` | `leopard` | balance, climb, hide, jump, listen, move_silently, spot | balance +8, climb +8, hide +4, jump +8, move_silently +4 |
-| `lion` | `lion` | balance, hide, listen, move_silently, spot | balance +4, hide +4, move_silently +4 |
-| `monkey` | `monkey` | climb, hide, listen, spot | balance +8, climb +8 |
+| `leopard` | `leopard` | balance, climb, hide, jump, listen, move_silently, spot | balance +8, climb +8, hide +4, jump +8, move_silently +4 (**applied**) |
+| `lion` | `lion` | balance, hide, listen, move_silently, spot | balance +4, hide +4, move_silently +4 (**applied**) |
+| `monkey` | `monkey` | climb, hide, listen, spot | balance +8, climb +8 (**applied**) |
 | `pony` | `pony` | listen, spot | — |
 | `warpony` | `pony` | listen, spot | — |
-| `tiger` | `tiger` | balance, hide, listen, move_silently, spot, swim | balance +4, hide +4, move_silently +4 |
-| `tiger_dire` | `dire-tiger` | hide, jump, listen, move_silently, spot, swim | hide +4, move_silently +4 |
-| `wolf` | `wolf` | hide, listen, move_silently, spot, survival | survival +4* |
-| `wolverine` | `wolverine` | climb, listen, spot | climb +8 |
+| `tiger` | `tiger` | balance, hide, listen, move_silently, spot, swim | balance +4, hide +4, move_silently +4 (**applied**) |
+| `tiger_dire` | `dire-tiger` | hide, jump, listen, move_silently, spot, swim | hide +4, move_silently +4 (**applied**) |
+| `wolf` | `wolf` | hide, listen, move_silently, spot, survival | survival +4 (scent tracking; conditional) |
+| `wolverine` | `wolverine` | climb, listen, spot | climb +8 (**applied**) |
 
 Verify each row against the source before applying:
 
-- **`*` marks a bonus my heuristic thinks is conditional, and it is unreliable.** The dog's Jump +4
-  is flat while its Survival +4 is "when tracking by scent"; both are starred. The polar bear's
-  Hide +12 is genuinely conditional ("in snowy areas"), as are the owl's Spot in shadowy
-  illumination and the cat's Hide in tall grass. Conditional bonuses have no representation in the
-  engine and must be dropped rather than applied flat.
+- Conditional rows are intentionally not applied flat: the dog's Survival +4 is "when tracking by
+  scent", the polar bear's Hide +12 applies "in snowy areas", and the crocodile's Hide +4 applies
+  in tall grass. The dire bat's Listen/Spot bonuses are lost if its blindsense is negated. The
+  engine has no terrain, illumination, blindsense, or tracking state in which to evaluate these.
 - **`dog`/`riding_dog`, the three horses and the two ponies share one statblock anchor**, so they
   share a row; the SRD entries may differ by column.
 - `bear_dire` and `dire_bat` show no racial-bonus prose in their slice — possibly correct,
@@ -59,9 +61,11 @@ the interleaved dire-animal table and gave a dire bat Swim and Climb +8 belongin
 neighbours. Watch for stray spaces after the sign too — the monkey's `Balance + 12` defeated a
 `[+\-]\d` strip and silently dropped Balance from its skill list.
 
-Three companion races are not animals and have no statblock in either file, so they are untouched
-and unaudited: `companion_elemental_air_small`, `companion_elemental_water_small`,
-`companion_shadow`.
+Three companion races are not animals and were previously untouched by the animal audit. Their
+printed movement, natural attacks, shadow deflection bonus, and flat Listen/Spot/Search bonuses
+are now encoded and regression-covered: `companion_elemental_air_small`,
+`companion_elemental_water_small`, and `companion_shadow`. Situational mastery, whirlwind/vortex,
+turn resistance, and incorporeal-touch resolution remain outside the current combat model.
 ## TODO: animal tricks are unmodelled, and import as unmatched class abilities
 
 A `.pcg` records trained tricks as class abilities — "Animal Trick ~ Attack", "~ Defend", "~ Fetch"
@@ -92,6 +96,9 @@ tell from the text.
 Until it is modelled, the cheap win is to stop the warnings: recognise "Animal Trick ~ *" on import
 and drop it deliberately rather than reporting it as an unmatched class feature.
 
+**The warning suppression is now implemented.** The converter deliberately ignores these entries;
+the trick budget and selected-trick state remain unmodelled.
+
 ## The Celestial and Fiendish Creature templates are derived, not transcribed
 
 The SRD mirror carries neither page — `siteMap.html` lists both, but no file holds the text, the
@@ -107,28 +114,20 @@ different numbers.
 If either page ever appears in a real source, replace both rather than editing around them —
 the same standing instruction as the two derived spells below.
 
-## A celestial or fiendish animal companion cannot be chosen in the builder
+## A celestial or fiendish animal companion cannot be chosen in the builder — fixed
 
-A planar ranger "may have a celestial version of a normal animal as his animal companion" if
-nonevil, or a fiendish version if nongood. `CompanionResolver` validates this — a non-animal
-companion is rejected unless the master is a planar ranger, and then only in the direction its
-alignment allows — but nothing *offers* it. The species picker lists plain animals, so building a
-planar ranger in the app produces an ordinary companion and the template has to be added to the
-companion character by hand. Imported characters are unaffected: PCGen records the templates and
-the converter carries them.
+The builder and API now expose optional celestial/fiendish template choices for a planar ranger’s
+animal-companion slot, gated by the master’s alignment. The choice is stored in
+`TickChoices.CompanionTemplateChoices`, carried onto the evaluated slot, and applied when the
+builder creates the linked companion character. True neutral exposes both options; imported
+characters continue to work through their existing template IDs.
 
-The right shape is a selection gated by alignment, not an automatic grant: the SRD says "may
-have", and a true-neutral planar ranger is both nonevil and nongood, so may choose either.
-
-## Cohort slot level is arithmetic while the cap is a table
+## Cohort slot level is arithmetic while the cap is a table — fixed
 
 `MaxCohortLevel` now comes from the SRD Leadership / Epic Leadership tables, whose progression is
 irregular (score 20 → 14th, 21 → 15th, 22 → 15th) and cannot be derived. But the cohort
-*companion slot* granted by `feat:leadership` carries an authored `EffectiveLevelFormula` —
-`min(TotalHD - 2, LeadershipScore - 2)` — and the formula DSL has no table lookup, so the two
-disagree. The warning a player sees uses `MaxCohortLevel` and is correct; the slot's effective
-level, which drives companion scaling, is not. Either the DSL needs a `CohortLevel()` function or
-the slot should read `MaxCohortLevel` directly.
+*companion slot* now uses the formula DSL's `CohortLevel()` function, so its effective level
+matches the table-derived `MaxCohortLevel` used by warnings and companion validation.
 
 ## Leadership modifiers are a manual input
 
@@ -143,12 +142,14 @@ follower of a toad — so a `.pcg` has no modifier field to carry, and no cohort
 to compare against. This engine is the stricter of the two here. The two derivable modifiers
 (familiar/mount/companion, differently aligned cohort) are computed and are not settable.
 
-## The PCG baseline does not record leadership outputs
+## The PCG baseline did not record leadership outputs — fixed
 
 `PcgImportRegression`'s `CharacterReport` captures no `Followers`, `LeadershipScore` or
 `MaxCohortLevel`, so the 2026-08-09 Epic Leadership work — which changed follower counts from
 135/13/7/4/2/2 to 740/74/37/19/10/5/3/2/1 on a roster character — produced no baseline diff at
-all. Any future leadership change is invisible to the harness.
+all. The report now stores and diffs the leadership score, cohort cap, and complete follower
+level table. The next run against the live corpus should be accepted deliberately with
+`UPDATE_PCG_BASELINE=1`.
 
 ## Mechanics described in prose but never encoded
 
@@ -161,27 +162,53 @@ pattern is corpus-wide and unaudited: a sweep for `"description"` strings contai
 packs' spells and class features.
 
 Enumerated on 2026-08-09 by the `audit-cosmetic-permabuffs` skill: **138 public-pack
-CONTENT-BUGs**, queued in priority order in [PERMABUFF_FIX_QUEUE.md](PERMABUFF_FIX_QUEUE.md), plus
-12 in the private packs. Until they are worked through, treat a stat that looks wrong on a
-character sheet as a likely un-encoded description.
+CONTENT-BUG candidates**, queued in priority order in [PERMABUFF_FIX_QUEUE.md](PERMABUFF_FIX_QUEUE.md),
+plus 12 in the private packs. That report is now a historical snapshot; several candidates have
+been fixed since it ran, so re-audit before treating a description as an active defect. Until the
+remaining candidates are worked through, a stat that looks wrong on a character sheet may still
+be an un-encoded description.
 
-## There is no attack or AC track outside the equipment pass
+The public Unearthed Arcana `feat:bladeproof_skin` now grants its printed DR 3/bludgeoning; its
+armor check penalty still has no corresponding state field. Dragon Disciple's printed ability
+boosts, Medium-size claws and bite, and the final +4 natural
+armor total are now encoded and regression-covered. The remaining variety-dependent breath and
+energy immunity, the structured 30/60-foot blindsense range, and the apotheosis type/vision
+metadata still need model support or a player choice for dragon ancestry.
 
-`GrantTypedBonus` only reaches AC, attack and damage when it runs inside the equipment pass, so a
-class feature or feat that grants one of those has nowhere to put it. That is why `feat:dodge`,
-`feat:weapon_focus` and `feat:epic_prowess` all carry empty `grantedPermabuffs`, and why the
-loremaster's Weapon Trick (+1 attack) and Dodge Trick (+1 dodge AC) secrets, added 2026-08-09 so
-their selections stop being dropped on import, are encoded as `GrantAbility` descriptions. The
-printed AC and attack lines are short by whatever these should contribute. Fixing this needs a
-non-equipment bonus track on `CharacterState`, not more content.
+Monk Diamond Soul now contributes spell resistance equal to the current monk level + 10. The
+state also exposes fast healing and turn resistance, and the corresponding static values are
+encoded for epic Fast Healing, imps, quasits, vampires, liches, and shadows. A turning resolver,
+activation timing for magic-item healing, and other encounter-only consequences remain outside
+the model.
 
-## Loremaster's Secret Health grants Toughness instead of +3 hit points
+The same pass also made Monk AC Bonus conditional on the final armor and load state, encoded the
+Nymph's Charisma-based Unearthly Grace deflection bonus, and added Shambling Mound fire resistance
+and Grimlock's gaze/visual/illusion immunities. Conditional terrain, opponent, and sensory effects
+remain intentionally unmodelled.
 
-The SRD secret is "+3 hit points"; `loremaster_secret.json` grants `feat:toughness` instead. The
-character ends up owning a feat it never took, which any `HasFeat` prerequisite will see. It is
-currently invisible because `feat:toughness` is itself a no-op (`ModifyAttribute` with `value: 0`),
-so the +3 is missing either way. `AttributeTarget.HitPoints` exists but is documented as
-post-evaluation only, so a correct fix needs a hit-point grant that survives the CON tail pass.
+Several static equipment effects from the same historical queue are now encoded: Lens of Detection
+Search, Necklace of Adaptation vapor/gas immunity, both Periapts' immunities, and Robe of Eyes'
+Search/Spot bonuses, and Shield of the Sun's SR 15 and five energy resistances. Their remaining
+vision, conditional, spellcasting, flat-footed, and anti-flanking rules remain unrepresented.
+
+## Weapon-specific combat bonuses are partially implemented
+
+The non-equipment typed-bonus track is now present on `CharacterState`, so general AC, attack and
+damage bonuses apply during final combat calculation. `feat:dodge`, `feat:epic_prowess`, and the
+loremaster Weapon Trick/Dodge Trick now use it. Dodge is intentionally represented as a flat
+bonus because the character model has no designated-opponent state.
+
+`feat:weapon_focus`, `feat:weapon_specialization`, their greater versions, and the epic weapon
+focus/specialization feats now carry a selected weapon ID through to the matching attack line.
+Remaining gaps are conditional benefits such as Epic Weapon Specialization's 30-foot ranged
+restriction, critical-hit-only bonuses, and complete identity handling for unarmed and natural
+weapons.
+
+## Loremaster's Secret Health grants Toughness instead of +3 hit points — fixed
+
+The content now grants the actual +3 hit points, and the Toughness feat itself uses the same
+flat-hit-point path. The bonus survives the Constitution tail pass and still works for grants
+applied to an already-finished companion state.
 
 ## The undead templates were extracted with invented rules
 
@@ -200,26 +227,32 @@ rather than trust it. Corrected:
   Special Attacks in the SRD and are now `GrantSpecialAttack`. The touch is supernatural and taken
   once per round: it is deliberately *not* a natural attack, which would wrongly earn it iteratives.
 
-Still outstanding on `template:vampire`, unfixed: **Children of the Night is missing entirely**,
-and its five special attacks (blood drain, children of the night, dominate, create spawn, energy
-drain) are all authored as abilities rather than special attacks, so the SRD's own split does not
-survive into the sheet.
+`template:vampire` is now corrected: Children of the Night is present, and blood drain, children
+of the night, dominate, create spawn, and energy drain are represented as special attacks rather
+than inert abilities. Turn resistance and the other explicitly unmodelled template fields remain
+outstanding below.
 
-Unmodelled for every template, not a mis-extraction: turn resistance has no turning system behind
-it, and Challenge Rating, Treasure, Organization and Advancement are not represented at all. A
+Unmodelled for every template, not a mis-extraction: Challenge Rating, Treasure, Organization and
+Advancement are not represented at all. Turn resistance is now retained in state, but there is no
+turning system behind it. A
 type-changing template adds the `augmented` subtype but not the original type alongside it, so a
 lich reads as "undead (augmented)" rather than "undead (augmented humanoid)".
+
+Monk Perfect Self is now represented as a type change to Outsider at monk 20, alongside its
+existing DR 10/magic. Resurrection-specific treatment and other type-change edge cases remain
+outside the current model.
 
 ## Nonabilities are modelled for modifiers, not for their other consequences
 
 Undead and constructs have no Constitution and incorporeal creatures no Strength, and as of
 2026-08-10 every modifier read goes through `CharacterState.AbilityModifier`, which returns +0 for
 an absent ability — so hit points, saves, skills and attacks are right, and an incorporeal
-creature attacks with Dexterity. The rest of the SRD's Nonabilities paragraph is not modelled:
-automatically failing checks keyed to the missing ability, immunity to ability damage/drain and to
-anything requiring a Fortitude save, and being unable to tire. Carrying capacity still reads the
-placeholder score, which is meaningless for a creature that "can't exert force" — the SRD gives no
-capacity for a nonability, so nothing was invented.
+creature attacks with Dexterity. Undead templates now also expose their physical-ability-damage
+and Fortitude-effect immunities in state. The rest of the SRD's Nonabilities paragraph is not
+modelled: automatically failing checks keyed to the missing ability, immunity to ability
+damage/drain beyond the typed undead entries, and being unable to tire. Carrying capacity now
+reports zero for a creature without Strength; the remaining items need rule-state and check-system
+support.
 
 The score itself is left as the source recorded it and rendered as `—`; it is not zeroed, because
 the SRD is explicit that these creatures "do not have an ability score of 0 — they lack the
@@ -230,16 +263,14 @@ is a Pathfinder rule, not 3.5 — the SRD undead entry says only "No Constitutio
 d12 Hit Die is the compensation. The description should be corrected when the undead-traits entry
 in [PERMABUFF_FIX_QUEUE.md](PERMABUFF_FIX_QUEUE.md) is worked.
 
-## A spell exclusion cannot depend on a choice the character made
+## Choice-dependent spell exclusions are only partially modeled
 
 `SpellcastingProgression.SpellListExclusions` is a fixed list authored on the driver, which suits
-the paladin of freedom (it always loses the same five spells) and nothing else. A class that
-excludes spells *as a consequence of a pick* has no representation: Secrets of Theurgy's elemental
-druid loses the opposed domain's spells, so which spells go depends on whether the character took
-Air, Earth, Fire, Water or Plant. Nor could a rule be written against the domain's theme — 3.5e
-descriptors are elemental and alignment tags, and there is no "animal" or "plant" descriptor to
-filter on. The gain half of such a variant is enforceable (`GrantDomainSelection.AllowedDomainIds`
-restricts the pick); the loss half is description text only.
+the paladin of freedom (it always loses the same five spells) and nothing else. Secrets of
+Theurgy's elemental druid is now handled: `GrantDomainSelection.OpposedDomainIds` records the
+character-dependent mapping, and replay removes the opposed domain's bonus spell IDs from the
+chosen class list; the API and builder hide those spells and replay rejects attempts to select
+them. Other choice-dependent exclusions still need declarations.
 
 ## Epic class progression is unmodelled except for Arcane Trickster
 
@@ -258,23 +289,23 @@ and Arcane Trickster 14 the budget is 9 general plus 1 pool feat. The .pcg's own
 the source sheet is over budget, not the engine. The import drops one feat and reports it; which
 one it drops follows list order and is arbitrary. Fix the character in PCGen, not the importer.
 
-## Permanent events scheduled past the last tick are silently dropped
+## Permanent events scheduled past the last tick are silently dropped — fixed
 
-`ReplayEngine` applies a `PermanentEvent` only when `BeforeTick` matches a tick index that
-actually exists, so a tome or wish read *after* the final level (`BeforeTick == Ticks.Count`)
-never fires and produces no warning. Storing it is accepted, which makes the loss invisible.
+Events at or after the final tick boundary are now applied before post-tick finalization, so a
+tome or wish read after the final level is visible in the final state.
 
-##PRC Class abilities not converted
+## PRC class abilities not converted — fixed for mapped selections
 
-When converting characters with PRCS that grant selectable abilities (like Archmage High Arcana or Loremaster sercret), the selected values are ignored and not converted
+The converter now maps the selected options for Archmage High Arcana and Loremaster Secrets to
+their granting ticks. Unsupported or unmapped private-pack selections remain reported as drops.
 
-## War-domain favored weapons
+## War-domain favored weapon mapping remains deity-dependent
 
-The War domain currently asks the player to choose a weapon from the equipment catalog. It grants
-Martial Weapon Proficiency when the character lacks the class-wide martial proficiency and always
-grants Weapon Focus for that chosen weapon. This is a temporary creation-time input: the content
-model does not yet contain authoritative deity-to-favored-weapon mappings, so the engine cannot
-derive the choice from `Character.Deity`.
+The War domain asks the player to choose a weapon from the equipment catalog. It grants Martial
+Weapon Proficiency when the character lacks the class-wide martial proficiency and always grants
+Weapon Focus for that chosen weapon; this choice is persisted and replayed. The content model does
+not yet contain authoritative deity-to-favored-weapon mappings, so the engine cannot derive the
+choice from `Character.Deity`.
 
 ## Nymph Archdruid's tiger is above her tier
 
@@ -303,16 +334,12 @@ Every spellcasting class now reaches its list. `SpellContentTests` pins the assa
 and paladin-of-tyranny lists spell by spell, and pins cloistered cleric and planar ranger to the
 lists they borrow via `spellListSources`.
 
-## Archfiend spell list is dynamic and unmodeled
+## Archfiend spell list is dynamic — implemented for the configured pack
 
-The archfiend does not have an authored spell list: the class selects its list (arcane, cleric
-or druid) and folds its two chosen domains' spells into it, casting everything as arcane. The
-engine has no mechanism for a player-selected spell-list source combined with a domain-spell
-merge — `spellListSources` handles fixed borrowing (cloistered cleric, planar ranger) but not a
-choice, and domain spells never join a class list. Until that exists, `class:archfiend` has no
-legal spells: nothing in the catalog is (or can be) tagged to it, and an API build of an
-archfiend caster cannot acquire any of its known spells. This is an engine gap, not a content
-gap — do not author a static archfiend spell list to paper over it.
+The engine supports the selected arcane/cleric/druid list through the archfiend list templates,
+and `GrantDomainSelection` can merge the two selected domain lists without creating prepared
+domain slots. The behavior is covered by `ArchfiendSpellListTests`; the tests are gated when the
+private archfiend pack is unavailable.
 
 # Agent-facing API issues
 
@@ -326,60 +353,48 @@ the test surfaced in the API itself, ranked by how badly each misleads an agent.
 Content gaps found by the same test are tracked in [CONTENT_GAPS.md](CONTENT_GAPS.md) (SRD
 packs) and the private materials repo's `CONTENT_GAPS.md` (extra packs).
 
-## Unknown choice keys are silently ignored
+## Unknown choice keys are rejected or warned explicitly
 
-`/simulate` and `/ticks` accept unrecognized `TickChoices` keys with HTTP 200, no warning, and
-no effect — `domainSelections` and `domainIds` (both plausible names for the domain pick) no-op
+`/simulate` and `/ticks` used to accept unrecognized `TickChoices` keys with HTTP 200, no warning,
+and no effect — `domainSelections` and `domainIds` (both plausible names for the domain pick) no-op
 silently, and an empty `choices:{}` with outstanding feat and domain slots is likewise accepted
-clean. A wrong `classFeatureChoices` key gets only a soft "unknown class feature type" warning
-that doesn't name the valid keys. `PUT /api/characters/{id}` accepted a malformed
+clean. A wrong `classFeatureChoices` key got only a soft "unknown class feature type" warning
+that didn't name the valid keys. `PUT /api/characters/{id}` accepted a malformed
 `companionLinks` entry, discarded the meaningful fields, and serialized back an all-empty link.
-Worst case observed: a correctly-shaped `classFeatureChoices` `domains` selection on the
-archfiend class was accepted without warning and never applied. Unknown keys should be rejected
-(or at minimum warned about by name), and the response should make "this choice did nothing"
-impossible to miss.
+**Partially fixed:** unknown top-level JSON fields now fail model binding, unknown choice fields
+are warned about by exact key, unknown class-feature keys list valid pending keys, malformed
+companion links are rejected, and restricted domain grants now expose only their legal options.
+An empty choices object is still legal input and produces pending-choice metadata; archfiend-specific
+domain presentation semantics remain follow-up work.
 
-## An ineligible class is indistinguishable from a nonexistent one
+## An ineligible class is indistinguishable from a nonexistent one — fixed
 
-`next-step` omits drivers whose prerequisites aren't met, and `?driverIds=` on an ineligible
-driver returns a generic payload that simply doesn't include it — identical to asking for a
-made-up id. Several test agents concluded Shadowdancer, Blackguard, Archmage and Blood Hexer
-"don't exist in the content set"; all of them exist, and a verification probe confirmed
-`next-step` offers Archmage the moment a character genuinely qualifies. The prerequisite data is
-already authored and served by `/api/content/drivers/{id}` — `next-step` should list gated
-drivers with their failed prerequisites (or say "excluded: prerequisite X unmet") instead of
-hiding them.
+`next-step` now returns `excludedDrivers` with the failed prerequisite or max-level reason, and
+`unknownDriverIds` for requested IDs absent from the catalog.
 
-## Character creation fails with an empty 400
+## Character creation fails with an empty 400 — fixed
 
-`POST /api/characters` returns 400 with a zero-length body on validation failure. One agent had
-to bisect field by field to discover that True Neutral is alignment `"n"`, not `"tn"`. Every
-validation failure should return the standard `ErrorResponse` with a code and message.
+API model-binding failures are now translated into the standard `ErrorResponse` shape with a
+`malformed_request` code and actionable JSON error message.
 
-## Familiar selection has no discoverable path
+## Familiar selection — fixed
 
-The familiar choice never appears in the level-up loop; it surfaces only in
-`currentPendingChoices` after all HD are committed, with no documented resolution mechanism.
-The working path — `classFeatureChoices` keyed `"class_feature:familiar_options"` on an existing
-tick, submitted via a full-character PUT — had to be reverse-engineered from the `featureType`
-field. The pending choice should say how to answer it, or `next-step` should offer it as a step.
+`next-step` exposes the familiar option group with the exact
+`classFeatureChoices["class_feature:familiar_options"]` key and legal options. The builder shows
+the same selection in the Companions facet on the tick that grants the slot; a full-character PUT
+or the builder’s normal save path submits the choice.
 
-## Wizard spellbook contents cannot be declared
+## Wizard spellbook contents cannot be declared — fixed
 
-No wizard level ever offers a `spellSelections` choice, so an agent cannot populate specific
-spellbook contents through the API; casters that prepare from a book end up with whatever the
-default grants. (Spontaneous casters' known-spell picks work fine.)
+`next-step` now exposes spellbook `spellSelections` groups with legal options, existing picks,
+and remaining capacity for each wizard spell level.
 
-## An invalid skill id is partially applied
+## An invalid skill id is partially applied — fixed
 
-`simulate` answers an unknown `skillId` with a soft "unknown skill" warning, but the committed
-sheet still records ranks under the bogus id. Unknown skill ids should reject the allocation
-rather than half-apply it.
+`simulate` still answers an unknown `skillId` with a warning, but the allocation is skipped and
+the committed sheet no longer records ranks under the bogus id.
 
-## The skill-point pool is opaque
+## The skill-point pool was opaque — fixed
 
-`unspentSkillPoints` did not match a hand computation from `skillPointsPerLevel` + Int modifier
-in at least one build (26 reported vs 21 computed for a sorcerer block), and no response
-explains the difference. Underspending never warns, so a caller who mistrusts the number has no
-way to reconcile it. Expose the accrual breakdown (per-driver pool, racial ×4 first-HD rule,
-whatever applies) in `next-step`.
+`next-step` now exposes `skillPointAccruals` (source, base points, Intelligence modifier, first-HD
+multiplier, and awarded points), alongside the remaining pool, so callers can reconcile the total.

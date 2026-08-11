@@ -182,6 +182,14 @@ public class FormulaTests
         Assert.Equal(4, new Formula("max(1, Score(INT) - 10)").Evaluate(state));
     }
 
+    [Fact]
+    public void Function_CohortLevel()
+    {
+        var state = CreateState();
+        state.MaxCohortLevel = 15;
+        Assert.Equal(15, new Formula("CohortLevel()").Evaluate(state));
+    }
+
     // --- Complex expressions from architecture ---
 
     [Fact]

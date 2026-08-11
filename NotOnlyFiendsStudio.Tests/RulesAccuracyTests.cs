@@ -24,6 +24,184 @@ public class RulesAccuracyTests
         new ReplayStudio(Content.Value).Evaluate(character);
 
     [Fact]
+    public void MonkPerfectSelf_ChangesTypeAndGrantsPrintedDamageReduction()
+    {
+        var character = Human(Enumerable.Range(0, 20)
+            .Select(_ => new Tick { DriverId = "class:monk" })
+            .ToArray());
+        character.Alignment = Alignment.LN;
+
+        var state = Evaluate(character);
+
+        Assert.Equal(CreatureType.Outsider, state.Type);
+        Assert.True(state.IsLiving);
+        var damageReduction = Assert.Single(state.DamageReduction,
+            entry => entry.BypassedBy == "magic");
+        Assert.Equal(10, damageReduction.Value);
+    }
+
+    [Fact]
+    public void MonkDiamondSoul_GrantsSpellResistanceFromCurrentMonkLevel()
+    {
+        var character = Human(Enumerable.Range(0, 13)
+            .Select(_ => new Tick { DriverId = "class:monk" })
+            .ToArray());
+        character.Alignment = Alignment.LN;
+
+        var state = Evaluate(character);
+
+        // SRD Monk: "spell resistance equal to her current monk level + 10."
+        Assert.Equal(23, state.SpellResistance);
+    }
+
+    [Fact]
+    public void MonkACBonus_AppliesOnlyWhenUnarmoredAndUnencumbered()
+    {
+        var unarmored = Human(Enumerable.Range(0, 5)
+            .Select(_ => new Tick { DriverId = "class:monk" })
+            .ToArray());
+        unarmored.BaseAbilityScores.WIS = 18;
+
+        var unarmoredState = Evaluate(unarmored);
+
+        // Wisdom +4 and the monk's +1 AC bonus at monk level 5.
+        Assert.Equal(5, unarmoredState.AC.Components[BonusType.Untyped]);
+        Assert.Equal(10 + 5 + 2, unarmoredState.AC.Total);
+
+        unarmored.Equipment.Add(new EquipmentEntry { ContentId = "armor:chain_shirt" });
+        var armoredState = Evaluate(unarmored);
+
+        Assert.Equal(0, armoredState.AC.Components.GetValueOrDefault(BonusType.Untyped));
+        Assert.Equal(10 + 4 + AbilityScoreSet.Modifier(14), armoredState.AC.Total);
+    }
+
+    [Fact]
+    public void NymphUnearthlyGrace_AddsCharismaModifierAsDeflectionAC()
+    {
+        var state = Evaluate(new Character
+        {
+            Name = "Nymph",
+            RaceId = "race:nymph",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 6)
+                .Select(_ => new Tick { DriverId = "racial_hd:fey" })
+                .ToList()
+        });
+
+        // The race's +8 Charisma makes the deflection bonus +4.
+        Assert.Equal(4, state.AbilityModifier(Ability.CHA));
+        Assert.Equal(4, state.AC.Components[BonusType.Deflection]);
+    }
+
+    [Fact]
+    public void ShamblingMound_ExposesPrintedFireResistanceAndPlantImmunities()
+    {
+        var state = Evaluate(new Character
+        {
+            Name = "Shambling Mound",
+            RaceId = "race:shambling_mound",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 8)
+                .Select(_ => new Tick { DriverId = "racial_hd:plant" })
+                .ToList()
+        });
+
+        // SRD Shambling Mound special qualities: immunity to electricity and resistance to fire 10.
+        Assert.Equal(10, state.Resistances["fire"]);
+        Assert.Contains("electricity", state.Immunities);
+        Assert.Contains("mind-affecting", state.Immunities);
+        Assert.Contains("critical hits", state.Immunities);
+    }
+
+    [Fact]
+    public void Grimlock_ExposesPrintedSightBasedImmunities()
+    {
+        var state = Evaluate(new Character
+        {
+            Name = "Grimlock",
+            RaceId = "race:grimlock",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new()
+            {
+                new Tick { DriverId = "racial_hd:monstrous_humanoid" },
+                new Tick { DriverId = "racial_hd:monstrous_humanoid" }
+            }
+        });
+
+        Assert.Contains("gaze attacks", state.Immunities);
+        Assert.Contains("visual effects", state.Immunities);
+        Assert.Contains("illusions", state.Immunities);
+    }
+
+    [Fact]
+    public void CreatureState_ExposesFastHealingAndTurnResistance()
+    {
+        var imp = Evaluate(new Character
+        {
+            Name = "Imp",
+            RaceId = "race:companion_devil_imp",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = "racial_hd:outsider" } }
+        });
+        Assert.Equal(2, imp.FastHealing);
+
+        var shadow = Evaluate(new Character
+        {
+            Name = "Shadow",
+            RaceId = "race:companion_shadow",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = "racial_hd:undead" } }
+        });
+        Assert.Equal(2, shadow.TurnResistance);
+
+        var vampire = Evaluate(new Character
+        {
+            Name = "Vampire",
+            RaceId = "race:human",
+            TemplateIds = new() { "template:vampire" },
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = "class:fighter" } }
+        });
+        Assert.Equal(5, vampire.FastHealing);
+        Assert.Equal(4, vampire.TurnResistance);
+    }
+
+    [Theory]
+    [InlineData("template:familiar_standard", 11, 16)]
+    [InlineData("template:special_mount_standard", 15, 20)]
+    public void CompanionProgression_ExposesPrintedSpellResistance(string templateId, int masterLevel, int expectedSr)
+    {
+        var state = Evaluate(new Character
+        {
+            Name = "Companion",
+            RaceId = "race:familiar_toad",
+            TemplateIds = new() { templateId },
+            CompanionOrigin = new CompanionOrigin { LinkType = "test", EffectiveMasterLevel = masterLevel },
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = "racial_hd:animal" } }
+        });
+
+        Assert.Equal(expectedSr, state.SpellResistance);
+    }
+
+    [Fact]
+    public void BladeproofSkin_GrantsPrintedDamageReduction()
+    {
+        var state = Evaluate(Human(new Tick
+        {
+            DriverId = "class:fighter",
+            Choices = new TickChoices { FeatIds = new List<string> { "feat:bladeproof_skin" } }
+        }));
+
+        var damageReduction = Assert.Single(state.DamageReduction,
+            entry => entry.BypassedBy == "bludgeoning");
+        Assert.Equal(3, damageReduction.Value);
+    }
+
+    [Fact]
     public void DevilErinyes_ReplayAndSheet_ExposeFireImmunityAlongsideResistances()
     {
         var state = Evaluate(new Character
@@ -164,6 +342,120 @@ public class RulesAccuracyTests
         });
 
         Assert.Equal(8, state.SkillBonuses["skill:spot"]);
+    }
+
+    [Fact]
+    public void AnimalCompanions_ApplyFlatRacialSkillBonuses()
+    {
+        var expected = new Dictionary<string, Dictionary<string, int>>
+        {
+            ["race:companion_ape"] = new() { ["skill:climb"] = 8 },
+            ["race:companion_badger"] = new() { ["skill:escape_artist"] = 4 },
+            ["race:companion_bear_black"] = new() { ["skill:swim"] = 4 },
+            ["race:companion_bear_brown"] = new() { ["skill:swim"] = 4 },
+            ["race:companion_dog"] = new() { ["skill:jump"] = 4 },
+            ["race:companion_riding_dog"] = new() { ["skill:jump"] = 4 },
+            ["race:companion_leopard"] = new()
+            {
+                ["skill:balance"] = 8,
+                ["skill:climb"] = 8,
+                ["skill:hide"] = 4,
+                ["skill:jump"] = 8,
+                ["skill:move_silently"] = 4,
+            },
+            ["race:companion_lion"] = new()
+            {
+                ["skill:balance"] = 4,
+                ["skill:hide"] = 4,
+                ["skill:move_silently"] = 4,
+            },
+            ["race:companion_monkey"] = new()
+            {
+                ["skill:balance"] = 8,
+                ["skill:climb"] = 8,
+            },
+            ["race:companion_tiger"] = new()
+            {
+                ["skill:balance"] = 4,
+                ["skill:hide"] = 4,
+                ["skill:move_silently"] = 4,
+            },
+            ["race:companion_dire_lion"] = new()
+            {
+                ["skill:hide"] = 4,
+                ["skill:move_silently"] = 4,
+            },
+            ["race:companion_tiger_dire"] = new()
+            {
+                ["skill:hide"] = 4,
+                ["skill:move_silently"] = 4,
+            },
+            ["race:companion_dire_wolf"] = new()
+            {
+                ["skill:hide"] = 2,
+                ["skill:listen"] = 2,
+                ["skill:move_silently"] = 2,
+                ["skill:spot"] = 2,
+            },
+            ["race:companion_wolverine"] = new() { ["skill:climb"] = 8 },
+        };
+
+        foreach (var (raceId, bonuses) in expected)
+        {
+            var state = Evaluate(new Character
+            {
+                Name = raceId,
+                RaceId = raceId,
+                BaseAbilityScores = new AbilityScoreSet
+                    { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+                Ticks = new() { new Tick { DriverId = "racial_hd:animal" } }
+            });
+
+            Assert.Equal(bonuses, state.SkillBonuses);
+        }
+    }
+
+    [Fact]
+    public void NonAnimalCompanions_ApplyPrintedMovementAttacksAndFlatBonuses()
+    {
+        var air = Evaluate(new Character
+        {
+            Name = "Small air elemental",
+            RaceId = "race:companion_elemental_air_small",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = "racial_hd:elemental_air" } }
+        });
+        Assert.Equal(FlightManeuverability.Perfect, air.FlyManeuverability);
+        Assert.Equal("1d4", Assert.Single(air.NaturalAttacks, attack => attack.Name == "Slam").Damage);
+        Assert.Contains(air.SpecialAttacks, attack => attack.Id == "air_elem_whirlwind");
+
+        var water = Evaluate(new Character
+        {
+            Name = "Small water elemental",
+            RaceId = "race:companion_elemental_water_small",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = "racial_hd:elemental_water" } }
+        });
+        Assert.Equal("1d6", Assert.Single(water.NaturalAttacks, attack => attack.Name == "Slam").Damage);
+        Assert.Contains(water.SpecialAttacks, attack => attack.Id == "water_elem_vortex");
+
+        var shadow = Evaluate(new Character
+        {
+            Name = "Shadow",
+            RaceId = "race:companion_shadow",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = "racial_hd:undead" } }
+        });
+        Assert.Equal(FlightManeuverability.Good, shadow.FlyManeuverability);
+        Assert.Equal(1, shadow.AC.Components[BonusType.Deflection]);
+        Assert.Equal(2, shadow.SkillBonuses["skill:listen"]);
+        Assert.Equal(2, shadow.SkillBonuses["skill:spot"]);
+        Assert.Equal(4, shadow.SkillBonuses["skill:search"]);
+        Assert.Contains(shadow.SpecialAttacks, attack => attack.Id == "shadow_str_damage");
+        Assert.Contains(shadow.SpecialAttacks, attack => attack.Id == "shadow_create_spawn");
     }
 
     // ---- ability-modifier save bonuses (Divine Grace / Dark Blessing) ----
@@ -308,6 +600,7 @@ public class RulesAccuracyTests
         }));
 
         Assert.Contains(state.Warnings, w => w.Message.Contains("unknown skill 'skill:underwater_basketweaving'"));
+        Assert.DoesNotContain("skill:underwater_basketweaving", state.SkillHalfRanks.Keys);
     }
 
     [Fact]
@@ -844,6 +1137,117 @@ public class RulesAccuracyTests
     }
 
     [Fact]
+    public void DwarvenDefender_UsesPrintedAcAndDamageReductionLevels()
+    {
+        var driver = (HDDriver)Content.Value.GetDriver("class:dwarven_defender");
+
+        Assert.Contains(driver.LevelPermabuffs[1].OfType<GrantTypedBonus>(), bonus =>
+            bonus.Target == BonusTarget.AC && bonus.BonusType == BonusType.Dodge
+            && bonus.Value.Expression == "1");
+        Assert.Contains(driver.LevelPermabuffs[4].OfType<GrantTypedBonus>(), bonus =>
+            bonus.Target == BonusTarget.AC && bonus.BonusType == BonusType.Dodge);
+        Assert.Contains(driver.LevelPermabuffs[7].OfType<GrantTypedBonus>(), bonus =>
+            bonus.Target == BonusTarget.AC && bonus.BonusType == BonusType.Dodge);
+        Assert.Contains(driver.LevelPermabuffs[10].OfType<GrantTypedBonus>(), bonus =>
+            bonus.Target == BonusTarget.AC && bonus.BonusType == BonusType.Dodge);
+
+        Assert.Equal(3, Assert.Single(driver.LevelPermabuffs[6].OfType<GrantDR>()).Value);
+        Assert.Equal(6, Assert.Single(driver.LevelPermabuffs[10].OfType<GrantDR>()).Value);
+    }
+
+    [Theory]
+    [InlineData(Alignment.N, "template:celestial")]
+    [InlineData(Alignment.N, "template:fiendish")]
+    [InlineData(Alignment.NG, "template:celestial")]
+    [InlineData(Alignment.NE, "template:fiendish")]
+    public void PlanarRanger_CompanionTemplateChoiceIsCarriedByTheSlot(
+        Alignment alignment,
+        string templateId)
+    {
+        var character = new Character
+        {
+            Name = "Planar companion choice",
+            Alignment = alignment,
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+                { STR = 12, DEX = 14, CON = 12, INT = 10, WIS = 12, CHA = 10 },
+            Ticks = Enumerable.Range(0, 4)
+                .Select(_ => new Tick { DriverId = "class:planar_ranger" })
+                .ToList()
+        };
+        character.Ticks[^1].Choices.CompanionTemplateChoices =
+            new Dictionary<string, string> { ["animal_companion"] = templateId };
+
+        var state = Evaluate(character);
+        var slot = Assert.Single(state.CompanionSlots, s => s.LinkType == "animal_companion");
+
+        Assert.Equal(templateId, slot.SelectedTemplateId);
+        Assert.DoesNotContain(state.Warnings,
+            warning => warning.Message.Contains("companion template", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void WeaponFocus_AppliesOnlyToTheSelectedEquippedWeapon()
+    {
+        var character = Human(new Tick
+        {
+            DriverId = "class:fighter",
+            Choices = new TickChoices
+            {
+                FeatIds = new List<string> { "feat:weapon_focus_weapon:longsword" }
+            }
+        });
+        character.Equipment.Add(new EquipmentEntry { ContentId = "weapon:longsword" });
+
+        var state = Evaluate(character);
+        var attack = Assert.Single(state.AttackLines);
+
+        Assert.Equal("Longsword", attack.Name);
+        Assert.Equal(new[] { 4 }, attack.Bonuses); // BAB 1 + Str 2 + Weapon Focus 1 + size 0
+        Assert.Contains("feat:weapon_focus_weapon:longsword", state.Feats);
+    }
+
+    [Fact]
+    public void SelectedWeaponFeatBonuses_UseTheirPrintedValues()
+    {
+        var selectedWeaponFeats = new[]
+        {
+            "feat:weapon_focus_weapon:longsword",
+            "feat:weapon_specialization_weapon:longsword",
+            "feat:greater_weapon_focus_weapon:longsword",
+            "feat:greater_weapon_specialization_weapon:longsword",
+            "feat:epic_weapon_focus_weapon:longsword",
+            "feat:epic_weapon_specialization_weapon:longsword",
+        };
+        var character = Human();
+        character.Ticks = Enumerable.Range(1, 24)
+            .Select(level => new Tick
+            {
+                DriverId = "class:fighter",
+                Choices = level switch
+                {
+                    1 => new TickChoices { FeatIds = new() { selectedWeaponFeats[0] } },
+                    3 => new TickChoices { FeatIds = new() { selectedWeaponFeats[1] } },
+                    6 => new TickChoices { FeatIds = new() { selectedWeaponFeats[2] } },
+                    9 => new TickChoices { FeatIds = new() { selectedWeaponFeats[3] } },
+                    21 => new TickChoices { FeatIds = new() { selectedWeaponFeats[4] } },
+                    24 => new TickChoices { FeatIds = new() { selectedWeaponFeats[5] } },
+                    _ => new TickChoices()
+                }
+            })
+            .ToList();
+        character.Equipment.Add(new EquipmentEntry { ContentId = "weapon:longsword" });
+
+        var state = Evaluate(character);
+        var attack = Assert.Single(state.AttackLines);
+
+        Assert.Equal(3, state.WeaponBonusContributions.Count(c => c.Target == BonusTarget.Attack));
+        Assert.Equal(3, state.WeaponBonusContributions.Count(c => c.Target == BonusTarget.Damage));
+        Assert.Equal(new[] { 28, 23, 18, 13 }, attack.Bonuses); // BAB 20 + Str 2 + weapon feats 4 + epic attack 2
+        Assert.Equal("1d8+10", attack.Damage); // Str 2 + specialization 2 + greater specialization 2 + epic specialization 4
+    }
+
+    [Fact]
     public void Thaumaturgist_RequiresSpellFocusInConjurationSpecifically()
     {
         // "Feats: Spell Focus (conjuration)." — one named school, so pin it exactly.
@@ -942,6 +1346,32 @@ public class RulesAccuracyTests
         withTemplate.TemplateIds.Add("template:half_dragon");
         Assert.False(noDragon.IsMet(withTemplate));
         Assert.True(noDragon.IsMet(new CharacterState()));
+    }
+
+    [Fact]
+    public void DragonDisciple_EncodesPrintedAbilityAndNaturalAttackProgression()
+    {
+        // Dragon Disciple table/features: Str +2 at 2nd and 4th, Con +2 at 6th, Int +2 at 8th;
+        // apotheosis adds Str +4 and Cha +2, raises natural armor to +4, and grants claws and a
+        // bite if the character does not already have them. The SRD's size table gives a Medium
+        // disciple 1d4 claws and a 1d6 bite.
+        var character = Human(Enumerable.Range(0, 10)
+            .Select(_ => new Tick { DriverId = "class:dragon_disciple" })
+            .ToArray());
+
+        var state = Evaluate(character);
+
+        Assert.Equal(22, state.AbilityScores.STR);
+        Assert.Equal(16, state.AbilityScores.CON);
+        Assert.Equal(18, state.AbilityScores.INT);
+        Assert.Equal(16, state.AbilityScores.CHA);
+        Assert.Equal(4, state.NaturalArmor);
+
+        var claws = Assert.Single(state.NaturalAttacks, attack => attack.Name == "Claw");
+        Assert.Equal("1d4", claws.Damage);
+        Assert.Equal(2, claws.Count);
+        var bite = Assert.Single(state.NaturalAttacks, attack => attack.Name == "Bite");
+        Assert.Equal("1d6", bite.Damage);
     }
 
     [Fact]

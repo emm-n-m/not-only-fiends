@@ -2535,6 +2535,6 @@ public class CompanionTests
         Assert.Contains(familiarState.Abilities, ability => ability.Id == "fam_deliver_touch_spells");
         Assert.Contains(familiarState.Abilities, ability => ability.Id == "fam_speak_with_master");
         Assert.DoesNotContain(familiarState.Abilities, ability => ability.Id == "fam_speak_with_animals");
-        Assert.Contains(familiarState.Abilities, ability => ability.Id == "air_elem_whirlwind");
+        Assert.Contains(familiarState.SpecialAttacks, attack => attack.Id == "air_elem_whirlwind");
     }
 }
