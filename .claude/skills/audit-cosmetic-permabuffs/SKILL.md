@@ -16,6 +16,28 @@ match the source?"*; this one asks *"does the JSON **do** what its own descripti
 question answerable without any external source, because the description and the permabuffs sit
 side by side in the same file.
 
+### What this skill cannot see — flag it, don't judge it
+
+Taking the description as the standard is also the blind spot: **a description that is itself
+wrong passes cleanly.** Two undead templates claimed undead "use CHA for HP and Fort saves" — a
+Pathfinder rule with no counterpart in the 3.5 SRD — and this audit had nothing to say about
+them, because their permabuffs matched the sentence beside them faithfully enough. Content that
+is clean here can still be fiction.
+
+You cannot tell a true rule from an invented one without a source, and must not try. Flag instead:
+
+> A description asserting an unusual or surprising rule gets `RULE-SUSPECT` **in addition to**
+> whatever verdict it earned, BY-DESIGN included. The flag never changes the verdict.
+
+The shapes that have gone wrong: one ability score substituting for another ("uses CHA for HP");
+a creature-type trait written as a substitution rather than an absence (3.5e undead simply have
+*no* Constitution score — nothing replaces it); "counts as" / "treated as" / "instead of" applied
+to a core rule; and numbers or wording that match no neighbour in the same pack.
+
+Report those in their own section as handoffs to `verify-content` (public) or
+`verify-content-lst` (private), not as findings of this audit — they have a source to check
+against and this skill does not.
+
 There is a Codex-targeted version of this procedure at
 `.codex/prompts/audit-cosmetic-permabuffs.md`. Keep the two in step when either changes.
 

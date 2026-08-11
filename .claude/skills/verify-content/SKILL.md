@@ -22,6 +22,36 @@ and the output is worse than useless because it *looks* authoritative. Concretel
 - If the mirror has no authoritative text for something, output `UNVERIFIABLE`. Never guess.
 - Content with **no SRD page at all** (the private non-SRD packs) is out of scope entirely.
 
+## Verify description strings, not just fields
+
+Extraction invents rules, and a description is where it hides — nothing else in the pipeline
+reads prose, so a false sentence survives indefinitely and the sheet quietly teaches it to the
+user. Found 2026-08-10:
+
+| Content | Description claimed | SRD says |
+|---|---|---|
+| `template:lich` Undead Traits | "Uses CHA for HP and Fort saves" | "No Constitution score" — nothing about Charisma |
+| `template:undead` Undead Traits | "Uses CHA for HP, Fort saves, and CON-based abilities" | as above |
+
+That is a **Pathfinder** rule, in two templates, from one extraction batch. Its neighbours were
+all correct, so `audit-cosmetic-permabuffs` could not see it: that skill compares a description
+to the permabuffs beside it, and here the permabuffs faithfully implemented a sentence that
+should never have been written. Only a source diff catches this class of error.
+
+So: read every `description` in scope against the SRD paragraph it claims to summarise, and
+check both directions —
+
+- **Invented** — a rule with no counterpart in the source. Highest severity: it is indistinguishable
+  from real content to every later reader.
+- **Dropped** — the same lich entry had lost immunity to mind-affecting effects, immunity to
+  damage to physical ability scores, and healing from negative energy.
+- **Edition drift** — a rule that is real but from another edition. Cha-to-hit-points, Cha-to-saves
+  for undead, and "spell descriptor" reasoning about domains are the ones seen so far.
+
+A description is also the only home a rule gets when the engine cannot express it. That is
+legitimate — but say so in the finding, so the difference between "not encoded yet" and "not
+encodable" stays visible.
+
 ## Report, never edit
 
 Content changes silently rewrite every saved character that touches them — one save-progression
@@ -38,8 +68,9 @@ produces findings and proposed diffs; applying them is a separate, reviewed step
 | prestige classes | camelCase — `eldritchKnight.html`, `dwarvenDefender.html`, `mysticTheurge.html` |
 | NPC classes | `npcClasses.html` (adept, aristocrat, commoner, expert, warrior — all on one page) |
 | UA variants | `unearthedCoreClass.html`; it defers to the base class page for anything not listed as an exception |
-| racial HD / creature types | `monsterTypes.html` |
+| racial HD / creature types | `monsterTypes.html` — also the **Nonabilities** paragraph |
 | races | `monstersAtoZ.html` and the `monsters*.html` set |
+| templates | the `monsters*.html` set, section `CREATING A <NAME>` |
 | spells | `spellsAtoZ.html` and the per-letter spell pages |
 
 Strip tags before matching:

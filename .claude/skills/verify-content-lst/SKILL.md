@@ -30,6 +30,18 @@ the source. Findings therefore carry a verdict, not just a severity:
 Exception: `deceit/` is the user's **own** transcription of the homebrew — treat it as ground
 truth of intent, and JSON≠LST there defaults to `JSON-BUG` (or a question for the user).
 
+**The user owns some of these books.** Before recording `LST-SUSPECT` or `UNRESOLVABLE`, ask —
+on 2026-08-10 the LST for a druid substitution class showed a domain with no restriction and no
+compensating loss, and the book actually restricts the domain to Air/Earth/Fire/Water/Plant and
+takes away the opposed domain's spells. A minute's question beat a careful wrong reading.
+
+**Two LST entries can contradict each other.** PCGen sometimes records one option twice —
+Unearthed Arcana's druid-like bard appears both in the bard's own variant pool and in the generic
+ACF pool, quoting the same paragraph, and they disagree on the companion's level
+(`BONUS:VAR|CompanionLVL|BardLVL` vs `BONUS:VAR|AnimalCompanionLVL|BardLVL/2`). Prefer the reading
+the *rules text* supports — here UA states the halving explicitly for the sorcerer and wizard
+variants and not for the bard — and record the disagreement so it is not re-litigated.
+
 ## Report, never edit
 
 Same reason as verify-content: content changes silently rewrite saved characters. Produce
