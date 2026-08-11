@@ -598,8 +598,98 @@ public static class PcgConverter
             character.Equipment.Add(entry);
         }
 
+        if (registry != null)
+        {
+            RemoveGrantedConsequenceTemplates(character, registry);
+            StampAcquiredTemplateHDs(character, registry, result);
+        }
+
         result.Character = character;
         return result;
+    }
+
+    /// <summary>
+    /// PCGen materializes every template a transformation drags along as its own
+    /// TEMPLATESAPPLIED row — a lich sheet also carries Undead and Augmented Humanoid, and a
+    /// capstone-transformed character carries the templates its class grants. The engine
+    /// models those as ApplyTemplate grants (on the parent template's creation buffs, or on
+    /// the class's level buffs), so the granted ids must come off the character: left in
+    /// place they would apply at creation and rewrite the timeline the grant is there to
+    /// keep honest.
+    /// </summary>
+    private static void RemoveGrantedConsequenceTemplates(Character character, ContentRegistry registry)
+    {
+        var granted = new HashSet<string>(StringComparer.Ordinal);
+        var frontier = new Queue<string>();
+
+        // Seeds: templates the character's classes grant at levels the timeline reaches…
+        var levelsReached = character.Ticks
+            .GroupBy(t => t.DriverId)
+            .ToDictionary(g => g.Key, g => g.Count(), StringComparer.Ordinal);
+        foreach (var hd in registry.GetAllDrivers().OfType<HDDriver>())
+        {
+            if (!levelsReached.TryGetValue(hd.Id, out var reached))
+                continue;
+            foreach (var (level, buffs) in hd.LevelPermabuffs)
+                if (level <= reached)
+                    foreach (var buff in buffs.OfType<ApplyTemplate>())
+                    {
+                        granted.Add(buff.TemplateId);
+                        frontier.Enqueue(buff.TemplateId);
+                    }
+        }
+
+        // …and every template already on the character starts a chain of its own.
+        foreach (var templateId in character.TemplateIds)
+            frontier.Enqueue(templateId);
+
+        var visited = new HashSet<string>(StringComparer.Ordinal);
+        while (frontier.Count > 0)
+        {
+            var id = frontier.Dequeue();
+            if (!visited.Add(id) || !registry.TryGetTemplate(id, out var template) || template == null)
+                continue;
+            var chained = template.CreationPermabuffs.OfType<ApplyTemplate>()
+                .Concat(template.ScalingPermabuffs.Values.SelectMany(buffs => buffs.OfType<ApplyTemplate>()));
+            foreach (var buff in chained)
+            {
+                granted.Add(buff.TemplateId);
+                frontier.Enqueue(buff.TemplateId);
+            }
+        }
+
+        character.TemplateIds.RemoveAll(granted.Contains);
+        foreach (var id in granted)
+            character.TemplateAcquisitionHD.Remove(id);
+    }
+
+    /// <summary>
+    /// A template with acquisition prerequisites was earned mid-career, but the .pcg records
+    /// nothing about when — PCGen has no acquisition level. Default to the earliest HD the
+    /// prerequisites allow; the builder surfaces the value for the player to correct.
+    /// </summary>
+    private static void StampAcquiredTemplateHDs(Character character, ContentRegistry registry, PcgConversionResult result)
+    {
+        var studio = new ReplayStudio(registry);
+        foreach (var templateId in character.TemplateIds.ToList())
+        {
+            if (character.TemplateAcquisitionHD.ContainsKey(templateId)
+                || !registry.TryGetTemplate(templateId, out var template)
+                || template == null
+                || template.Prerequisites.Count == 0)
+                continue;
+
+            try
+            {
+                var acquisitionHD = studio.FindEarliestAcquisitionHD(character, templateId);
+                if (acquisitionHD is > 1)
+                    character.TemplateAcquisitionHD[templateId] = acquisitionHD.Value;
+            }
+            catch (Exception ex)
+            {
+                result.Warnings.Add($"Could not derive an acquisition HD for template '{templateId}' — applied at creation ({ex.Message})");
+            }
+        }
     }
 
     private static bool HasEquipmentMechanics(EquipmentDefinition definition) =>

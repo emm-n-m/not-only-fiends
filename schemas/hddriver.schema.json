@@ -483,6 +483,16 @@
           },
           "required": ["$type", "skillId", "value"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Apply a whole template at the level this buff fires — a capstone that transforms the character (e.g. a prestige class's 10th level). The template applies forward from that HD; its die-size floor restates already-banked hit dice per the SRD's 'current and future Hit Dice' rule.",
+          "properties": {
+            "$type": { "const": "ApplyTemplate" },
+            "templateId": { "type": "string", "description": "Template ID (e.g., 'template:undead'). Must exist in the content registry; unresolvable IDs warn and are skipped." }
+          },
+          "required": ["$type", "templateId"],
+          "additionalProperties": false
         }
       ]
     },

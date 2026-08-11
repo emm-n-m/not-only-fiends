@@ -51,6 +51,7 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(GrantMovement), "GrantMovement")]
 [JsonDerivedType(typeof(ModifyMovement), "ModifyMovement")]
 [JsonDerivedType(typeof(SetCreatureType), "SetCreatureType")]
+[JsonDerivedType(typeof(ApplyTemplate), "ApplyTemplate")]
 public abstract class Permabuff
 {
     public abstract void Apply(PermabuffContext ctx);
@@ -79,7 +80,8 @@ public class AddHitDie : Permabuff
         // adjustment and its cap — "increase all current and future Hit Dice to d12s".
         dieSize = Math.Max(dieSize, state.HitDieSizeFloor);
         var importedRoll = ctx.CurrentTickChoices?.HitPointsRolled;
-        if (importedRoll.HasValue && (importedRoll.Value < 1 || importedRoll.Value > dieSize))
+        if (importedRoll.HasValue
+            && (importedRoll.Value < 1 || importedRoll.Value > Math.Max(dieSize, ctx.SavedRollDieCeiling ?? 0)))
         {
             state.Warnings.Add(new Warning
             {
@@ -1013,6 +1015,31 @@ public class SetCreatureType : Permabuff
     {
         ctx.State.Type = Type;
         ctx.State.IsLiving = CreatureTypes.IsLiving(Type);
+    }
+}
+
+/// <summary>
+/// Applies a whole template at the moment this buff fires: a prestige-class capstone that
+/// transforms the character, or a template whose acquisition drags consequence templates
+/// with it (lich → undead → augmented humanoid). At TotalHD 0 (inside a creation template's
+/// chain) this is still creation-time application.
+/// </summary>
+public class ApplyTemplate : Permabuff
+{
+    public string TemplateId { get; set; } = string.Empty;
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        if (ctx.Content == null || !ctx.Content.TryGetTemplate(TemplateId, out var template) || template == null)
+        {
+            ctx.State.Warnings.Add(new Warning
+            {
+                TickIndex = ctx.State.TotalHD,
+                Message = $"ApplyTemplate could not resolve template {TemplateId}; not applied",
+            });
+            return;
+        }
+        TemplateApplication.Apply(ctx, template, acquisitionHD: ctx.State.TotalHD);
     }
 }
 

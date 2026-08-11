@@ -20,6 +20,19 @@ public class Character
     // Initial State
     public string RaceId { get; set; } = string.Empty;
     public List<string> TemplateIds { get; set; } = new();
+
+    /// <summary>
+    /// For templates acquired mid-career (lichdom, vampirism), the 1-based HD whose tick the
+    /// template applies at — its effects are live for that tick's skill points and everything
+    /// after, and an evaluation truncated below it never sees the template. Keyed by template
+    /// id. A missing key (every character saved before this field existed) or a value ≤ 1
+    /// means the template applies at creation, the correct default for inherited templates.
+    /// A value beyond the last tick applies in the tail, like a <see cref="PermanentEvent"/>
+    /// with BeforeTick past the end. Entries for ids not in <see cref="TemplateIds"/> are
+    /// ignored.
+    /// </summary>
+    public Dictionary<string, int> TemplateAcquisitionHD { get; set; } = new();
+
     public AbilityScoreSet BaseAbilityScores { get; set; } = new();
 
     /// <summary>
@@ -89,6 +102,7 @@ public class Character
         Gender = Gender,
         RaceId = RaceId,
         TemplateIds = new List<string>(TemplateIds),
+        TemplateAcquisitionHD = new Dictionary<string, int>(TemplateAcquisitionHD),
         BaseAbilityScores = new AbilityScoreSet
         {
             STR = BaseAbilityScores.STR,

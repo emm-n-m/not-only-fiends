@@ -159,6 +159,16 @@ else
                     {
                         var tDef = _templates.FirstOrDefault(td => td.Id == t);
                         <span class="badge bg-info me-1 mt-1 d-inline-flex align-items-center gap-1" title="@(t)">@(tDef?.Name ?? t) <button type="button" class="btn btn-sm p-0 border-0 text-white" style="font-size: 0.85em; line-height: 1;" @onclick="() => RemoveTemplate(t)">&times;</button></span>
+                        @if (tDef is { Prerequisites.Count: > 0 })
+                        {
+                            <span class="d-inline-flex align-items-center gap-1 me-2 mt-1" title="The HD this template was acquired at. Its effects apply forward from that level; blank means it applies from creation.">
+                                <small class="text-muted">acquired at HD</small>
+                                <input type="number" class="form-control form-control-sm d-inline-block" style="width: 4.5rem"
+                                       min="1" max="@(_character.Ticks.Count + 1)"
+                                       value="@(_character.TemplateAcquisitionHD.TryGetValue(t, out var acquiredAt) ? acquiredAt : (int?)null)"
+                                       @onchange="(e) => SetTemplateAcquisitionHD(t, e)" />
+                            </span>
+                        }
                     }
                 </div>
             </div>
@@ -319,7 +329,8 @@ else
         <aside class="reg-builder-spine">
             @if (_state != null)
             {
-                <HdSpine Character="_character" State="_state" DriverNames="_driverNames" />
+                <HdSpine Character="_character" State="_state" DriverNames="_driverNames"
+                         UnansweredAcquisitions="UnansweredTemplateAcquisitions()" />
             }
         </aside>
         <div class="reg-builder-main">

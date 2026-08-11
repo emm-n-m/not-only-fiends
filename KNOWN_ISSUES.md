@@ -244,9 +244,18 @@ outside the current model.
 
 ## An acquired template applies from creation, so it pays for levels taken before it
 
-> **Being worked from [HANDOFF_ACQUIRED_TEMPLATES.md](HANDOFF_ACQUIRED_TEMPLATES.md)** — that
-> file is the brief: model, code pointers, acceptance criteria and guard rails. This section is
-> the background analysis behind it.
+> **Done 2026-08-11.** `Character.TemplateAcquisitionHD` records the 1-based HD a template was
+> acquired at (absent = creation, so every stored character keeps working); the engine applies it
+> at that tick, forward only, restating banked hit-die sizes per the SRD's "current and future"
+> rule while never re-opening accrued skill points. An `ApplyTemplate` permabuff covers the class
+> capstone and consequence chains (lich → undead → augmented humanoid), the importer strips
+> consequence rows and stamps prerequisite-bearing templates at the earliest legal HD, and the
+> builder surfaces the acquisition HD as an owed decision. Lich Recruiter grants 162 with 0
+> unspent and is a living human at HD 8; Duchess Rose answers as both her sheets from one record
+> (`Golden_CapstoneTransformation_*`). Residuals: the vampire's own chain is not yet authored
+> (her saved character still carries explicit Undead/Augmented rows at creation), and the roster
+> and header owed-rollups do not yet count an unanswered acquisition HD. The analysis below is
+> kept as the rationale.
 
 A template is applied before the first HD tick, whatever it is. That is right for an inherited
 template — a half-fiend was always a half-fiend — and wrong for an acquired one. Lichdom needs
@@ -260,7 +269,7 @@ cleanly — the builder reports "14 unspent":
 
 | Int used per level | 1st | 2nd–11th | 12th–13th | total |
 |:--|--:|--:|--:|--:|
-| applied at creation (today) | 19 → +4 → 44 | 12 each | 12 each | **176** |
+| applied at creation (pre-fix) | 19 → +4 → 44 | 12 each | 12 each | **176** |
 | acquired at 12th | 17 → +3 → 40 | 10 each | 19 → +4 → 11 each | **162** |
 | PCGen's own per-level record | 40 | 10 each | 11 each | **162** |
 

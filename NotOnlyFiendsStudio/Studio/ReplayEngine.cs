@@ -51,26 +51,27 @@ public class ReplayStudio
         }
 
         var ctx = CreateContext(state);
+        ctx.SavedRollDieCeiling = ComputeSavedRollDieCeiling(character);
 
         // 1. Apply race
         var race = _content.GetRace(character.RaceId);
         ApplyRace(ctx, race);
 
-        // 2. Apply templates (in order)
-        foreach (var templateId in character.TemplateIds)
+        // 2. Apply templates (in order). Inherited templates — and every template on a
+        // character saved before acquisition HDs existed — apply at creation. A template
+        // acquired mid-career applies at its acquisition tick instead, inside the loop below.
+        int AcquisitionHDOf(string id) => character.TemplateAcquisitionHD.GetValueOrDefault(id, 0);
+        var acquiredTemplateIds = character.TemplateIds.Where(id => AcquisitionHDOf(id) > 1).ToList();
+        foreach (var templateId in character.TemplateIds.Except(acquiredTemplateIds))
         {
             var template = _content.GetTemplate(templateId);
-            foreach (var prereq in template.ApplicabilityPrerequisites)
-            {
-                if (!prereq.IsMet(state))
-                    state.Warnings.Add(new Warning { TickIndex = 0, Message = $"applicability prerequisite not met for template {template.Name}: {prereq.Description}" });
-            }
-            ApplyTemplateCreation(ctx, template);
+            TemplateApplication.Apply(ctx, template, acquisitionHD: null);
         }
 
         // Derived movement is permanent character state. Resolve it after all template
-        // transformations and before the post-tick armor/load speed pass.
-        ResolveDerivedSpeeds(state, character.TemplateIds);
+        // transformations and before the post-tick armor/load speed pass. Acquired templates
+        // resolve theirs at the moment they apply.
+        ResolveDerivedSpeeds(state, character.TemplateIds.Except(acquiredTemplateIds));
 
         // 3. Apply base ability scores (added to racial/template modifiers)
         ApplyBaseAbilities(state, character.BaseAbilityScores);
@@ -101,6 +102,15 @@ public class ReplayStudio
             ctx.CurrentTickChoices = tick.Choices;
             ctx.CurrentDriverId = tick.DriverId;
 
+            // Templates acquired at this HD transform the character before the tick's driver
+            // grants anything, so their ability modifiers feed this level's skill points and
+            // their type change is visible to the driver's prerequisites. Everything they
+            // banked earlier stays as it was earned — except hit dice, which the template's
+            // die floor restates per the SRD's "current and future Hit Dice" rule.
+            foreach (var templateId in acquiredTemplateIds)
+                if (AcquisitionHDOf(templateId) == state.TotalHD)
+                    TemplateApplication.Apply(ctx, _content.GetTemplate(templateId), state.TotalHD);
+
             // Update MaxHalfRanks from rules
             state.MaxHalfRanks = _rules.MaxHalfRanks(state.TotalHD);
 
@@ -115,8 +125,11 @@ public class ReplayStudio
             // (LevelPermabuffs is empty past MaxLevel).
             var driver = _content.GetDriver(tick.DriverId);
             ctx.CurrentDriverKind = driver is HDDriver contextDriver ? contextDriver.Kind : null;
+            // Read the cap from the templates applied so far (state), not the character's
+            // full list: a cap is forward-only, so a template acquired later must not squeeze
+            // racial dice banked before it existed.
             ctx.CurrentRacialHitDieMaximum = ctx.CurrentDriverKind == DriverKind.RacialHD
-                ? character.TemplateIds
+                ? state.TemplateIds
                     .Select(id => _content.GetTemplate(id).RacialHitDieMaximum)
                     .Where(max => max.HasValue)
                     .Select(max => max!.Value)
@@ -202,8 +215,10 @@ public class ReplayStudio
                     state.EpicSaveBonus++;
             }
 
-            // f. Template tick injections
-            foreach (var templateId in character.TemplateIds)
+            // f. Template tick injections — only templates applied by now (state), so an
+            // acquired template's scaling entries keyed below its acquisition never fire.
+            // Snapshot: an ApplyTemplate inside a scaling buff may grow the list mid-loop.
+            foreach (var templateId in state.TemplateIds.ToList())
             {
                 var template = _content.GetTemplate(templateId);
                 var templateBuffs = template.GetTickPermabuffs(state.TotalHD, state);
@@ -308,12 +323,17 @@ public class ReplayStudio
 
         // A permanent event at the end of the timeline is a valid "after the last
         // level" event. Apply it before the post-tick passes so its effects are visible
-        // to equipment, hit points, skills, and other final derived values.
+        // to equipment, hit points, skills, and other final derived values. A template
+        // acquired past the last tick lands in the same slot.
         if (maxTick == character.Ticks.Count)
         {
             foreach (var evt in character.PermanentEvents.Where(e => e.BeforeTick >= maxTick))
                 foreach (var buff in evt.Permabuffs)
                     buff.Apply(ctx);
+
+            foreach (var templateId in acquiredTemplateIds)
+                if (AcquisitionHDOf(templateId) > character.Ticks.Count)
+                    TemplateApplication.Apply(ctx, _content.GetTemplate(templateId), AcquisitionHDOf(templateId));
         }
 
         foreach (var (tickIndex, driverName, prerequisite) in deferredDriverFeatPrerequisites)
@@ -342,14 +362,18 @@ public class ReplayStudio
         // 5a. Validate template prerequisites against the finished state. Acquired templates
         // (e.g. Unseelie Champion's ranger-level gate) reference class levels that do not
         // exist at creation time, and ability requirements should see post-equipment scores,
-        // so this cannot run inside ApplyTemplateCreation.
+        // so this cannot run inside TemplateApplication.Apply. Only templates that actually
+        // applied are validated: an evaluation truncated below a template's acquisition HD
+        // must not warn about prerequisites the character was never claimed to meet yet.
         foreach (var templateId in character.TemplateIds)
         {
+            if (!state.TemplateIds.Contains(templateId))
+                continue;
             var template = _content.GetTemplate(templateId);
             foreach (var prereq in template.Prerequisites)
             {
                 if (!prereq.IsMet(state))
-                    state.Warnings.Add(new Warning { TickIndex = 0, Message = $"prerequisite not met for template {template.Name}: {prereq.Description}" });
+                    state.Warnings.Add(new Warning { TickIndex = AcquisitionHDOf(templateId), Message = $"prerequisite not met for template {template.Name}: {prereq.Description}" });
             }
         }
 
@@ -895,10 +919,11 @@ public class ReplayStudio
                 slot.EffectiveLevel = slot.EffectiveLevelFormula.Evaluate(state);
         }
 
-        // (c) Companion-side template scaling.
+        // (c) Companion-side template scaling. Reads the templates that actually applied
+        // (state), which for companions is always the full list — they are inherited.
         if (state.CompanionOrigin != null)
         {
-            foreach (var templateId in character.TemplateIds)
+            foreach (var templateId in state.TemplateIds.ToList())
             {
                 var template = _content.GetTemplate(templateId);
                 foreach (var buff in template.GetCompanionScalingPermabuffs(state.EffectiveMasterLevel))
@@ -1119,89 +1144,89 @@ public class ReplayStudio
         }
     }
 
-    private void ApplyTemplateCreation(PermabuffContext ctx, TemplateDriver template)
-    {
-        var state = ctx.State;
-        state.TemplateIds.Add(template.Id);
-
-        var baseType = state.Type;
-
-        if (template.TypeOverride.HasValue)
-            state.Type = template.TypeOverride.Value;
-        else if (template.TypeOverridesByBaseType.TryGetValue(baseType, out var conditionalType))
-            state.Type = conditionalType;
-
-        // A template that moves the creature to undead or construct has made it non-living by
-        // that fact alone — the lich and vampire templates say so nowhere else. Only recompute
-        // when the type actually moved, so a race's explicit override survives templates that
-        // leave the type alone.
-        if (state.Type != baseType)
-            state.IsLiving = CreatureTypes.IsLiving(state.Type);
-
-        state.RacialHitDieSizeAdjustment += template.RacialHitDieSizeAdjustment;
-        if (template.HitDieSizeFloor.HasValue)
-            state.HitDieSizeFloor = Math.Max(state.HitDieSizeFloor, template.HitDieSizeFloor.Value);
-
-        foreach (var subtype in template.SubtypeAdditions)
-            state.Subtypes.Add(subtype);
-
-        if (template.SubtypeAdditions.Contains(CreatureTypes.IncorporealSubtype))
-            state.IsCorporeal = false;
-
-        if (template.AbilityModifiers != null)
-        {
-            state.AbilityScores.STR += template.AbilityModifiers.STR;
-            state.AbilityScores.DEX += template.AbilityModifiers.DEX;
-            state.AbilityScores.CON += template.AbilityModifiers.CON;
-            state.AbilityScores.INT += template.AbilityModifiers.INT;
-            state.AbilityScores.WIS += template.AbilityModifiers.WIS;
-            state.AbilityScores.CHA += template.AbilityModifiers.CHA;
-        }
-
-        if (template.NaturalArmor.HasValue)
-            state.NaturalArmor += template.NaturalArmor.Value;
-        if (template.NaturalArmorFloor.HasValue)
-            state.NaturalArmor = Math.Max(state.NaturalArmor, template.NaturalArmorFloor.Value);
-
-        foreach (var (mode, speed) in template.SpeedModifiers)
-        {
-            if (state.BaseSpeeds.ContainsKey(mode))
-                state.BaseSpeeds[mode] += speed;
-            else
-                state.BaseSpeeds[mode] = speed;
-            state.Speeds[mode] = state.BaseSpeeds[mode];
-        }
-        if (template.FlyManeuverability.HasValue)
-            state.FlyManeuverability = template.FlyManeuverability;
-
-        state.LevelAdjustment += template.LevelAdjustment;
-
-        foreach (var attack in template.NaturalAttacks)
-            state.NaturalAttacks.Add(attack);
-
-        foreach (var buff in template.CreationPermabuffs)
-            buff.Apply(ctx);
-    }
-
     private void ResolveDerivedSpeeds(CharacterState state, IEnumerable<string> templateIds)
     {
         foreach (var templateId in templateIds)
+            TemplateApplication.ResolveDerivedSpeeds(state, _content.GetTemplate(templateId));
+    }
+
+    /// <summary>
+    /// The earliest 1-based HD at which the template's <see cref="TemplateDriver.Prerequisites"/>
+    /// are all met — the default answer for "when was this template acquired?" when the source
+    /// records nothing. Acquiring at HD N means applying at the start of tick N, so the check
+    /// runs against the state after tick N−1, on a timeline WITHOUT the template (acquisition
+    /// cannot be gated on what the template itself grants). Feat-based prerequisites are checked
+    /// once against the final state, mirroring driver-entry checks: imported characters store
+    /// every feat on the last tick, so a chronological check would push acquisition past where
+    /// the feat was really taken. Returns Ticks.Count + 1 when only the finished character
+    /// qualifies, and null when the prerequisites are never met.
+    /// </summary>
+    public int? FindEarliestAcquisitionHD(Character character, string templateId)
+    {
+        var template = _content.GetTemplate(templateId);
+        var clone = character.Clone();
+        clone.TemplateIds.Remove(templateId);
+        clone.TemplateAcquisitionHD.Remove(templateId);
+
+        var featBased = template.Prerequisites.Where(IsFeatBasedPrerequisite).ToList();
+        var chronological = template.Prerequisites.Except(featBased).ToList();
+
+        if (featBased.Count > 0)
         {
-            var template = _content.GetTemplate(templateId);
-            foreach (var rule in template.DerivedSpeedRules)
-            {
-                if (rule.MinimumSize.HasValue && state.Size < rule.MinimumSize.Value)
-                    continue;
-                var source = state.BaseSpeeds.GetValueOrDefault(rule.SourceMode);
-                if (source <= 0) continue;
-                var derived = source * rule.Multiplier;
-                if (rule.Maximum.HasValue) derived = Math.Min(derived, rule.Maximum.Value);
-                if (rule.PreserveBetterExisting && state.BaseSpeeds.GetValueOrDefault(rule.Mode) > derived)
-                    continue;
-                state.BaseSpeeds[rule.Mode] = derived;
-                state.Speeds[rule.Mode] = derived;
-            }
+            var finalState = Evaluate(clone);
+            if (featBased.Any(prereq => !prereq.IsMet(finalState)))
+                return null;
         }
+
+        for (var evaluatedHD = 0; evaluatedHD <= clone.Ticks.Count; evaluatedHD++)
+        {
+            var state = Evaluate(clone, upToHD: evaluatedHD);
+            if (chronological.All(prereq => prereq.IsMet(state)))
+                return evaluatedHD + 1;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// The largest hit-die size any template on this character's timeline will ever impose —
+    /// including templates that arrive mid-career, chained consequence templates, and
+    /// capstone-granted ones. Saved rolls are validated against this ceiling rather than the
+    /// die size at the tick they were banked, because a roll recorded by the source is a
+    /// fact about the finished character (a lich's 8 at bard 3 was re-rolled on a d12).
+    /// </summary>
+    private int ComputeSavedRollDieCeiling(Character character)
+    {
+        var ceiling = 0;
+        var seen = new HashSet<string>();
+        var queue = new Queue<string>(character.TemplateIds);
+
+        var levelsReached = character.Ticks
+            .GroupBy(t => t.DriverId)
+            .ToDictionary(g => g.Key, g => g.Count());
+        foreach (var hd in _content.GetAllDrivers().OfType<HDDriver>())
+        {
+            if (!levelsReached.TryGetValue(hd.Id, out var reached))
+                continue;
+            foreach (var (level, buffs) in hd.LevelPermabuffs)
+                if (level <= reached)
+                    foreach (var buff in buffs.OfType<ApplyTemplate>())
+                        queue.Enqueue(buff.TemplateId);
+        }
+
+        while (queue.Count > 0)
+        {
+            var id = queue.Dequeue();
+            if (!seen.Add(id) || !_content.TryGetTemplate(id, out var template) || template == null)
+                continue;
+            if (template.HitDieSizeFloor.HasValue)
+                ceiling = Math.Max(ceiling, template.HitDieSizeFloor.Value);
+            foreach (var buff in template.CreationPermabuffs.OfType<ApplyTemplate>())
+                queue.Enqueue(buff.TemplateId);
+            foreach (var buffs in template.ScalingPermabuffs.Values)
+                foreach (var buff in buffs.OfType<ApplyTemplate>())
+                    queue.Enqueue(buff.TemplateId);
+        }
+        return ceiling;
     }
 
     private void ApplyBaseAbilities(CharacterState state, AbilityScoreSet baseScores)

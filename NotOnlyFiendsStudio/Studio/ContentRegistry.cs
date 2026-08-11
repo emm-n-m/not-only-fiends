@@ -111,6 +111,9 @@ public class ContentRegistry : IContentLookup
             ? template
             : throw new KeyNotFoundException($"Template not found: {id}");
 
+    public bool TryGetTemplate(string id, out TemplateDriver? template) =>
+        _templates.TryGetValue(id, out template);
+
     public FeatDefinition GetFeat(string id) =>
         _feats.TryGetValue(id, out var feat)
             ? feat

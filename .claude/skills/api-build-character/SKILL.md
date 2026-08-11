@@ -30,7 +30,10 @@ Neutral is `"n"` (not `"tn"` — a wrong value 400s with an empty body).
 **Create** — `POST /api/characters` with a full Character body:
 `{"name","alignment","deity","raceId","templateIds":[…],"baseAbilityScores":{str..cha},"bonusLanguageIds":[…]}`
 → response carries `.id`. Set bonus languages HERE: there is no good post-creation path.
-Templates apply at creation via `templateIds`.
+Templates apply at creation via `templateIds`. A template earned mid-career (lichdom) takes a
+1-based entry in `templateAcquisitionHD` (`{"template:lich": 12}`): it applies at the start of
+that HD, forward only, and an evaluation truncated below it never sees the template. Missing
+entry = creation.
 
 **Level loop** — once per HD (racial HD tick like classes via `racial_hd:*` drivers; monsters
 usually take racial HD first):

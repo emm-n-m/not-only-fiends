@@ -146,31 +146,47 @@ public class PrivatePackRulesAccuracyTests
         Assert.Equal(8, SkillPrereq("class:arcane_hierophant", "skill:knowledge_nature").Value);
     }
 
-    // Class line 10: MOVE:Fly,50 and DR:10/Cold Iron or Good
-    // (enchantment_classes_35e.lst); template line:
-    // BONUS:SKILL|Listen,Spot|8|TYPE=Racial (enchantment_templates.lst:8).
-    // The granted succubus form uses the SRD succubus's Average maneuverability.
+    // The LST spreads the transformation across the class line (MOVE:Fly,50, SR:12,
+    // DR:10/Cold Iron or Good) and the template row (NA, Listen/Spot, resistances, energy
+    // drain) — enchantment_classes_35e.lst:59 / enchantment_templates.lst:8. User ruling
+    // 2026-08-11: that class-side placement is a bad implementation — fly, SR and DR are
+    // tanar'ri traits of the succubus form, so they live on the template the capstone
+    // applies, and the class's 10th level carries only ApplyTemplate plus its own features.
+    // SR is a floor, not a delta — SR from overlapping sources does not stack, so an
+    // alu-fiend's higher racial SR survives the transformation. User ruling 2026-08-11: the
+    // printed SR 12 is a 3.0 misport — the 3.5 succubus has SR 18 — so pack and LST both
+    // carry 18. (Whether SR should scale past the vanilla succubus's is an open
+    // interpretation, kept flat.) The succubus form uses the SRD succubus's Average
+    // maneuverability.
     [RequiresPrivatePacksFact]
-    public void DarkTemptress_LevelTenGrantsStructuredDrFlightAndTemplateGrantsListenSpot()
+    public void DarkTemptress_CapstoneAppliesTemplate_TemplateCarriesTheTanarriTraits()
     {
         var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
 
-        var dr = ((HDDriver)registry.GetDriver("class:dark_temptress")).LevelPermabuffs[10]
-            .OfType<GrantDR>().Single();
+        var capstone = ((HDDriver)registry.GetDriver("class:dark_temptress")).LevelPermabuffs[10];
+        Assert.Contains(capstone, b => b is ApplyTemplate { TemplateId: "template:dark_temptress_succubized" });
+        Assert.DoesNotContain(capstone, b => b is GrantDR or GrantMovement);
+        Assert.DoesNotContain(capstone, b => b is ModifyAttribute { Target: AttributeTarget.SpellResistance });
+
+        var succubized = registry.GetTemplate("template:dark_temptress_succubized");
+
+        var dr = succubized.CreationPermabuffs.OfType<GrantDR>().Single();
         Assert.Equal(10, dr.Value);
         Assert.Equal("cold iron or good", dr.BypassedBy);
 
-        var movement = ((HDDriver)registry.GetDriver("class:dark_temptress")).LevelPermabuffs[10]
-            .OfType<GrantMovement>().Single();
+        var movement = succubized.CreationPermabuffs.OfType<GrantMovement>().Single();
         Assert.Equal(MovementMode.Fly, movement.Mode);
         Assert.Equal(50, movement.Speed);
         Assert.Equal(FlightManeuverability.Average, movement.FlyManeuverability);
 
-        var succubized = registry.GetTemplate("template:dark_temptress_succubized");
-        var templateMovement = succubized.CreationPermabuffs.OfType<GrantMovement>().Single();
-        Assert.Equal(MovementMode.Fly, templateMovement.Mode);
-        Assert.Equal(50, templateMovement.Speed);
-        Assert.Equal(FlightManeuverability.Average, templateMovement.FlyManeuverability);
+        Assert.Equal(18, succubized.SpellResistanceFloor);
+        Assert.DoesNotContain(succubized.CreationPermabuffs,
+            b => b is ModifyAttribute { Target: AttributeTarget.SpellResistance });
+
+        // BONUS:COMBAT|AC|9|TYPE=NaturalArmor is a typed, non-stacking bonus: max with the
+        // class's own +5 (level 6), never a sum — the floor is how the engine says "max".
+        Assert.Equal(9, succubized.NaturalArmorFloor);
+        Assert.Null(succubized.NaturalArmor);
         var listenSpot = succubized
             .CreationPermabuffs.OfType<GrantSkillBonus>()
             .Where(b => b.Value == 8)

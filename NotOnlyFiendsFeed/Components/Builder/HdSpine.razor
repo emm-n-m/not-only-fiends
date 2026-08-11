@@ -40,6 +40,10 @@
                     {
                         <div class="reg-spine-decision"><span class="dot owed"></span>Warnings<span class="val owed">@State.Warnings.Count</span></div>
                     }
+                    @foreach (var templateName in UnansweredAcquisitions ?? Enumerable.Empty<string>())
+                    {
+                        <div class="reg-spine-decision"><span class="dot owed"></span>@templateName<span class="val owed">acquired at HD?</span></div>
+                    }
                 </div>
             </div>
         </div>
@@ -52,8 +56,15 @@
     /// <summary>Driver id → display name, supplied by the builder's catalog.</summary>
     [Parameter] public IReadOnlyDictionary<string, string>? DriverNames { get; set; }
 
+    /// <summary>
+    /// Names of templates that were earned mid-career (they have acquisition prerequisites)
+    /// but have no acquisition HD recorded yet — each is a decision the player owes.
+    /// </summary>
+    [Parameter] public IReadOnlyList<string>? UnansweredAcquisitions { get; set; }
+
     private int PendingFeats => State.PendingFeatSlots + State.PendingBonusFeatSlots;
-    private bool HasOwed => PendingFeats > 0 || State.UnspentSkillPoints > 0 || State.Warnings.Any();
+    private bool HasOwed => PendingFeats > 0 || State.UnspentSkillPoints > 0 || State.Warnings.Any()
+        || (UnansweredAcquisitions?.Count > 0);
 
     private sealed record Run(string Label, string Name);
 

@@ -172,6 +172,7 @@ public static class BonusStack
 public interface IContentLookup
 {
     bool TryGetFeat(string id, out FeatDefinition? feat);
+    bool TryGetTemplate(string id, out TemplateDriver? template);
     bool TryGetClassFeature(string id, out ClassFeatureDefinition? classFeature);
     bool TryGetDomain(string id, out DomainDefinition? domain);
     bool TryGetEquipment(string id, out EquipmentDefinition? equipment);
@@ -187,6 +188,11 @@ public class PermabuffContext
     public string? CurrentDriverId { get; set; }
     public DriverKind? CurrentDriverKind { get; set; }
     public int? CurrentRacialHitDieMaximum { get; set; }
+    // The largest hit-die size any of the character's templates will ever impose, acquired or
+    // not. A saved roll is a source input for the full timeline: a lich's 8 rolled at bard 3
+    // is valid even while the die is still a d6, because the die becomes a d12 at acquisition.
+    // Informs only the out-of-range warning in AddHitDie, never the banked die size.
+    public int? SavedRollDieCeiling { get; set; }
     // Feat id currently being applied (non-null only while a feat's GrantedPermabuffs are cascading).
     // Permabuffs that need to attribute a source should prefer this over CurrentDriverId when set.
     public string? CurrentFeatId { get; set; }

@@ -492,6 +492,118 @@ public class PcgGoldenBuildTests
         Assert.All(state.HitDice, die => Assert.Equal(12, die.DieSize));
         Assert.Contains(build.Source.Levels, level => level.HitPoints > 6);
         Assert.Empty(state.Warnings);
+
+        // Lichdom is acquired, not inherited: the importer stamps the earliest HD the
+        // template's prerequisites allow — caster level 11, first met when bard 11 completes,
+        // so the transformation lands at HD 12 and pays for nothing lived before it.
+        Assert.Equal(12, build.Character.TemplateAcquisitionHD["template:lich"]);
+
+        // Skill points accrue against the Intelligence of the level that earned them: Int 17
+        // (+3) as a living human through bard 11, Int 19 (+4) from lichdom on. Per level that
+        // is bard 6 + Int mod + human 1: (6+3+1)×4 + (6+3+1)×10 + (6+4+1)×2 = 162, exactly
+        // PCGen's own per-level SKILLSGAINED record — and she spent every point of it.
+        Assert.Equal(162, state.SkillPointAccruals.Sum(a => a.Points));
+        Assert.Equal(0, state.UnspentSkillPoints);
+
+        // Nothing about the acquisition reaches backwards: evaluated at HD 8 she is a living
+        // human bard with d6 Hit Dice, still working towards the phylactery. Worn equipment
+        // applies at every evaluation point, so Int reads 17 base + 6 item = 23 — the lich's
+        // +2 is what must be absent here (25 would mean the template leaked backwards).
+        var at8 = new ReplayStudio(SharedRegistry.Value).Evaluate(build.Character, upToHD: 8);
+        Assert.Equal(CreatureType.Humanoid, at8.Type);
+        Assert.True(at8.IsLiving);
+        Assert.True(at8.HasAbility(Ability.CON));
+        Assert.Equal(23, at8.AbilityScores.INT);
+        Assert.Equal(25, state.AbilityScores.INT);
+        Assert.All(at8.HitDice, die => Assert.Equal(6, die.DieSize));
+    }
+
+    // ---------------------------------------------------------------
+    // Capstone transformation — one character saved as two PCGen sheets
+    // ---------------------------------------------------------------
+
+    /// <summary>
+    /// PCGen cannot say "human until the prestige capstone, outsider after", so the corpus
+    /// holds this character twice: a pre-transformation sheet at HD 24 and the transformed
+    /// one at HD 29. The class's 10th level now applies the transformation templates itself,
+    /// so ONE stored character answers as both sheets — the whole point of the timeline.
+    /// </summary>
+    [RequiresPcgFixturesFact]
+    public void Golden_CapstoneTransformation_DuchessRoseIsBothHerSheets()
+    {
+        var build = Load("Duchess Rose, Elite Succubus.pcg");
+        var state = build.State;
+
+        // The importer strips the rows PCGen materialized for the capstone's templates —
+        // the class grants them at the right tick, so on the character they would apply
+        // at creation and make her an outsider at HD 1.
+        Assert.DoesNotContain("template:dark_temptress_succubized", build.Character.TemplateIds);
+        Assert.DoesNotContain("template:chief_succubus", build.Character.TemplateIds);
+        Assert.DoesNotContain("template:abyssal_noble", build.Character.TemplateIds);
+        Assert.DoesNotContain("template:racesubtype_augmented_humanoid", build.Character.TemplateIds);
+
+        // Fully evaluated she is the transformed sheet. Natural armor is 9, not 18: the
+        // source's class +5 and template 9 are typed, non-stacking natural armor bonuses,
+        // which the template's floor now models instead of a hand-added delta.
+        Assert.Equal(29, state.TotalHD);
+        Assert.Equal(10, state.ClassLevels["class:dark_temptress"]);
+        Assert.Equal(CreatureType.Outsider, state.Type);
+        Assert.Contains("template:dark_temptress_succubized", state.TemplateIds);
+        Assert.Contains("template:chief_succubus", state.TemplateIds);
+        Assert.Contains("template:abyssal_noble", state.TemplateIds);
+        Assert.Contains("template:racesubtype_augmented_humanoid", state.TemplateIds);
+        Assert.Equal(9, state.NaturalArmor);
+        Assert.Equal(50, state.Speeds[MovementMode.Fly]);
+
+        // Evaluated at HD 24 she is the pre-transformation sheet: a living human with five
+        // temptress levels, no succubus templates, and the class's own +5 natural armor
+        // not yet earned (it arrives at temptress 6).
+        var at24 = new ReplayStudio(SharedRegistry.Value).Evaluate(build.Character, upToHD: 24);
+        Assert.Equal(24, at24.TotalHD);
+        Assert.Equal(5, at24.ClassLevels["class:dark_temptress"]);
+        Assert.Equal(CreatureType.Humanoid, at24.Type);
+        Assert.True(at24.IsLiving);
+        Assert.DoesNotContain(at24.TemplateIds, id =>
+            id is "template:dark_temptress_succubized" or "template:chief_succubus"
+               or "template:abyssal_noble" or "template:racesubtype_augmented_humanoid");
+        Assert.Equal(0, at24.NaturalArmor);
+        Assert.False(at24.Speeds.ContainsKey(MovementMode.Fly));
+    }
+
+    /// <summary>
+    /// The equality half of the two-sheet acceptance: importing the pre-transformation sheet
+    /// must equal evaluating the transformed character at HD 24 — one stored character, both
+    /// answers. Runs once "Duchess Rose, Almost Succubus.pcg" is copied into
+    /// test-fixtures/pcg (only the Elite sheet is frozen today); until then the numeric
+    /// assertions in the golden test above stand in for it.
+    /// </summary>
+    [RequiresPcgFixturesFact]
+    public void Golden_CapstoneTransformation_AlmostSheetIsEliteEvaluatedAt24()
+    {
+        var almostPath = Path.Combine(TestContentHelper.GetOptionalPcgFixturesPath()!,
+            "Duchess Rose, Almost Succubus.pcg");
+        if (!File.Exists(almostPath))
+            return; // fixture not frozen yet — see summary
+
+        var almost = Load("Duchess Rose, Almost Succubus.pcg").State;
+        var eliteAt24 = new ReplayStudio(SharedRegistry.Value)
+            .Evaluate(Load("Duchess Rose, Elite Succubus.pcg").Character, upToHD: 24);
+
+        Assert.Equal(almost.TotalHD, eliteAt24.TotalHD);
+        Assert.Equal(almost.Type, eliteAt24.Type);
+        Assert.Equal(almost.ClassLevels, eliteAt24.ClassLevels);
+        Assert.Equal(almost.NaturalArmor, eliteAt24.NaturalArmor);
+        Assert.Equal(
+            (almost.AbilityScores.STR, almost.AbilityScores.DEX, almost.AbilityScores.CON,
+             almost.AbilityScores.INT, almost.AbilityScores.WIS, almost.AbilityScores.CHA),
+            (eliteAt24.AbilityScores.STR, eliteAt24.AbilityScores.DEX, eliteAt24.AbilityScores.CON,
+             eliteAt24.AbilityScores.INT, eliteAt24.AbilityScores.WIS, eliteAt24.AbilityScores.CHA));
+        Assert.Equal(almost.SkillPointAccruals.Sum(a => a.Points),
+            eliteAt24.SkillPointAccruals.Sum(a => a.Points));
+        Assert.Equal(almost.BaseBAB, eliteAt24.BaseBAB);
+        Assert.Equal(
+            (almost.ProgressionBaseSaves.Fort, almost.ProgressionBaseSaves.Ref, almost.ProgressionBaseSaves.Will),
+            (eliteAt24.ProgressionBaseSaves.Fort, eliteAt24.ProgressionBaseSaves.Ref, eliteAt24.ProgressionBaseSaves.Will));
     }
 
     // ---------------------------------------------------------------

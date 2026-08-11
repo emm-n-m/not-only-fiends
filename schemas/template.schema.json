@@ -256,6 +256,16 @@
           },
           "required": ["$type", "skillId", "value"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Apply another template when this one applies — for consequence chains (lich → undead → augmented humanoid). The chained template applies at the same HD as its parent.",
+          "properties": {
+            "$type": { "const": "ApplyTemplate" },
+            "templateId": { "type": "string", "description": "Template ID (e.g., 'template:undead'). Must exist in the content registry; unresolvable IDs warn and are skipped." }
+          },
+          "required": ["$type", "templateId"],
+          "additionalProperties": false
         }
       ]
     },
@@ -320,6 +330,10 @@
         "naturalArmorFloor": {
           "type": ["integer", "null"],
           "description": "Natural armor the creature has at minimum — the lich's '+5 natural armor bonus or the base creature's, whichever is better'. Use this rather than naturalArmor when the template says 'whichever is better'; naturalArmor is for 'improves by +N'."
+        },
+        "spellResistanceFloor": {
+          "type": ["integer", "null"],
+          "description": "Spell resistance the creature has at minimum. SR from overlapping sources does not stack — the best applies — so a template's SR is always a floor, never a delta: a creature whose racial SR is already higher keeps it."
         },
         "hitDieSizeFloor": {
           "type": ["integer", "null"],

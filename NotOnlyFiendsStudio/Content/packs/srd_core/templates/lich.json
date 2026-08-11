@@ -28,6 +28,14 @@
     ],
     "creationPermabuffs": [
       {
+        "$type": "ApplyTemplate",
+        "templateId": "template:undead"
+      },
+      {
+        "$type": "ApplyTemplate",
+        "templateId": "template:racesubtype_augmented_humanoid"
+      },
+      {
         "$type": "GrantAbility",
         "ability": {
           "id": "lich_undead_traits",

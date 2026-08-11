@@ -197,6 +197,23 @@ public class PcgReconstructionFidelityTests
     }
 
     /// <summary>
+    /// A template with acquisition prerequisites was earned mid-career, and the .pcg records
+    /// nothing about when: the importer stamps the earliest HD the prerequisites allow. For
+    /// the lich that is MinCasterLevel 11, first met when bard 11 completes, so lichdom
+    /// starts at HD 12. The Undead and Augmented Humanoid rows PCGen materialized alongside
+    /// are consequences the lich template itself now applies, so they come off the character
+    /// — left in place they would make an evaluation at HD 8 undead, and she was alive then.
+    /// </summary>
+    [RequiresPcgFixturesFact]
+    public void AcquiredTemplate_LichRecruiter_StampedAtTheEarliestLegalHD()
+    {
+        var (_, result) = ConvertNamed("Lich Recruiter.pcg");
+
+        Assert.Equal(new[] { "template:lich" }, result.Character.TemplateIds);
+        Assert.Equal(12, result.Character.TemplateAcquisitionHD["template:lich"]);
+    }
+
+    /// <summary>
     /// A lich's bard levels are stored as d12 rolls, because the template says "increase all
     /// current and future Hit Dice to d12s" — the undead's compensation for having no
     /// Constitution score. Every roll is preserved verbatim, and none of them is out of range,

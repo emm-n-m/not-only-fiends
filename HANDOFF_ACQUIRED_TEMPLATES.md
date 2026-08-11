@@ -4,7 +4,11 @@ A self-contained brief for the session that implements this. Everything needed t
 the background analysis is in [KNOWN_ISSUES.md](KNOWN_ISSUES.md) §"An acquired template applies
 from creation, so it pays for levels taken before it".
 
-Status: **not started.** Written 2026-08-11.
+Status: **done.** Written 2026-08-11, implemented 2026-08-11 — see the resolution note atop
+KNOWN_ISSUES.md §"An acquired template applies from creation, so it pays for levels taken
+before it". Kept as the design record; the acceptance criteria in §6 are all asserted by tests
+(`Golden_TemplatedCreature_LichBard13`, `Golden_CapstoneTransformation_*`,
+`AcquiredTemplateTests`).
 
 ---
 

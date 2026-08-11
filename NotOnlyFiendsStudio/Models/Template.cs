@@ -42,6 +42,13 @@ public class TemplateDriver
     /// floor rather than a delta: a d12 barbarian is unaffected, and a d6 bard becomes d12.
     /// </summary>
     public int? HitDieSizeFloor { get; set; }
+
+    /// <summary>
+    /// Spell resistance from overlapping sources does not stack — the best applies — so a
+    /// template's SR is a floor like <see cref="NaturalArmorFloor"/>, never a delta: a
+    /// transformation granting SR 12 leaves an alu-fiend's higher racial SR alone.
+    /// </summary>
+    public int? SpellResistanceFloor { get; set; }
     public int LevelAdjustment { get; set; }
     public List<NaturalAttack> NaturalAttacks { get; set; } = new();
     public List<Permabuff> CreationPermabuffs { get; set; } = new();

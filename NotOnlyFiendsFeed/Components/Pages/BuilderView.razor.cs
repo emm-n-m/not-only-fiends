@@ -384,15 +384,55 @@ public partial class BuilderView
         if (!string.IsNullOrEmpty(_selectedTemplate) && !_character.TemplateIds.Contains(_selectedTemplate))
         {
             _character.TemplateIds.Add(_selectedTemplate);
+
+            // A template with acquisition prerequisites is earned mid-career; default its
+            // acquisition to the earliest HD the prerequisites allow. The input beside the
+            // template chip lets the player correct it.
+            var definition = _templates.FirstOrDefault(t => t.Id == _selectedTemplate);
+            if (definition is { Prerequisites.Count: > 0 })
+            {
+                try
+                {
+                    var earliest = _engine.FindEarliestAcquisitionHD(_character, _selectedTemplate);
+                    if (earliest.HasValue)
+                        _character.TemplateAcquisitionHD[_selectedTemplate] = earliest.Value;
+                }
+                catch
+                {
+                    // Leave unanswered — the spine surfaces the owed decision.
+                }
+            }
             OnCharacterChanged();
         }
     }
 
     private void RemoveTemplate(string templateId)
     {
+        _character.TemplateAcquisitionHD.Remove(templateId);
         if (_character.TemplateIds.Remove(templateId))
             OnCharacterChanged();
     }
+
+    private void SetTemplateAcquisitionHD(string templateId, ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var hd) && hd > 0)
+            _character.TemplateAcquisitionHD[templateId] = hd;
+        else
+            _character.TemplateAcquisitionHD.Remove(templateId);
+        OnCharacterChanged();
+    }
+
+    /// <summary>
+    /// Templates that need an acquisition HD (they have prerequisites, so they were earned
+    /// mid-career) but have none recorded — surfaced as an owed decision in the spine.
+    /// </summary>
+    private List<string> UnansweredTemplateAcquisitions() =>
+        _character.TemplateIds
+            .Where(id => !_character.TemplateAcquisitionHD.ContainsKey(id))
+            .Select(id => _templates.FirstOrDefault(t => t.Id == id))
+            .Where(t => t is { Prerequisites.Count: > 0 })
+            .Select(t => t!.Name)
+            .ToList();
 
     private void SetAbilityScore(Ability ability, ChangeEventArgs e)
     {
@@ -774,8 +814,11 @@ public partial class BuilderView
         OnCharacterChanged();
     }
 
+    // Creation-time preview only: a template acquired mid-career does not shape the
+    // starting scores, so it is excluded here.
     private int GetTemplateAbilityModifier(Ability ability) =>
         _character.TemplateIds
+            .Where(id => _character.TemplateAcquisitionHD.GetValueOrDefault(id) <= 1)
             .Select(id => _templates.FirstOrDefault(t => t.Id == id))
             .Where(template => template?.AbilityModifiers != null)
             .Sum(template => template!.AbilityModifiers!.GetScore(ability));
