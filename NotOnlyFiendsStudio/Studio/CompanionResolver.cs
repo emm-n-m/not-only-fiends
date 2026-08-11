@@ -197,6 +197,24 @@ public class CompanionResolver
             return new Formula("ClassLevel(wizard) + ClassLevel(sorcerer)").Evaluate(master);
         }
 
+        // The importer's generic arcane default. A familiar granted by something other than
+        // an arcane class carries its progression on the granted slot instead — the AEG "Imp"
+        // feat advances its familiar by total level (BONUS:VAR|FamiliarLVL|TL) — so a link
+        // still wearing the default takes the best of the two rather than reading 0 on a
+        // master with no wizard or sorcerer levels. A custom-authored link formula is never
+        // second-guessed: it skips this branch entirely.
+        if (IsFamiliarLinkType(link.LinkType)
+            && link.EffectiveLevelFormula.Expression == "ClassLevel(wizard) + ClassLevel(sorcerer)")
+        {
+            var fromDefault = link.EffectiveLevelFormula.Evaluate(master);
+            var fromSlots = master.CompanionSlots
+                .Where(slot => IsFamiliarLinkType(slot.LinkType))
+                .Select(slot => slot.EffectiveLevel)
+                .DefaultIfEmpty(0)
+                .Max();
+            return Math.Max(fromDefault, fromSlots);
+        }
+
         // Same migration for every superseded animal companion expression, so saves written
         // before a fix stop under-advancing their companions without needing a re-import.
         if (link.LinkType == "animal_companion"

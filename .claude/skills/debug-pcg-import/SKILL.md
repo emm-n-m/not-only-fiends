@@ -106,6 +106,27 @@ An undead's `STAT:CON|SCORE:3` is not a Constitution score — undead have none.
 ability modifiers must go through the nonability rule (`CharacterState.AbilityModifier`), which
 returns +0. A placeholder that leaks in reads as a −4 penalty.
 
+### An unspent-skill gap that equals a few bought ranks is a missing cross-class surcharge
+
+When a monster PC shows N points unspent and also has about N ranks bought in
+suspiciously-scholarly skills on its racial ticks, audit the race's
+`racialClassSkillAdditions` against the SRD statblock before calling it a source finding —
+a fabricated class skill under-prices those ranks by half, and the "unspent" points are
+exactly the surcharge that never got charged (Aranea Messenger: invented spellcraft/knowledge
+made 5 cross-class ranks cost 5 instead of 10). Cross-check the way the user did: per-class
+budget vs per-class buys — a class that granted 21 points cannot have funded 26 points of
+buys that are only class-priced for it.
+
+### Companion sheets carry garbage skill rows
+
+PCGen sometimes saves junk on companion `.pcg`s — a familiar's SKILL rows can be a
+cross-class-capped copy of the *master's* skills written as if the companion bought them
+(user ruling 2026-08-11: PCGen bug, nothing to fix). The symptom is unspent-skill-point noise
+on a companion whose bought list looks like the master's class, not the creature's statblock.
+The engine already applies the real familiar rule at companion resolution
+(`ApplyFamiliarMasterSkills`: master's ranks or its own, whichever better), so the junk rows
+are cosmetic — record the sheet in the private repo's source-data findings and move on.
+
 ### `HITPOINTS:` is the die roll, and the die may not be the class's
 
 PCGen re-rolls when a template changes the die size, so a lich bard's rolls are d12 even though

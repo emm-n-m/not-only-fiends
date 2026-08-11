@@ -280,6 +280,130 @@ public class AcquiredTemplateTests
         Assert.Single(state.TemplateIds, id => id == TemplateId);
     }
 
+    private const string HeritageTemplateId = "template:test_heritage";
+    private const string AscensionTemplateId = "template:test_ascension";
+
+    private static void RegisterAscensionPair(ContentRegistry registry)
+    {
+        // Alu-fiend-shaped heritage: inherited, so it applies at creation.
+        registry.RegisterTemplate(new TemplateDriver
+        {
+            Id = HeritageTemplateId,
+            Name = "Test Heritage",
+            TypeOverride = CreatureType.Outsider,
+            AbilityModifiers = new AbilityScoreSet { INT = 4 },
+            LevelAdjustment = 4,
+            CreationPermabuffs = new List<Permabuff> { new GrantImmunity { Immunity = "poison" } },
+            ScalingFormulas = new List<ScalingFormula>
+            {
+                new() { Target = AttributeTarget.SpellResistance, Formula = new Formula("TotalHD + 10") }
+            }
+        });
+
+        // Archfiend-shaped ascension: acquiring it consumes the heritage.
+        registry.RegisterTemplate(new TemplateDriver
+        {
+            Id = AscensionTemplateId,
+            Name = "Test Ascension",
+            TypeOverride = CreatureType.Outsider,
+            AbilityModifiers = new AbilityScoreSet { INT = 6 },
+            LevelAdjustment = 8,
+            CreationPermabuffs = new List<Permabuff> { new RevokeTemplate { TemplateId = HeritageTemplateId } }
+        });
+    }
+
+    [Fact]
+    public void Ascension_RevokesTheHeritage_ForwardFromItsTick()
+    {
+        var registry = CreateContentRegistry();
+        RegisterAscensionPair(registry);
+        var engine = new ReplayStudio(registry);
+
+        var character = FighterFive();
+        character.TemplateIds = new List<string> { HeritageTemplateId, AscensionTemplateId };
+        character.TemplateAcquisitionHD = new Dictionary<string, int> { [AscensionTemplateId] = 4 };
+
+        // Through HD 3 she is the heritage creature: Int 18, LA 4, poison-immune, SR HD+10.
+        var at3 = engine.Evaluate(character, upToHD: 3);
+        Assert.Equal(CreatureType.Outsider, at3.Type);
+        Assert.Equal(18, at3.AbilityScores.INT);
+        Assert.Equal(4, at3.LevelAdjustment);
+        Assert.Contains("poison", at3.Immunities);
+        Assert.Equal(13, at3.SpellResistance);
+        Assert.DoesNotContain(AscensionTemplateId, at3.TemplateIds);
+
+        // From HD 4 the ascension replaces it: +6 Int on the base 14 (the heritage's +4 is
+        // gone), LA 8 net, no inherited immunity, and the heritage's SR formula stops.
+        var at5 = engine.Evaluate(character, upToHD: 5);
+        Assert.Equal(CreatureType.Outsider, at5.Type);
+        Assert.Equal(20, at5.AbilityScores.INT);
+        Assert.Equal(8, at5.LevelAdjustment);
+        Assert.DoesNotContain("poison", at5.Immunities);
+        Assert.Null(at5.SpellResistance);
+        Assert.DoesNotContain(HeritageTemplateId, at5.TemplateIds);
+        Assert.Contains(AscensionTemplateId, at5.TemplateIds);
+
+        // Skill points follow the Int of the level that earned them: +4 mod through the
+        // swap, +5 from the ascension tick on. Fighter 2 base: (2+4)×4, 6, 6, then 7, 7.
+        Assert.Equal(new[] { 24, 6, 6, 7, 7 }, at5.SkillPointAccruals.Select(a => a.Points));
+    }
+
+    [Fact]
+    public void Ascension_EndsRacialBonusSkillPoints_AfterItsTick()
+    {
+        var registry = CreateContentRegistry();
+        RegisterAscensionPair(registry);
+        registry.RegisterRace(new RaceDefinition
+        {
+            Id = "race:bonus_human",
+            Name = "Bonus Human",
+            Type = CreatureType.Humanoid,
+            Size = Size.Medium,
+            Speeds = new Dictionary<MovementMode, int> { { MovementMode.Land, 30 } },
+            BonusSkillPointsPerHD = 1
+        });
+        registry.RegisterTemplate(new TemplateDriver
+        {
+            Id = "template:test_ascension_racial_end",
+            Name = "Test Ascension (Racial End)",
+            AbilityModifiers = new AbilityScoreSet { INT = 6 },
+            CreationPermabuffs = new List<Permabuff> { new EndRacialBonusSkillPoints() }
+        });
+        var engine = new ReplayStudio(registry);
+
+        var character = FighterFive(acquisitionHD: 0);
+        character.RaceId = "race:bonus_human";
+        character.TemplateIds = new List<string> { "template:test_ascension_racial_end" };
+        character.TemplateAcquisitionHD = new Dictionary<string, int> { ["template:test_ascension_racial_end"] = 4 };
+
+        var state = engine.Evaluate(character);
+        // The racial +1 pays through the acquisition tick — the level completes, then you
+        // transform — and stops after it: 4 racial accruals, not 5.
+        var racial = state.SkillPointAccruals.Where(a => a.Source == "race:bonus_human").ToList();
+        Assert.Equal(4, racial.Count);
+        // Driver points still switch Int at the acquisition tick: base Int 14 (+2) gives
+        // (2+2)×4 then 4/level; the ascension's +6 makes it 20 (+5) → 7/level from HD 4.
+        Assert.Equal(new[] { 16, 4, 4, 7, 7 },
+            state.SkillPointAccruals.Where(a => a.Source == "class:fighter").Select(a => a.Points));
+    }
+
+    [Fact]
+    public void RevokeTemplate_NeverAppliedTemplate_IsANoOp()
+    {
+        var registry = CreateContentRegistry();
+        RegisterAscensionPair(registry);
+        var engine = new ReplayStudio(registry);
+
+        var character = FighterFive();
+        character.TemplateIds = new List<string> { AscensionTemplateId }; // no heritage at all
+        character.TemplateAcquisitionHD = new Dictionary<string, int> { [AscensionTemplateId] = 4 };
+
+        var state = engine.Evaluate(character);
+        Assert.Equal(20, state.AbilityScores.INT);
+        Assert.Equal(8, state.LevelAdjustment);
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("Revoke"));
+    }
+
     [Fact]
     public void SpellResistanceFloor_NeverStacks_BestSourceWins()
     {

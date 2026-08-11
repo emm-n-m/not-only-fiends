@@ -226,8 +226,11 @@ public class ReplayStudio
                     buff.Apply(ctx);
             }
 
-            // g. Racial bonus skill points per HD
-            if (race.BonusSkillPointsPerHD > 0)
+            // g. Racial bonus skill points per HD. An ascension may have ended the racial
+            // identity going forward — ticks past that point earn no racial bonus, while
+            // everything banked up to and including it stays.
+            if (race.BonusSkillPointsPerHD > 0
+                && !(state.RacialBonusSkillPointsEndAfterHD is int endHD && state.TotalHD > endHD))
             {
                 var bonus = race.BonusSkillPointsPerHD;
                 var multiplier = 1;
@@ -1004,6 +1007,7 @@ public class ReplayStudio
         var state = ctx.State;
         state.RaceId = race.Id;
         state.Type = race.Type;
+        state.BaseRaceType = race.Type;
         state.Size = race.Size;
 
         // An alternative animal companion is fielded at a reduced effective level, and the

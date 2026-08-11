@@ -493,6 +493,25 @@
           },
           "required": ["$type", "templateId"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Remove a previously applied template at the level this buff fires — for a transformation that consumes another. No-op if the named template was never applied.",
+          "properties": {
+            "$type": { "const": "RevokeTemplate" },
+            "templateId": { "type": "string", "description": "Template ID to remove." }
+          },
+          "required": ["$type", "templateId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "End the race's per-HD bonus skill points from the next tick on. The tick this fires on still pays.",
+          "properties": {
+            "$type": { "const": "EndRacialBonusSkillPoints" }
+          },
+          "required": ["$type"],
+          "additionalProperties": false
         }
       ]
     },

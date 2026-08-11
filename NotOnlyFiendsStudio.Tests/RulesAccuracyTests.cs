@@ -1592,6 +1592,24 @@ public class RulesAccuracyTests
         Assert.Equal(5, bard.Counters["bardic_music_uses"]);
     }
 
+    // SRD aranea statblock: "Skills: Climb +14, Concentration +8, Escape Artist +5, Jump +13,
+    // Listen +6, Spot +6" (monstersA.html) — those six and nothing else. The extraction had
+    // invented craft/hide/knowledge/move silently/spellcraft, which under-priced racial-tick
+    // Spellcraft and Knowledge buys by half and surfaced as phantom unspent points.
+    [Fact]
+    public void Aranea_RacialClassSkills_AreExactlyTheStatblockSix()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var aranea = registry.GetAllRaces().Single(r => r.Id == "race:aranea");
+        Assert.Equal(
+            new[]
+            {
+                "skill:climb", "skill:concentration", "skill:escape_artist",
+                "skill:jump", "skill:listen", "skill:spot",
+            },
+            aranea.RacialClassSkillAdditions.OrderBy(s => s, StringComparer.Ordinal));
+    }
+
     [Fact]
     public void HalfDragon_UpgradesOnlyRacialHitDice_AndGrantsLargeFlight()
     {

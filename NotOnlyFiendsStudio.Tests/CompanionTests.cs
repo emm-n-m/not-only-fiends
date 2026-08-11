@@ -2425,6 +2425,59 @@ public class CompanionTests
         Assert.Equal(19, slot.EffectiveLevel);
     }
 
+    /// <summary>
+    /// AEG "Imp" feat: FOLLOWERS:Familiar|1 with FamiliarLVL = total level (BONUS:VAR|
+    /// FamiliarLVL|TL). A divine caster with no wizard or sorcerer levels fields the imp at
+    /// her full level: the feat grants the slot with its own progression, and a link still
+    /// wearing the importer's generic arcane default takes the slot's level instead of
+    /// reading 0 and warning that the master "does not qualify".
+    /// </summary>
+    [RequiresPrivatePacksFact]
+    public void FeatGrantedFamiliar_DefaultLinkFormula_UsesTheSlotProgression()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        var engine = new ReplayStudio(registry);
+
+        var priestess = new Character
+        {
+            Name = "Priestess",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 16, CHA = 10 },
+            Ticks = Enumerable.Range(0, 7).Select(_ => new Tick { DriverId = "class:cleric" }).ToList(),
+            CompanionLinks = new List<CompanionLink>
+            {
+                new()
+                {
+                    LinkType = "familiar",
+                    CompanionId = "pact-imp",
+                    SelectedSpecies = "race:companion_devil_imp",
+                    EffectiveLevelFormula = new Formula("ClassLevel(wizard) + ClassLevel(sorcerer)")
+                }
+            }
+        };
+        priestess.Ticks[0].Choices.FeatIds = new List<string> { "feat:infernal_pact", "feat:imp" };
+
+        var imp = new Character
+        {
+            Name = "Pact Imp",
+            RaceId = "race:companion_devil_imp",
+            TemplateIds = new List<string> { "template:familiar_standard" },
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 11, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 3).Select(_ => new Tick { DriverId = "racial_hd:outsider" }).ToList()
+        };
+
+        var resolver = new CompanionResolver(engine, id => id == "pact-imp" ? imp : null);
+        var result = resolver.Build(priestess);
+
+        var slot = Assert.Single(result.MasterState.CompanionSlots);
+        Assert.Equal("feat:imp", slot.Granter);
+        Assert.Equal(7, slot.EffectiveLevel);
+
+        var impBuild = Assert.Single(result.Companions);
+        Assert.Equal(7, impBuild.State.EffectiveMasterLevel);
+        Assert.DoesNotContain(result.MasterState.Warnings, w => w.Message.Contains("does not qualify"));
+    }
+
     [Fact]
     public void Wizard9_FamiliarScales_HigherTierAbilities()
     {

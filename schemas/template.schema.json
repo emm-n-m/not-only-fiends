@@ -266,6 +266,25 @@
           },
           "required": ["$type", "templateId"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Remove a previously applied template when this one applies — for a transformation that consumes another (an alu-fiend promoted to archfiend stops being an alu-fiend). No-op if the named template was never applied; non-invertible pieces (banked die sizes, floors, max-semantics buffs) stay and warn.",
+          "properties": {
+            "$type": { "const": "RevokeTemplate" },
+            "templateId": { "type": "string", "description": "Template ID to remove (e.g., 'template:alu_fiend')." }
+          },
+          "required": ["$type", "templateId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "End the race's per-HD bonus skill points from the next tick on — an ascension keeps the race on the sheet as origin and every banked point, but future levels no longer earn the racial bonus. The tick this fires on still pays.",
+          "properties": {
+            "$type": { "const": "EndRacialBonusSkillPoints" }
+          },
+          "required": ["$type"],
+          "additionalProperties": false
         }
       ]
     },

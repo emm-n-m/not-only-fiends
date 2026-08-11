@@ -159,8 +159,11 @@ else
                     {
                         var tDef = _templates.FirstOrDefault(td => td.Id == t);
                         <span class="badge bg-info me-1 mt-1 d-inline-flex align-items-center gap-1" title="@(t)">@(tDef?.Name ?? t) <button type="button" class="btn btn-sm p-0 border-0 text-white" style="font-size: 0.85em; line-height: 1;" @onclick="() => RemoveTemplate(t)">&times;</button></span>
-                        @if (tDef is { Prerequisites.Count: > 0 })
+                        @if (tDef is not null)
                         {
+                            @* Acquisition is event data the player picks — a tome has no
+                               prerequisites yet lands at a specific point, and so does an
+                               ascension. Blank means inherited: applies from creation. *@
                             <span class="d-inline-flex align-items-center gap-1 me-2 mt-1" title="The HD this template was acquired at. Its effects apply forward from that level; blank means it applies from creation.">
                                 <small class="text-muted">acquired at HD</small>
                                 <input type="number" class="form-control form-control-sm d-inline-block" style="width: 4.5rem"

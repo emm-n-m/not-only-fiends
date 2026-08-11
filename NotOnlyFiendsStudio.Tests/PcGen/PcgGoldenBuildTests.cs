@@ -571,6 +571,58 @@ public class PcgGoldenBuildTests
     }
 
     /// <summary>
+    /// The ascension case: a transformation that CONSUMES another template. Lilly is an
+    /// alu-fiend for her whole career (Int +4, SR HD+10, LA 4); her promotion at HD 21
+    /// replaces that heritage with the archfiend set (Int +6, LA 8), and her racial identity
+    /// ends going forward — human stays on the sheet as her recorded origin, every point she
+    /// banked as one stays banked, but levels after the ascension earn no human bonus point.
+    /// The .pcg cannot express any of this (the Archfiend sheet has no memory of the
+    /// alu-fiend), so the origin and the acquisition HD are character data, applied here
+    /// exactly as they are recorded on the saved character. Her sibling sheet
+    /// "Heiress of Lust.pcg" (Princess Lilly, HD 20) is the pre-ascension view.
+    /// </summary>
+    [RequiresPcgFixturesFact]
+    public void Golden_Ascension_InfernalCountessLilly()
+    {
+        var build = Load("Archfiend Lilly.pcg");
+        var character = build.Character;
+        character.TemplateIds.Insert(0, "template:alu_fiend");
+        character.TemplateAcquisitionHD["template:archfiend_ascended"] = 21;
+        character.TemplateAcquisitionHD["template:archfiend_lawful"] = 21;
+        character.TemplateAcquisitionHD["template:archfiend_cleric_list"] = 21;
+
+        var engine = new ReplayStudio(SharedRegistry.Value);
+        var state = engine.Evaluate(character);
+
+        // Skill points, per PCGen's own per-level record: alu-fiend Int 18 (+4) through
+        // HD 20, archfiend Int 20 (+5) at 21, human +1 throughout (the ascension tick still
+        // pays; the identity ends after it): (6+4+1)×4 + (6+4+1)×9 + (6+4+1)×6 + (2+4+1)×3
+        // + (6+5+1) — bard 7 / shadowdancer 10 / blackguard 3 / shadowdancer 11th = 253,
+        // all spent.
+        Assert.Equal(253, state.SkillPointAccruals.Sum(a => a.Points));
+        Assert.Equal(0, state.UnspentSkillPoints);
+
+        // Fully evaluated she is the archfiend: the alu-fiend is consumed, its SR formula
+        // stopped, LA 8, and the +12 Int headband rides on 14 base + 6 archfiend.
+        Assert.DoesNotContain("template:alu_fiend", state.TemplateIds);
+        Assert.Contains("template:archfiend_ascended", state.TemplateIds);
+        Assert.Equal(CreatureType.Outsider, state.Type);
+        Assert.Equal(8, state.LevelAdjustment);
+        Assert.Null(state.SpellResistance);
+        Assert.Equal(32, state.AbilityScores.INT);
+
+        // At HD 20 she is Princess Lilly, the alu-fiend: heritage live, SR 20+10, LA 4,
+        // Int 18 + the headband.
+        var at20 = engine.Evaluate(character, upToHD: 20);
+        Assert.Contains("template:alu_fiend", at20.TemplateIds);
+        Assert.DoesNotContain("template:archfiend_ascended", at20.TemplateIds);
+        Assert.Equal(CreatureType.Outsider, at20.Type);
+        Assert.Equal(4, at20.LevelAdjustment);
+        Assert.Equal(30, at20.SpellResistance);
+        Assert.Equal(30, at20.AbilityScores.INT);
+    }
+
+    /// <summary>
     /// The equality half of the two-sheet acceptance: importing the pre-transformation sheet
     /// must equal evaluating the transformed character at HD 24 — one stored character, both
     /// answers. Runs once "Duchess Rose, Almost Succubus.pcg" is copied into

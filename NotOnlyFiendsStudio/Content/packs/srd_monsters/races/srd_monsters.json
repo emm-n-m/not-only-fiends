@@ -27,14 +27,9 @@
     "racialClassSkillAdditions": [
       "skill:climb",
       "skill:concentration",
-      "skill:craft",
       "skill:escape_artist",
-      "skill:hide",
       "skill:jump",
-      "skill:knowledge",
       "skill:listen",
-      "skill:move_silently",
-      "skill:spellcraft",
       "skill:spot"
     ],
     "racialPermabuffs": [

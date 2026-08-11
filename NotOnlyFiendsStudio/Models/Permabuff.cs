@@ -52,6 +52,8 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(ModifyMovement), "ModifyMovement")]
 [JsonDerivedType(typeof(SetCreatureType), "SetCreatureType")]
 [JsonDerivedType(typeof(ApplyTemplate), "ApplyTemplate")]
+[JsonDerivedType(typeof(RevokeTemplate), "RevokeTemplate")]
+[JsonDerivedType(typeof(EndRacialBonusSkillPoints), "EndRacialBonusSkillPoints")]
 public abstract class Permabuff
 {
     public abstract void Apply(PermabuffContext ctx);
@@ -1041,6 +1043,43 @@ public class ApplyTemplate : Permabuff
         }
         TemplateApplication.Apply(ctx, template, acquisitionHD: ctx.State.TotalHD);
     }
+}
+
+/// <summary>
+/// Removes a previously applied template at the moment this buff fires — for a
+/// transformation that consumes another: an alu-fiend promoted to archfiend stops being an
+/// alu-fiend. Authored on the transforming template's creation buffs, so acquiring it swaps
+/// the old one out at the same tick. A no-op when the named template was never applied.
+/// </summary>
+public class RevokeTemplate : Permabuff
+{
+    public string TemplateId { get; set; } = string.Empty;
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        if (ctx.Content == null || !ctx.Content.TryGetTemplate(TemplateId, out var template) || template == null)
+        {
+            ctx.State.Warnings.Add(new Warning
+            {
+                TickIndex = ctx.State.TotalHD,
+                Message = $"RevokeTemplate could not resolve template {TemplateId}; nothing revoked",
+            });
+            return;
+        }
+        TemplateApplication.Revoke(ctx, template);
+    }
+}
+
+/// <summary>
+/// Ends the race's per-HD bonus skill points from the next tick on — an ascended archfiend
+/// keeps human as her recorded origin, and every point banked while she lived as one, but
+/// future levels no longer earn the human bonus point. The tick this fires on still pays:
+/// the level completes, then you transform.
+/// </summary>
+public class EndRacialBonusSkillPoints : Permabuff
+{
+    public override void Apply(PermabuffContext ctx) =>
+        ctx.State.RacialBonusSkillPointsEndAfterHD ??= ctx.State.TotalHD;
 }
 
 public class GrantSkillBonus : Permabuff

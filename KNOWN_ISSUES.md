@@ -252,10 +252,15 @@ outside the current model.
 > consequence rows and stamps prerequisite-bearing templates at the earliest legal HD, and the
 > builder surfaces the acquisition HD as an owed decision. Lich Recruiter grants 162 with 0
 > unspent and is a living human at HD 8; Duchess Rose answers as both her sheets from one record
-> (`Golden_CapstoneTransformation_*`). Residuals: the vampire's own chain is not yet authored
-> (her saved character still carries explicit Undead/Augmented rows at creation), and the roster
-> and header owed-rollups do not yet count an unanswered acquisition HD. The analysis below is
-> kept as the rationale.
+> (`Golden_CapstoneTransformation_*`). The ascension case — a transformation that CONSUMES
+> another template — is covered by `RevokeTemplate` (delta-inverse, type rebuilt from the base
+> race up, scaling-formula targets reset; floors and max-semantics buffs stay and warn) plus
+> `EndRacialBonusSkillPoints` (racial identity ends going forward, the acquisition tick still
+> pays, the race remains on the sheet as recorded origin): Infernal Countess Lilly grants
+> exactly PCGen's 253 with 0 unspent (`Golden_Ascension_InfernalCountessLilly`). Residuals: the
+> vampire's own chain is not yet authored (her saved character still carries explicit
+> Undead/Augmented rows at creation), and the roster and header owed-rollups do not yet count
+> an unanswered acquisition HD. The analysis below is kept as the rationale.
 
 A template is applied before the first HD tick, whatever it is. That is right for an inherited
 template — a half-fiend was always a half-fiend — and wrong for an acquired one. Lichdom needs

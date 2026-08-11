@@ -5,6 +5,20 @@ public class CharacterState
     // Identity
     public string RaceId { get; set; } = string.Empty;
     public CreatureType Type { get; set; }
+    /// <summary>
+    /// The race's own creature type, before any template moved it. Recorded so that revoking
+    /// a template can recompute the type from the bottom of the stack: base race, then every
+    /// still-applied template's override in application order.
+    /// </summary>
+    public CreatureType BaseRaceType { get; set; }
+
+    /// <summary>
+    /// The HD after which the race's per-HD bonus skill points stop accruing — an ascension
+    /// ends the character's racial identity going forward while the race remains on the sheet
+    /// as her origin. The acquisition tick itself still pays (the level completes, then you
+    /// transform); everything banked before it stays banked. Null = never ends.
+    /// </summary>
+    public int? RacialBonusSkillPointsEndAfterHD { get; set; }
     public HashSet<string> Subtypes { get; set; } = new();
     public Size Size { get; set; }
     // These are explicit because creature type alone cannot tell whether a creature is
