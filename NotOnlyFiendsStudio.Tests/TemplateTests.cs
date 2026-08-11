@@ -305,6 +305,43 @@ public class TemplateTests
     }
 
     /// <summary>
+    /// Lichdom is earned, not inherited: "Each lich must make its own phylactery, which requires
+    /// the Craft Wondrous Item feat. The character must be able to cast spells and have a caster
+    /// level of 11th or higher", the template is "any evil", and it "can be added to any humanoid
+    /// creature". Those gates are what fix the acquisition HD when the template stops being
+    /// applied at creation, so they have to be expressed rather than assumed.
+    /// </summary>
+    [Fact]
+    public void LichTemplate_GatesOnThePhylacteryRequirements()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        // A fighter meets none of the casting requirements and is not evil.
+        var unqualified = engine.Evaluate(Templated("race:human", "template:lich"));
+        foreach (var expected in new[] { "feat:craft_wondrous_item", "Caster level 11+", "Alignment" })
+            Assert.Contains(unqualified.Warnings,
+                w => w.Message.Contains("prerequisite not met") && w.Message.Contains(expected));
+
+        // The corpus lich is a 13th-level bard: evil, casting at 11+, and holding the feat.
+        var lich = new Character
+        {
+            RaceId = "race:human",
+            Alignment = Alignment.NE,
+            TemplateIds = new List<string> { "template:lich" },
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 10, CON = 10, INT = 17, WIS = 10, CHA = 16
+            },
+            Ticks = Enumerable.Range(0, 13).Select(_ => new Tick { DriverId = "class:bard" }).ToList(),
+        };
+        lich.Ticks[^1].Choices.FeatIds = new List<string> { "feat:craft_wondrous_item" };
+
+        Assert.DoesNotContain(engine.Evaluate(lich).Warnings,
+            w => w.Message.Contains("prerequisite not met for template"));
+    }
+
+    /// <summary>
     /// The two undead templates word their natural armor differently and mean it. A lich has
     /// "a +5 natural armor bonus <em>or the base creature's, whichever is better</em>"; a vampire's
     /// base natural armor "<em>improves by</em> +6". Applied to a creature that already has

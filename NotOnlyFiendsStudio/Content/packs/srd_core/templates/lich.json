@@ -17,6 +17,15 @@
     },
     "naturalArmorFloor": 5,
     "levelAdjustment": 4,
+    "applicabilityPrerequisites": [
+      { "$type": "HasCreatureType", "type": "Humanoid" }
+    ],
+    "prerequisites": [
+      { "$type": "HasFeat", "featId": "feat:craft_wondrous_item" },
+      { "$type": "HasSpellcasting" },
+      { "$type": "MinCasterLevel", "value": 11 },
+      { "$type": "AlignmentReq", "allowed": ["lE", "nE", "cE"] }
+    ],
     "creationPermabuffs": [
       {
         "$type": "GrantAbility",

@@ -9,6 +9,14 @@ public class Character
     // Free-form display name; null/empty means no allegiance.
     public string? Deity { get; set; }
 
+    /// <summary>
+    /// Free text rather than an enum, and deliberately so: it is descriptive rather than
+    /// mechanical, and PCGen lets a sheet say anything here. The corpus uses Male, Female and
+    /// Neuter, which is what the builder offers, but an imported value is kept verbatim so a
+    /// round trip cannot quietly rewrite how someone described their character.
+    /// </summary>
+    public string? Gender { get; set; }
+
     // Initial State
     public string RaceId { get; set; } = string.Empty;
     public List<string> TemplateIds { get; set; } = new();
@@ -78,6 +86,7 @@ public class Character
         Name = Name,
         Alignment = Alignment,
         Deity = Deity,
+        Gender = Gender,
         RaceId = RaceId,
         TemplateIds = new List<string>(TemplateIds),
         BaseAbilityScores = new AbilityScoreSet

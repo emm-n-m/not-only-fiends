@@ -1105,6 +1105,32 @@ public class PcgConverterTests
         Assert.DoesNotContain(result.Warnings, w => w.Contains("Bard Variant"));
     }
 
+    /// <summary>
+    /// PCGen records the character's gender and the engine used to throw it away. It is free text
+    /// on the way through: the corpus only ever says Female, Male or Neuter, but a value outside
+    /// that set is a description of someone's character, not an error to normalise away.
+    /// </summary>
+    [Theory]
+    [InlineData("GENDER:Male", "Male")]
+    [InlineData("GENDER:Neuter", "Neuter")]
+    [InlineData("GENDER:Nonbinary", "Nonbinary")]
+    [InlineData("GENDER:  Female  ", "Female")]
+    [InlineData("", null)]
+    public void Convert_Gender_IsCarriedFromTheSourceVerbatim(string genderLine, string? expected)
+    {
+        var data = PcgParser.ParseText(
+            $"CHARACTERNAME:Test\nRACE:Human\nALIGN:N\n{genderLine}\nSTAT:STR|SCORE:10\n", "g.pcg");
+
+        Assert.Equal(expected, PcgConverter.Convert(data, new PcgIdMapper()).Character.Gender);
+    }
+
+    /// <summary>Clone is what the builder edits through, so a dropped field vanishes on the first edit.</summary>
+    [Fact]
+    public void Clone_KeepsGender()
+    {
+        Assert.Equal("Neuter", new Character { Gender = "Neuter" }.Clone().Gender);
+    }
+
     private static PcgCharacterData DruidData(string? substitutionClass) => new()
     {
         CharacterName = "Test Druid",

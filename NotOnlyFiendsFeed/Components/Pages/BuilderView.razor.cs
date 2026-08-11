@@ -1085,6 +1085,13 @@ public partial class BuilderView
     private void OnShowNonPcRacesChanged(ChangeEventArgs e) =>
         _showNonPcRaces = e.Value is true;
 
+    private void OnGenderChanged(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+        _character.Gender = string.IsNullOrWhiteSpace(value) ? null : value;
+        OnCharacterChanged();
+    }
+
     private void OnAlignmentChanged(ChangeEventArgs e)
     {
         if (Enum.TryParse<Alignment>(e.Value?.ToString(), out var a))

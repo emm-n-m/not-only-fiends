@@ -87,6 +87,10 @@ else if (_state != null && _character != null)
             <div class="card-body">
                 <h3>@_character.Name</h3>
                 <p>
+                    @if (!string.IsNullOrWhiteSpace(_character.Gender))
+                    {
+                        <strong>Gender:</strong> @_character.Gender <text>| </text>
+                    }
                     <strong>Race:</strong> @_state.RaceId |
                     <strong>Type:</strong> @_state.Type |
                     <strong>Size:</strong> @_state.Size |

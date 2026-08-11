@@ -107,6 +107,7 @@ public static class PcgConverter
             Name = data.CharacterName,
             Alignment = alignment,
             Deity = deity,
+            Gender = string.IsNullOrWhiteSpace(data.Gender) ? null : data.Gender.Trim(),
             BaseAbilityScores = new AbilityScoreSet
             {
                 STR = data.BaseStats.GetValueOrDefault("STR"),

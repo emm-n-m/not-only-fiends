@@ -106,6 +106,23 @@ else
                         }
                     </select>
                 </div>
+                <div class="col-md-2">
+                    <label class="form-label">Gender</label>
+                    @* Free text on the character, so an imported value that is not one of these
+                       still shows and is kept on save rather than being snapped to an option. *@
+                    <select class="form-select" value="@_character.Gender" @onchange="OnGenderChanged">
+                        <option value="">—</option>
+                        @foreach (var g in CharacterGenders.Suggested)
+                        {
+                            <option value="@g">@g</option>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(_character.Gender)
+                             && !CharacterGenders.Suggested.Contains(_character.Gender))
+                        {
+                            <option value="@_character.Gender">@_character.Gender</option>
+                        }
+                    </select>
+                </div>
                 <div class="col-md-3">
                     <label class="form-label">Race</label>
                     <SearchSelect TItem="RaceDefinition"
