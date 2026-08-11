@@ -242,6 +242,41 @@ Monk Perfect Self is now represented as a type change to Outsider at monk 20, al
 existing DR 10/magic. Resurrection-specific treatment and other type-change edge cases remain
 outside the current model.
 
+## An acquired template applies from creation, so it pays for levels taken before it
+
+A template is applied before the first HD tick, whatever it is. That is right for an inherited
+template — a half-fiend was always a half-fiend — and wrong for an acquired one. Lichdom needs
+caster level 11 to make the phylactery, so a character reaches 11th level as a living creature
+and *then* becomes a lich; the template's +2 Int must feed forward from that HD, exactly as a
+tome of intellect read at 11th level would.
+
+Because it applies from HD 1 instead, it retroactively buys skill points the character never had.
+Lich Recruiter (human bard 13, Int 17, all three level-up increases spent on Cha) shows it
+cleanly — the builder reports "14 unspent":
+
+| Int used per level | 1st | 2nd–11th | 12th–13th | total |
+|:--|--:|--:|--:|--:|
+| applied at creation (today) | 19 → +4 → 44 | 12 each | 12 each | **176** |
+| acquired at 12th | 17 → +3 → 40 | 10 each | 19 → +4 → 11 each | **162** |
+| PCGen's own per-level record | 40 | 10 each | 11 each | **162** |
+
+The SRD compensates for this in the template text itself — "Do not recalculate base attack bonus,
+saves, or skill points" — which is what PCGen implements. But the same entry says "increase **all
+current and future** Hit Dice to d12s", so an acquired template is genuinely part retroactive and
+part feed-forward, and the fix has to keep the split:
+
+- **Feed forward from the acquisition HD**: ability modifiers, and anything accrued per tick that
+  reads them. Skill points are the only such quantity today; BAB and saves are progression-derived
+  and already unaffected.
+- **Still retroactive**: hit die size, creature type and everything derived from it (life state,
+  corporeality, nonabilities), natural armor, DR, immunities, level adjustment.
+
+Nothing records *when* it was acquired. The `.pcg` has no acquisition level and PCGen does not
+model one, so this is new character input — a decision owed, placed the way a tome is placed, and
+an import cannot derive it. Lich Recruiter cannot even disambiguate her own: 11th, 12th and 13th
+all yield 162, because the +2 only moves the modifier across the same boundary the character
+would have crossed anyway.
+
 ## Nonabilities are modelled for modifiers, not for their other consequences
 
 Undead and constructs have no Constitution and incorporeal creatures no Strength, and as of
