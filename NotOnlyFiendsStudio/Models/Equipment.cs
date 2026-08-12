@@ -87,6 +87,8 @@ public class EquipmentDefinition
     public WeaponProfile? Weapon { get; set; }
     /// <summary>Magic enhancement (or cursed penalty) applied to attack and damage rolls.</summary>
     public int EnhancementBonus { get; set; }
+    /// <summary>Total +1-equivalent value of magic special abilities, used by intelligent-item Ego.</summary>
+    public int SpecialAbilityBonusEquivalent { get; set; }
     public ArmorProfile? Armor { get; set; }
     /// <summary>Personality and powers for a permanent intelligent magic item.</summary>
     public IntelligentItemDefinition? IntelligentItem { get; set; }

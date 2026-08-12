@@ -129,9 +129,9 @@ public class CharacterState
     public int EffectiveBAB => BaseBAB + EpicAttackBonus;
     public SaveSet EffectiveSaves => new()
     {
-        Fort = BaseSaves.Fort + EpicSaveBonus + AbilityModifier(Ability.CON) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Fort),
-        Ref = BaseSaves.Ref + EpicSaveBonus + AbilityModifier(Ability.DEX) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Ref),
-        Will = BaseSaves.Will + EpicSaveBonus + AbilityModifier(Ability.WIS) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Will)
+        Fort = BaseSaves.Fort + EpicSaveBonus + AbilityModifier(Ability.CON) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Fort) - EquipmentNegativeLevels,
+        Ref = BaseSaves.Ref + EpicSaveBonus + AbilityModifier(Ability.DEX) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Ref) - EquipmentNegativeLevels,
+        Will = BaseSaves.Will + EpicSaveBonus + AbilityModifier(Ability.WIS) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Will) - EquipmentNegativeLevels
     };
 
     private int SaveBonusTotal(SaveTarget target) =>
@@ -202,9 +202,20 @@ public class CharacterState
     /// </summary>
     public HashSet<string> SpellListSourceDomainOwners { get; set; } = new();
 
+    /// <summary>
+    /// The caster level currently available to the character after equipment-derived negative
+    /// levels. The underlying spellcasting progression remains unchanged because equipment is
+    /// applied after the HD timeline and must not retroactively alter level-up choices.
+    /// </summary>
+    public int EffectiveCasterLevel(string classId) =>
+        Spellcasting.GetValueOrDefault(classId)?.CasterLevel is int baseLevel
+            ? Math.Max(0, baseLevel - EquipmentNegativeLevels)
+            : 0;
+
     public int EffectiveCasterLevel(string classId, SpellDefinition spell) =>
         Spellcasting.GetValueOrDefault(classId)?.CasterLevel is int baseLevel
-            ? baseLevel + CasterLevelModifiers.Where(m => m.Matches(spell)).Sum(m => m.Value)
+            ? Math.Max(0, baseLevel + CasterLevelModifiers.Where(m => m.Matches(spell)).Sum(m => m.Value)
+                - EquipmentNegativeLevels)
             : 0;
 
     // School → levels of every selected spell of that school (lowercase school names,
@@ -302,6 +313,9 @@ public class CharacterState
     public ArmorClass AC { get; set; } = new();
     public List<AttackLine> AttackLines { get; set; } = new();
     public EncumbranceState Encumbrance { get; set; } = new();
+    public List<IntelligentItemState> IntelligentItems { get; set; } = new();
+    /// <summary>Temporary negative levels imposed by equipped intelligent items.</summary>
+    public int EquipmentNegativeLevels { get; set; }
     /// <summary>
     /// Typed AC/attack/damage contributions granted by feats, class features, templates, or
     /// permanent events. Equipment uses the transient <see cref="EquipmentPass"/> collector;

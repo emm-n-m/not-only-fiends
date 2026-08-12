@@ -2561,8 +2561,10 @@ public class CompanionTests
         Assert.Equal(50, result.MasterState.Speeds[MovementMode.Fly]);
         Assert.Equal(FlightManeuverability.Average, result.MasterState.FlyManeuverability);
         Assert.Equal(6, familiarState.EffectiveMasterLevel);
-        Assert.Equal(199, result.MasterState.HP);
-        Assert.Equal(99, familiarState.HP);
+        // Frozen PCG authority: Rose is CN and her equipped belt is NE. Its sourced EQMOD
+        // components produce Ego 25, so the SRD mismatch penalty is two negative levels (-10 hp).
+        Assert.Equal(189, result.MasterState.HP);
+        Assert.Equal(94, familiarState.HP);
         Assert.Equal(Math.Max(1, result.MasterState.HP / 2), familiarState.HP);
         Assert.Equal(10, result.MasterState.BaseBAB);
         Assert.Equal(5, result.MasterState.EpicAttackBonus);

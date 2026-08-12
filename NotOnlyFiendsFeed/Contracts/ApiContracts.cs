@@ -170,7 +170,10 @@ public sealed class EquipmentSummaryDto
     public string? Description { get; set; }
     public string? WeaponDamage { get; set; }
     public int EnhancementBonus { get; set; }
+    public int SpecialAbilityBonusEquivalent { get; set; }
     public int? ArmorBonus { get; set; }
+    public bool IsIntelligent { get; set; }
+    public int? IntelligentItemEgo { get; set; }
     public List<string> EffectSummary { get; set; } = new();
 }
 

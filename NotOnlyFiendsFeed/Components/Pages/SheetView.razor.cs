@@ -13,8 +13,7 @@ public partial class SheetView
     private void SetActiveTab(CharacterTab tab) => _activeTab = tab;
 
     /// <summary>
-    /// Same six-tab vocabulary as the builder, minus the two the sheet cannot yet fill:
-    /// it has no equipment or companion display of its own.
+    /// Same tab vocabulary as the builder. Companion display remains future work.
     /// </summary>
     private List<CharacterTabItem> VisibleTabs()
     {
@@ -27,6 +26,9 @@ public partial class SheetView
 
         if (_state != null && (_state.Spellcasting.Count > 0 || _state.Domains.Count > 0))
             tabs.Add(new CharacterTabItem(CharacterTab.Spells, "Spells"));
+
+        if (_character?.Equipment.Count > 0)
+            tabs.Add(new CharacterTabItem(CharacterTab.Equipment, "Equipment"));
 
         return tabs;
     }

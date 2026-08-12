@@ -160,6 +160,8 @@ public class Character
             WeightLbsOverride = item.WeightLbsOverride,
             PriceCpOverride = item.PriceCpOverride,
             EnhancementBonusOverride = item.EnhancementBonusOverride,
+            SpecialAbilityBonusEquivalentOverride = item.SpecialAbilityBonusEquivalentOverride,
+            IntelligentItemOverride = item.IntelligentItemOverride?.Clone(),
             Permabuffs = new List<Permabuff>(item.Permabuffs),
         }).ToList(),
         PreparedSpellSelections = PreparedSpellSelections.Select(selection => new PreparedSpellSelection
@@ -282,6 +284,8 @@ public class CharacterSheet
     public int NaturalArmor { get; set; }
     public Dictionary<string, List<string>> ClassFeatureSelections { get; set; } = new();
     public List<PreparedSpellSelection> PreparedSpellSelections { get; set; } = new();
+    public List<IntelligentItemState> IntelligentItems { get; set; } = new();
+    public int EquipmentNegativeLevels { get; set; }
 
     /// <summary>
     /// Per-class spellcasting summary keyed by class id (e.g. "class:sorcerer"). Includes the
@@ -327,9 +331,11 @@ public class CharacterSheet
             SpellId = selection.SpellId,
             SlotKind = selection.SlotKind,
         }).ToList(),
+        IntelligentItems = state.IntelligentItems,
+        EquipmentNegativeLevels = state.EquipmentNegativeLevels,
         Spellcasting = state.Spellcasting.ToDictionary(
             kv => kv.Key,
-            kv => SpellcastingSummary.FromState(kv.Value)),
+            kv => SpellcastingSummary.FromState(kv.Value, state.EquipmentNegativeLevels)),
         Warnings = state.Warnings
             .Select(w => w.TickIndex.HasValue ? $"HD {w.TickIndex}: {w.Message}" : w.Message)
             .ToList()
@@ -361,13 +367,13 @@ public class SpellcastingSummary
     /// <summary>Bonus slots granted by the casting ability score.</summary>
     public Dictionary<int, int> AbilityBonusSlots { get; set; } = new();
 
-    public static SpellcastingSummary FromState(SpellcastingState sc) => new()
+    public static SpellcastingSummary FromState(SpellcastingState sc, int negativeLevels = 0) => new()
     {
         ClassId = sc.ClassId,
         CastingType = sc.CastingType,
         CastingStat = sc.CastingStat,
         Acquisition = sc.Acquisition,
-        CasterLevel = sc.CasterLevel,
+        CasterLevel = Math.Max(0, sc.CasterLevel - negativeLevels),
         MaxSpellLevel = sc.MaxSpellLevel,
         SpellsPerDay = new Dictionary<int, int>(sc.SpellsPerDay),
         SpellsKnown = sc.SpellsKnown is null ? null : new Dictionary<int, int>(sc.SpellsKnown),
@@ -489,6 +495,10 @@ public class EquipmentEntry
     public long? PriceCpOverride { get; set; }
     /// <summary>PCGen custom weapon enhancement; null uses the catalog definition.</summary>
     public int? EnhancementBonusOverride { get; set; }
+    /// <summary>Character-specific +1-equivalent magic abilities used to calculate intelligent-item Ego.</summary>
+    public int? SpecialAbilityBonusEquivalentOverride { get; set; }
+    /// <summary>Unique intelligent personality for this physical item; replaces a catalog default.</summary>
+    public IntelligentItemDefinition? IntelligentItemOverride { get; set; }
     public List<Permabuff> Permabuffs { get; set; } = new(); // inline permabuffs (homebrew, or overrides on top of content)
 }
 

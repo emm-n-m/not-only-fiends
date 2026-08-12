@@ -81,9 +81,10 @@
         "senses": {
           "type": "object",
           "properties": {
-            "vision": { "type": "string" },
+            "vision": { "type": "string", "enum": ["vision", "darkvision"] },
             "rangeFt": { "type": "integer", "minimum": 0 },
             "hearing": { "type": "boolean" },
+            "blindsense": { "type": "boolean" },
             "blindsight": { "type": "boolean" },
             "readsSpokenLanguages": { "type": "boolean" },
             "readsAllLanguages": { "type": "boolean" },
@@ -92,6 +93,7 @@
           "additionalProperties": false
         },
         "basePriceModifierGp": { "type": "integer", "minimum": 0 },
+        "languageIds": { "type": "array", "items": { "type": "string" } },
         "powers": { "type": "array", "items": { "$ref": "#/$defs/IntelligentItemPower" } },
         "specialPurpose": { "type": ["string", "null"] },
         "dedicatedPower": { "anyOf": [{ "$ref": "#/$defs/IntelligentItemPower" }, { "type": "null" }] },
@@ -313,6 +315,11 @@
           "type": "integer",
           "minimum": -5,
           "description": "Magic enhancement bonus, or cursed penalty, added to attack and damage rolls for the weapon profile. Masterwork-only attack bonuses do not use this field."
+        },
+        "specialAbilityBonusEquivalent": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total +1-equivalent value of magic special abilities, used to calculate intelligent-item Ego."
         },
         "armor": { "$ref": "#/$defs/ArmorProfile" },
         "intelligentItem": { "$ref": "#/$defs/IntelligentItem" },

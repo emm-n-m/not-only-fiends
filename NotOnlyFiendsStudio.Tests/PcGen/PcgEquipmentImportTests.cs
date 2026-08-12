@@ -456,6 +456,57 @@ public class PcgEquipmentImportTests
         Assert.Contains(result.UnsupportedCustomEquipmentModifiers, warning => warning.EndsWith(": DREAD_MELEE"));
     }
 
+    [Fact]
+    public void Converter_PcgenIntelligentItemEqmods_BecomeStructuredInstanceData()
+    {
+        var data = MinimalCharacter(new PcgEquipmentRaw
+        {
+            Name = "Belt of Giant Strength +6",
+            SlotName = "Waist",
+            InActiveSet = true,
+            Customization = "BASEITEM:Belt$EQMOD=INT_ITEM.BELT_INT_ITEM_8.INT_ITEM_CHA_19.INT_ITEM_INT_19.INT_ITEM_WIS_10.INT_ITEM_ZONE_TRUTH.INT_ITEM_DISMISSAL.INT_ITEM_DETECT_THOUGHTS.INT_ITEM_DEEPER_DARKNESS.INT_ITEM_DIPLOMACY.INT_ITEM_INTIMIDATE.INT_ITEM_SENSE_MOTIVE.INT_ITEM_DED_PURP.INT_ITEM_DEFEND_RACE.INT_ITEM_WAVES_EXHAUSTION.INT_ITEM_ALIGN_NE$SPROP=custom",
+        });
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), CreateRegistryWithEquipment());
+        var intelligent = Assert.Single(result.Character.Equipment).IntelligentItemOverride;
+
+        Assert.NotNull(intelligent);
+        Assert.Equal(19, intelligent!.MentalAbilities.Intelligence);
+        Assert.Equal(10, intelligent.MentalAbilities.Wisdom);
+        Assert.Equal(19, intelligent.MentalAbilities.Charisma);
+        Assert.Equal(Alignment.NE, intelligent.Alignment);
+        Assert.Equal(IntelligentItemCommunication.SpeechAndTelepathy, intelligent.Communication);
+        Assert.Equal(IntelligentItemVision.Darkvision, intelligent.Senses.Vision);
+        Assert.True(intelligent.Senses.Blindsense);
+        Assert.Equal(4, intelligent.Powers.Count(power => power.Kind == IntelligentItemPowerKind.Lesser));
+        Assert.Equal(3, intelligent.Powers.Count(power => power.Kind == IntelligentItemPowerKind.Greater));
+        Assert.Equal("Defend a particular race or kind of creature", intelligent.SpecialPurpose);
+        Assert.Equal("Waves of exhaustion", intelligent.DedicatedPower!.Name);
+        // RSRD EQMOD source: 8 mental + 4 lesser + 6 greater + 4 purpose
+        // + telepathy/read-languages/read-magic = 25.
+        Assert.Equal(25, intelligent.CalculateEgo());
+        Assert.DoesNotContain(result.UnsupportedCustomEquipmentModifiers,
+            warning => warning.Contains("INT_ITEM", StringComparison.Ordinal));
+    }
+
+    [RequiresPcgFixturesFact]
+    public void DuchessRoseElite_IntelligentBeltImportsFromFrozenPcg()
+    {
+        var path = TestContentHelper.PcgFixture("Duchess Rose, Elite Succubus.pcg");
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        var data = PcgParser.ParseText(File.ReadAllText(path), Path.GetFileName(path));
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+        var belt = result.Character.Equipment.Single(item => item.ItemId == "Waist Thinning Belt");
+        var intelligent = Assert.IsType<IntelligentItemDefinition>(belt.IntelligentItemOverride);
+
+        Assert.Equal(Alignment.NE, intelligent.Alignment);
+        // Derived from the same committed RSRD EQMOD components asserted above.
+        Assert.Equal(25, intelligent.CalculateEgo());
+        Assert.Equal(7, intelligent.Powers.Count);
+        Assert.Equal("Waves of exhaustion", intelligent.DedicatedPower!.Name);
+    }
+
     [RequiresPcgFixturesFact]
     public void ArchfiendLilly_CustomItemsLanguagesShadowAndFollowers_ArePreserved()
     {

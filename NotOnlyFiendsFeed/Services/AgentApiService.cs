@@ -590,7 +590,7 @@ public sealed class AgentApiService
                 CastingType = spellcasting.CastingType,
                 CastingStat = spellcasting.CastingStat,
                 Acquisition = spellcasting.Acquisition,
-                CasterLevel = spellcasting.CasterLevel,
+                CasterLevel = state.EffectiveCasterLevel(spellcasting.ClassId),
                 MaxSpellLevel = spellcasting.MaxSpellLevel,
                 SpellsPerDay = new Dictionary<int, int>(spellcasting.SpellsPerDay),
                 SpellsKnown = spellcasting.SpellsKnown == null ? null : new Dictionary<int, int>(spellcasting.SpellsKnown),
@@ -996,7 +996,11 @@ public sealed class AgentApiService
         Description = eq.Description,
         WeaponDamage = eq.Weapon?.Damage,
         EnhancementBonus = eq.EnhancementBonus,
+        SpecialAbilityBonusEquivalent = eq.SpecialAbilityBonusEquivalent,
         ArmorBonus = eq.Armor?.ArmorBonus,
+        IsIntelligent = eq.IntelligentItem != null,
+        IntelligentItemEgo = eq.IntelligentItem?.CalculateEgo(
+            eq.EnhancementBonus, eq.SpecialAbilityBonusEquivalent),
         EffectSummary = eq.GrantedPermabuffs.Select(SummarizePermabuff).ToList()
     };
 

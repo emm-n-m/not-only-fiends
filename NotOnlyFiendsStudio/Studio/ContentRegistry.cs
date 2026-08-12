@@ -478,7 +478,55 @@ public class ContentRegistry : IContentLookup
                 _validationErrors.Add(new ContentError(ContentErrorKind.MissingId, "Equipment has empty ID"));
             ValidatePermabuffList(eq.GrantedPermabuffs, $"Equipment '{eq.Id}'");
             ValidatePrerequisites(eq.Prerequisites, $"Equipment '{eq.Id}'");
+            ValidateIntelligentItem(eq);
         }
+    }
+
+    private void ValidateIntelligentItem(EquipmentDefinition equipment)
+    {
+        var item = equipment.IntelligentItem;
+        if (item == null) return;
+
+        if (equipment.Category is EquipmentCategory.Potion or EquipmentCategory.Scroll
+            or EquipmentCategory.Wand or EquipmentCategory.Staff or EquipmentCategory.Ammunition)
+            _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                $"Equipment '{equipment.Id}' is consumed or charged and cannot be intelligent"));
+
+        if (item.MentalAbilities.Intelligence < 1 || item.MentalAbilities.Wisdom < 1
+            || item.MentalAbilities.Charisma < 1)
+            _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                $"Equipment '{equipment.Id}' has an intelligent item with an invalid mental ability score"));
+
+        if (item.Senses.RangeFt < 0)
+            _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                $"Equipment '{equipment.Id}' has a negative intelligent-item sense range"));
+
+        if (item.Powers.Any(power => string.IsNullOrWhiteSpace(power.Name)))
+            _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                $"Equipment '{equipment.Id}' has an unnamed intelligent-item power"));
+
+        if (item.Powers.GroupBy(power => power.Name, StringComparer.OrdinalIgnoreCase).Any(group => group.Count() > 1))
+            _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                $"Equipment '{equipment.Id}' repeats an intelligent-item power"));
+
+        foreach (var languageId in item.LanguageIds)
+            if (!_languages.ContainsKey(languageId))
+                _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                    $"Equipment '{equipment.Id}' has an intelligent item referencing unknown language '{languageId}'"));
+        if (item.LanguageIds.Distinct(StringComparer.Ordinal).Count() != item.LanguageIds.Count)
+            _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                $"Equipment '{equipment.Id}' repeats an intelligent-item language"));
+        if (item.LanguageIds.Count > item.IntelligenceLanguageAllowance)
+            _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                $"Equipment '{equipment.Id}' chooses {item.LanguageIds.Count} intelligent-item bonus languages but Intelligence permits {item.IntelligenceLanguageAllowance}"));
+
+        if (item.DedicatedPower != null && item.DedicatedPower.Kind != IntelligentItemPowerKind.Dedicated)
+            _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                $"Equipment '{equipment.Id}' has a dedicated power with the wrong kind"));
+
+        if (item.HasSpecialPurpose != (item.DedicatedPower != null))
+            _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                $"Equipment '{equipment.Id}' must define both a special purpose and its dedicated power"));
     }
 
     private void ValidatePrerequisites(List<Prerequisite> prerequisites, string context)

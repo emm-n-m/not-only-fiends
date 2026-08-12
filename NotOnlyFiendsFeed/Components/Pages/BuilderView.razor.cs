@@ -363,7 +363,7 @@ public partial class BuilderView
                         kv => new TickSpellcastingInfo(
                             kv.Value.CastingType,
                             kv.Value.CastingStat,
-                            kv.Value.CasterLevel,
+                            state.EffectiveCasterLevel(kv.Key),
                             kv.Value.MaxSpellLevel,
                             new Dictionary<int, int>(kv.Value.SpellsPerDay),
                             kv.Value.SpellsKnown != null ? new Dictionary<int, int>(kv.Value.SpellsKnown) : null,
@@ -1971,6 +1971,86 @@ public partial class BuilderView
     private void RemoveEquipmentEntry(int index)
     {
         _character.Equipment.RemoveAt(index);
+        OnCharacterChanged();
+    }
+
+    private void MakeEquipmentIntelligent(int index)
+    {
+        var entry = _character.Equipment[index];
+        var catalog = string.IsNullOrWhiteSpace(entry.ContentId)
+            ? null
+            : _equipmentCatalog.FirstOrDefault(definition => definition.Id == entry.ContentId);
+        entry.IntelligentItemOverride = catalog?.IntelligentItem?.Clone() ?? new IntelligentItemDefinition
+        {
+            MentalAbilities = new IntelligentItemMentalAbilities
+            {
+                Intelligence = 12,
+                Wisdom = 12,
+                Charisma = 10,
+            },
+            Communication = IntelligentItemCommunication.Empathy,
+            Senses = new IntelligentItemSenses { RangeFt = 30 },
+            BasePriceModifierGp = 1_000,
+            Powers =
+            {
+                new IntelligentItemPower
+                {
+                    Kind = IntelligentItemPowerKind.Lesser,
+                    Name = "Choose lesser power",
+                },
+            },
+        };
+        OnCharacterChanged();
+    }
+
+    private void RemoveEquipmentIntelligence(int index)
+    {
+        _character.Equipment[index].IntelligentItemOverride = null;
+        OnCharacterChanged();
+    }
+
+    private void AddIntelligentItemPower(int index)
+    {
+        _character.Equipment[index].IntelligentItemOverride?.Powers.Add(new IntelligentItemPower
+        {
+            Kind = IntelligentItemPowerKind.Lesser,
+            Name = "New power",
+        });
+        OnCharacterChanged();
+    }
+
+    private void RemoveIntelligentItemPower(int equipmentIndex, int powerIndex)
+    {
+        var powers = _character.Equipment[equipmentIndex].IntelligentItemOverride?.Powers;
+        if (powers != null && powerIndex >= 0 && powerIndex < powers.Count)
+            powers.RemoveAt(powerIndex);
+        OnCharacterChanged();
+    }
+
+    private void SetDedicatedPower(int index, string? name)
+    {
+        var intelligent = _character.Equipment[index].IntelligentItemOverride;
+        if (intelligent == null) return;
+        intelligent.DedicatedPower = string.IsNullOrWhiteSpace(name) ? null : new IntelligentItemPower
+        {
+            Kind = IntelligentItemPowerKind.Dedicated,
+            Name = name.Trim(),
+        };
+        OnCharacterChanged();
+    }
+
+    private void SetIntelligentItemLanguages(int index, string? value)
+    {
+        var intelligent = _character.Equipment[index].IntelligentItemOverride;
+        if (intelligent == null) return;
+
+        intelligent.LanguageIds = (value ?? string.Empty)
+            .Split([',', ';'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(language => _languages.FirstOrDefault(definition =>
+                definition.Id.Equals(language, StringComparison.OrdinalIgnoreCase)
+                || definition.Name.Equals(language, StringComparison.OrdinalIgnoreCase))?.Id ?? language)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
         OnCharacterChanged();
     }
 

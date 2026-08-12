@@ -73,10 +73,11 @@
 
     protected override void OnParametersSet() =>
         _casterLevels = State.Spellcasting.Values
-            .Where(s => s.CasterLevel > 0)
-            .OrderByDescending(s => s.CasterLevel)
-            .ThenBy(s => s.ClassId, StringComparer.Ordinal)
-            .Select(s => (ClassName?.Invoke(s.ClassId) ?? s.ClassId.Replace("class:", ""), s.CasterLevel))
+            .Select(s => (State: s, Level: State.EffectiveCasterLevel(s.ClassId)))
+            .Where(s => s.Level > 0)
+            .OrderByDescending(s => s.Level)
+            .ThenBy(s => s.State.ClassId, StringComparer.Ordinal)
+            .Select(s => (ClassName?.Invoke(s.State.ClassId) ?? s.State.ClassId.Replace("class:", ""), s.Level))
             .ToList();
 
     private string CasterLevelTitle =>

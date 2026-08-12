@@ -456,7 +456,7 @@ else if (_state != null && _character != null)
                 <div class="card-body">
                     @foreach (var (classId, sc) in _state.Spellcasting)
                     {
-                        <h5>@classId.Replace("class:", "") (CL @sc.CasterLevel, @sc.CastingType, @sc.CastingStat)</h5>
+                        <h5>@classId.Replace("class:", "") (CL @_state.EffectiveCasterLevel(classId), @sc.CastingType, @sc.CastingStat)</h5>
                         <p>
                             <strong>Spells/Day:</strong>
                             @string.Join(" / ", sc.SpellsPerDay.OrderBy(kv => kv.Key).Select(kv =>
@@ -554,6 +554,80 @@ else if (_state != null && _character != null)
                 </div>
             </div>
         }
+        }
+
+        @* ============================= TAB: Equipment ============================= *@
+        @if (_activeTab == CharacterTab.Equipment)
+        {
+            <div class="card mb-3">
+                <div class="card-header">Equipment (@_character.Equipment.Count)</div>
+                <div class="card-body">
+                    @foreach (var entry in _character.Equipment)
+                    {
+                        var definition = string.IsNullOrWhiteSpace(entry.ContentId)
+                            ? null
+                            : _registry.GetAllEquipment().FirstOrDefault(item => item.Id == entry.ContentId);
+                        <div class="border-bottom py-2">
+                            <strong>@(definition?.Name ?? entry.ItemId)</strong>
+                            <span class="text-muted small ms-1">@entry.Slot</span>
+                            @if (entry.Quantity != 1)
+                            {
+                                <span class="badge bg-secondary ms-1">×@entry.Quantity</span>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @foreach (var item in _state.IntelligentItems)
+            {
+                <div class="card mb-3 border-primary">
+                    <div class="card-header d-flex flex-wrap gap-2 align-items-center">
+                        <strong>@item.Name</strong>
+                        <span class="badge bg-dark">@item.Definition.Alignment</span>
+                        <span class="badge bg-primary">Ego @item.Ego</span>
+                        @if (item.NegativeLevels > 0)
+                        {
+                            <span class="badge bg-danger">@item.NegativeLevels negative level(s)</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">alignment compatible</span>
+                        }
+                    </div>
+                    <div class="card-body small">
+                        <p>
+                            <strong>Mind:</strong>
+                            Int @item.Definition.MentalAbilities.Intelligence,
+                            Wis @item.Definition.MentalAbilities.Wisdom,
+                            Cha @item.Definition.MentalAbilities.Charisma
+                        </p>
+                        <p>
+                            <strong>Communication and senses:</strong>
+                            @item.Definition.Communication; @item.Definition.Senses.RangeFt ft. @item.Definition.Senses.Vision
+                            @(item.Definition.Senses.Blindsense ? ", blindsense" : "")
+                            @(item.Definition.Senses.Hearing ? ", hearing" : "")
+                        </p>
+                        @if (item.Definition.LanguageIds.Any())
+                        {
+                            <p><strong>Languages:</strong> @string.Join(", ", item.Definition.LanguageIds.Select(Titleise))</p>
+                        }
+                        @if (item.Definition.Powers.Any())
+                        {
+                            <p><strong>Powers:</strong> @string.Join(", ", item.Definition.Powers.Select(power => $"{power.Name} ({power.Kind})"))</p>
+                        }
+                        @if (item.Definition.HasSpecialPurpose)
+                        {
+                            <p><strong>Special purpose:</strong> @item.Definition.SpecialPurpose</p>
+                        }
+                        @if (item.Definition.DedicatedPower != null)
+                        {
+                            <p><strong>Dedicated power:</strong> @item.Definition.DedicatedPower.Name</p>
+                        }
+                        <p class="text-muted mb-0">Personality conflict: Will DC @item.ConflictDc. The item controls activation of its powers.</p>
+                    </div>
+                </div>
+            }
         }
     </div>
 }

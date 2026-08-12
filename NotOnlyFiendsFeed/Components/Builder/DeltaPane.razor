@@ -11,9 +11,9 @@
         <div class="reg-delta-label">CURRENT STANDING</div>
         <div>
             @Row("Hit points", State.HP.ToString())
-            @foreach (var caster in _casters.Where(c => c.CasterLevel > 0))
+            @foreach (var caster in _casters.Where(c => State.EffectiveCasterLevel(c.ClassId) > 0))
             {
-                @Row($"Caster level · {ClassLabel(caster.ClassId)}", caster.CasterLevel.ToString())
+                @Row($"Caster level · {ClassLabel(caster.ClassId)}", State.EffectiveCasterLevel(caster.ClassId).ToString())
             }
             @Row("Base attack", FormatSigned(State.EffectiveBAB))
             @Row("Fort / Ref / Will", $"{FormatSigned(State.EffectiveSaves.Fort)} / {FormatSigned(State.EffectiveSaves.Ref)} / {FormatSigned(State.EffectiveSaves.Will)}")

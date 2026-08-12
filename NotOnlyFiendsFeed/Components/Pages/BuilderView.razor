@@ -1249,6 +1249,7 @@ else
                 var contentDef = string.IsNullOrEmpty(item.ContentId)
                     ? null
                     : _equipmentCatalog.FirstOrDefault(e => e.Id == item.ContentId);
+                var intelligentItem = item.IntelligentItemOverride ?? contentDef?.IntelligentItem;
                 <div class="border rounded p-2 mb-2">
                     <div class="row align-items-center">
                         <div class="col-md-3">
@@ -1325,6 +1326,172 @@ else
                             <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveEquipmentEntry(eqIndex)">Remove</button>
                         </div>
                     </div>
+                    @if (intelligentItem == null)
+                    {
+                        <button class="btn btn-sm btn-outline-primary mt-2"
+                                @onclick="() => MakeEquipmentIntelligent(eqIndex)">Make intelligent</button>
+                    }
+                    else
+                    {
+                        var enhancement = item.EnhancementBonusOverride ?? contentDef?.EnhancementBonus ?? 0;
+                        var specialAbilities = item.SpecialAbilityBonusEquivalentOverride
+                            ?? contentDef?.SpecialAbilityBonusEquivalent ?? 0;
+                        var ego = intelligentItem.CalculateEgo(enhancement, specialAbilities);
+                        var negativeLevels = intelligentItem.AlignmentNegativeLevels(_character.Alignment, enhancement, specialAbilities);
+                        <div class="border rounded bg-light p-2 mt-2">
+                            <div class="d-flex flex-wrap gap-2 align-items-center">
+                                <strong>Intelligent item</strong>
+                                <span class="badge bg-dark">@intelligentItem.Alignment</span>
+                                <span class="badge bg-primary">Ego @ego</span>
+                                <span class="badge @(negativeLevels == 0 ? "bg-success" : "bg-danger")">
+                                    @(negativeLevels == 0 ? "alignment compatible" : $"{negativeLevels} negative level(s)")
+                                </span>
+                                @if (item.IntelligentItemOverride == null)
+                                {
+                                    <button class="btn btn-sm btn-outline-secondary ms-auto"
+                                            @onclick="() => MakeEquipmentIntelligent(eqIndex)">Customize this personality</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-sm btn-outline-danger ms-auto"
+                                            @onclick="() => RemoveEquipmentIntelligence(eqIndex)">
+                                        @(contentDef?.IntelligentItem == null ? "Remove intelligence" : "Use catalog personality")
+                                    </button>
+                                }
+                            </div>
+
+                            @if (item.IntelligentItemOverride != null)
+                            {
+                                var editable = item.IntelligentItemOverride;
+                                <div class="row g-2 mt-1">
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-0">Alignment</label>
+                                        <select class="form-select form-select-sm" @bind="editable.Alignment" @bind:after="OnCharacterChanged">
+                                            @foreach (var alignment in Enum.GetValues<Alignment>())
+                                            {
+                                                <option value="@alignment">@alignment</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small mb-0">Mental scores</label>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text">Int</span>
+                                            <input type="number" min="1" class="form-control" @bind="editable.MentalAbilities.Intelligence" @bind:after="OnCharacterChanged" />
+                                            <span class="input-group-text">Wis</span>
+                                            <input type="number" min="1" class="form-control" @bind="editable.MentalAbilities.Wisdom" @bind:after="OnCharacterChanged" />
+                                            <span class="input-group-text">Cha</span>
+                                            <input type="number" min="1" class="form-control" @bind="editable.MentalAbilities.Charisma" @bind:after="OnCharacterChanged" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small mb-0">Communication</label>
+                                        <select class="form-select form-select-sm" @bind="editable.Communication" @bind:after="OnCharacterChanged">
+                                            @foreach (var communication in Enum.GetValues<IntelligentItemCommunication>())
+                                            {
+                                                <option value="@communication">@communication</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-0">Vision</label>
+                                        <select class="form-select form-select-sm" @bind="editable.Senses.Vision" @bind:after="OnCharacterChanged">
+                                            @foreach (var vision in Enum.GetValues<IntelligentItemVision>())
+                                            {
+                                                <option value="@vision">@vision</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-0">Range (ft.)</label>
+                                        <input type="number" min="0" class="form-control form-control-sm" @bind="editable.Senses.RangeFt" @bind:after="OnCharacterChanged" />
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-wrap gap-3 mt-2 small">
+                                    <label><input type="checkbox" @bind="editable.Senses.Hearing" @bind:after="OnCharacterChanged" /> hearing</label>
+                                    <label><input type="checkbox" @bind="editable.Senses.Blindsense" @bind:after="OnCharacterChanged" /> blindsense</label>
+                                    <label><input type="checkbox" @bind="editable.Senses.ReadsSpokenLanguages" @bind:after="OnCharacterChanged" /> reads known languages</label>
+                                    <label><input type="checkbox" @bind="editable.Senses.ReadsAllLanguages" @bind:after="OnCharacterChanged" /> reads all languages</label>
+                                    <label><input type="checkbox" @bind="editable.Senses.ReadsMagic" @bind:after="OnCharacterChanged" /> reads magic</label>
+                                </div>
+                                <div class="row g-2 mt-1">
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-0">Enhancement</label>
+                                        <input type="number" min="0" class="form-control form-control-sm"
+                                               @bind="item.EnhancementBonusOverride" @bind:after="OnCharacterChanged" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-0">Ability equivalent</label>
+                                        <input type="number" min="0" class="form-control form-control-sm"
+                                               @bind="item.SpecialAbilityBonusEquivalentOverride" @bind:after="OnCharacterChanged" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-0">Personality price (gp)</label>
+                                        <input type="number" min="0" class="form-control form-control-sm"
+                                               @bind="editable.BasePriceModifierGp" @bind:after="OnCharacterChanged" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small mb-0">Languages (names or IDs, comma-separated)</label>
+                                        <input class="form-control form-control-sm"
+                                               value="@string.Join(", ", editable.LanguageIds)"
+                                               @onchange="e => SetIntelligentItemLanguages(eqIndex, e.Value?.ToString())" />
+                                    </div>
+                                </div>
+                                <div class="row g-2 mt-1">
+                                    <div class="col-md-8">
+                                        <label class="form-label small mb-0">Special purpose</label>
+                                        <input class="form-control form-control-sm" @bind="editable.SpecialPurpose" @bind:after="OnCharacterChanged" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small mb-0">Dedicated power</label>
+                                        <input class="form-control form-control-sm"
+                                               value="@(editable.DedicatedPower?.Name ?? "")"
+                                               @onchange="e => SetDedicatedPower(eqIndex, e.Value?.ToString())" />
+                                    </div>
+                                </div>
+                                @for (int p = 0; p < editable.Powers.Count; p++)
+                                {
+                                    var powerIndex = p;
+                                    var power = editable.Powers[powerIndex];
+                                    <div class="input-group input-group-sm mt-1">
+                                        <select class="form-select" style="max-width:110px" @bind="power.Kind" @bind:after="OnCharacterChanged">
+                                            <option value="@IntelligentItemPowerKind.Lesser">Lesser</option>
+                                            <option value="@IntelligentItemPowerKind.Greater">Greater</option>
+                                        </select>
+                                        <input class="form-control" placeholder="Item-controlled power" @bind="power.Name" @bind:after="OnCharacterChanged" />
+                                        <input class="form-control" placeholder="Activation" @bind="power.Activation" @bind:after="OnCharacterChanged" />
+                                        <input type="number" min="0" class="form-control" style="max-width:130px"
+                                               title="Base price modifier (gp)" @bind="power.BasePriceModifierGp" @bind:after="OnCharacterChanged" />
+                                        <button class="btn btn-outline-danger" @onclick="() => RemoveIntelligentItemPower(eqIndex, powerIndex)">Remove</button>
+                                    </div>
+                                }
+                                <button class="btn btn-sm btn-outline-secondary mt-1" @onclick="() => AddIntelligentItemPower(eqIndex)">+ Power</button>
+                            }
+                            else
+                            {
+                                <div class="small mt-1">
+                                    Int @intelligentItem.MentalAbilities.Intelligence,
+                                    Wis @intelligentItem.MentalAbilities.Wisdom,
+                                    Cha @intelligentItem.MentalAbilities.Charisma;
+                                    @intelligentItem.Communication; @intelligentItem.Senses.RangeFt ft. @intelligentItem.Senses.Vision
+                                </div>
+                            }
+
+                            @if (intelligentItem.Powers.Any())
+                            {
+                                <div class="small mt-2"><strong>Powers:</strong> @string.Join(", ", intelligentItem.Powers.Select(power => $"{power.Name} ({power.Kind})"))</div>
+                            }
+                            @if (intelligentItem.HasSpecialPurpose)
+                            {
+                                <div class="small"><strong>Purpose:</strong> @intelligentItem.SpecialPurpose</div>
+                            }
+                            @if (intelligentItem.DedicatedPower != null)
+                            {
+                                <div class="small"><strong>Dedicated power:</strong> @intelligentItem.DedicatedPower.Name</div>
+                            }
+                            <div class="text-muted small mt-1">The item controls activation of its powers. Personality conflict uses a Will save against DC @ego.</div>
+                        </div>
+                    }
                     @if (contentDef == null)
                     {
                         <div class="mt-1 d-flex flex-wrap gap-1">

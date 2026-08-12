@@ -16,6 +16,12 @@ public enum IntelligentItemPowerKind
     Dedicated
 }
 
+public enum IntelligentItemVision
+{
+    Vision,
+    Darkvision
+}
+
 public sealed class IntelligentItemMentalAbilities
 {
     public int Intelligence { get; set; } = 10;
@@ -29,9 +35,11 @@ public sealed class IntelligentItemMentalAbilities
 
 public sealed class IntelligentItemSenses
 {
-    public string Vision { get; set; } = "vision";
+    public IntelligentItemVision Vision { get; set; } = IntelligentItemVision.Vision;
     public int RangeFt { get; set; }
     public bool Hearing { get; set; } = true;
+    public bool Blindsense { get; set; }
+    /// <summary>Legacy misspelling retained for existing pack JSON; SRD intelligent items use blindsense.</summary>
     public bool Blindsight { get; set; }
     public bool ReadsSpokenLanguages { get; set; }
     public bool ReadsAllLanguages { get; set; }
@@ -68,6 +76,7 @@ public sealed class IntelligentItemDefinition
     public IntelligentItemCommunication Communication { get; set; } = IntelligentItemCommunication.Empathy;
     public IntelligentItemSenses Senses { get; set; } = new();
     public int BasePriceModifierGp { get; set; }
+    public List<string> LanguageIds { get; set; } = new();
     public List<IntelligentItemPower> Powers { get; set; } = new();
     public string? SpecialPurpose { get; set; }
     public IntelligentItemPower? DedicatedPower { get; set; }
@@ -78,6 +87,12 @@ public sealed class IntelligentItemDefinition
 
     public bool HasSpecialPurpose => !string.IsNullOrWhiteSpace(SpecialPurpose);
 
+    public int IntelligenceLanguageAllowance => Math.Max(0, MentalAbilities.IntelligenceBonus);
+
+    public int TotalPriceModifierGp => BasePriceModifierGp
+        + Powers.Sum(power => Math.Max(0, power.BasePriceModifierGp))
+        + Math.Max(0, DedicatedPower?.BasePriceModifierGp ?? 0);
+
     /// <summary>Calculates SRD Ego from the item's enhancement, powers, communication, senses, and mind.</summary>
     public int CalculateEgo(int enhancementBonus = 0, int specialAbilityBonus = 0)
     {
@@ -87,7 +102,7 @@ public sealed class IntelligentItemDefinition
             + Powers.Sum(p => p.EgoPoints)
             + (HasSpecialPurpose ? 4 : 0)
             + (HasTelepathy ? 1 : 0)
-            + (Senses.ReadsAllLanguages ? 1 : 0)
+            + (Senses.ReadsSpokenLanguages || Senses.ReadsAllLanguages ? 1 : 0)
             + (Senses.ReadsMagic ? 1 : 0)
             + MentalAbilities.IntelligenceBonus
             + MentalAbilities.WisdomBonus
@@ -103,25 +118,82 @@ public sealed class IntelligentItemDefinition
         return ego >= 30 ? 3 : ego >= 20 ? 2 : 1;
     }
 
-    public bool CausesPersonalityConflict(bool wielderAlignmentMatches, bool pursuesPurpose) =>
-        !wielderAlignmentMatches || (HasSpecialPurpose && !pursuesPurpose)
-        || (CalculateEgo() >= 20 && !pursuesPurpose);
+    /// <summary>
+    /// Personality conflict is an encounter judgment, not persistent character state. The caller
+    /// supplies the two SRD triggers; high-Ego disagreement matters only at Ego 20 or higher.
+    /// </summary>
+    public bool RequiresPersonalityConflict(
+        bool actsAgainstAlignmentOrPurpose,
+        bool disagreesWithHighEgoItem,
+        int enhancementBonus = 0,
+        int specialAbilityBonus = 0) =>
+        actsAgainstAlignmentOrPurpose
+        || (CalculateEgo(enhancementBonus, specialAbilityBonus) >= 20 && disagreesWithHighEgoItem);
+
+    public bool AlignmentCorresponds(Alignment wielder) => AlignmentsCorrespond(Alignment, wielder);
+
+    public IntelligentItemDefinition Clone() => new()
+    {
+        Alignment = Alignment,
+        MentalAbilities = new IntelligentItemMentalAbilities
+        {
+            Intelligence = MentalAbilities.Intelligence,
+            Wisdom = MentalAbilities.Wisdom,
+            Charisma = MentalAbilities.Charisma,
+        },
+        Communication = Communication,
+        Senses = new IntelligentItemSenses
+        {
+            Vision = Senses.Vision,
+            RangeFt = Senses.RangeFt,
+            Hearing = Senses.Hearing,
+            Blindsense = Senses.Blindsense,
+            Blindsight = Senses.Blindsight,
+            ReadsSpokenLanguages = Senses.ReadsSpokenLanguages,
+            ReadsAllLanguages = Senses.ReadsAllLanguages,
+            ReadsMagic = Senses.ReadsMagic,
+        },
+        BasePriceModifierGp = BasePriceModifierGp,
+        LanguageIds = new List<string>(LanguageIds),
+        Powers = Powers.Select(ClonePower).ToList(),
+        SpecialPurpose = SpecialPurpose,
+        DedicatedPower = DedicatedPower == null ? null : ClonePower(DedicatedPower),
+        EgoOverride = EgoOverride,
+    };
+
+    private static IntelligentItemPower ClonePower(IntelligentItemPower power) => new()
+    {
+        Kind = power.Kind,
+        Name = power.Name,
+        Activation = power.Activation,
+        BasePriceModifierGp = power.BasePriceModifierGp,
+        Description = power.Description,
+    };
 
     private static bool AlignmentsCorrespond(Alignment item, Alignment wielder)
     {
         if (item == wielder) return true;
-        if (item == Alignment.N) return false;
-
-        var itemLaw = item is Alignment.LG or Alignment.LN or Alignment.LE;
-        var itemChaos = item is Alignment.CG or Alignment.CN or Alignment.CE;
-        var itemGood = item is Alignment.LG or Alignment.NG or Alignment.CG;
-        var itemEvil = item is Alignment.LE or Alignment.NE or Alignment.CE;
-        var wielderLaw = wielder is Alignment.LG or Alignment.LN or Alignment.LE;
-        var wielderChaos = wielder is Alignment.CG or Alignment.CN or Alignment.CE;
-        var wielderGood = wielder is Alignment.LG or Alignment.NG or Alignment.CG;
-        var wielderEvil = wielder is Alignment.LE or Alignment.NE or Alignment.CE;
-
-        return (itemLaw && wielderLaw) || (itemChaos && wielderChaos)
-            || (itemGood && wielderGood) || (itemEvil && wielderEvil);
+        return item switch
+        {
+            Alignment.LN => wielder is Alignment.LG or Alignment.LN or Alignment.LE,
+            Alignment.CN => wielder is Alignment.CG or Alignment.CN or Alignment.CE,
+            Alignment.NG => wielder is Alignment.LG or Alignment.NG or Alignment.CG,
+            Alignment.NE => wielder is Alignment.LE or Alignment.NE or Alignment.CE,
+            _ => false,
+        };
     }
+}
+
+/// <summary>Post-replay readout for an intelligent item currently in use.</summary>
+public sealed class IntelligentItemState
+{
+    public string ItemId { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public IntelligentItemDefinition Definition { get; set; } = new();
+    public int EnhancementBonus { get; set; }
+    public int SpecialAbilityBonusEquivalent { get; set; }
+    public int Ego { get; set; }
+    public int ConflictDc => Ego;
+    public bool AlignmentCorresponds { get; set; }
+    public int NegativeLevels { get; set; }
 }

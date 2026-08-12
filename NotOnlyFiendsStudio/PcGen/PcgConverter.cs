@@ -724,6 +724,16 @@ public static class PcgConverter
             "PLUS_10_WEAP",
         };
 
+        supported.UnionWith(ApplyIntelligentItemModifiers(text, entry));
+
+        foreach (Match match in Regex.Matches(text,
+                     @"(?:^|\.)(?<key>PLUS(?<value>[1-5])[WAS])(?=\.|$)",
+                     RegexOptions.IgnoreCase))
+        {
+            entry.EnhancementBonusOverride = int.Parse(match.Groups["value"].Value);
+            supported.Add(match.Groups["key"].Value.ToUpperInvariant());
+        }
+
         foreach (Match match in Regex.Matches(text,
                      @"EPIC_ABILITY_BONUS_ENHANCE&pipe;(?<ability>STR|DEX|CON|INT|WIS|CHA)=\+(?<value>\d+)",
                      RegexOptions.IgnoreCase))
@@ -798,6 +808,306 @@ public static class PcgConverter
             result.UnsupportedCustomEquipmentModifiers.Add(warning);
         }
     }
+
+    private static readonly HashSet<string> IntelligentLesserPowerKeys = new(StringComparer.Ordinal)
+    {
+        "INT_ITEM_BLESS", "INT_ITEM_BLUFF", "INT_ITEM_CURE_MODERATE", "INT_ITEM_DARKNESS",
+        "INT_ITEM_DAZE_MONSTER", "INT_ITEM_DEATHWATCH", "INT_ITEM_DECIPHER_SCRIPT",
+        "INT_ITEM_DETECT_MGC", "INT_ITEM_DIPLOMACY", "INT_ITEM_FAERIE", "INT_ITEM_HOLD_PERSON",
+        "INT_ITEM_INTIMIDATE", "INT_ITEM_KNOWLEDGE", "INT_ITEM_LISTEN", "INT_ITEM_LOCATE_OBJECT",
+        "INT_ITEM_MAJOR_IMG", "INT_ITEM_MINOR_IMG", "INT_ITEM_SEARCH", "INT_ITEM_SENSE_MOTIVE",
+        "INT_ITEM_SPELLCRAFT", "INT_ITEM_SPOT", "INT_ITEM_ZONE_TRUTH",
+    };
+
+    private static readonly HashSet<string> IntelligentGreaterPowerKeys = new(StringComparer.Ordinal)
+    {
+        "INT_ITEM_ARCANE_EYE", "INT_ITEM_CAUSE_FEAR", "INT_ITEM_CIRCLE_AGAINST_CHAOS",
+        "INT_ITEM_CIRCLE_AGAINST_EVIL", "INT_ITEM_CIRCLE_AGAINST_GOOD", "INT_ITEM_CIRCLE_AGAINST_LAW",
+        "INT_ITEM_CLAIR", "INT_ITEM_DAYLGT", "INT_ITEM_DEEPER_DARKNESS", "INT_ITEM_DETECT_CHAOS",
+        "INT_ITEM_DETECT_EVIL", "INT_ITEM_DETECT_GOOD", "INT_ITEM_DETECT_LAW", "INT_ITEM_DETECT_SCRY",
+        "INT_ITEM_DETECT_THOUGHTS", "INT_ITEM_DETECT_UNDEAD", "INT_ITEM_DIMEN_ANCHOR",
+        "INT_ITEM_DISMISSAL", "INT_ITEM_FEAR", "INT_ITEM_GUST", "INT_ITEM_HASTE",
+        "INT_ITEM_INVIS_PURGE", "INT_ITEM_LESS_GLOBE_INVLN", "INT_ITEM_LOCATE_CREATURE",
+        "INT_ITEM_QUENCH", "INT_ITEM_SLOW", "INT_ITEM_STATUS", "INT_ITEM_WALL_FIRE",
+    };
+
+    private static readonly HashSet<string> IntelligentDedicatedPowerKeys = new(StringComparer.Ordinal)
+    {
+        "INT_ITEM_CONFUSION", "INT_ITEM_CONTAGION", "INT_ITEM_CRUSHING_DESPAIR",
+        "INT_ITEM_DIMENSION_DOOR", "INT_ITEM_FIREBALL", "INT_ITEM_GRTR_SHOUT", "INT_ITEM_ICE_STORM",
+        "INT_ITEM_LGHTNG_BOLT", "INT_ITEM_LUCK", "INT_ITEM_MASS_INFLICT_LGT_WOUNDS",
+        "INT_ITEM_PHANTASMAL_KILLER", "INT_ITEM_POISON", "INT_ITEM_PRYING_EYES",
+        "INT_ITEM_RUSTING_GRASP", "INT_ITEM_SONG_DISCORD", "INT_ITEM_TRUE_RESURRECTION",
+        "INT_ITEM_WAVES_EXHAUSTION",
+    };
+
+    private static readonly Dictionary<string, string> IntelligentPurposes = new(StringComparer.Ordinal)
+    {
+        ["INT_ITEM_DEFEAT_ALL"] = "Defeat/slay all",
+        ["INT_ITEM_DEFEAT_ARCANE"] = "Defeat/slay arcane spellcasters",
+        ["INT_ITEM_DEFEAT_CHAOS"] = "Defeat/slay chaos",
+        ["INT_ITEM_DEFEAT_DEITY"] = "Defeat/slay servants of a deity",
+        ["INT_ITEM_DEFEAT_DIVINE"] = "Defeat/slay divine spellcasters",
+        ["INT_ITEM_DEFEAT_EVIL"] = "Defeat/slay evil",
+        ["INT_ITEM_DEFEAT_GOOD"] = "Defeat/slay good",
+        ["INT_ITEM_DEFEAT_LAW"] = "Defeat/slay law",
+        ["INT_ITEM_DEFEAT_NONSPELL"] = "Defeat/slay nonspellcasters",
+        ["INT_ITEM_DEFEAT_RACE"] = "Defeat/slay a particular race",
+        ["INT_ITEM_DEFEAT_TYPE"] = "Defeat/slay a particular creature type",
+        ["INT_ITEM_DEFEND_DEITY"] = "Defend servants and interests of a deity",
+        ["INT_ITEM_DEFEND_RACE"] = "Defend a particular race or kind of creature",
+    };
+
+    /// <summary>
+    /// PCGen serializes an intelligent custom item as a dot-separated EQMOD program. Resolve the
+    /// stable RSRD keys into the same per-instance model the builder authors; unknown keys remain
+    /// visible through UnsupportedCustomEquipmentModifiers instead of being silently discarded.
+    /// </summary>
+    private static HashSet<string> ApplyIntelligentItemModifiers(string text, EquipmentEntry entry)
+    {
+        var tokens = text.Split('.', StringSplitOptions.RemoveEmptyEntries);
+        if (!tokens.Any(token => token is "INT_ITEM" or "EPIC_INT_ITEM"
+            || Regex.IsMatch(token, @"^[A-Z0-9]+_INT_ITEM_[1-8](?:&pipe;|$)")))
+            return new HashSet<string>(StringComparer.Ordinal);
+
+        var recognized = new HashSet<string>(StringComparer.Ordinal) { "INT_ITEM", "EPIC_INT_ITEM" };
+        var intelligent = new IntelligentItemDefinition();
+        entry.IntelligentItemOverride = intelligent;
+
+        foreach (var token in tokens)
+        {
+            var key = token.Split("&pipe;", 2, StringSplitOptions.None)[0];
+            if (Regex.IsMatch(key, @"^EPIC_INT_CAP_(10|11|12|14|16|18)$"))
+            {
+                recognized.Add(key);
+                continue;
+            }
+            if (key.StartsWith("EPIC_INT_COMM_", StringComparison.Ordinal))
+            {
+                intelligent.Communication = key switch
+                {
+                    "EPIC_INT_COMM_SPEECH" => IntelligentItemCommunication.Speech,
+                    "EPIC_INT_COMM_TEL" => IntelligentItemCommunication.Telepathy,
+                    "EPIC_INT_COMM_SPEECH_TEL" => IntelligentItemCommunication.SpeechAndTelepathy,
+                    _ => IntelligentItemCommunication.Empathy,
+                };
+                intelligent.BasePriceModifierGp += key switch
+                {
+                    "EPIC_INT_COMM_SEMI" => 1_000,
+                    "EPIC_INT_COMM_EMPA" => 2_000,
+                    "EPIC_INT_COMM_SPEECH" => 3_000,
+                    "EPIC_INT_COMM_TEL" => 5_000,
+                    _ => 8_000,
+                };
+                recognized.Add(key);
+                continue;
+            }
+            if (key.StartsWith("EPIC_INT_PRI_", StringComparison.Ordinal)
+                || key.StartsWith("EPIC_INT_EX_", StringComparison.Ordinal)
+                || key.StartsWith("EPIC_INT_AW_", StringComparison.Ordinal))
+            {
+                var prefix = key.StartsWith("EPIC_INT_PRI_", StringComparison.Ordinal)
+                    ? "EPIC_INT_PRI_"
+                    : key.StartsWith("EPIC_INT_EX_", StringComparison.Ordinal)
+                        ? "EPIC_INT_EX_"
+                        : "EPIC_INT_AW_";
+                var epicKind = prefix == "EPIC_INT_PRI_"
+                    ? IntelligentItemPowerKind.Lesser
+                    : IntelligentItemPowerKind.Greater;
+                intelligent.Powers.Add(new IntelligentItemPower
+                {
+                    Kind = epicKind,
+                    Name = HumanizePcgenKey(key[prefix.Length..]),
+                    BasePriceModifierGp = prefix switch
+                    {
+                        "EPIC_INT_PRI_" => 10_000,
+                        "EPIC_INT_EX_" => 35_000,
+                        _ => 100_000,
+                    },
+                    Description = $"Imported from PCGen epic equipment modifier {key}.",
+                });
+                recognized.Add(key);
+                continue;
+            }
+            if (key == "EPIC_INT_SPECIAL_PURPOSE")
+            {
+                intelligent.SpecialPurpose ??= "Epic special purpose";
+                intelligent.BasePriceModifierGp += 50_000;
+                recognized.Add(key);
+                continue;
+            }
+            var tierMatch = Regex.Match(key, @"^[A-Z0-9]+_INT_ITEM_(?<tier>[1-8])$");
+            if (tierMatch.Success)
+            {
+                var tier = int.Parse(tierMatch.Groups["tier"].Value);
+                ApplyIntelligentCapabilityTier(intelligent, tier);
+                recognized.Add(key);
+                continue;
+            }
+
+            var abilityMatch = Regex.Match(key, @"^INT_ITEM_(?<ability>INT|WIS|CHA)_(?<score>\d+)$");
+            if (abilityMatch.Success)
+            {
+                var score = int.Parse(abilityMatch.Groups["score"].Value);
+                switch (abilityMatch.Groups["ability"].Value)
+                {
+                    case "INT": intelligent.MentalAbilities.Intelligence = score; break;
+                    case "WIS": intelligent.MentalAbilities.Wisdom = score; break;
+                    case "CHA": intelligent.MentalAbilities.Charisma = score; break;
+                }
+                recognized.Add(key);
+                continue;
+            }
+
+            var alignmentMatch = Regex.Match(key, @"^INT_ITEM_ALIGN_(?<alignment>CE|CG|CN|LE|LG|LN|N|NE|NG)$");
+            if (alignmentMatch.Success
+                && Enum.TryParse<Alignment>(alignmentMatch.Groups["alignment"].Value, out var alignment))
+            {
+                intelligent.Alignment = alignment;
+                recognized.Add(key);
+                continue;
+            }
+
+            if (Regex.IsMatch(key, @"^INT_ITEM_LANG_[1-4]$") && token.Contains("&pipe;"))
+            {
+                var language = token[(token.IndexOf("&pipe;", StringComparison.Ordinal) + "&pipe;".Length)..];
+                intelligent.LanguageIds.Add(PcgIdMapper.MapLanguage(language));
+                recognized.Add(key);
+                continue;
+            }
+
+            if (IntelligentPurposes.TryGetValue(key, out var purpose))
+            {
+                var choiceAt = token.IndexOf("&pipe;", StringComparison.Ordinal);
+                intelligent.SpecialPurpose = choiceAt < 0
+                    ? purpose
+                    : $"{purpose}: {token[(choiceAt + "&pipe;".Length)..]}";
+                recognized.Add(key);
+                continue;
+            }
+
+            if (key == "INT_ITEM_DED_PURP")
+            {
+                recognized.Add(key);
+                continue;
+            }
+
+            IntelligentItemPowerKind? kind = IntelligentLesserPowerKeys.Contains(key)
+                ? IntelligentItemPowerKind.Lesser
+                : IntelligentGreaterPowerKeys.Contains(key)
+                    ? IntelligentItemPowerKind.Greater
+                    : IntelligentDedicatedPowerKeys.Contains(key)
+                        ? IntelligentItemPowerKind.Dedicated
+                        : null;
+            if (!kind.HasValue) continue;
+
+            var power = new IntelligentItemPower
+            {
+                Kind = kind.Value,
+                Name = IntelligentPowerName(key),
+                BasePriceModifierGp = IntelligentPowerPriceGp(key),
+                Description = $"Imported from PCGen equipment modifier {key}.",
+            };
+            if (kind == IntelligentItemPowerKind.Dedicated)
+                intelligent.DedicatedPower = power;
+            else
+                intelligent.Powers.Add(power);
+            recognized.Add(key);
+        }
+
+        return recognized;
+    }
+
+    private static void ApplyIntelligentCapabilityTier(IntelligentItemDefinition item, int tier)
+    {
+        item.BasePriceModifierGp = tier switch
+        {
+            1 => 1_000, 2 => 2_000, 3 => 4_000, 4 => 5_000,
+            5 => 6_000, 6 => 9_000, 7 => 12_000, _ => 15_000,
+        };
+        item.Communication = tier switch
+        {
+            <= 2 => IntelligentItemCommunication.Empathy,
+            <= 5 => IntelligentItemCommunication.Speech,
+            _ => IntelligentItemCommunication.SpeechAndTelepathy,
+        };
+        item.Senses.RangeFt = tier switch { 1 => 30, 2 or 4 or 5 => 60, _ => 120 };
+        item.Senses.Vision = tier >= 4 ? IntelligentItemVision.Darkvision : IntelligentItemVision.Vision;
+        item.Senses.ReadsSpokenLanguages = tier >= 5;
+        item.Senses.ReadsAllLanguages = tier >= 7;
+        item.Senses.ReadsMagic = tier >= 7;
+        item.Senses.Blindsense = tier >= 7;
+    }
+
+    private static string IntelligentPowerName(string key)
+    {
+        var overrides = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["INT_ITEM_CLAIR"] = "Clairvoyance",
+            ["INT_ITEM_CURE_MODERATE"] = "Cure moderate wounds",
+            ["INT_ITEM_DAYLGT"] = "Daylight",
+            ["INT_ITEM_DETECT_MGC"] = "Detect magic",
+            ["INT_ITEM_DIMEN_ANCHOR"] = "Dimensional anchor",
+            ["INT_ITEM_FAERIE"] = "Faerie fire",
+            ["INT_ITEM_GRTR_SHOUT"] = "Greater shout",
+            ["INT_ITEM_GUST"] = "Gust of wind",
+            ["INT_ITEM_INVIS_PURGE"] = "Invisibility purge",
+            ["INT_ITEM_LESS_GLOBE_INVLN"] = "Lesser globe of invulnerability",
+            ["INT_ITEM_LGHTNG_BOLT"] = "Lightning bolt",
+            ["INT_ITEM_MAJOR_IMG"] = "Major image",
+            ["INT_ITEM_MASS_INFLICT_LGT_WOUNDS"] = "Mass inflict light wounds",
+            ["INT_ITEM_MINOR_IMG"] = "Minor image",
+            ["INT_ITEM_WALL_FIRE"] = "Wall of fire",
+            ["INT_ITEM_WAVES_EXHAUSTION"] = "Waves of exhaustion",
+        };
+        if (overrides.TryGetValue(key, out var name)) return name;
+        var words = key["INT_ITEM_".Length..].Split('_').Select(word => word.ToLowerInvariant());
+        var text = string.Join(' ', words);
+        return char.ToUpperInvariant(text[0]) + text[1..];
+    }
+
+    private static string HumanizePcgenKey(string key)
+    {
+        var text = string.Join(' ', key.Split('_').Select(word => word.ToLowerInvariant()));
+        return char.ToUpperInvariant(text[0]) + text[1..];
+    }
+
+    private static int IntelligentPowerPriceGp(string key) => key switch
+    {
+        "INT_ITEM_BLESS" => 1_000,
+        "INT_ITEM_FAERIE" => 1_100,
+        "INT_ITEM_MINOR_IMG" => 2_200,
+        "INT_ITEM_DEATHWATCH" => 2_700,
+        "INT_ITEM_DETECT_MGC" => 3_600,
+        "INT_ITEM_MAJOR_IMG" => 5_400,
+        "INT_ITEM_BLUFF" or "INT_ITEM_DECIPHER_SCRIPT" or "INT_ITEM_DIPLOMACY"
+            or "INT_ITEM_INTIMIDATE" or "INT_ITEM_KNOWLEDGE" or "INT_ITEM_LISTEN"
+            or "INT_ITEM_SEARCH" or "INT_ITEM_SENSE_MOTIVE" or "INT_ITEM_SPELLCRAFT"
+            or "INT_ITEM_SPOT" => 5_000,
+        "INT_ITEM_CURE_MODERATE" or "INT_ITEM_DARKNESS" or "INT_ITEM_DAZE_MONSTER"
+            or "INT_ITEM_HOLD_PERSON" or "INT_ITEM_LOCATE_OBJECT" or "INT_ITEM_ZONE_TRUTH" => 6_500,
+        "INT_ITEM_CAUSE_FEAR" or "INT_ITEM_DETECT_CHAOS" or "INT_ITEM_DETECT_EVIL"
+            or "INT_ITEM_DETECT_GOOD" or "INT_ITEM_DETECT_LAW" or "INT_ITEM_DETECT_UNDEAD" => 7_200,
+        "INT_ITEM_ARCANE_EYE" or "INT_ITEM_DETECT_SCRY" or "INT_ITEM_DIMEN_ANCHOR"
+            or "INT_ITEM_DISMISSAL" or "INT_ITEM_LESS_GLOBE_INVLN" or "INT_ITEM_WALL_FIRE" => 10_000,
+        "INT_ITEM_GUST" or "INT_ITEM_STATUS" => 11_000,
+        "INT_ITEM_CIRCLE_AGAINST_CHAOS" or "INT_ITEM_CIRCLE_AGAINST_EVIL"
+            or "INT_ITEM_CIRCLE_AGAINST_GOOD" or "INT_ITEM_CIRCLE_AGAINST_LAW"
+            or "INT_ITEM_CLAIR" or "INT_ITEM_DAYLGT" or "INT_ITEM_DEEPER_DARKNESS"
+            or "INT_ITEM_HASTE" or "INT_ITEM_INVIS_PURGE" or "INT_ITEM_QUENCH" or "INT_ITEM_SLOW" => 16_000,
+        "INT_ITEM_FEAR" or "INT_ITEM_LOCATE_CREATURE" => 30_000,
+        "INT_ITEM_DETECT_THOUGHTS" => 44_000,
+        "INT_ITEM_CONFUSION" or "INT_ITEM_CRUSHING_DESPAIR" or "INT_ITEM_ICE_STORM"
+            or "INT_ITEM_PHANTASMAL_KILLER" => 50_000,
+        "INT_ITEM_CONTAGION" or "INT_ITEM_POISON" or "INT_ITEM_RUSTING_GRASP" => 56_000,
+        "INT_ITEM_FIREBALL" or "INT_ITEM_LGHTNG_BOLT" => 60_000,
+        "INT_ITEM_LUCK" => 80_000,
+        "INT_ITEM_MASS_INFLICT_LGT_WOUNDS" or "INT_ITEM_PRYING_EYES" or "INT_ITEM_SONG_DISCORD" => 81_000,
+        "INT_ITEM_GRTR_SHOUT" => 130_000,
+        "INT_ITEM_WAVES_EXHAUSTION" => 164_000,
+        "INT_ITEM_TRUE_RESURRECTION" => 200_000,
+        _ => 0,
+    };
 
     private static bool DriverGrantsDomainSlots(ContentRegistry? registry, string driverId)
     {

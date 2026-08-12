@@ -437,6 +437,17 @@ public class ReplayStudio
         // template permabuff, since any of them can be what granted the slot.
         FinalizeGrantedLanguages(state, character);
 
+        if (state.IntelligentItems.Count > 1)
+            state.Warnings.Add(new Warning
+            {
+                Message = $"{state.IntelligentItems.Count} intelligent items are active; intelligent items are aware of and normally rival one another",
+            });
+        if (state.EquipmentNegativeLevels > 0 && state.Spellcasting.Count > 0)
+            state.Warnings.Add(new Warning
+            {
+                Message = $"{state.EquipmentNegativeLevels} intelligent-item negative level(s) also remove highest-level available spell slots; choose the affected prepared spells or slots for the current day",
+            });
+
         return state;
     }
 
@@ -609,7 +620,8 @@ public class ReplayStudio
                     ? hitDie.DieSize
                     : hitDie.DieSize / 2 + 1);
             return Math.Max(1, roll + conMod);
-        }).Sum() + state.FlatHitPointBonuses;
+        }).Sum() + state.FlatHitPointBonuses - 5 * state.EquipmentNegativeLevels;
+        state.HP = Math.Max(0, state.HP);
     }
 
     /// <summary>
@@ -802,7 +814,8 @@ public class ReplayStudio
                                          + abilityMod
                                          + sizeModifier
                                          + state.SkillBonuses.GetValueOrDefault(skillId)
-                                         + state.SkillSynergyBonuses.GetValueOrDefault(skillId);
+                                         + state.SkillSynergyBonuses.GetValueOrDefault(skillId)
+                                         - state.EquipmentNegativeLevels;
         }
     }
 
@@ -2099,6 +2112,29 @@ public class ReplayStudio
                         });
                     }
                 }
+
+                var intelligent = item.IntelligentItemOverride ?? def?.IntelligentItem;
+                if (intelligent != null)
+                {
+                    var enhancement = item.EnhancementBonusOverride ?? def?.EnhancementBonus ?? 0;
+                    var specialAbilities = item.SpecialAbilityBonusEquivalentOverride
+                        ?? def?.SpecialAbilityBonusEquivalent ?? 0;
+                    var ego = intelligent.CalculateEgo(enhancement, specialAbilities);
+                    var negativeLevels = intelligent.AlignmentNegativeLevels(
+                        state.Alignment, enhancement, specialAbilities);
+                    state.IntelligentItems.Add(new IntelligentItemState
+                    {
+                        ItemId = item.ContentId ?? item.ItemId,
+                        Name = def?.Name ?? item.ItemId,
+                        Definition = intelligent.Clone(),
+                        EnhancementBonus = enhancement,
+                        SpecialAbilityBonusEquivalent = specialAbilities,
+                        Ego = ego,
+                        AlignmentCorresponds = intelligent.AlignmentCorresponds(state.Alignment),
+                        NegativeLevels = negativeLevels,
+                    });
+                    state.EquipmentNegativeLevels += negativeLevels;
+                }
                 foreach (var buff in item.Permabuffs)
                     buff.Apply(ctx);
             }
@@ -2308,7 +2344,7 @@ public class ReplayStudio
         var offHand = pass.Weapons.FirstOrDefault(w => !w.MainHand);
         var twoWeaponFighting = state.Feats.Contains("feat:two_weapon_fighting");
 
-        var bab = state.EffectiveBAB;
+        var bab = state.EffectiveBAB - state.EquipmentNegativeLevels;
         var strMod = state.AbilityModifier(Ability.STR);
         var dexMod = state.AbilityModifier(Ability.DEX);
         // SRD, incorporeal subtype: "It has no Strength score, so its Dexterity modifier applies
