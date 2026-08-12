@@ -139,6 +139,7 @@ public static class PcgConverter
                 // companion is filed under whatever id it was created with. Keeping the raw name
                 // lets the host re-point the link once it can see the character store.
                 SourceName = string.IsNullOrWhiteSpace(follower.Name) ? null : follower.Name.Trim(),
+                SourceFile = string.IsNullOrWhiteSpace(follower.File) ? null : follower.File.Trim(),
                 SelectedSpecies = mapper.MapRace(follower.Race),
                 EffectiveLevelFormula = CompanionLevelFormula(linkType),
                 FollowerLevel = linkType == "leadership_follower" ? follower.HitDice : 0,
@@ -156,6 +157,8 @@ public static class PcgConverter
                 LinkType = MapCompanionLinkType(data.Master.Type),
                 EffectiveMasterLevel = 0,
                 MasterCharacterId = ToCharacterId(data.Master.Name, data.Master.File),
+                SourceName = string.IsNullOrWhiteSpace(data.Master.Name) ? null : data.Master.Name.Trim(),
+                SourceFile = string.IsNullOrWhiteSpace(data.Master.File) ? null : data.Master.File.Trim(),
             };
         }
 

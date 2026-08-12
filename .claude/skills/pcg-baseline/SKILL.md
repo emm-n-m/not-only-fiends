@@ -47,9 +47,14 @@ parse with `encoding='utf-8-sig'`.
    **Accepting is the user's call, not yours.** Surface the diff and its arithmetic and wait,
    unless they have already said to accept.
 
-4. **Converted character JSONs** are written to `CHARACTERS_PATH` for the Feed app but
-   existing files are preserved (in-UI edits). `PCG_OVERWRITE_CHARACTERS=1` forces
-   re-conversion — ask the user first; it clobbers their edits.
+4. **Converted character JSONs** are written to `PCG_IMPORT_OUTPUT_PATH`, overwritten on
+   every run. When that points at a git-tracked directory (it does here:
+   `{EXTRA_PACKS_PATH}/deceit_characters/NotOnlyFiends`), `git diff` there is a second
+   report — sheet-level drift the mapping-level baseline doesn't cover. Read it before
+   accepting, and it is the user's call to accept, same as the baseline itself.
+
+   The harness never writes to `CHARACTERS_PATH`; those are real characters the user edits
+   in the app. If you catch anything reintroducing that, treat it as a bug.
 
 ## Check the baseline is the one you think it is
 

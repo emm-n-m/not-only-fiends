@@ -1,0 +1,344 @@
+[
+  {
+    "id": "template:half_celestial",
+    "name": "Half-Celestial",
+    "acquisitionKind": "inherited",
+    "applicabilityPrerequisites": [
+      { "$type": "HasCreatureTrait", "living": true, "corporeal": true },
+      { "$type": "MinAbility", "ability": "int", "value": 4 },
+      { "$type": "AlignmentReq", "allowed": ["LG", "LN", "NG", "N", "CG", "CN"] }
+    ],
+    "typeOverride": "outsider",
+    "subtypeAdditions": ["native"],
+    "abilityModifiers": {
+      "str": 4,
+      "dex": 2,
+      "con": 4,
+      "int": 2,
+      "wis": 4,
+      "cha": 4
+    },
+    "naturalArmor": 1,
+    "derivedSpeedRules": [
+      { "mode": "fly", "sourceMode": "land", "multiplier": 2, "preserveBetterExisting": true }
+    ],
+    "flyManeuverability": "good",
+    "levelAdjustment": 4,
+    "creationPermabuffs": [
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "hc_sla_daylight",
+          "name": "Daylight",
+          "usesPerDay": "at will"
+        },
+        "casterLevelEqualsTotalHD": true
+      },
+      {
+        "$type": "GrantSpecialAttack",
+        "attack": {
+          "id": "hc_smite_evil",
+          "name": "Smite Evil",
+          "usesPerDay": "1/day",
+          "description": "Once per day, a normal melee attack against an evil foe deals extra damage equal to total HD, maximum +20."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hc_darkvision_60",
+          "name": "Darkvision 60 ft.",
+          "description": "Can see in the dark up to 60 feet."
+        }
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "disease"
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "resistance",
+        "resistanceElement": "acid",
+        "value": 10
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "resistance",
+        "resistanceElement": "cold",
+        "value": 10
+      },
+      {
+        "$type": "ModifyAttribute",
+        "target": "resistance",
+        "resistanceElement": "electricity",
+        "value": 10
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hc_poison_fortitude",
+          "name": "+4 Fortitude vs. Poison",
+          "description": "A +4 racial bonus on Fortitude saves against poison."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "hc_natural_weapons_magic",
+          "name": "Natural Weapons Treated as Magic",
+          "description": "Natural weapons are treated as magic weapons for overcoming damage reduction."
+        }
+      }
+    ],
+    "scalingPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_protection_from_evil", "name": "Protection from Evil", "usesPerDay": "3/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_bless", "name": "Bless", "usesPerDay": "1/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_aid", "name": "Aid", "usesPerDay": "1/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_detect_evil", "name": "Detect Evil", "usesPerDay": "1/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        }
+      ],
+      "5": [
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_cure_serious_wounds", "name": "Cure Serious Wounds", "usesPerDay": "1/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_neutralize_poison", "name": "Neutralize Poison", "usesPerDay": "1/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        }
+      ],
+      "7": [
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_holy_smite", "name": "Holy Smite", "usesPerDay": "1/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_remove_disease", "name": "Remove Disease", "usesPerDay": "1/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        }
+      ],
+      "9": [
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_dispel_evil", "name": "Dispel Evil", "usesPerDay": "1/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        }
+      ],
+      "11": [
+        {
+          "$type": "GrantDR",
+          "value": 5,
+          "bypassedBy": "magic"
+        },
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_holy_word", "name": "Holy Word", "usesPerDay": "1/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        }
+      ],
+      "12": [
+        {
+          "$type": "GrantDR",
+          "value": 10,
+          "bypassedBy": "magic"
+        }
+      ],
+      "13": [
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_holy_aura", "name": "Holy Aura", "usesPerDay": "3/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_hallow", "name": "Hallow", "usesPerDay": "1/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        }
+      ],
+      "15": [
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_mass_charm_monster", "name": "Mass Charm Monster", "usesPerDay": "1/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        }
+      ],
+      "17": [
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_summon_monster_ix", "name": "Summon Monster IX (celestials only)", "usesPerDay": "1/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        }
+      ],
+      "19": [
+        {
+          "$type": "GrantSLA",
+          "sla": { "id": "hc_sla_resurrection", "name": "Resurrection", "usesPerDay": "1/day" },
+          "casterLevelEqualsTotalHD": true,
+          "prerequisites": [
+            {
+              "$type": "AnyOf",
+              "options": [
+                { "$type": "MinAbility", "ability": "int", "value": 8 },
+                { "$type": "MinAbility", "ability": "wis", "value": 8 }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "scalingFormulas": [
+      {
+        "target": "spellResistance",
+        "formula": { "expression": "min(TotalHD + 10, 35)" }
+      }
+    ]
+  }
+]

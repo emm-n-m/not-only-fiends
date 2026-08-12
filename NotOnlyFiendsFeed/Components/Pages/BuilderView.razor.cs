@@ -389,7 +389,7 @@ public partial class BuilderView
             // acquisition to the earliest HD the prerequisites allow. The input beside the
             // template chip lets the player correct it.
             var definition = _templates.FirstOrDefault(t => t.Id == _selectedTemplate);
-            if (definition is { Prerequisites.Count: > 0 })
+            if (definition is { AcquisitionKind: TemplateAcquisitionKind.Acquired, Prerequisites.Count: > 0 })
             {
                 try
                 {
@@ -415,6 +415,14 @@ public partial class BuilderView
 
     private void SetTemplateAcquisitionHD(string templateId, ChangeEventArgs e)
     {
+        var definition = _templates.FirstOrDefault(t => t.Id == templateId);
+        if (definition?.AcquisitionKind == TemplateAcquisitionKind.Inherited)
+        {
+            _character.TemplateAcquisitionHD.Remove(templateId);
+            OnCharacterChanged();
+            return;
+        }
+
         if (int.TryParse(e.Value?.ToString(), out var hd) && hd > 0)
             _character.TemplateAcquisitionHD[templateId] = hd;
         else
@@ -430,7 +438,7 @@ public partial class BuilderView
         _character.TemplateIds
             .Where(id => !_character.TemplateAcquisitionHD.ContainsKey(id))
             .Select(id => _templates.FirstOrDefault(t => t.Id == id))
-            .Where(t => t is { Prerequisites.Count: > 0 })
+            .Where(t => t is { AcquisitionKind: TemplateAcquisitionKind.Acquired, Prerequisites.Count: > 0 })
             .Select(t => t!.Name)
             .ToList();
 

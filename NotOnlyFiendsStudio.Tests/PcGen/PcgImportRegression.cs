@@ -53,7 +53,7 @@ public class PcgImportRegression
                 var data = PcgParser.ParseText(File.ReadAllText(path), fileName);
                 var result = PcgConverter.Convert(data, mapper, registry);
                 // Populate the "save-time snapshot" sheet (convention from Character.Sheet docs)
-                // so files written to CHARACTERS_PATH match what the UI would produce. Also
+                // so the persisted files match what the UI would produce. Also
                 // captures the computed values below — content drift (e.g. a save-progression
                 // fix silently changing every character that uses that class) otherwise passes
                 // through this harness unnoticed, since only import-mapping fidelity was compared.
@@ -166,9 +166,18 @@ public class PcgImportRegression
 
         var reportDir = ResolveReportDirectory();
         Directory.CreateDirectory(reportDir);
-        var overwrite = string.Equals(
-            Environment.GetEnvironmentVariable("PCG_OVERWRITE_CHARACTERS"), "1", StringComparison.Ordinal);
-        PersistConvertedCharacters(reportDir, convertedCharacters, overwrite, _output);
+
+        // Per-file conversion can only guess companion ids from the label the master used for
+        // them. Now that the whole corpus is converted, repoint each link at the id its companion
+        // is actually saved under.
+        var relink = PcgCompanionRelinker.Relink(convertedCharacters, CharacterStore.DeriveId);
+        _output.WriteLine($"Companion links repointed: {relink.Repointed.Count}, unresolved: {relink.Unresolved.Count}");
+        foreach (var moved in relink.Repointed)
+            _output.WriteLine($"  {moved.MasterId} [{moved.LinkType}] {moved.FromId} -> {moved.ToId}");
+        foreach (var missing in relink.Unresolved)
+            _output.WriteLine($"  UNRESOLVED {missing.MasterId} [{missing.LinkType}] -> '{missing.CompanionId}' (source: {missing.SourceLabel ?? "none"})");
+
+        PersistConvertedCharacters(reportDir, convertedCharacters, _output);
         var baselineJson = Path.Combine(reportDir, "pcg_import_report.json");
         var baselineMd = Path.Combine(reportDir, "pcg_import_report.md");
         var latestJson = Path.Combine(reportDir, "pcg_import_report.latest.json");
@@ -270,62 +279,51 @@ public class PcgImportRegression
             .ToList();
 
     /// <summary>
-    /// Saves each converted Character as a top-level JSON file in CHARACTERS_PATH (so the Feed
-    /// app picks them up directly). CharacterStore derives ids from Character.Name; the source
-    /// PCG filename is only an import input and must not become the character's identity.
-    /// First run: writes any file that doesn't exist yet. Re-runs: skips existing files so
-    /// in-UI edits aren't clobbered, unless PCG_OVERWRITE_CHARACTERS=1.
-    /// Falls back to "{reportDir}/converted/" if CHARACTERS_PATH isn't configured.
+    /// Saves each converted Character as a top-level JSON file in PCG_IMPORT_OUTPUT_PATH.
+    /// CharacterStore derives ids from Character.Name; the source PCG filename is only an import
+    /// input and must not become the character's identity.
+    ///
+    /// Every run overwrites: the destination is a git-tracked corpus snapshot, not a live store,
+    /// so <c>git diff</c> there is the report of what an engine or content change did to every
+    /// converted sheet. Preserving existing files would freeze that snapshot at its first run and
+    /// hide exactly the drift it exists to catch.
+    ///
+    /// This deliberately never touches CHARACTERS_PATH — see
+    /// <see cref="TestContentHelper.GetOptionalPcgImportOutputPath"/>.
+    /// Falls back to "{reportDir}/converted/" if PCG_IMPORT_OUTPUT_PATH isn't configured.
     /// </summary>
     private static void PersistConvertedCharacters(
         string reportDir,
         List<(string Stem, Character Character)> characters,
-        bool overwriteExisting,
         ITestOutputHelper log)
     {
-        var charactersPath = TestContentHelper.GetOptionalCharactersPath();
+        var outputPath = TestContentHelper.GetOptionalPcgImportOutputPath();
         string destination;
         bool isFallback;
-        if (!string.IsNullOrEmpty(charactersPath) && Directory.Exists(charactersPath))
+        if (!string.IsNullOrEmpty(outputPath))
         {
-            destination = charactersPath;
+            destination = outputPath;
             isFallback = false;
         }
         else
         {
             destination = Path.Combine(reportDir, "converted");
-            Directory.CreateDirectory(destination);
             isFallback = true;
         }
-
-        int written = 0, skipped = 0, overwritten = 0;
-        var preservedExamples = new List<string>();
+        Directory.CreateDirectory(destination);
 
         foreach (var (_, character) in characters)
         {
             var id = CharacterStore.DeriveId(character);
             var path = Path.Combine(destination, id + ".json");
-            var exists = File.Exists(path);
-            if (exists && !overwriteExisting)
-            {
-                skipped++;
-                if (preservedExamples.Count < 5) preservedExamples.Add(id + ".json");
-                continue;
-            }
             File.WriteAllText(path, JsonSerializer.Serialize(character, JsonOpts), Encoding.UTF8);
-            if (exists) overwritten++; else written++;
         }
 
-        var label = isFallback ? $"{destination} (CHARACTERS_PATH not set)" : destination;
+        var label = isFallback
+            ? $"{destination} (PCG_IMPORT_OUTPUT_PATH not set)"
+            : destination;
         log.WriteLine($"Converted characters → {label}");
-        log.WriteLine($"  new: {written}, overwritten: {overwritten}, preserved: {skipped}");
-        if (skipped > 0 && !overwriteExisting)
-        {
-            var sample = string.Join(", ", preservedExamples);
-            var more = skipped > preservedExamples.Count ? $", +{skipped - preservedExamples.Count} more" : "";
-            log.WriteLine($"  (existing files kept: {sample}{more})");
-            log.WriteLine($"  set PCG_OVERWRITE_CHARACTERS=1 to force re-conversion.");
-        }
+        log.WriteLine($"  wrote: {characters.Count} (review with `git diff` in the materials repo)");
     }
 
     /// <summary>

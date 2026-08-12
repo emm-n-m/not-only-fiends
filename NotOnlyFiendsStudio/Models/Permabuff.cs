@@ -310,9 +310,13 @@ public class GrantSLA : Permabuff
 {
     public SLA SLA { get; set; } = new();
     public bool CasterLevelEqualsTotalHD { get; set; }
+    public List<Prerequisite> Prerequisites { get; set; } = new();
 
     public override void Apply(PermabuffContext ctx)
     {
+        if (Prerequisites.Count > 0 && Prerequisites.Any(prerequisite => !prerequisite.IsMet(ctx.State)))
+            return;
+
         var sla = new SLA
         {
             Id = SLA.Id,

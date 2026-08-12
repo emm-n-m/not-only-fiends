@@ -2,6 +2,7 @@
   {
     "id": "template:lich",
     "name": "Lich",
+    "acquisitionKind": "acquired",
     "typeOverride": "undead",
     "hitDieSizeFloor": 12,
     "subtypeAdditions": [

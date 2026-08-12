@@ -1,9 +1,28 @@
 namespace NotOnlyFiendsStudio.Models;
 
+/// <summary>
+/// How a template may enter a character build. Inherited templates are creation-time
+/// heritage and cannot be manually delayed to a later HD. Acquired templates may be
+/// selected at creation or added after the character has started adventuring. Internal
+/// templates are implementation helpers, not direct player choices.
+/// </summary>
+public enum TemplateAcquisitionKind
+{
+    Internal,
+    Inherited,
+    Acquired,
+}
+
 public class TemplateDriver
 {
     public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
+
+    // Fail closed for newly-authored content: it must be explicitly classified before it
+    // appears as a direct character-builder choice.
+    public TemplateAcquisitionKind AcquisitionKind { get; set; } = TemplateAcquisitionKind.Internal;
+
+    public bool IsPlayerSelectable => AcquisitionKind != TemplateAcquisitionKind.Internal;
 
     // Validated against the FINISHED state (tail pass), not at creation: acquired
     // templates like Unseelie Champion gate on class levels that do not exist yet

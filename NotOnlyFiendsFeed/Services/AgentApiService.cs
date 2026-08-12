@@ -52,7 +52,7 @@ public sealed class AgentApiService
             .ToList(),
         Templates = _content.GetAllTemplates()
             .OrderBy(t => t.Name)
-            .Select(t => MapSummary(t.Id, t.Name, null))
+            .Select(MapTemplateSummary)
             .ToList(),
         Feats = _content.GetAllFeats()
             .OrderBy(f => f.Name)
@@ -132,7 +132,7 @@ public sealed class AgentApiService
 
     public IEnumerable<ContentSummaryDto> GetTemplates() => _content.GetAllTemplates()
         .OrderBy(t => t.Name)
-        .Select(t => MapSummary(t.Id, t.Name, null));
+        .Select(MapTemplateSummary);
 
     public IEnumerable<FeatSummaryDto> GetFeats() => _content.GetAllFeats()
         .OrderBy(f => f.Name)
@@ -943,6 +943,13 @@ public sealed class AgentApiService
         Id = id,
         Name = name,
         Description = description
+    };
+
+    private static ContentSummaryDto MapTemplateSummary(TemplateDriver template) => new()
+    {
+        Id = template.Id,
+        Name = template.Name,
+        AcquisitionKind = template.AcquisitionKind
     };
 
     private static DriverSummaryDto MapDriver(HDDriver driver) => new()

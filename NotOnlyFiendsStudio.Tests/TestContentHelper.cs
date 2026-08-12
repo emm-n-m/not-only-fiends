@@ -108,10 +108,22 @@ public static class TestContentHelper
         return path;
     }
 
-    public static string? GetOptionalCharactersPath()
+    /// <summary>
+    /// Where the baseline harness writes the characters it converts from the .pcg corpus.
+    ///
+    /// Deliberately NOT <c>CHARACTERS_PATH</c>: that is the live store the app reads and writes,
+    /// holding real campaign characters the user edits in the UI. A test run must never be able to
+    /// reach it — <see cref="CharacterStore.DeriveId"/> keys files on the character's name, so a
+    /// real character sharing a name with a corpus one would be silently overwritten.
+    ///
+    /// Point this at a git-tracked directory in the materials repo: the harness overwrites it on
+    /// every run, so <c>git diff</c> there is the collateral-damage report for converted sheets,
+    /// the same role <c>pcg_import_report.json</c> plays for import mappings.
+    /// </summary>
+    public static string? GetOptionalPcgImportOutputPath()
     {
         var env = LoadEnvFile();
-        env.TryGetValue("CHARACTERS_PATH", out var path);
+        env.TryGetValue("PCG_IMPORT_OUTPUT_PATH", out var path);
         return NormalizeOptionalPath(path);
     }
 

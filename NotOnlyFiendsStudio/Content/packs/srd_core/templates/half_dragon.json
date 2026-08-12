@@ -2,6 +2,10 @@
 {
   "id": "template:half_dragon",
   "name": "Half-Dragon",
+  "acquisitionKind": "inherited",
+  "applicabilityPrerequisites": [
+    { "$type": "HasCreatureTrait", "living": true, "corporeal": true }
+  ],
   "typeOverride": "dragon",
   "subtypeAdditions": [],
   "abilityModifiers": {

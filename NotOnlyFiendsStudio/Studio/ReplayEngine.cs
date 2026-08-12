@@ -61,8 +61,25 @@ public class ReplayStudio
         // character saved before acquisition HDs existed — apply at creation. A template
         // acquired mid-career applies at its acquisition tick instead, inside the loop below.
         int AcquisitionHDOf(string id) => character.TemplateAcquisitionHD.GetValueOrDefault(id, 0);
-        var acquiredTemplateIds = character.TemplateIds.Where(id => AcquisitionHDOf(id) > 1).ToList();
-        foreach (var templateId in character.TemplateIds.Except(acquiredTemplateIds))
+        var delayedTemplateIds = character.TemplateIds.Where(id => AcquisitionHDOf(id) > 1).ToList();
+        var rejectedDelayedTemplateIds = delayedTemplateIds
+            .Where(id => _content.GetTemplate(id).AcquisitionKind == TemplateAcquisitionKind.Inherited)
+            .ToHashSet(StringComparer.Ordinal);
+        var acquiredTemplateIds = delayedTemplateIds
+            .Where(id => !rejectedDelayedTemplateIds.Contains(id))
+            .ToList();
+
+        foreach (var templateId in rejectedDelayedTemplateIds)
+        {
+            var template = _content.GetTemplate(templateId);
+            state.Warnings.Add(new Warning
+            {
+                TickIndex = AcquisitionHDOf(templateId),
+                Message = $"inherited template {template.Name} cannot be manually acquired after character creation"
+            });
+        }
+
+        foreach (var templateId in character.TemplateIds.Except(delayedTemplateIds))
         {
             var template = _content.GetTemplate(templateId);
             TemplateApplication.Apply(ctx, template, acquisitionHD: null);
@@ -71,7 +88,7 @@ public class ReplayStudio
         // Derived movement is permanent character state. Resolve it after all template
         // transformations and before the post-tick armor/load speed pass. Acquired templates
         // resolve theirs at the moment they apply.
-        ResolveDerivedSpeeds(state, character.TemplateIds.Except(acquiredTemplateIds));
+        ResolveDerivedSpeeds(state, character.TemplateIds.Except(delayedTemplateIds));
 
         // 3. Apply base ability scores (added to racial/template modifiers)
         ApplyBaseAbilities(state, character.BaseAbilityScores);
@@ -1168,6 +1185,9 @@ public class ReplayStudio
     public int? FindEarliestAcquisitionHD(Character character, string templateId)
     {
         var template = _content.GetTemplate(templateId);
+        if (template.AcquisitionKind == TemplateAcquisitionKind.Inherited)
+            return null;
+
         var clone = character.Clone();
         clone.TemplateIds.Remove(templateId);
         clone.TemplateAcquisitionHD.Remove(templateId);
@@ -1522,7 +1542,7 @@ public class ReplayStudio
                     var valid = selectionKind switch
                     {
                         "special_attack" => selection != null && state.SpecialAttacks.Any(a => a.Id == selection),
-                        "spell_like_ability" => selection != null && state.SLAs.Any(s => s.Id == selection),
+                        "spell_like_ability" => selection != null && state.SLAs.Any(s => MatchesSpellLikeAbilitySelection(s, selection)),
                         // Existing feat selections are stored as display-friendly suffixes and
                         // several legacy callers submit the base ID. Keep those save formats
                         // valid; only the new typed target sources are enforceable here.
@@ -1771,6 +1791,33 @@ public class ReplayStudio
                 }
             }
         }
+    }
+
+    private static bool MatchesSpellLikeAbilitySelection(SLA sla, string selection)
+    {
+        // Character saves and PCGen imports commonly store the display-name suffix
+        // ("charm_monster"), while content IDs carry source-specific prefixes
+        // ("succubus_charm_monster"). Keep exact IDs valid, but also accept the normalized
+        // display name that the builder and importer both produce.
+        if (sla.Id == selection)
+            return true;
+
+        var normalizedSelection = NormalizeSelection(selection);
+        var normalizedName = NormalizeSelection(sla.Name);
+        return normalizedName == normalizedSelection
+            || normalizedName.StartsWith(normalizedSelection + "_", StringComparison.Ordinal);
+    }
+
+    private static string NormalizeSelection(string value)
+    {
+        var chars = value
+            .ToLowerInvariant()
+            .Select(character => char.IsLetterOrDigit(character) ? character : '_')
+            .ToArray();
+        var normalized = new string(chars);
+        while (normalized.Contains("__", StringComparison.Ordinal))
+            normalized = normalized.Replace("__", "_", StringComparison.Ordinal);
+        return normalized.Trim('_');
     }
 
     private void ApplySkillAllocations(

@@ -6,6 +6,119 @@ namespace NotOnlyFiendsStudio.Tests;
 public class TemplateTests
 {
     [Fact]
+    public void PublicTemplates_AreSplitByAcquisitionMode()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+
+        foreach (var id in new[]
+                 { "template:celestial", "template:fiendish", "template:half_celestial", "template:half_dragon",
+                   "template:half_fiend", "template:half_fey_creature_no_wings" })
+            Assert.Equal(TemplateAcquisitionKind.Inherited, registry.GetTemplate(id).AcquisitionKind);
+
+        foreach (var id in new[] { "template:lich", "template:vampire" })
+            Assert.Equal(TemplateAcquisitionKind.Acquired, registry.GetTemplate(id).AcquisitionKind);
+
+        Assert.Equal(TemplateAcquisitionKind.Internal, registry.GetTemplate("template:undead").AcquisitionKind);
+    }
+
+    [Fact]
+    public void HalfFiend_RejectsGoodAlignmentAndVampireChecksBaseType()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+
+        var halfFiendAlignment = Assert.IsType<AlignmentReq>(
+            Assert.Single(registry.GetTemplate("template:half_fiend").ApplicabilityPrerequisites,
+                prerequisite => prerequisite is AlignmentReq));
+        Assert.DoesNotContain(Alignment.LG, halfFiendAlignment.Allowed);
+        Assert.DoesNotContain(Alignment.NG, halfFiendAlignment.Allowed);
+        Assert.DoesNotContain(Alignment.CG, halfFiendAlignment.Allowed);
+
+        var vampire = registry.GetTemplate("template:vampire");
+        var vampireTypeCheck = Assert.Single(vampire.ApplicabilityPrerequisites,
+            prerequisite => prerequisite is AnyOf);
+        var options = Assert.IsType<AnyOf>(vampireTypeCheck).Options;
+        Assert.Contains(options, option => option is HasCreatureType { Type: CreatureType.Humanoid });
+        Assert.Contains(options, option => option is HasCreatureType { Type: CreatureType.MonstrousHumanoid });
+    }
+
+    [Fact]
+    public void InheritedTemplate_CannotBeManuallyDelayed()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var character = new Character
+        {
+            Name = "Delayed Heritage",
+            RaceId = "race:human",
+            TemplateIds = new List<string> { "template:half_dragon" },
+            TemplateAcquisitionHD = new Dictionary<string, int> { ["template:half_dragon"] = 2 },
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick>
+            {
+                new() { DriverId = "class:fighter" },
+                new() { DriverId = "class:fighter" }
+            }
+        };
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        Assert.DoesNotContain("template:half_dragon", state.TemplateIds);
+        Assert.Contains(state.Warnings, warning =>
+            warning.Message.Contains("inherited template Half-Dragon cannot be manually acquired"));
+    }
+
+    [Fact]
+    public void HalfCelestial_ReplaysTypeAbilitiesThresholdsAndConditionalSlas()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var character = new Character
+        {
+            Name = "Half-Celestial Test",
+            RaceId = "race:human",
+            TemplateIds = new List<string> { "template:half_celestial" },
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 12)
+                .Select(_ => new Tick { DriverId = "class:fighter" })
+                .ToList()
+        };
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        // monstersHtoI.html#half-celestial: inherited, outsider/native, +4 LA, ability
+        // modifiers, flight, resistances, disease immunity, DR, SR, and cumulative SLAs.
+        Assert.Equal(TemplateAcquisitionKind.Inherited, registry.GetTemplate("template:half_celestial").AcquisitionKind);
+        Assert.Equal(CreatureType.Outsider, state.Type);
+        Assert.Contains("native", state.Subtypes);
+        Assert.Equal(4, state.LevelAdjustment);
+        Assert.Equal(14, state.AbilityScores.STR);
+        Assert.Equal(12, state.AbilityScores.DEX);
+        Assert.Equal(14, state.AbilityScores.CON);
+        Assert.Equal(12, state.AbilityScores.INT);
+        Assert.Equal(14, state.AbilityScores.WIS);
+        Assert.Equal(14, state.AbilityScores.CHA);
+        Assert.Equal(1, state.NaturalArmor);
+        Assert.Equal(60, state.Speeds[MovementMode.Fly]);
+        Assert.Equal(FlightManeuverability.Good, state.FlyManeuverability!.Value);
+        Assert.Equal(10, state.Resistances["acid"]);
+        Assert.Equal(10, state.Resistances["cold"]);
+        Assert.Equal(10, state.Resistances["electricity"]);
+        Assert.Contains("disease", state.Immunities);
+        Assert.Equal(10, Assert.Single(state.DamageReduction, dr => dr.BypassedBy == "magic").Value);
+        Assert.Equal(22, state.SpellResistance);
+        Assert.Contains(state.SpecialAttacks, attack => attack.Id == "hc_smite_evil");
+        Assert.Equal(12, Assert.Single(state.SLAs, sla => sla.Id == "hc_sla_daylight").CasterLevel);
+        Assert.Contains(state.SLAs, sla => sla.Id == "hc_sla_holy_word");
+        Assert.DoesNotContain(state.SLAs, sla => sla.Id == "hc_sla_holy_aura"); // starts at HD 13
+
+        var lowAbilities = character.Clone();
+        lowAbilities.Name = "Half-Celestial Low Ability Scores";
+        lowAbilities.BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 4, WIS = 3, CHA = 10 };
+        lowAbilities.Ticks = new List<Tick> { new() { DriverId = "class:fighter" } };
+        var lowState = new ReplayStudio(registry).Evaluate(lowAbilities);
+        Assert.Contains(lowState.SLAs, sla => sla.Id == "hc_sla_daylight");
+        Assert.DoesNotContain(lowState.SLAs, sla => sla.Id == "hc_sla_protection_from_evil");
+    }
+
+    [Fact]
     public void HalfFiend_LoadsFromJson()
     {
         var registry = new ContentRegistry();

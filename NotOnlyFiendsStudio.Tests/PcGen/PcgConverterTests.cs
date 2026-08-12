@@ -162,6 +162,36 @@ public class PcgConverterTests
     }
 
     [Fact]
+    public void Convert_SpellLikeAbilitySelection_UsesPcGenDisplayName()
+    {
+        var data = new PcgCharacterData
+        {
+            CharacterName = "Succubus Attendant",
+            Race = "Demon (Succubus)",
+            Alignment = "CE",
+            BaseStats = new() { ["STR"] = 12, ["DEX"] = 14, ["CON"] = 10, ["INT"] = 15, ["WIS"] = 17, ["CHA"] = 16 },
+            Classes = new() { new PcgClassEntry { Name = "Outsider", Level = 12 } },
+            Levels = Enumerable.Range(1, 12)
+                .Select(level => new PcgLevelEntry { ClassName = "Outsider", ClassLevel = level })
+                .ToList(),
+            Feats = new()
+            {
+                new PcgFeatEntry { Key = "Quicken Spell-Like Ability", AppliedTo = "Charm Monster" },
+            },
+        };
+
+        var registry = TestContentHelper.LoadBundledPacks();
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+        var state = new ReplayStudio(registry).Evaluate(result.Character);
+
+        Assert.Contains("feat:quicken_spell_like_ability_charm_monster",
+            result.Character.Ticks[^1].Choices.FeatIds!);
+        Assert.Contains("feat:quicken_spell_like_ability_charm_monster", state.Feats);
+        Assert.DoesNotContain(state.Warnings,
+            warning => warning.Message.Contains("requires a valid spell_like_ability selection", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void Convert_NonRepeatableFeat_NoAppliedTo_AddedOnce()
     {
         var data = CreateClericData();

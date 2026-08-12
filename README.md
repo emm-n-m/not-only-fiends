@@ -122,11 +122,13 @@ To load additional packs or configure character storage, create `.env` in the re
 CHARACTERS_PATH=C:\path\to\cloud-synced\characters
 EXTRA_PACKS_PATH=C:\path\to\private-packs-repo
 # PCGEN_CHARACTERS_PATH=C:\path\to\pcgen_characters
+# PCG_IMPORT_OUTPUT_PATH=C:\path\to\private-packs-repo\converted-characters
 ```
 
 - `EXTRA_PACKS_PATH` — directory containing additional pack folders (each with a `pack.json`)
-- `CHARACTERS_PATH` — directory for server-side character persistence (supports cloud drive sync)
+- `CHARACTERS_PATH` — directory for server-side character persistence (supports cloud drive sync). Real characters only; no test writes here
 - `PCGEN_CHARACTERS_PATH` — optional, only affects PCGen reconstruction tests (they skip when unset)
+- `PCG_IMPORT_OUTPUT_PATH` — optional, where the baseline harness writes converted characters. Overwritten on every run, so keep it distinct from `CHARACTERS_PATH`
 
 The same `.env` file is used by `docker compose` for volume bind mounts — one config for both workflows.
 
@@ -225,15 +227,11 @@ UPDATE_PCG_BASELINE=1 dotnet test --filter "FullyQualifiedName~PcgImportRegressi
 
 Commit the updated baseline in the private packs repo (`EXTRA_PACKS_PATH`). The test auto-skips when `PCGEN_CHARACTERS_PATH` is unset, so this is a no-op for contributors without the private `.pcg` corpus.
 
-**As a conversion shortcut:** the same test is the fastest way to convert PCGen characters — even a single one. Drop the `.pcg` file into `PCGEN_CHARACTERS_PATH`, run the verify command, and the converted `Character` JSON is written directly to `CHARACTERS_PATH` with a filename matching the `.pcg` stem — ready for the Feed app to pick up. Beats the web UI's click → file-picker → save loop, and scales to any number of characters for free.
+**As a conversion shortcut:** the same test is the fastest way to convert PCGen characters — even a single one. Drop the `.pcg` file into `PCGEN_CHARACTERS_PATH`, run the verify command, and the converted `Character` JSON lands in `PCG_IMPORT_OUTPUT_PATH`, named from the character's name (not the `.pcg` stem — `CharacterStore` derives ids from `Character.Name`). Beats the web UI's click → file-picker → save loop, and scales to any number of characters for free. Copy the ones you want to play into `CHARACTERS_PATH`.
 
-Existing files are preserved on re-runs so UI edits aren't clobbered. To force re-conversion (e.g. after improving a mapping):
+Every run overwrites the whole output directory. That is deliberate: point `PCG_IMPORT_OUTPUT_PATH` at a git-tracked directory and `git diff` becomes the report of what an engine or content change did to every converted sheet — the sheet-level counterpart to `pcg_import_report.json`, which only covers import mappings.
 
-```bash
-PCG_OVERWRITE_CHARACTERS=1 dotnet test --filter "FullyQualifiedName~PcgImportRegression"
-```
-
-If `CHARACTERS_PATH` isn't set, converted files fall back to `{EXTRA_PACKS_PATH}/test-reports/converted/`.
+The harness never writes to `CHARACTERS_PATH`. Those are real characters edited in the UI, and ids are keyed on character name, so a corpus character sharing a name with a real one would silently overwrite it. If `PCG_IMPORT_OUTPUT_PATH` isn't set, converted files fall back to `{EXTRA_PACKS_PATH}/test-reports/converted/`.
 
 ## Project structure
 

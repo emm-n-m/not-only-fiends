@@ -2,10 +2,11 @@
 {
   "id": "template:half_fiend",
   "name": "Half-Fiend",
+  "acquisitionKind": "inherited",
   "applicabilityPrerequisites": [
     { "$type": "HasCreatureTrait", "living": true, "corporeal": true },
     { "$type": "MinAbility", "ability": "INT", "value": 4 },
-    { "$type": "AlignmentReq", "allowed": ["LE", "NE", "CE", "LN", "N", "CN", "LG", "NG", "CG"] }
+    { "$type": "AlignmentReq", "allowed": ["LE", "NE", "CE", "LN", "N", "CN"] }
   ],
   "typeOverride": "outsider",
   "subtypeAdditions": ["native"],

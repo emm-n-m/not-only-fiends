@@ -165,6 +165,16 @@
   {
     "id": "template:vampire",
     "name": "Vampire",
+    "acquisitionKind": "acquired",
+    "applicabilityPrerequisites": [
+      {
+        "$type": "AnyOf",
+        "options": [
+          { "$type": "HasCreatureType", "type": "humanoid" },
+          { "$type": "HasCreatureType", "type": "monstrousHumanoid" }
+        ]
+      }
+    ],
     "typeOverride": "undead",
     "hitDieSizeFloor": 12,
     "subtypeAdditions": [
@@ -378,6 +388,7 @@
   {
     "id": "template:half_fey_creature_no_wings",
     "name": "Half-Fey Creature (No Wings)",
+    "acquisitionKind": "inherited",
     "typeOverride": "fey",
     "abilityModifiers": {
       "str": 2,

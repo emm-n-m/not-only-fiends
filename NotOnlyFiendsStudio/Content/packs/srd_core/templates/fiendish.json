@@ -2,6 +2,7 @@
   {
     "id": "template:fiendish",
     "name": "Fiendish",
+    "acquisitionKind": "inherited",
     "applicabilityPrerequisites": [
       {
         "$type": "HasCreatureTrait",

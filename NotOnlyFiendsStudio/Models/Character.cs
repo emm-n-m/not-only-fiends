@@ -177,8 +177,19 @@ public class Character
             EffectiveLevelFormula = link.EffectiveLevelFormula,
             FollowerLevel = link.FollowerLevel,
             Notes = link.Notes,
+            SourceName = link.SourceName,
+            SourceFile = link.SourceFile,
         }).ToList(),
-        CompanionOrigin = CompanionOrigin,
+        // Copied, not shared: relinking rewrites MasterCharacterId in place, and an aliased
+        // origin would silently rewrite it on every clone too.
+        CompanionOrigin = CompanionOrigin == null ? null : new CompanionOrigin
+        {
+            LinkType = CompanionOrigin.LinkType,
+            EffectiveMasterLevel = CompanionOrigin.EffectiveMasterLevel,
+            MasterCharacterId = CompanionOrigin.MasterCharacterId,
+            SourceName = CompanionOrigin.SourceName,
+            SourceFile = CompanionOrigin.SourceFile,
+        },
         Sheet = null
     };
 }
@@ -207,6 +218,17 @@ public class CompanionLink
     /// character. Null for links created in the app.
     /// </summary>
     public string? SourceName { get; set; }
+
+    /// <summary>
+    /// The source file this companion was recorded in (e.g. <c>Infernal Bodyguard.pcg</c>).
+    ///
+    /// The only reliable key for repairing an imported link. PCGen records a follower under the
+    /// master's label for it, which need not be the companion's own name — "Infernal Bodyguard"
+    /// is filed under NAME "Vzraela, Abyssal Herald" — so neither the id nor
+    /// <see cref="SourceName"/> can find it. The file reference survives that rename.
+    /// Null for links created in the app.
+    /// </summary>
+    public string? SourceFile { get; set; }
 }
 
 public class CompanionOrigin
@@ -214,6 +236,15 @@ public class CompanionOrigin
     public string LinkType { get; set; } = string.Empty;
     public int EffectiveMasterLevel { get; set; }
     public string? MasterCharacterId { get; set; }
+
+    /// <summary>What the source called the master, verbatim. Repair hint; see
+    /// <see cref="CompanionLink.SourceName"/>.</summary>
+    public string? SourceName { get; set; }
+
+    /// <summary>The file the master was recorded in. The reliable repair key — a master is
+    /// commonly filed under a name the companion's record never mentions ("Heiress of Lust"
+    /// holds NAME "Princess Lilly"). See <see cref="CompanionLink.SourceFile"/>.</summary>
+    public string? SourceFile { get; set; }
 }
 
 /// <summary>

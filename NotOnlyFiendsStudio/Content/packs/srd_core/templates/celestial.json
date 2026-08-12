@@ -2,6 +2,7 @@
   {
     "id": "template:celestial",
     "name": "Celestial",
+    "acquisitionKind": "inherited",
     "applicabilityPrerequisites": [
       {
         "$type": "HasCreatureTrait",
