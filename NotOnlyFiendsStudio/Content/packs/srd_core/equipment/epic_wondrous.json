@@ -865,8 +865,8 @@
     "description": "The wearer of this cloak gains a +30 bonus on Hide and Move Silently checks. The wearer's outline is blurry and indistinct, granting concealment (20% miss chance) at all times (as the blur spell). The mantle also grants nondetection to its wearer (as the spell). Caster Level 20th; Prerequisites Craft Wondrous Item, Craft Epic Wondrous Item, blur, invisibility, nondetection, silence; Market Price 242,000 gp; Weight 1 lb.",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "hide", "bonusType": "Competence", "value": { "expression": "30" } },
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "move_silently", "bonusType": "Competence", "value": { "expression": "30" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:hide", "bonusType": "Competence", "value": { "expression": "30" } },
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:move_silently", "bonusType": "Competence", "value": { "expression": "30" } }
     ],
     "tags": [
       "wondrous",

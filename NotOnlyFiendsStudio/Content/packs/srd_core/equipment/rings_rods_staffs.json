@@ -39,7 +39,7 @@
     "description": "As a free action, the wearer of this ring can gain the ability to magically blend in with the surroundings. This provides a +10 competence bonus on her Hide checks. As a standard action, she can also command the ring to utilize the spell disguise self as often as she wants. Faint illusion; CL 3rd; Forge Ring, disguise self, invisibility",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "hide", "bonusType": "Competence", "value": { "expression": "10" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:hide", "bonusType": "Competence", "value": { "expression": "10" } }
     ],
     "tags": [
       "ring",
@@ -56,7 +56,7 @@
     "description": "This ring is actually a magic leather cord that ties around a finger. It continually grants the wearer a +5 competence bonus on Climb checks. Faint transmutatation; CL 5th; Forge Ring, creator must have 5 ranks in the Climb skill",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "climb", "bonusType": "Competence", "value": { "expression": "5" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:climb", "bonusType": "Competence", "value": { "expression": "5" } }
     ],
     "tags": [
       "ring",
@@ -73,7 +73,7 @@
     "description": "As climbing, except it grants a +10 competence bonus on its wearer’s Climb checks. Faint transmutation; CL 5th; Forge Ring, creator must have 10 ranks in the Climb skill",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "climb", "bonusType": "Competence", "value": { "expression": "10" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:climb", "bonusType": "Competence", "value": { "expression": "10" } }
     ],
     "tags": [
       "ring",
@@ -270,7 +270,7 @@
     "description": "This ring continually allows the wearer to leap about, providing a +5 competence bonus on all his Jump checks. Faint transmutation; CL 2nd; Forge Ring, creator must have 5 ranks in the Jump skill",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "jump", "bonusType": "Competence", "value": { "expression": "5" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:jump", "bonusType": "Competence", "value": { "expression": "5" } }
     ],
     "tags": [
       "ring",
@@ -287,7 +287,7 @@
     "description": "As jumping, except it grants a +10 competence bonus on its wearer’s Jump check. Moderate transmutation; CL 7th; Forge Ring, creator must have 10 ranks in the Jump skill",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "jump", "bonusType": "Competence", "value": { "expression": "10" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:jump", "bonusType": "Competence", "value": { "expression": "10" } }
     ],
     "tags": [
       "ring",
@@ -524,7 +524,7 @@
     "description": "This silver ring has a wave pattern etched into the band. It continually grants the wearer a +5 competence bonus on Swim checks. Faint transmutation; CL 2nd; Forge Ring, creator must have 5 ranks in the Swim skill",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "swim", "bonusType": "Competence", "value": { "expression": "5" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:swim", "bonusType": "Competence", "value": { "expression": "5" } }
     ],
     "tags": [
       "ring",
@@ -541,7 +541,7 @@
     "description": "As swimming, except it grants a +10 competence bonus on its wearer’s Swim checks. Moderate transmutation; CL 7th; Forge Ring, creator must have 10 ranks in the Swim skill",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "swim", "bonusType": "Competence", "value": { "expression": "10" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:swim", "bonusType": "Competence", "value": { "expression": "10" } }
     ],
     "tags": [
       "ring",

@@ -267,7 +267,7 @@
     "description": "These soft boots enable the wearer to move quietly in virtually any surroundings, granting a +5 competence bonus on Move Silently checks. Faint transmutation; CL 5th; Craft Wondrous Item, creator must be an elf",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "move_silently", "bonusType": "Competence", "value": { "expression": "5" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:move_silently", "bonusType": "Competence", "value": { "expression": "5" } }
     ],
     "tags": [
       "wondrous",
@@ -315,7 +315,7 @@
     "prerequisites": [],
     "grantedPermabuffs": [
       { "$type": "ModifyMovement", "mode": "Land", "amount": 10 },
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "jump", "bonusType": "Competence", "value": { "expression": "5" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:jump", "bonusType": "Competence", "value": { "expression": "5" } }
     ],
     "tags": [
       "wondrous",
@@ -737,7 +737,7 @@
     "description": "Fashioned of dark brown or black cloth, this cloak bestows a +5 competence bonus on Hide checks. The wearer is also able to hang upside down from the ceiling, like a bat. By holding the edges of the garment, the wearer is able to fly as per the spell. If he desires, the wearer can actually polymorph himself into an ordinary bat and fly accordingly. (All possessions worn or carried are part of the transformation.) Flying, either with the cloak or in bat form, can be accomplished only in darkness (either under the night sky or in a lightless or near-lightless environment underground). Either of the flying powers is usable for up to 7 minutes at a time, but after a flight of any duration the cloak cannot bestow any flying power for a like period of time. Moderate transmutation; CL 7th; Craft Wondrous Item, fly, polymorph",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "hide", "bonusType": "Competence", "value": { "expression": "5" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:hide", "bonusType": "Competence", "value": { "expression": "5" } }
     ],
     "tags": [
       "wondrous",
@@ -784,7 +784,7 @@
     "description": "This cloak of neutral gray cloth is indistinguishable from an ordinary cloak of the same color. However, when worn with the hood drawn up around the head, it gives the wearer a +5 competence bonus on Hide checks. Faint illusion; CL 3rd; Craft Wondrous Item, invisibility, creator must be an elf",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "hide", "bonusType": "Competence", "value": { "expression": "5" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:hide", "bonusType": "Competence", "value": { "expression": "5" } }
     ],
     "tags": [
       "wondrous",
@@ -1221,7 +1221,7 @@
     "description": "These items are made of special crystal and fit over the eyes of the wearer. These lenses grant a +5 competence bonus on Spot checks. Wearing only one of the pair causes a character to become dizzy and, in effect, stunned for 1 round. Thereafter, the wearer can use the single lens without being stunned so long as she covers her other eye. Of course, she can remove the single lens and see normally at any time, or wear both lenses to end or avoid the dizziness. Faint divination; CL 3rd; Craft Wondrous Item, clairaudience/clairvoyance",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "spot", "bonusType": "Competence", "value": { "expression": "5" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:spot", "bonusType": "Competence", "value": { "expression": "5" } }
     ],
     "tags": [
       "wondrous",
@@ -1463,8 +1463,8 @@
     "description": "These apparently normal lightweight gloves grant a +5 competence bonus on Swim checks and Climb checks. Both gloves must be worn for the magic to be effective. Faint transmutation; CL 5th; Craft Wondrous Item, bull’s strength, cat’s grace",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "swim", "bonusType": "Competence", "value": { "expression": "5" } },
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "climb", "bonusType": "Competence", "value": { "expression": "5" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:swim", "bonusType": "Competence", "value": { "expression": "5" } },
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:climb", "bonusType": "Competence", "value": { "expression": "5" } }
     ],
     "tags": [
       "wondrous",
@@ -1481,7 +1481,7 @@
     "description": "The lenses of this item are made of special crystal. When placed over the eyes of the wearer, the lenses enable her to see much better than normal at distances of 1 foot or less, granting her a +5 competence bonus on Search checks to find secret doors, traps, and similar concealed objects. Both lenses must be worn for the magic to be effective. Faint divination; CL 3rd; Craft Wondrous Item, true seeing",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "search", "bonusType": "Competence", "value": { "expression": "5" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:search", "bonusType": "Competence", "value": { "expression": "5" } }
     ],
     "tags": [
       "wondrous",
@@ -2688,7 +2688,7 @@
     "description": "When this robe is put on, the wearer intuitively knows that the garment has very special properties. A robe of blending enables its wearer to appear to be part of his surroundings. This allows him a +10 competence bonus on Hide checks. The wearer can adopt the appearance of another creature, as with the disguise self spell, at will. All creatures acquainted with and friendly to the wearer see him normally. Moderate illusion; CL 10th; Craft Wondrous Item, disguise self",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "hide", "bonusType": "Competence", "value": { "expression": "10" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:hide", "bonusType": "Competence", "value": { "expression": "10" } }
     ],
     "tags": [
       "wondrous",
@@ -3342,8 +3342,8 @@
     "description": "Hidden within secret pockets of this simple silk vest are lockpicks that provide a +4 competence bonus on Open Lock checks. The vest also grants its wearer a +6 competence bonus on Escape Artist checks. Faint conjuration and transmutation; CL 4th; Craft Wondrous Item, knock, grease",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "open_lock", "bonusType": "Competence", "value": { "expression": "4" } },
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "escape_artist", "bonusType": "Competence", "value": { "expression": "6" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:open_lock", "bonusType": "Competence", "value": { "expression": "4" } },
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:escape_artist", "bonusType": "Competence", "value": { "expression": "6" } }
     ],
     "tags": [
       "wondrous",

@@ -144,6 +144,13 @@ public class ContentIntegrityTests
                     case GrantSkillBonus b:
                         Check(SkillResolves(b.SkillId), context, "GrantSkillBonus", b.SkillId);
                         break;
+                    // Missing from this switch until 2026-08-14, which is how 21 equipment
+                    // entries shipped with bare ids ("hide" rather than "skill:hide"). Nothing
+                    // rejected them: the bonus landed under the unresolvable key, so the sheet
+                    // grew a second phantom row per skill and the real row lost the bonus.
+                    case GrantEquipmentSkillBonus b:
+                        Check(SkillResolves(b.SkillId), context, "GrantEquipmentSkillBonus", b.SkillId);
+                        break;
                     case AddClassSkills b:
                         foreach (var id in b.Skills)
                             Check(SkillResolves(id), context, "AddClassSkills", id);

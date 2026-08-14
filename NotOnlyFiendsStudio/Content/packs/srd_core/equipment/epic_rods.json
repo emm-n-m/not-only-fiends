@@ -321,7 +321,7 @@
     "description": "This adamantine rod grants its wielder a +10 insight bonus on Spellcraft checks made to cast epic spells while it is held or carried. Caster Level 21st; Prerequisites: Craft Rod, Craft Epic Rod; Market Price 245,400 gp.",
     "prerequisites": [],
     "grantedPermabuffs": [
-      { "$type": "GrantEquipmentSkillBonus", "skillId": "spellcraft", "bonusType": "Insight", "value": { "expression": "10" } }
+      { "$type": "GrantEquipmentSkillBonus", "skillId": "skill:spellcraft", "bonusType": "Insight", "value": { "expression": "10" } }
     ],
     "tags": ["rod", "epic", "cl21"]
   }
