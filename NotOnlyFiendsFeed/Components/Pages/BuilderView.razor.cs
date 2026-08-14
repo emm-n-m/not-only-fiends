@@ -1877,6 +1877,7 @@ public partial class BuilderView
         {
             Name = $"{_character.Name}'s level {level} follower",
             Alignment = _character.Alignment,
+            RaceId = "race:human",
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
         };
         var baseId = CharacterStore.DeriveId(follower);
