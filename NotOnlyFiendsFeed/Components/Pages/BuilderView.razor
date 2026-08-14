@@ -491,7 +491,26 @@ else
                             @{
                                 var selectedFeatDef = _feats.FirstOrDefault(f => f.Id == FeatInput(index));
                             }
-                            @if (selectedFeatDef?.SelectionRequired == "school")
+                            @if (selectedFeatDef?.SelectionRequired == "spell")
+                            {
+                                var masteredSpells = SpellMasterySelections(index);
+                                var masteryLimit = SpellMasterySelectionLimit(index);
+                                <span class="small text-muted text-nowrap">Spells: @masteredSpells.Count / @masteryLimit (Int bonus)</span>
+                                @if (masteredSpells.Count < masteryLimit)
+                                {
+                                    <SearchSelect TItem="SpellDefinition"
+                                                  Items="GetSpellMasteryOptions(index)"
+                                                  Value="@FeatSelectionInput(index)"
+                                                  ValueChanged="@((v) => _featSelectionInputs[index] = v ?? string.Empty)"
+                                                  DisplaySelector="@(s => s.Name)"
+                                                  ValueSelector="@(s => s.Id)"
+                                                  TitleSelector="@(s => SpellTooltip(s))"
+                                                  DescriptionSelector="@(s => SpellTooltip(s))"
+                                                  CssClass="form-control-sm"
+                                                  Placeholder="Spell in spellbook..." />
+                                }
+                            }
+                            else if (selectedFeatDef?.SelectionRequired == "school")
                             {
                                 <select class="form-select form-select-sm" style="width:auto"
                                         value="@FeatSelectionInput(index)" @onchange="(e) => SetFeatSelectionInput(index, e)">

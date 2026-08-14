@@ -27,6 +27,45 @@ public class FeatTests
     }
 
     [Fact]
+    public void SpellMastery_UsesOneFeatSlotForIntelligenceModifierSelections()
+    {
+        var (_, engine) = CreateStudio();
+        var character = new Character
+        {
+            Name = "Spell Mastery selections",
+            RaceId = "race:dwarf",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 10, CON = 10, INT = 16, WIS = 10, CHA = 10
+            },
+            Ticks = new List<Tick>
+            {
+                new()
+                {
+                    DriverId = "class:wizard",
+                    Choices = new TickChoices
+                    {
+                        FeatIds = new List<string>
+                        {
+                            "feat:spell_mastery_spell:magic_missile",
+                            "feat:spell_mastery_spell:shield",
+                            "feat:spell_mastery_spell:detect_magic",
+                            "feat:spell_mastery_spell:identify"
+                        }
+                    }
+                }
+            }
+        };
+
+        var state = engine.Evaluate(character);
+
+        Assert.Equal(3, state.Feats.Count(feat => feat.StartsWith("feat:spell_mastery_spell:", StringComparison.Ordinal)));
+        Assert.DoesNotContain("feat:spell_mastery_spell:identify", state.Feats);
+        Assert.Equal(0, state.PendingFeatSlots);
+        Assert.Contains(state.Warnings, warning => warning.Message.Contains("Intelligence modifier limit (3)"));
+    }
+
+    [Fact]
     public void GrantedFeats_FromRaceTemplateAndClass_AreNotPlayerSelections()
     {
         var (_, engine) = CreateStudio();

@@ -1526,12 +1526,35 @@ public class ReplayStudio
         // one tick. Prerequisites are therefore checked once the tick's feats have all landed —
         // taking Cleave and Power Attack together is legal, taking Cleave without it is not.
         var pendingFeatPrerequisites = new List<(FeatDefinition Feat, Prerequisite Prerequisite)>();
+        var spellMasteryTakingAccepted = false;
+        var spellMasterySelectionsAccepted = 0;
+        var spellMasterySelectionLimit = Math.Max(0, state.AbilityModifier(Ability.INT));
 
         if (choices.FeatIds != null)
         {
             foreach (var featId in choices.FeatIds)
             {
                 _content.TryGetFeat(featId, out var featDef);
+                var isSpellMastery = featDef?.Id == SpellMasteryFeatId;
+                var isSpellMasterySelection = isSpellMastery
+                    && featId.StartsWith(SpellMasteryFeatId + "_", StringComparison.Ordinal);
+
+                // Spell Mastery is one feat that grants a number of spell selections, rather
+                // than one feat per spell. Older saves represent each selected spell as a
+                // repeatable feat variant, so subsequent variants on this HD share the first
+                // variant's feat slot.
+                if (isSpellMasterySelection)
+                {
+                    if (spellMasterySelectionsAccepted >= spellMasterySelectionLimit)
+                    {
+                        state.Warnings.Add(new Warning
+                        {
+                            TickIndex = state.TotalHD,
+                            Message = $"feat '{featId}' exceeds Spell Mastery's Intelligence modifier limit ({spellMasterySelectionLimit})"
+                        });
+                        continue;
+                    }
+                }
 
                 // A non-repeatable feat taken twice is illegal; GetAvailableFeats already
                 // filters these out, so reaching here means the choice bypassed that list.
@@ -1571,20 +1594,25 @@ public class ReplayStudio
                 // Resolve slot BEFORE mutating state: matching restricted-bonus slot first,
                 // then fall back to unrestricted. If nothing fits, drop the feat entirely.
                 FeatSlot? slot = null;
-                if (featDef != null)
+                if (featDef != null && (!isSpellMasterySelection || !spellMasteryTakingAccepted))
                 {
                     slot = state.FeatSlots.FirstOrDefault(s =>
                         s.Restriction != null && FeatMatchesRestriction(featDef, s.Restriction));
                 }
-                slot ??= state.FeatSlots.FirstOrDefault(s => s.Restriction == null);
+                if (!isSpellMasterySelection || !spellMasteryTakingAccepted)
+                    slot ??= state.FeatSlots.FirstOrDefault(s => s.Restriction == null);
 
-                if (slot == null)
+                if (!isSpellMasterySelection || !spellMasteryTakingAccepted)
                 {
-                    state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"feat '{featId}' dropped — no available feat slot" });
-                    continue;
+                    if (slot == null)
+                    {
+                        state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"feat '{featId}' dropped — no available feat slot" });
+                        continue;
+                    }
+
+                    state.FeatSlots.Remove(slot);
                 }
 
-                state.FeatSlots.Remove(slot);
                 state.Feats.Add(featId);
 
                 if (featDef == null)
@@ -1593,19 +1621,32 @@ public class ReplayStudio
                     continue;
                 }
 
-                foreach (var prereq in featDef.Prerequisites)
-                    pendingFeatPrerequisites.Add((featDef, prereq));
+                // Only the first Spell Mastery variant is the feat acquisition. The remaining
+                // variants are still recorded in state.Feats so selection-based prerequisites
+                // and the character sheet can see every mastered spell.
+                if (!isSpellMasterySelection || !spellMasteryTakingAccepted)
+                {
+                    foreach (var prereq in featDef.Prerequisites)
+                        pendingFeatPrerequisites.Add((featDef, prereq));
 
-                ctx.CurrentFeatId = featId;
-                foreach (var buff in featDef.GrantedPermabuffs)
-                    buff.Apply(ctx);
-                ctx.CurrentFeatId = null;
+                    ctx.CurrentFeatId = featId;
+                    foreach (var buff in featDef.GrantedPermabuffs)
+                        buff.Apply(ctx);
+                    ctx.CurrentFeatId = null;
 
-                state.FeatTypeCounts[featDef.Type] =
-                    state.FeatTypeCounts.GetValueOrDefault(featDef.Type) + 1;
+                    state.FeatTypeCounts[featDef.Type] =
+                        state.FeatTypeCounts.GetValueOrDefault(featDef.Type) + 1;
 
-                foreach (var tag in featDef.Tags)
-                    state.FeatTagCounts[tag] = state.FeatTagCounts.GetValueOrDefault(tag) + 1;
+                    foreach (var tag in featDef.Tags)
+                        state.FeatTagCounts[tag] = state.FeatTagCounts.GetValueOrDefault(tag) + 1;
+                }
+
+                if (isSpellMastery)
+                {
+                    spellMasteryTakingAccepted = true;
+                    if (isSpellMasterySelection)
+                        spellMasterySelectionsAccepted++;
+                }
             }
         }
 

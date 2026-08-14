@@ -60,6 +60,8 @@ public partial class BuilderView
     private readonly Dictionary<int, List<TickSpellSummary>> _tickSpellSummaries = new();
     private readonly Dictionary<int, TickSkillInfo> _tickSkillInfos = new();
     private readonly Dictionary<int, List<FeatDefinition>> _tickAvailableFeats = new();
+    private readonly Dictionary<int, List<SpellDefinition>> _tickSpellMasteryOptions = new();
+    private readonly Dictionary<int, int> _tickIntModifiers = new();
     private readonly Dictionary<int, TickCasterInfo> _tickCasterInfos = new();
     private readonly Dictionary<int, List<CompanionSlotState>> _tickNewCompanionSlots = new();
 
@@ -242,6 +244,8 @@ public partial class BuilderView
         _tickSpellSummaries.Clear();
         _tickSkillInfos.Clear();
         _tickAvailableFeats.Clear();
+        _tickSpellMasteryOptions.Clear();
+        _tickIntModifiers.Clear();
         _tickCasterInfos.Clear();
         _tickNewCompanionSlots.Clear();
         _tickWizardSchoolPicks.Clear();
@@ -299,12 +303,25 @@ public partial class BuilderView
 
             _tickAvailableFeats[i] = _engine.GetAvailableFeats(state)
                 .OrderBy(f => f.Name).ToList();
+            _tickIntModifiers[i] = state.AbilityModifier(Ability.INT);
+            if (state.Spellcasting.TryGetValue("class:wizard", out var wizardCasting))
+            {
+                var masteredOrInBook = wizardCasting.SelectedSpells
+                    .Where(s => s.ClassId == "class:wizard")
+                    .Select(s => s.SpellId)
+                    .ToHashSet(StringComparer.Ordinal);
+                _tickSpellMasteryOptions[i] = _spells
+                    .Where(spell => masteredOrInBook.Contains(spell.Id))
+                    .Where(spell => !state.IsSpellExcludedFromList("class:wizard", spell.Id))
+                    .OrderBy(spell => spell.Name)
+                    .ToList();
+            }
 
             // Feats granted here = the rise in outstanding slots since the previous tick, plus
             // whatever was already spent on this tick (spending lowers the pending count again).
             var pendingNow = state.PendingFeatSlots + state.PendingBonusFeatSlots;
             _tickFeatGrants[i] = pendingNow - prevPendingFeats
-                + (_character.Ticks[i].Choices.FeatIds?.Count ?? 0);
+                + CountLogicalFeatChoices(_character.Ticks[i].Choices.FeatIds);
             prevPendingFeats = pendingNow;
 
             // Wizard school pickers belong on the tick that granted them. Once a school is chosen
@@ -550,7 +567,18 @@ public partial class BuilderView
         var featDef = _feats.FirstOrDefault(f => f.Id == input);
         var featId = input.Trim();
 
-        if (featDef?.SelectionRequired != null)
+        if (featDef?.SelectionRequired == "spell")
+        {
+            var selection = FeatSelectionInput(index);
+            var limit = SpellMasterySelectionLimit(index);
+            var selected = SpellMasterySelections(index);
+            if (string.IsNullOrWhiteSpace(selection)
+                || selected.Count >= limit
+                || selected.Contains(selection, StringComparer.Ordinal))
+                return;
+            featId = $"{featId}_{selection.Trim()}";
+        }
+        else if (featDef?.SelectionRequired != null)
         {
             var selection = FeatSelectionInput(index);
             if (string.IsNullOrWhiteSpace(selection)) return;
@@ -560,7 +588,10 @@ public partial class BuilderView
 
         _character.Ticks[index].Choices.FeatIds ??= new List<string>();
         _character.Ticks[index].Choices.FeatIds!.Add(featId);
-        _featInputs.Remove(index);
+        // Keep Spell Mastery selected so the user can add the next mastered spell without
+        // spending another feat slot or reselecting the feat.
+        if (featDef?.SelectionRequired != "spell")
+            _featInputs.Remove(index);
         _featSelectionInputs.Remove(index);
         OnCharacterChanged();
     }
@@ -877,6 +908,8 @@ public partial class BuilderView
             if (f.SelectionRequired != null && featId.StartsWith(f.Id + "_", StringComparison.Ordinal))
             {
                 var suffix = featId[(f.Id.Length + 1)..];
+                if (f.Id == "feat:spell_mastery" && Content.Registry.TryGetSpell(suffix, out var spell) && spell != null)
+                    return $"{f.Name} ({spell.Name})";
                 var selection = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(suffix.Replace('_', ' '));
                 return $"{f.Name} ({selection})";
             }
@@ -1195,6 +1228,30 @@ public partial class BuilderView
 
     private List<FeatDefinition> GetTickFeats(int index) =>
         _tickAvailableFeats.TryGetValue(index, out var feats) ? feats : _feats;
+
+    private static int CountLogicalFeatChoices(IEnumerable<string>? featIds)
+    {
+        var ids = featIds?.ToList() ?? new List<string>();
+        var spellMasterySelections = ids.Count(id =>
+            id.StartsWith("feat:spell_mastery_", StringComparison.Ordinal));
+        return ids.Count - Math.Max(0, spellMasterySelections - 1);
+    }
+
+    private List<string> SpellMasterySelections(int index) =>
+        index >= 0 && index < _character.Ticks.Count
+            ? (_character.Ticks[index].Choices.FeatIds ?? new List<string>())
+                .Where(id => id.StartsWith("feat:spell_mastery_", StringComparison.Ordinal))
+                .Select(id => id["feat:spell_mastery_".Length..])
+                .ToList()
+            : new List<string>();
+
+    private int SpellMasterySelectionLimit(int index) =>
+        Math.Max(0, _tickIntModifiers.GetValueOrDefault(index));
+
+    private IEnumerable<SpellDefinition> GetSpellMasteryOptions(int index) =>
+        _tickSpellMasteryOptions.GetValueOrDefault(index)
+            ?.Where(spell => !SpellMasterySelections(index).Contains(spell.Id, StringComparer.Ordinal))
+        ?? Enumerable.Empty<SpellDefinition>();
 
     private TickSkillInfo? GetTickSkillInfo(int index) =>
         _tickSkillInfos.TryGetValue(index, out var info) ? info : null;
