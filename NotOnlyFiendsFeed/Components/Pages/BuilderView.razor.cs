@@ -27,13 +27,29 @@ public partial class BuilderView
     [Parameter] public string? Id { get; set; }
 
     private bool _loading = true;
+    // Recoverable: a failed evaluation. Shown as a banner over a builder that still edits, so
+    // the character that caused it can be repaired. Distinct from _fatalError, which is a
+    // content-load failure and leaves nothing to render.
     private string? _error;
-    private Character _character = new()
+    private string? _fatalError;
+
+    /// <summary>The blank character the builder starts on, and returns to on "+ New character".</summary>
+    private static Character NewCharacter() => new()
     {
         Name = "New Character",
-        RaceId = "race:human",
+        RaceId = DefaultRaceId,
         BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 }
     };
+
+    /// <summary>
+    /// Race for characters the builder creates without a species pick — a new character, a
+    /// Leadership follower, a Leadership cohort. Any resolvable race would do; what matters is
+    /// that it is never empty, because <c>GetRace("")</c> throws and the builder the user is
+    /// sent to then opens on an evaluation failure instead of a character.
+    /// </summary>
+    private const string DefaultRaceId = "race:human";
+
+    private Character _character = NewCharacter();
     private CharacterState? _state;
     private List<CompanionBuild>? _companionBuilds;
     private ReplayStudio _engine = null!;
@@ -182,6 +198,7 @@ public partial class BuilderView
                     {
                         _character = imported;
                         _characterStoreId = null;
+                        _loadedId = null;
                         ResetForLoadedCharacter();
                         await JS.InvokeVoidAsync("sessionStorage.removeItem", "importedCharacter");
                         SetStatus($"Imported \"{imported.Name}\" from PCGen.", false);
@@ -194,7 +211,7 @@ public partial class BuilderView
         }
         catch (Exception ex)
         {
-            _error = ex.Message;
+            _fatalError = ex.Message;
         }
         finally
         {
@@ -212,7 +229,20 @@ public partial class BuilderView
     {
         if (!_catalogsLoaded)
             return; // first load is handled by OnInitializedAsync
-        if (string.IsNullOrWhiteSpace(Id) || Id == _loadedId)
+
+        if (string.IsNullOrWhiteSpace(Id))
+        {
+            // /builder without an id means "new character". Keeping the character that was
+            // already loaded let "+ New character" hand back the previous one, whose next Save
+            // then overwrote the file the user thought they had left behind. A character with
+            // no identity yet has nothing to shed, so re-entering /builder from /builder leaves
+            // an in-progress draft alone.
+            if (_characterStoreId != null || _loadedId != null)
+                StartNewCharacter();
+            return;
+        }
+
+        if (Id == _loadedId)
             return;
         if (!CharacterStore.IsConfigured)
             return;
@@ -230,6 +260,22 @@ public partial class BuilderView
         {
             _error = ex.Message;
         }
+    }
+
+    /// <summary>
+    /// Drops the loaded character and its store identity, returning the builder to the blank
+    /// state a fresh page load starts in.
+    /// </summary>
+    private void StartNewCharacter()
+    {
+        _character = NewCharacter();
+        _characterStoreId = null;
+        _loadedId = null;
+        _error = null;
+        _statusMessage = null;
+        _showOpenPicker = false;
+        ResetForLoadedCharacter();
+        OnCharacterChanged();
     }
 
     private void OnCharacterChanged()
@@ -631,10 +677,14 @@ public partial class BuilderView
         }
     }
 
+    /// Catches everything, not just CharacterStoreException: a companion file that fails to
+    /// deserialize throws JsonException, and letting that escape made the master unopenable
+    /// because of a file the user was not editing. Unreadable and absent are the same thing
+    /// here — the resolver reports it as a dangling link either way.
     private Character? TryLoadCompanion(string id)
     {
         try { return CharacterStore.Get(id); }
-        catch (CharacterStoreException) { return null; }
+        catch (Exception) { return null; }
     }
 
     /// Repair path for a companion link whose id no longer resolves — see CompanionResolver.
@@ -665,20 +715,33 @@ public partial class BuilderView
         {
             if (_state != null)
                 _character.Sheet = CharacterSheet.FromState(_state);
-            if (CharacterStore.IsConfigured)
-            {
-                var id = string.IsNullOrEmpty(_characterStoreId)
-                    ? CharacterStore.DeriveId(_character)
-                    : _characterStoreId;
-                CharacterStore.Replace(id, _character);
-                _characterStoreId = id;
-                RefreshMasterLinks();
-                SetStatus($"Saved \"{_character.Name}\" to server.", false);
-            }
-            else
+            if (!CharacterStore.IsConfigured)
             {
                 SetStatus("Character storage not configured on server.", true);
+                return;
             }
+
+            if (string.IsNullOrEmpty(_characterStoreId))
+            {
+                // First save: Create reserves the first free id derived from the name, so a
+                // second character called "Lilly" lands in lilly_2 instead of overwriting the
+                // first one's file, which DeriveId + Replace — what this used to do — did
+                // silently, with the same "Saved" message as any other save.
+                var newId = CharacterStore.Create(_character);
+                _characterStoreId = newId;
+                _loadedId = newId;
+                RefreshMasterLinks();
+                RefreshAvailableCharacters();
+                SetStatus($"Saved \"{_character.Name}\" to server as \"{newId}\".", false);
+                // Give the character its route now that it has an id, so a refresh — or a later
+                // "+ New character" — sees the character actually on screen.
+                Navigation.NavigateTo($"/builder/{Uri.EscapeDataString(newId)}");
+                return;
+            }
+
+            CharacterStore.Replace(_characterStoreId, _character);
+            RefreshMasterLinks();
+            SetStatus($"Saved \"{_character.Name}\" to server.", false);
         }
         catch (Exception ex)
         {
@@ -710,11 +773,16 @@ public partial class BuilderView
             {
                 _character = loaded;
                 _characterStoreId = null;
+                _loadedId = null;
                 _error = null;
                 _showOpenPicker = false;
                 ResetForLoadedCharacter();
                 OnCharacterChanged();
                 SetStatus($"Opened \"{loaded.Name}\".", false);
+                // A character opened from disk has no store id, so the /builder/{id} route left
+                // over from the previous one would reopen that character on a refresh.
+                if (!string.IsNullOrWhiteSpace(Id))
+                    Navigation.NavigateTo("/builder");
             }
         }
         catch (Exception ex)
@@ -738,6 +806,7 @@ public partial class BuilderView
         {
             _character = CharacterStore.Get(id);
             _characterStoreId = id;
+            _loadedId = id;
             _error = null;
             _showOpenPicker = false;
             ResetForLoadedCharacter();
@@ -1710,7 +1779,10 @@ public partial class BuilderView
         {
             Name = $"{_character.Name}'s {displayName}",
             Alignment = _character.Alignment,
-            RaceId = species ?? string.Empty,
+            // A slot with no species pick is the Leadership cohort — a whole character the user
+            // is about to build, not a creature chosen from a list. It still needs a race the
+            // engine can resolve, or the builder we navigate to opens on "Race not found: ".
+            RaceId = string.IsNullOrEmpty(species) ? DefaultRaceId : species,
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 }
         };
 
@@ -1732,16 +1804,7 @@ public partial class BuilderView
                 companion.Ticks.Add(new Tick { DriverId = racialHdDriverId });
         }
 
-        var baseId = CharacterStore.DeriveId(companion);
-        var id = baseId;
-        var suffix = 1;
-        while (CharacterStore.Exists(id))
-        {
-            suffix++;
-            id = $"{baseId}_{suffix}";
-        }
-
-        CharacterStore.Replace(id, companion);
+        var id = CharacterStore.Create(companion);
 
         _character.CompanionLinks.Add(new CompanionLink
         {
@@ -1877,15 +1940,10 @@ public partial class BuilderView
         {
             Name = $"{_character.Name}'s level {level} follower",
             Alignment = _character.Alignment,
-            RaceId = "race:human",
+            RaceId = DefaultRaceId,
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
         };
-        var baseId = CharacterStore.DeriveId(follower);
-        var id = baseId;
-        for (var suffix = 2; CharacterStore.Exists(id); suffix++)
-            id = $"{baseId}_{suffix}";
-
-        CharacterStore.Replace(id, follower);
+        var id = CharacterStore.Create(follower);
         _character.CompanionLinks.Add(new CompanionLink
         {
             LinkType = "leadership_follower",

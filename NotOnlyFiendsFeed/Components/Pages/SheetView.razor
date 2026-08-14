@@ -17,7 +17,13 @@
 }
 else if (_error != null)
 {
+    @* The sheet is read-only, so a character it cannot evaluate has to hand the reader on to
+       somewhere that can fix it rather than dead-end on the message. *@
     <p class="text-danger">@_error</p>
+    @if (!string.IsNullOrWhiteSpace(Id))
+    {
+        <a href="@($"builder/{Uri.EscapeDataString(Id)}")" class="btn btn-sm btn-success">Open in builder to fix</a>
+    }
 }
 else if (_character == null)
 {
@@ -48,12 +54,21 @@ else if (_state != null && _character != null)
     <div class="sheet">
         <div class="tab-toolbar">
             <!-- Level Slider — a viewport control over the whole sheet, so it stays pinned
-                 rather than living on one tab. -->
-            <div class="level-slider mb-2">
-                <label>View at HD: <strong>@_viewHD</strong> / @_character.Ticks.Count</label>
-                <input type="range" min="1" max="@_character.Ticks.Count" @bind="_viewHD" @bind:event="oninput"
-                       @bind:after="OnSliderChanged" class="form-range" />
-            </div>
+                 rather than living on one tab. A character with no HD yet (a blank cohort or
+                 follower) has nothing to slide over, and rendering min=1 max=0 gave it a
+                 broken control instead of the race-and-templates sheet it does have. -->
+            @if (_character.Ticks.Count > 0)
+            {
+                <div class="level-slider mb-2">
+                    <label>View at HD: <strong>@_viewHD</strong> / @_character.Ticks.Count</label>
+                    <input type="range" min="1" max="@_character.Ticks.Count" @bind="_viewHD" @bind:event="oninput"
+                           @bind:after="OnSliderChanged" class="form-range" />
+                </div>
+            }
+            else
+            {
+                <div class="level-slider mb-2 text-muted small">No HD yet — race and templates only.</div>
+            }
 
             <div class="summary-strip d-flex flex-wrap align-items-center gap-3 small border rounded bg-light px-2 py-1 mb-2">
                 <span class="fw-bold">@_character.Name</span>

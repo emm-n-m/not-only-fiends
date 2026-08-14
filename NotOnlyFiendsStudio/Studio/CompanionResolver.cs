@@ -118,64 +118,23 @@ public class CompanionResolver
                 continue;
             }
 
-            var effective = EvaluateEffectiveMasterLevel(link, result.MasterState);
-
-            // Level 0 means the master does not qualify for this companion at all — a ranger
-            // below 4th, a would-be druid with no druid levels. The companion still evaluates,
-            // but it receives none of the scaling the link exists to deliver, so saying nothing
-            // reads as "this companion is fine" when it is inert.
-            if (effective <= 0)
+            try
             {
-                result.MasterState.Warnings.Add(new Warning
-                {
-                    TickIndex = null,
-                    Message = $"Companion link '{link.LinkType}' to '{link.CompanionId}' resolves to "
-                        + $"effective master level {effective} — the master does not qualify for it, "
-                        + "so the companion gains no scaling from the link."
-                });
+                AddCompanion(result, master, link, companion);
             }
-
-            // Inject origin so the companion's templates/formulas can read MasterLevel.
-            companion.CompanionOrigin = new CompanionOrigin
+            catch (Exception ex)
             {
-                LinkType = link.LinkType,
-                EffectiveMasterLevel = effective,
-                MasterCharacterId = master.Name
-            };
-
-            var companionState = _engine.Evaluate(companion);
-
-            // Must precede the cohort-level check below, which reads MaxCohortLevel.
-            if (link.LinkType == "leadership_cohort")
-                ApplyDifferentAlignmentCohortPenalty(result.MasterState, companionState);
-
-            if (link.LinkType is "leadership_follower" or "follower")
-                RecordFollowerOccupancy(result.MasterState, companionState);
-
-            if (link.LinkType == "animal_companion")
-                CheckAnimalCompanionIsLegal(result.MasterState, companionState, link.CompanionId);
-
-            if (IsFamiliarLinkType(link.LinkType))
-                ApplyFamiliarMasterStats(result.MasterState, companionState, _engine);
-
-            result.Companions.Add(new CompanionBuild
-            {
-                Link = link,
-                Character = companion,
-                State = companionState
-            });
-
-            // Leadership cohort validation: cohort ECL must not exceed the master's
-            // MaxCohortLevel (computed in master's tail pass from Leadership score).
-            if (link.LinkType == "leadership_cohort"
-                && companionState.ECL > result.MasterState.MaxCohortLevel)
-            {
+                // A companion that cannot be built is the companion's problem, not the master's.
+                // Letting this out took the master's whole sheet down with it: one half-finished
+                // follower — saved with no race by a creation flow that failed part-way — made a
+                // 21-HD character with eleven followers unreadable, and unrepairable in the
+                // builder, which showed the message instead of the editor. The companion is left
+                // out of the build and the master says so.
                 result.MasterState.Warnings.Add(new Warning
                 {
                     TickIndex = null,
-                    Message = $"Leadership cohort '{link.CompanionId}' ECL {companionState.ECL} exceeds "
-                        + $"max cohort level {result.MasterState.MaxCohortLevel} "
-                        + $"(cohort Leadership score {result.MasterState.LeadershipCohortScore})."
+                    Message = $"Companion link '{link.LinkType}' to '{link.CompanionId}' could not be "
+                        + $"built and has been left out: {ex.Message}"
                 });
             }
         }
@@ -183,6 +142,75 @@ public class CompanionResolver
         CheckFollowerCapacity(result.MasterState);
 
         return result;
+    }
+
+    /// <summary>
+    /// Evaluates one linked companion and folds it into the master's build. Everything that can
+    /// throw on one companion's data lives in here, so <see cref="Build"/> can contain the damage
+    /// to that companion.
+    /// </summary>
+    private void AddCompanion(CompositeBuildResult result, Character master, CompanionLink link, Character companion)
+    {
+        var effective = EvaluateEffectiveMasterLevel(link, result.MasterState);
+
+        // Level 0 means the master does not qualify for this companion at all — a ranger
+        // below 4th, a would-be druid with no druid levels. The companion still evaluates,
+        // but it receives none of the scaling the link exists to deliver, so saying nothing
+        // reads as "this companion is fine" when it is inert.
+        if (effective <= 0)
+        {
+            result.MasterState.Warnings.Add(new Warning
+            {
+                TickIndex = null,
+                Message = $"Companion link '{link.LinkType}' to '{link.CompanionId}' resolves to "
+                    + $"effective master level {effective} — the master does not qualify for it, "
+                    + "so the companion gains no scaling from the link."
+            });
+        }
+
+        // Inject origin so the companion's templates/formulas can read MasterLevel.
+        companion.CompanionOrigin = new CompanionOrigin
+        {
+            LinkType = link.LinkType,
+            EffectiveMasterLevel = effective,
+            MasterCharacterId = master.Name
+        };
+
+        var companionState = _engine.Evaluate(companion);
+
+        // Must precede the cohort-level check below, which reads MaxCohortLevel.
+        if (link.LinkType == "leadership_cohort")
+            ApplyDifferentAlignmentCohortPenalty(result.MasterState, companionState);
+
+        if (link.LinkType is "leadership_follower" or "follower")
+            RecordFollowerOccupancy(result.MasterState, companionState);
+
+        if (link.LinkType == "animal_companion")
+            CheckAnimalCompanionIsLegal(result.MasterState, companionState, link.CompanionId);
+
+        if (IsFamiliarLinkType(link.LinkType))
+            ApplyFamiliarMasterStats(result.MasterState, companionState, _engine);
+
+        result.Companions.Add(new CompanionBuild
+        {
+            Link = link,
+            Character = companion,
+            State = companionState
+        });
+
+        // Leadership cohort validation: cohort ECL must not exceed the master's
+        // MaxCohortLevel (computed in master's tail pass from Leadership score).
+        if (link.LinkType == "leadership_cohort"
+            && companionState.ECL > result.MasterState.MaxCohortLevel)
+        {
+            result.MasterState.Warnings.Add(new Warning
+            {
+                TickIndex = null,
+                Message = $"Leadership cohort '{link.CompanionId}' ECL {companionState.ECL} exceeds "
+                    + $"max cohort level {result.MasterState.MaxCohortLevel} "
+                    + $"(cohort Leadership score {result.MasterState.LeadershipCohortScore})."
+            });
+        }
     }
 
     private static int EvaluateEffectiveMasterLevel(CompanionLink link, CharacterState master)

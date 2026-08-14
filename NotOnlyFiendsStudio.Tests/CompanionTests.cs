@@ -414,6 +414,60 @@ public class CompanionTests
         Assert.DoesNotContain(result.MasterState.Warnings, w => w.Message.Contains("does not qualify"));
     }
 
+    /// <summary>
+    /// A companion that cannot be evaluated — here one saved with no race, which is what a
+    /// creation flow that failed part-way left behind — must not take its master's build with
+    /// it. Before this, one such follower made a master with eleven of them unreadable in the
+    /// builder and unrepairable there, because the page showed the exception instead of the
+    /// editor.
+    /// </summary>
+    [Fact]
+    public void CompanionResolver_CompanionThatCannotEvaluate_WarnsAndBuildsMaster()
+    {
+        var registry = BuildBasicRegistry();
+        registry.RegisterDriver(BuildDruidDriver());
+
+        var broken = new Character
+        {
+            Name = "Half-finished follower",
+            RaceId = "",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 }
+        };
+
+        var master = new Character
+        {
+            Name = "Leader",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 14, CHA = 10 },
+            Ticks = Enumerable.Range(0, 4).Select(_ => new Tick { DriverId = "class:druid" }).ToList(),
+            CompanionLinks = new List<CompanionLink>
+            {
+                new()
+                {
+                    LinkType = "leadership_follower",
+                    CompanionId = "broken_follower",
+                    FollowerLevel = 1,
+                    EffectiveLevelFormula = new Formula("1")
+                }
+            }
+        };
+
+        var resolver = new CompanionResolver(
+            new ReplayStudio(registry), id => id == "broken_follower" ? broken : null);
+
+        var result = resolver.Build(master);
+
+        // The master still builds, in full.
+        Assert.Equal(4, result.MasterState.TotalHD);
+        // The companion is left out rather than half-applied...
+        Assert.Empty(result.Companions);
+        // ...and says so, naming the companion so it can be found and fixed.
+        var warning = Assert.Single(
+            result.MasterState.Warnings, w => w.Message.Contains("could not be built"));
+        Assert.Contains("broken_follower", warning.Message);
+        Assert.Contains("Race not found", warning.Message);
+    }
+
     // ---------- Template CompanionScalingPermabuffs ----------
 
     [Fact]

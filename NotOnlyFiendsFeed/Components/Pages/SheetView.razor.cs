@@ -142,8 +142,34 @@ public partial class SheetView
 
     private readonly List<CharacterFileInfo> _savedCharacters = new();
 
-    protected override async Task OnInitializedAsync()
+    // The route id the character on screen came from, and whether that load actually finished.
+    // The prerender pass of the sessionStorage route deliberately loads nothing, so "same id"
+    // alone is not enough to skip a load.
+    private string? _loadedId;
+    private bool _loaded;
+
+    /// <summary>
+    /// Blazor reuses this component instance across <c>/sheet/a</c> → <c>/sheet/b</c>, so the load
+    /// lives here rather than in <see cref="OnInitializedAsync"/> — which runs once and left
+    /// character A on screen after navigating to B.
+    /// </summary>
+    protected override async Task OnParametersSetAsync()
     {
+        if (_loaded && Id == _loadedId)
+            return;
+
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        _error = null;
+        _character = null;
+        _state = null;
+        _raceDefinition = null;
+        _savedCharacters.Clear();
+
         try
         {
             _registry = Content.Registry;
@@ -156,7 +182,7 @@ public partial class SheetView
                 if (!CharacterStore.IsConfigured)
                 {
                     _error = "Character store is not configured (set CHARACTERS_PATH in .env).";
-                    _loading = false;
+                    MarkLoaded();
                     return;
                 }
 
@@ -166,7 +192,7 @@ public partial class SheetView
             {
                 // No id: the character is handed off from the Builder via sessionStorage,
                 // which is only reachable once the circuit is interactive. During the
-                // prerender pass, defer — OnInitializedAsync runs again when interactive.
+                // prerender pass, defer — this runs again when interactive.
                 if (!RendererInfo.IsInteractive)
                     return;
 
@@ -179,21 +205,30 @@ public partial class SheetView
             {
                 // Not an error — offer the saved characters to pick from.
                 LoadSavedCharacters();
-                _loading = false;
+                MarkLoaded();
                 return;
             }
 
-            _viewHD = _character.Ticks.Count;
+            // A character with no HD yet — a blank cohort or follower — still has a race and
+            // templates to show, and the slider has to stay at a level it can actually render.
+            _viewHD = Math.Max(1, _character.Ticks.Count);
             _state = _engine.Evaluate(_character, upToHD: _viewHD);
             _raceDefinition = _registry.GetAllRaces().FirstOrDefault(r => r.Id == _character.RaceId);
             NormalizeActiveTab();
-            _loading = false;
+            MarkLoaded();
         }
         catch (Exception ex)
         {
             _error = ex.Message;
-            _loading = false;
+            MarkLoaded();
         }
+    }
+
+    private void MarkLoaded()
+    {
+        _loadedId = Id;
+        _loaded = true;
+        _loading = false;
     }
 
     private void LoadSavedCharacters()

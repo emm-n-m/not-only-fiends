@@ -50,16 +50,26 @@
 
     protected override void OnParametersSet()
     {
-        // If the value changed externally, update the search text to match
-        if (!_open && Value != null)
+        // If the value changed externally, update the search text to match. Only while closed:
+        // whatever the user is typing outranks the bound value until they commit or leave.
+        if (!_open)
         {
-            var match = Items.FirstOrDefault(i => GetValue(i) == Value);
-            if (match != null)
-                _search = GetDisplay(match);
-        }
-        else if (!_open && Value == null && !string.IsNullOrEmpty(_search))
-        {
-            // Value was cleared externally
+            if (string.IsNullOrEmpty(Value))
+            {
+                // Cleared externally. The repeatable pickers (Spell Mastery, per-tick feats and
+                // domains) clear it after committing a pick — and they clear it to "", not null,
+                // so this cannot test for null alone. Leaving the last pick in the box read as
+                // "still selected" and made the next pick look like it had gone in already.
+                _search = "";
+            }
+            else
+            {
+                // An unmatched value is left showing whatever is in the box: it is a content id
+                // this catalogue does not carry, and blanking the field would hide that.
+                var match = Items.FirstOrDefault(i => GetValue(i) == Value);
+                if (match != null)
+                    _search = GetDisplay(match);
+            }
         }
         UpdateFiltered();
     }
@@ -128,8 +138,10 @@
             if (GetValue(match) != Value)
                 await ValueChanged.InvokeAsync(GetValue(match));
         }
-        else if (Value != null)
+        else
         {
+            // Abandoned text reverts to whatever is actually selected — nothing, when there is
+            // no selection (null or "").
             var current = Items.FirstOrDefault(i => GetValue(i) == Value);
             _search = current != null ? GetDisplay(current) : "";
         }

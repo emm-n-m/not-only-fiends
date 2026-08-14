@@ -114,6 +114,29 @@ different numbers.
 If either page ever appears in a real source, replace both rather than editing around them —
 the same standing instruction as the two derived spells below.
 
+## A half-created companion made its master unreadable — fixed
+
+Clicking "create follower" (and "create blank cohort") saved a stub character with an empty
+`RaceId`, which `ContentRegistry.GetRace` throws on. `CompanionResolver` evaluated companions
+inside the master's build with nothing between them, so that one stub took the master's whole
+evaluation down — and the builder replaced its entire markup with the exception text, leaving no
+way to repair either character in the UI. Two roster followers were created this way and deleted
+on 2026-08-14, with their master links removed.
+
+Three changes, in order of how much they matter:
+
+- `CompanionResolver.AddCompanion` isolates each companion; a failure there is a warning naming
+  the companion, the companion is left out of the build, and the master builds in full. Covered by
+  `CompanionTests.CompanionResolver_CompanionThatCannotEvaluate_WarnsAndBuildsMaster`.
+- The builder separates a fatal content-load failure (still takes the page) from an evaluation
+  failure (a banner above a live, editable builder), so a character that fails to evaluate is
+  repairable where it is displayed. The read-only sheet offers "Open in builder to fix" instead.
+- Every character the builder creates without a species pick now gets `race:human` rather than
+  `""`, so the stub cannot be written in the first place.
+
+The general rule this encodes: **a failure while creating or resolving one character must not make
+another character unreadable.**
+
 ## A celestial or fiendish animal companion cannot be chosen in the builder — fixed
 
 The builder and API now expose optional celestial/fiendish template choices for a planar ranger’s
