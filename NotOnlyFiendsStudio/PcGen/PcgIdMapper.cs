@@ -116,6 +116,12 @@ public class PcgIdMapper
         ["Blood Hexer"] = "class:blood_hexer",
         ["Spectral Loremaster"] = "class:spectral_loremaster",
         ["Deathseeker"] = "class:deathseeker",
+        ["Demonologist"] = "class:demonologist",
+        ["Binder"] = "class:binder",
+        ["Possessed"] = "class:possessed",
+        ["Demon Summoner"] = "class:demon_summoner",
+        ["Bargainer"] = "class:bargainer",
+        ["Blood Archer"] = "class:blood_archer",
 
         // DECEIT homebrew classes
         ["Favored Soul"] = "class:favored_soul",
@@ -124,6 +130,9 @@ public class PcgIdMapper
 
         // Monster classes (racial HD with class-like progression)
         ["Red Dragon"] = "racial_hd:red_dragon",
+        ["Cloud Dragon"] = "racial_hd:cloud_dragon",
+        ["Mist Dragon"] = "racial_hd:mist_dragon",
+        ["The Oinodaemon"] = "racial_hd:the_oinodaemon",
 
         // Racial HD (PCGen uses creature type name as class)
         ["Outsider"] = "racial_hd:outsider",

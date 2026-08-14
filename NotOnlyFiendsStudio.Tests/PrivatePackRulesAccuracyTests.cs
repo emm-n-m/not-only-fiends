@@ -47,6 +47,127 @@ public class PrivatePackRulesAccuracyTests
         Assert.Equal("skill:knowledge", skill.ParentSkill);
     }
 
+    // Encyclopaedia Arcane: Demonology PCGen witnesses:
+    // demonology_classes.lst: Demonologist, Binder, Possessed class lines and prerequisites;
+    // demonology_feats.lst: Change Instruction, Dismiss Demon, Quicken Summoning,
+    // Strength of Personality; demonology_skills.lst: Knowledge (Demonology).
+    [RequiresPrivatePacksFact]
+    public void DemonologyClassesAndPrerequisiteContent_MatchThePcGenWitnesses()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+
+        var demonologist = (HDDriver)registry.GetDriver("class:demonologist");
+        Assert.Equal(4, demonologist.HitDie);
+        Assert.Equal(4, demonologist.SkillPointsPerLevel);
+        Assert.Equal(BABProgression.Poor, demonologist.BABProgression);
+        Assert.Equal(ProgressionRate.Poor, demonologist.SaveProgression.Fort);
+        Assert.Equal(ProgressionRate.Poor, demonologist.SaveProgression.Ref);
+        Assert.Equal(ProgressionRate.Good, demonologist.SaveProgression.Will);
+        Assert.Equal(10, demonologist.MaxLevel);
+        Assert.Contains(demonologist.Prerequisites, p => p is HasFeat { FeatId: "feat:spell_mastery" });
+        Assert.Contains(demonologist.Prerequisites, p => p is HasLanguage { LanguageId: "draconic" });
+        Assert.Single(demonologist.PerLevelPermabuffs.OfType<AdvanceSpellcasting>());
+
+        var binder = (HDDriver)registry.GetDriver("class:binder");
+        Assert.Single(binder.PerLevelPermabuffs.OfType<AdvanceSpellcasting>());
+        Assert.Contains(binder.Prerequisites, p => p is HasFeat { FeatId: "feat:craft_magic_arms_and_armor" });
+        Assert.Contains(binder.Prerequisites, p => p is HasFeat { FeatId: "feat:craft_wondrous_item" });
+        Assert.Equal(8, Assert.Single(binder.Prerequisites.OfType<MinSkillRanks>()).Value);
+        Assert.Contains(binder.Prerequisites, p => p is HasSpellcasting { CastingType: CastingType.Arcane });
+
+        var possessed = (HDDriver)registry.GetDriver("class:possessed");
+        Assert.Contains(possessed.Prerequisites, p => p is HasFeat { FeatId: "feat:strength_of_personality" });
+        Assert.Equal(11, Assert.Single(possessed.Prerequisites.OfType<MinSkillRanks>()).Value);
+        Assert.Equal(6, Assert.Single(possessed.Prerequisites.OfType<AlignmentReq>()).Allowed.Count);
+
+        Assert.True(registry.TryGetSkill("skill:knowledge_demonology", out var demonologySkill));
+        Assert.NotNull(demonologySkill);
+        Assert.Equal("int", demonologySkill.KeyAbility);
+        Assert.True(demonologySkill.TrainedOnly);
+
+        Assert.Equal("feat:dismiss_demon", registry.GetFeat("feat:dismiss_demon").Id);
+        Assert.Equal("feat:quicken_summoning", registry.GetFeat("feat:quicken_summoning").Id);
+        Assert.Equal("feat:strength_of_personality", registry.GetFeat("feat:strength_of_personality").Id);
+    }
+
+    // AEG Evil witnesses: evil_classes.lst / evil_35e/evil_classes_35e.lst, pp. 29-31, 69-71.
+    // Tome of Horrors Revised witnesses: tome_of_horrors_classes_monsters_dragons.lst and
+    // tome_of_horrors_classes_monsters_specific.lst, pp. 83, 162, 165; race prerequisites are
+    // registered from tome_of_horrors_races_d.lst and tome_of_horrors_races_dragons.lst.
+    [RequiresPrivatePacksFact]
+    public void AegEvilAndTomeOfHorrorsClasses_MatchThePcGenWitnesses()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+
+        var demonSummoner = (HDDriver)registry.GetDriver("class:demon_summoner");
+        Assert.Equal(4, demonSummoner.HitDie);
+        Assert.Equal(2, demonSummoner.SkillPointsPerLevel);
+        Assert.Contains(demonSummoner.Prerequisites, p => p is AlignmentReq a && a.Allowed.SetEquals(new[] { Alignment.LE, Alignment.NE, Alignment.CE }));
+        Assert.Contains(demonSummoner.Prerequisites, p => p is AnyOf);
+        Assert.Equal(6, Assert.Single(demonSummoner.Prerequisites.OfType<MinSkillRanks>(), p => p.SkillId == "skill:knowledge_demonology").Value);
+        Assert.Equal(6, Assert.Single(demonSummoner.Prerequisites.OfType<MinSkillRanks>(), p => p.SkillId == "skill:spellcraft").Value);
+
+        var bargainer = (HDDriver)registry.GetDriver("class:bargainer");
+        Assert.Equal(6, bargainer.HitDie);
+        Assert.Contains(bargainer.Prerequisites, p => p is HasFeat { FeatId: "feat:infernal_pact" });
+        Assert.Contains(bargainer.Prerequisites, p => p is HasFeat { FeatId: "feat:iron_will" });
+        Assert.Contains(bargainer.LevelPermabuffs[1], p => p is ModifyAttribute { AbilityScore: Ability.CHA, Value: 1 });
+        Assert.Contains(bargainer.LevelPermabuffs[7], p => p is GrantBonusFeat { FeatId: "feat:craft_wondrous_item" });
+
+        var bloodArcher = (HDDriver)registry.GetDriver("class:blood_archer");
+        Assert.Equal(BABProgression.Good, bloodArcher.BABProgression);
+        Assert.Equal(ProgressionRate.Good, bloodArcher.SaveProgression.Fort);
+        Assert.Equal(ProgressionRate.Poor, bloodArcher.SaveProgression.Ref);
+        Assert.Contains(bloodArcher.Prerequisites, p => p is HasFeat { FeatId: "feat:weapon_specialization" });
+        Assert.Equal(6, Assert.Single(bloodArcher.Prerequisites.OfType<MinSkillRanks>(), p => p.SkillId == "skill:craft_bowyer_fletcher").Value);
+        Assert.Contains(bloodArcher.ClassSkills, skill => skill == "skill:craft_bowyer_fletcher");
+
+        var cloud = (HDDriver)registry.GetDriver("racial_hd:cloud_dragon");
+        Assert.Equal(12, cloud.HitDie);
+        Assert.Equal(BABProgression.Good, cloud.BABProgression);
+        Assert.Equal(ProgressionRate.Good, cloud.SaveProgression.Will);
+        Assert.Contains(cloud.Prerequisites, p => p is HasRace { RaceId: "race:cloud_dragon" });
+
+        var mist = (HDDriver)registry.GetDriver("racial_hd:mist_dragon");
+        var mistRaceIds = mist.Prerequisites.OfType<AnyOf>().Single().Options.OfType<HasRace>().Select(p => p.RaceId).ToHashSet();
+        Assert.Equal(12, mistRaceIds.Count);
+        Assert.Contains("race:mist_dragon_wyrmling", mistRaceIds);
+        Assert.Contains("race:mist_dragon_great_wyrm", mistRaceIds);
+
+        var oinodaemon = (HDDriver)registry.GetDriver("racial_hd:the_oinodaemon");
+        Assert.Equal(8, oinodaemon.HitDie);
+        Assert.Equal(49, oinodaemon.MaxLevel);
+        Assert.Contains(oinodaemon.Prerequisites, p => p is HasRace { RaceId: "race:daemon_the_oinodaemon" });
+        Assert.Contains(oinodaemon.LevelPermabuffs[1], p => p is GrantDomainSelection { Count: 3, ClassId: "class:cleric" });
+
+        Assert.Equal("skill:craft_bowyer_fletcher", registry.GetAllSkills().Single(s => s.Name == "Craft (Bowyer/Fletcher)").Id);
+        Assert.Equal("racial_hd:cloud_dragon", registry.GetRace("race:cloud_dragon").RacialHDDriverId);
+        Assert.Equal("racial_hd:the_oinodaemon", registry.GetRace("race:daemon_the_oinodaemon").RacialHDDriverId);
+    }
+
+    // AEG Evil evil_35e/evil_spells_35e.lst:5, Belarosh's Law.
+    [RequiresPrivatePacksFact]
+    public void BelaroshLaw_MatchesThePcGenSpellWitness()
+    {
+        var spell = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable()
+            .GetSpell("spell:belarosh_s_law");
+
+        Assert.Equal("Belarosh's Law", spell.Name);
+        Assert.Equal("abjuration", spell.School);
+        Assert.Equal(3, spell.ClassLevels["class:sorcerer"]);
+        Assert.Equal(3, spell.ClassLevels["class:wizard"]);
+        Assert.Equal(4, spell.ClassLevels["class:cleric"]);
+        Assert.True(spell.Components.Verbal);
+        Assert.True(spell.Components.Somatic);
+        Assert.Equal("magic circle", spell.Components.Material);
+        Assert.Equal("30 minutes", spell.CastingTime);
+        Assert.Equal("Touch", spell.Range);
+        Assert.Equal("One magic circle of any size", spell.Target);
+        Assert.Equal("24 hours", spell.Duration);
+        Assert.Equal("Special", spell.SavingThrow);
+        Assert.Equal("Special", spell.SpellResistance);
+    }
+
     // silverthorne_games/.../sevenstrangespells_spells.lst:8:
     // CLASSES:Sorcerer,Wizard=1 SCHOOL:Illusion SUBSCHOOL:Pattern
     // DESCRIPTOR:Mind-Affecting COMPS:V, S, M.
