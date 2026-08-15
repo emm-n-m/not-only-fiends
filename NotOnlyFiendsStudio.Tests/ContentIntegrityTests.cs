@@ -197,6 +197,9 @@ public class ContentIntegrityTests
             if (race.RacialHDDriverId != null)
                 Check(driverIds.Contains(race.RacialHDDriverId), context, "racialHDDriverId", race.RacialHDDriverId);
 
+            if (race.MonsterClassDriverId != null)
+                Check(driverIds.Contains(race.MonsterClassDriverId), context, "monsterClassDriverId", race.MonsterClassDriverId);
+
             foreach (var id in race.RacialClassSkillAdditions)
                 Check(SkillResolves(id), context, "racialClassSkillAdditions", id);
             foreach (var id in race.RacialClassSkillRemovals)

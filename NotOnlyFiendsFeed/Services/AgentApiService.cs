@@ -378,7 +378,8 @@ public sealed class AgentApiService
             : null;
         var abilityIncreaseDue = GetAvailableDrivers(currentState, request.Character)
             .Where(driver => candidateIds == null || candidateIds.Contains(driver.Id))
-            .Any(driver => GameRules.Standard35e().GrantsAbilityIncrease(nextHd, driver.Kind));
+            .Any(driver => GameRules.Standard35e()
+                .GrantsAbilityIncrease(nextHd - currentState.FreeMonsterClassHD, driver.Kind));
         return new NextStepResponse
         {
             NextHd = nextHd,
@@ -487,7 +488,8 @@ public sealed class AgentApiService
         return new DriverPreviewDto
         {
             Driver = MapDriver(driver),
-            AbilityIncreaseDue = GameRules.Standard35e().GrantsAbilityIncrease(projectedState.TotalHD, driver.Kind),
+            AbilityIncreaseDue = GameRules.Standard35e().GrantsAbilityIncrease(
+                projectedState.TotalHD - projectedState.FreeMonsterClassHD, driver.Kind),
             Preview = new CharacterPreviewDto
             {
                 TotalHd = projectedState.TotalHD,

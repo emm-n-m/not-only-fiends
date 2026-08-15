@@ -35,6 +35,13 @@ public class CharacterState
 
     // Progression
     public int TotalHD { get; set; }
+
+    /// <summary>
+    /// Hit dice that arrived free with a monster race and so are not levels the character earned —
+    /// <see cref="RaceDefinition.MonsterClassHD"/>. Zero for every ordinary race. Character level for
+    /// the every-four-levels ability increase is <see cref="TotalHD"/> minus this.
+    /// </summary>
+    public int FreeMonsterClassHD { get; set; }
     public List<string> HDList { get; set; } = new();
     public List<HitDieEntry> HitDice { get; set; } = new();
     public int RacialHitDieSizeAdjustment { get; set; }

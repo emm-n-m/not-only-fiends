@@ -270,9 +270,11 @@ public class ReplayStudio
             foreach (var sf in race.ScalingFormulas)
                 new SetAttribute(sf.Target, sf.Formula.Evaluate(state), sf.ResistanceElement, sf.AbilityScore).Apply(ctx);
 
-            // i. Ability score increase (scheduled class ticks only; racial adjustments are on the race)
+            // i. Ability score increase (scheduled class ticks only; racial adjustments are on the race).
+            // Counted from the end of a monster race's free HD, which are not levels the character
+            // earned — see RaceDefinition.MonsterClassHD.
             if (driver is HDDriver abilityDriver
-                && _rules.GrantsAbilityIncrease(state.TotalHD, abilityDriver.Kind)
+                && _rules.GrantsAbilityIncrease(state.TotalHD - race.FreeMonsterClassHD, abilityDriver.Kind)
                 && tick.Choices.AbilityIncrease.HasValue)
                 ApplyAbilityIncrease(state, tick.Choices.AbilityIncrease.Value);
 
@@ -1036,6 +1038,7 @@ public class ReplayStudio
     {
         var state = ctx.State;
         state.RaceId = race.Id;
+        state.FreeMonsterClassHD = race.FreeMonsterClassHD;
         state.Type = race.Type;
         state.BaseRaceType = race.Type;
         state.Size = race.Size;

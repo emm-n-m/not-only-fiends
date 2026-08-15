@@ -599,11 +599,18 @@ public partial class BuilderView
         OnCharacterChanged();
     }
 
+    /// <summary>
+    /// Whether this tick owes an ability increase. Counts from the end of a monster race's free HD:
+    /// an Archfiend's first 24 levels arrive with the race, so prompting on HD 4, 8 … 24 asked for
+    /// six choices the character never had — see <see cref="RaceDefinition.MonsterClassHD"/>.
+    /// </summary>
     private bool IsAbilityIncreaseDue(int index)
     {
         if (index < 0 || index >= _character.Ticks.Count) return false;
         var driver = _drivers.FirstOrDefault(d => d.Id == _character.Ticks[index].DriverId) as HDDriver;
-        return driver != null && GameRules.Standard35e().GrantsAbilityIncrease(index + 1, driver.Kind);
+        if (driver == null) return false;
+        var freeHD = _races.FirstOrDefault(r => r.Id == _character.RaceId)?.FreeMonsterClassHD ?? 0;
+        return GameRules.Standard35e().GrantsAbilityIncrease(index + 1 - freeHD, driver.Kind);
     }
 
     private void AddFeatToTick(int index)

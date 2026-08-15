@@ -93,9 +93,16 @@ public class GameRules
     /// <summary>
     /// This ruleset stores racial ability adjustments on the race itself. Racial-HD ticks therefore
     /// do not also grant the selectable every-four-HD ability increase used by class levels.
+    ///
+    /// <paramref name="characterLevel"/> is the count of levels that are the character's own, which
+    /// is total HD for most characters but excludes a monster race's free HD — see
+    /// <see cref="RaceDefinition.MonsterClassHD"/>. Those HD arrive with the race rather than being
+    /// levelled through, so they no more grant an increase than a racial-HD tick does, even though
+    /// the driver carrying them is a class.
     /// </summary>
-    public bool GrantsAbilityIncrease(int totalHD, DriverKind driverKind) =>
-        driverKind == DriverKind.Class && totalHD % AbilityIncreaseInterval == 0;
+    public bool GrantsAbilityIncrease(int characterLevel, DriverKind driverKind) =>
+        driverKind == DriverKind.Class && characterLevel > 0
+        && characterLevel % AbilityIncreaseInterval == 0;
 
     public bool GrantsEpicFeat(int totalHD) =>
         totalHD >= EpicFeatStartHD && (totalHD - EpicFeatStartHD) % EpicFeatInterval == 0;

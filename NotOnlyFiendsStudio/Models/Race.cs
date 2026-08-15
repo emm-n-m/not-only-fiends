@@ -59,6 +59,35 @@ public class RaceDefinition
     // Racial HD driver ID — null for races with no racial HD (Human, etc.)
     public string? RacialHDDriverId { get; set; }
 
+    /// <summary>
+    /// PCGen's <c>MONSTERCLASS:&lt;class&gt;:&lt;hd&gt;</c> — a race whose hit dice are levels of a
+    /// monster <em>class</em> rather than a generic <c>racial_hd:</c> driver. The Archfiend race is
+    /// the case in hand: it arrives as 24 levels of <c>class:archfiend</c>, and a character may then
+    /// buy more levels of that same class on top.
+    ///
+    /// The driver stays one continuous run and keeps <see cref="DriverKind.Class"/>, because that is
+    /// what those levels are for everything the chassis computes: base saves are per class, taken
+    /// once from the class's total level, so splitting a 29-level run into 24 racial + 5 class would
+    /// pay the level-1 "+2" of a good save twice (2 + 24/2 = 14 plus 2 + 5/2 = 4, against the correct
+    /// 2 + 29/2 = 16).
+    ///
+    /// What the free HD do change is the ability-increase schedule: they are not levels the character
+    /// earned, so the every-four-levels increase counts from the end of the allotment. Ember's three
+    /// increases land at total HD 28, 32 and 36 — character levels 4, 8 and 12 — which is exactly
+    /// what PCGen recorded for her.
+    /// </summary>
+    public string? MonsterClassDriverId { get; set; }
+
+    /// <inheritdoc cref="MonsterClassDriverId"/>
+    public int? MonsterClassHD { get; set; }
+
+    /// <summary>
+    /// Hit dice that came free with the race and so do not count toward the character's own level.
+    /// Zero for every ordinary race, including races with a <c>racial_hd:</c> driver — those ticks
+    /// are already excluded by their driver kind.
+    /// </summary>
+    public int FreeMonsterClassHD => MonsterClassDriverId == null ? 0 : MonsterClassHD ?? 0;
+
     // Delta to the racial HD driver's class skills (add/remove specific skills)
     public List<string> RacialClassSkillAdditions { get; set; } = new();
     public List<string> RacialClassSkillRemovals { get; set; } = new();
