@@ -56,6 +56,13 @@ public class CharacterState
     // Effective level rules — templates/feats can grant bonus effective levels for class features
     public List<EffectiveLevelRule> EffectiveLevelRules { get; set; } = new();
 
+    /// <summary>
+    /// "Casts as an Nth-level &lt;class&gt;" grants collected as they are applied, from a race or a
+    /// template alike, and seeded into <see cref="Spellcasting"/> by the engine's finalize phase —
+    /// which must run after the ticks, so a formula reading HD sees the final count.
+    /// </summary>
+    public List<GrantRacialSpellcasting> RacialSpellcastingGrants { get; set; } = new();
+
     // Combat — pre-epic base values (frozen at HD 20)
     public int BaseBAB { get; set; }
     public SaveSet BaseSaves { get; set; } = new();

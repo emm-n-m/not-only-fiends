@@ -890,6 +890,11 @@ public class GrantRacialSpellcasting : Permabuff
             // Casting as an Nth-level druid is not being an Nth-level druid.
             Scope = EffectiveLevelScope.SpellcastingOnly
         });
+
+        // Record the grant for the engine's seeding phase. Recorded here rather than read back
+        // off the race, so that a template can grant casting too — "an Archfiend casts as its own
+        // HD" belongs to the template that makes something an Archfiend, not to one race.
+        ctx.State.RacialSpellcastingGrants.Add(this);
     }
 }
 

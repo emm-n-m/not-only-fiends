@@ -832,7 +832,7 @@ public class ReplayStudio
     private void FinalizeRacialSpellcasting(
         PermabuffContext ctx, RaceDefinition race, IReadOnlyCollection<string> classDriverIds)
     {
-        foreach (var buff in race.RacialPermabuffs.OfType<GrantRacialSpellcasting>())
+        foreach (var buff in ctx.State.RacialSpellcastingGrants.ToList())
         {
             // "Casts as a 7th-level druid" seeds a caster the character's own druid levels then
             // overwrite with the stacked total. A variant druid overwrites a different key, so
@@ -864,14 +864,20 @@ public class ReplayStudio
                 continue;
             }
 
-            if (!hd.Spellcasting.SpellsPerDay.TryGetValue(level, out var spd))
+            // A creature can out-grow the table it casts from: "casts as an archfiend of its HD"
+            // at 36 HD against a progression printed to 20th. The caster level is still 36 — slots
+            // simply stop improving at the last row the table defines, which is what a progression
+            // ending at 20th means. Only an empty table has nothing to say.
+            var progressionLevel = hd.Spellcasting.SpellsPerDay.Keys.Where(l => l <= level).DefaultIfEmpty(0).Max();
+            if (progressionLevel == 0)
             {
-                ctx.State.Warnings.Add(new Warning { TickIndex = ctx.State.TotalHD, Message = $"GrantRacialSpellcasting: '{buff.ClassId}' progression has no level {level} entry" });
+                ctx.State.Warnings.Add(new Warning { TickIndex = ctx.State.TotalHD, Message = $"GrantRacialSpellcasting: '{buff.ClassId}' progression has no entry at or below level {level}" });
                 continue;
             }
 
+            var spd = hd.Spellcasting.SpellsPerDay[progressionLevel];
             Dictionary<int, int>? sk = null;
-            hd.Spellcasting.SpellsKnown?.TryGetValue(level, out sk);
+            hd.Spellcasting.SpellsKnown?.TryGetValue(progressionLevel, out sk);
 
             new UpdateSpellcasting
             {
