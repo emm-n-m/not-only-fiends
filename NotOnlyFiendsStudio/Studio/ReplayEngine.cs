@@ -61,7 +61,20 @@ public class ReplayStudio
         // character saved before acquisition HDs existed — apply at creation. A template
         // acquired mid-career applies at its acquisition tick instead, inside the loop below.
         int AcquisitionHDOf(string id) => character.TemplateAcquisitionHD.GetValueOrDefault(id, 0);
-        var delayedTemplateIds = character.TemplateIds.Where(id => AcquisitionHDOf(id) > 1).ToList();
+
+        // The race's own templates come first — they say what the creature is, and the character's
+        // choices layer on top. Distinct, so a saved character that also lists one (every import
+        // before the race declared it) applies it once. They are creation templates by definition:
+        // an acquisition HD on the character cannot delay what the race already is.
+        var creationTemplateIds = race.ImpliedTemplateIds
+            .Concat(character.TemplateIds)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        var delayedTemplateIds = creationTemplateIds
+            .Where(id => !race.ImpliedTemplateIds.Contains(id, StringComparer.Ordinal)
+                && AcquisitionHDOf(id) > 1)
+            .ToList();
         var rejectedDelayedTemplateIds = delayedTemplateIds
             .Where(id => _content.GetTemplate(id).AcquisitionKind == TemplateAcquisitionKind.Inherited)
             .ToHashSet(StringComparer.Ordinal);
@@ -79,7 +92,7 @@ public class ReplayStudio
             });
         }
 
-        foreach (var templateId in character.TemplateIds.Except(delayedTemplateIds))
+        foreach (var templateId in creationTemplateIds.Except(delayedTemplateIds))
         {
             var template = _content.GetTemplate(templateId);
             TemplateApplication.Apply(ctx, template, acquisitionHD: null);
@@ -88,7 +101,7 @@ public class ReplayStudio
         // Derived movement is permanent character state. Resolve it after all template
         // transformations and before the post-tick armor/load speed pass. Acquired templates
         // resolve theirs at the moment they apply.
-        ResolveDerivedSpeeds(state, character.TemplateIds.Except(delayedTemplateIds));
+        ResolveDerivedSpeeds(state, creationTemplateIds.Except(delayedTemplateIds));
 
         // 3. Apply base ability scores (added to racial/template modifiers)
         ApplyBaseAbilities(state, character.BaseAbilityScores);

@@ -176,6 +176,46 @@ public class ArchfiendRacialCastingTests
         Assert.Equal("class:archfiend", state.DomainOwners["domain:fire"]);
     }
 
+    /// <summary>
+    /// A character built in the app by picking the race — no templates listed at all — is an
+    /// Archfiend, because the race says so. Before this, only an import knew to attach the
+    /// template, so a hand-built Archfiend silently had no casting.
+    /// </summary>
+    [RequiresPrivatePacksFact]
+    public void Race_ImpliesItsTemplate_WithNothingListedOnTheCharacter()
+    {
+        var character = Archfiend(archmageLevels: 0);
+        character.TemplateIds.Clear();
+
+        var state = Evaluate(character);
+
+        Assert.Contains("template:archfiend", state.TemplateIds);
+        Assert.Equal(RacialHD, state.Spellcasting["class:archfiend"].CasterLevel);
+        Assert.Contains(state.Abilities, ability => ability.Id == "archfiend_rebuke_undead");
+    }
+
+    /// <summary>
+    /// Every character imported before the race declared it still lists the template. Applying it
+    /// twice would grant four domain selections and stack whatever else it carries, so the two
+    /// sources have to collapse to one application.
+    /// </summary>
+    [RequiresPrivatePacksFact]
+    public void RaceImplied_AndCharacterListed_AppliesOnce()
+    {
+        var listed = Evaluate(Archfiend(archmageLevels: 0));
+        var implied = Evaluate(WithoutTemplates(Archfiend(archmageLevels: 0)));
+
+        Assert.Equal(1, listed.TemplateIds.Count(id => id == "template:archfiend"));
+        Assert.Equal(implied.PendingDomainSelections.Values.Sum(), listed.PendingDomainSelections.Values.Sum());
+        Assert.Equal(2, listed.PendingDomainSelections.Values.Sum());
+    }
+
+    private static Character WithoutTemplates(Character character)
+    {
+        character.TemplateIds.RemoveAll(id => id == "template:archfiend");
+        return character;
+    }
+
     /// <summary>The two domains and Rebuke Undead ride the template now, not the class's 1st level.</summary>
     [RequiresPrivatePacksFact]
     public void Template_CarriesTheDomainsAndRebukeUndead()

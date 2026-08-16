@@ -60,6 +60,19 @@ public class RaceDefinition
     public string? RacialHDDriverId { get; set; }
 
     /// <summary>
+    /// Templates every creature of this race carries, applied at creation before the character's
+    /// own so those layer on top. This is where a race says what it <em>is</em> in template terms:
+    /// an Archfiend casts as its own HD, rebukes undead and draws on two domains, and that is true
+    /// of every Archfiend whether or not a saved character happens to list it.
+    ///
+    /// Kept on the race rather than copied into each character so it cannot go stale — changing a
+    /// race's identity changes every creature of it, and a character whose race changes stops
+    /// carrying the old one. Listing the same template on the character too is harmless; it applies
+    /// once.
+    /// </summary>
+    public List<string> ImpliedTemplateIds { get; set; } = new();
+
+    /// <summary>
     /// PCGen's <c>MONSTERCLASS:&lt;class&gt;:&lt;hd&gt;</c> — a race whose hit dice are levels of a
     /// monster <em>class</em> rather than a generic <c>racial_hd:</c> driver. The Archfiend race is
     /// the case in hand: it arrives as 24 levels of <c>class:archfiend</c>, and a character may then

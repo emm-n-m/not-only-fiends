@@ -216,18 +216,6 @@ public static class PcgConverter
         // are deliberately excluded above, but the MASTER record still tells us that this
         // character is a familiar. Restore the engine's universal familiar progression here;
         // Improved Familiar changes the eligible creature, not the progression or master level.
-        // A race whose hit dice are a monster class carries a template saying what that class was:
-        // the Archfiend's casting, Rebuke Undead and domains live in template:archfiend now that
-        // its levels are plain outsider HD. PCGen has no template to map — the class *was* the
-        // statement — so the race implies it.
-        if (registry != null
-            && RaceImpliedTemplates.TryGetValue(character.RaceId, out var impliedTemplateId)
-            && registry.GetAllTemplates().Any(t => t.Id == impliedTemplateId)
-            && !character.TemplateIds.Contains(impliedTemplateId, StringComparer.Ordinal))
-        {
-            character.TemplateIds.Insert(0, impliedTemplateId);
-        }
-
         var companionTemplateId = CompanionProgressionTemplate(character.CompanionOrigin?.LinkType);
         if (companionTemplateId != null
             && !character.TemplateIds.Contains(companionTemplateId, StringComparer.Ordinal))
@@ -1398,17 +1386,6 @@ public static class PcgConverter
 
     private static bool IsFamiliarLinkType(string? linkType) =>
         linkType is "familiar" or "improved_familiar";
-
-    /// <summary>
-    /// Templates a race always carries, which PCGen expresses some other way. The Archfiend's
-    /// hit dice are a monster class in PCGen; here they are outsider racial HD, and what the class
-    /// actually granted — casting at its own HD, Rebuke Undead, two domains — is
-    /// <c>template:archfiend</c>. The variant list templates layer on top as before.
-    /// </summary>
-    private static readonly Dictionary<string, string> RaceImpliedTemplates = new(StringComparer.Ordinal)
-    {
-        ["race:archfiend"] = "template:archfiend",
-    };
 
     private static string? CompanionProgressionTemplate(string? linkType) => linkType switch
     {
