@@ -841,10 +841,24 @@ public class ReplayStudio
             var classId = classDriverIds
                 .FirstOrDefault(id => VariantBaseOf(id) == buff.ClassId) ?? buff.ClassId;
 
-            if (ctx.State.Spellcasting.ContainsKey(classId))
-                continue;
-
             var level = (int)buff.LevelFormula.Evaluate(ctx.State);
+
+            if (ctx.State.Spellcasting.TryGetValue(classId, out var seeded))
+            {
+                // Already seeded, in the pass that runs before the first class tick so a prestige
+                // class could find it. A formula reading HD was only partly true then — an
+                // Archfiend who takes class levels mid-career is still gaining racial HD after —
+                // so top up the difference here rather than overwrite, which would discard the
+                // advancement that seeding existed to enable.
+                var owed = level - seeded.RacialGrantCasterLevel;
+                if (owed > 0 && seeded.RacialGrantCasterLevel > 0)
+                {
+                    seeded.CasterLevel += owed;
+                    seeded.RacialGrantCasterLevel = level;
+                }
+                continue;
+            }
+
             if (level <= 0)
                 continue;
 
@@ -889,6 +903,9 @@ public class ReplayStudio
                 SpellsKnown = sk,
                 ProgressionRef = hd.Spellcasting,
             }.Apply(ctx);
+
+            // Remember what the grant contributed, so a later pass can top it up as HD accrue.
+            ctx.State.Spellcasting[classId].RacialGrantCasterLevel = level;
         }
     }
 
@@ -1320,10 +1337,17 @@ public class ReplayStudio
     {
         // PCGen records the class level at which the user made the selection, which is not
         // necessarily the feature that granted the slot. Prefer a real pending slot on that
-        // class, then a race/template (orphan) slot, before falling back to the recorded class.
+        // class, then a real slot on any class — a template can grant domains to a caster the
+        // recorded tick knows nothing about, as template:archfiend does, and handing them to the
+        // tick's own driver puts the domain spells on a list that cannot use them — then a
+        // race/template (orphan) slot, before falling back to the recorded class.
         if (currentDriverId != null
             && state.PendingDomainSelections.GetValueOrDefault(currentDriverId) > 0)
             return currentDriverId;
+        var pendingOwner = state.PendingDomainSelections
+            .FirstOrDefault(kv => kv.Value > 0 && kv.Key != GrantDomainSelection.OrphanOwner).Key;
+        if (!string.IsNullOrEmpty(pendingOwner))
+            return pendingOwner;
         if (state.PendingDomainSelections.GetValueOrDefault(GrantDomainSelection.OrphanOwner) > 0)
             return GrantDomainSelection.OrphanOwner;
         return currentDriverId ?? GrantDomainSelection.OrphanOwner;

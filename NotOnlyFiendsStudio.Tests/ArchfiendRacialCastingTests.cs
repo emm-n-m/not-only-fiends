@@ -133,6 +133,49 @@ public class ArchfiendRacialCastingTests
         Assert.True(rules.GrantsAbilityIncrease(32, DriverKind.Class));
     }
 
+    /// <summary>
+    /// Ember's real shape: she goes back for more racial HD after her class levels. The grant is
+    /// seeded before the first class tick so Archmage can find it, at which point only 24 of her 29
+    /// racial HD exist — the finalize pass owes her the other five. PCGen agrees: classlevel() 29
+    /// plus five Archmage is 34.
+    /// </summary>
+    [RequiresPrivatePacksFact]
+    public void RacialHD_GainedAfterTheFirstClassTick_StillCount()
+    {
+        var character = Archfiend(racialHd: 24);
+        character.Ticks.AddRange(Enumerable.Range(0, 5)
+            .Select(_ => new Tick { DriverId = "racial_hd:outsider" }));
+
+        var state = Evaluate(character);
+
+        Assert.Equal(29, state.TotalHD - 7);
+        Assert.Equal(34, state.Spellcasting["class:archfiend"].CasterLevel);
+    }
+
+    /// <summary>
+    /// A domain picked on a racial-HD tick still belongs to the caster the template granted it to.
+    /// Handing it to the tick's own driver put her domain spells on the outsider chassis, which has
+    /// no spell list to put them on — eight of her spells fell off the Archfiend list.
+    /// </summary>
+    [RequiresPrivatePacksFact]
+    public void DomainsPickedOnARacialTick_BelongToTheGrantedCaster()
+    {
+        var character = Archfiend();
+        character.Ticks[0].Choices = new TickChoices
+        {
+            ClassFeatureChoices = new Dictionary<string, List<string>>
+            {
+                // The key the importer writes when the tick's own driver grants no domain slots.
+                ["imported_source_domains"] = new() { "domain:lust", "domain:fire" },
+            },
+        };
+
+        var state = Evaluate(character);
+
+        Assert.Equal("class:archfiend", state.DomainOwners["domain:lust"]);
+        Assert.Equal("class:archfiend", state.DomainOwners["domain:fire"]);
+    }
+
     /// <summary>The two domains and Rebuke Undead ride the template now, not the class's 1st level.</summary>
     [RequiresPrivatePacksFact]
     public void Template_CarriesTheDomainsAndRebukeUndead()

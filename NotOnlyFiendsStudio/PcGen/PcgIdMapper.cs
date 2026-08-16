@@ -126,9 +126,12 @@ public class PcgIdMapper
         // DECEIT homebrew classes
         ["Favored Soul"] = "class:favored_soul",
         ["Arcane Hierophant"] = "class:arcane_hierophant",
-        ["Archfiend"] = "class:archfiend",
 
         // Monster classes (racial HD with class-like progression)
+        // Archfiend levels are racial HD on the shared outsider chassis — the creature *is* its
+        // Hit Dice, 24 being the floor. Its casting identity stays class:archfiend; see
+        // MapCastingClass.
+        ["Archfiend"] = "racial_hd:outsider",
         ["Red Dragon"] = "racial_hd:red_dragon",
         ["Cloud Dragon"] = "racial_hd:cloud_dragon",
         ["Mist Dragon"] = "racial_hd:mist_dragon",
@@ -354,6 +357,21 @@ public class PcgIdMapper
     {
         return ClassMap.GetValueOrDefault(pcgenClass);
     }
+
+    /// <summary>
+    /// Where a PCGen class's <em>casting identity</em> differs from the driver its levels become.
+    /// The Archfiend is a monster class: its levels are racial HD on a shared outsider chassis, but
+    /// its spells belong to the Archfiend, which is the caster <c>template:archfiend</c> seeds and
+    /// the list templates point at. Everything else casts as the class whose levels it took.
+    /// </summary>
+    private static readonly Dictionary<string, string> CastingClassOverrides = new(StringComparer.Ordinal)
+    {
+        ["Archfiend"] = "class:archfiend",
+    };
+
+    /// <inheritdoc cref="CastingClassOverrides"/>
+    public string? MapCastingClass(string pcgenClass) =>
+        CastingClassOverrides.TryGetValue(pcgenClass, out var casterId) ? casterId : MapClass(pcgenClass);
 
     public static string MapFeatBare(string pcgenFeatKey)
     {

@@ -594,6 +594,15 @@ public class SpellcastingState
     public CastingType CastingType { get; set; }
     public Ability CastingStat { get; set; }
     public int CasterLevel { get; set; }
+
+    /// <summary>
+    /// How much of <see cref="CasterLevel"/> a racial/template "casts as an Nth-level X" grant has
+    /// contributed so far. The grant is seeded before the first class tick, so a prestige class can
+    /// find the caster and advance it — but a formula reading HD is only partly true at that point.
+    /// The finalize pass tops the difference up rather than overwriting, so advancement earned in
+    /// between survives. Zero when no such grant applies.
+    /// </summary>
+    public int RacialGrantCasterLevel { get; set; }
     public int MaxSpellLevel { get; set; }
     public Dictionary<int, int> SpellsPerDay { get; set; } = new();
     public Dictionary<int, int>? SpellsKnown { get; set; }

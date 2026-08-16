@@ -86,6 +86,14 @@ public static class PcgConverter
                 ? overridden
                 : pcgenClass == null ? null : mapper.MapClass(pcgenClass);
 
+        // Spells and "advance an existing spellcasting class" name the caster, which is not always
+        // the driver the levels became — a monster class's levels are racial HD while its casting
+        // keeps its own identity. See PcgIdMapper.MapCastingClass.
+        string? MapCastingClass(string? pcgenClass) =>
+            pcgenClass != null && classOverrides.TryGetValue(pcgenClass, out var overridden)
+                ? overridden
+                : pcgenClass == null ? null : mapper.MapCastingClass(pcgenClass);
+
         // PCGen uses TN for true neutral, while the engine calls that enum value N.
         // Keep neutral as the fallback: Enum.TryParse resets an out parameter to the
         // enum default on failure, which is LG for Alignment.
@@ -208,6 +216,18 @@ public static class PcgConverter
         // are deliberately excluded above, but the MASTER record still tells us that this
         // character is a familiar. Restore the engine's universal familiar progression here;
         // Improved Familiar changes the eligible creature, not the progression or master level.
+        // A race whose hit dice are a monster class carries a template saying what that class was:
+        // the Archfiend's casting, Rebuke Undead and domains live in template:archfiend now that
+        // its levels are plain outsider HD. PCGen has no template to map — the class *was* the
+        // statement — so the race implies it.
+        if (registry != null
+            && RaceImpliedTemplates.TryGetValue(character.RaceId, out var impliedTemplateId)
+            && registry.GetAllTemplates().Any(t => t.Id == impliedTemplateId)
+            && !character.TemplateIds.Contains(impliedTemplateId, StringComparer.Ordinal))
+        {
+            character.TemplateIds.Insert(0, impliedTemplateId);
+        }
+
         var companionTemplateId = CompanionProgressionTemplate(character.CompanionOrigin?.LinkType);
         if (companionTemplateId != null
             && !character.TemplateIds.Contains(companionTemplateId, StringComparer.Ordinal))
@@ -369,7 +389,7 @@ public static class PcgConverter
             }
 
             var spellcasterChoices = level.SpellcasterChoices
-                .Select(mapper.MapClass)
+                .Select(MapCastingClass)
                 .Where(id => id != null)
                 .Cast<string>()
                 .Distinct(StringComparer.Ordinal)
@@ -427,7 +447,7 @@ public static class PcgConverter
             if (!isKnownBook && !isSpellbook)
                 continue;
 
-            var classId = MapClass(spell.ClassName);
+            var classId = MapCastingClass(spell.ClassName);
             if (classId == null)
             {
                 if (reportedSpellSources.Add(spell.ClassName))
@@ -1378,6 +1398,17 @@ public static class PcgConverter
 
     private static bool IsFamiliarLinkType(string? linkType) =>
         linkType is "familiar" or "improved_familiar";
+
+    /// <summary>
+    /// Templates a race always carries, which PCGen expresses some other way. The Archfiend's
+    /// hit dice are a monster class in PCGen; here they are outsider racial HD, and what the class
+    /// actually granted — casting at its own HD, Rebuke Undead, two domains — is
+    /// <c>template:archfiend</c>. The variant list templates layer on top as before.
+    /// </summary>
+    private static readonly Dictionary<string, string> RaceImpliedTemplates = new(StringComparer.Ordinal)
+    {
+        ["race:archfiend"] = "template:archfiend",
+    };
 
     private static string? CompanionProgressionTemplate(string? linkType) => linkType switch
     {
