@@ -1,0 +1,4 @@
+interface:
+  display_name: "Audit Cosmetic Permabuffs"
+  short_description: "Find rules text not represented by engine mechanics"
+  default_prompt: "Use $audit-cosmetic-permabuffs to find content mechanics that exist only in description text."

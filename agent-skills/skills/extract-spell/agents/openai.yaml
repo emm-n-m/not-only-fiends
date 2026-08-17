@@ -1,0 +1,4 @@
+interface:
+  display_name: "Extract Spells"
+  short_description: "Extract D&D spells into validated content JSON"
+  default_prompt: "Use $extract-spell to extract the requested spells from the supplied source."

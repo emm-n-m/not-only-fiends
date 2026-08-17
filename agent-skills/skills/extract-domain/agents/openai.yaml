@@ -1,0 +1,4 @@
+interface:
+  display_name: "Extract Domains"
+  short_description: "Extract cleric domains into validated content JSON"
+  default_prompt: "Use $extract-domain to extract the requested domains from the supplied source."

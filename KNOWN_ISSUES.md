@@ -185,11 +185,11 @@ pattern is corpus-wide and unaudited: a sweep for `"description"` strings contai
 packs' spells and class features.
 
 Enumerated on 2026-08-09 by the `audit-cosmetic-permabuffs` skill: **138 public-pack
-CONTENT-BUG candidates**, queued in priority order in [PERMABUFF_FIX_QUEUE.md](PERMABUFF_FIX_QUEUE.md),
-plus 12 in the private packs. That report is now a historical snapshot; several candidates have
-been fixed since it ran, so re-audit before treating a description as an active defect. Until the
-remaining candidates are worked through, a stat that looks wrong on a character sheet may still
-be an un-encoded description.
+CONTENT-BUG candidates**, plus 12 in the private packs. The dated queue from that run has been
+retired: it was a historical snapshot and several candidates were fixed after it ran. Its
+unresolved categories are preserved in [CONTENT_MECHANICS_BACKLOG.md](CONTENT_MECHANICS_BACKLOG.md).
+Re-audit before treating a description as an active defect. Until the remaining candidates are
+worked through, a stat that looks wrong on a character sheet may still be an un-encoded description.
 
 The public Unearthed Arcana `feat:bladeproof_skin` now grants its printed DR 3/bludgeoning; its
 armor check penalty still has no corresponding state field. Dragon Disciple's printed ability
@@ -365,8 +365,8 @@ ability altogether", and a stored 0 would read as a real score to anything that 
 
 Related: the lich template's own description claims undead "use CHA for HP and Fort saves". That
 is a Pathfinder rule, not 3.5 — the SRD undead entry says only "No Constitution score", and the
-d12 Hit Die is the compensation. The description should be corrected when the undead-traits entry
-in [PERMABUFF_FIX_QUEUE.md](PERMABUFF_FIX_QUEUE.md) is worked.
+d12 Hit Die is the compensation. This description remains a source-verification correction, not
+an engine rule.
 
 ## Choice-dependent spell exclusions are only partially modeled
 

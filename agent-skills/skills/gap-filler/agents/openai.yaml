@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fill Content Gaps"
+  short_description: "Find and fill content gaps blocking real characters"
+  default_prompt: "Use $gap-filler to identify the current content gaps and extract the missing definitions."

@@ -5,7 +5,7 @@ A D&D 3.5e character building tool — and an agent-friendly toolkit for working
 Two things in one repo:
 
 1. **A character builder** with mechanically accurate progression through epic levels, including races, templates (e.g., Half-Fiend), racial HD, prestige classes, multiclassing, and spellcasting.
-2. **A toolkit AI agents can use** to extend and operate on that builder — a REST API, a fully data-driven JSON content format, a PCGen `.pcg` importer, and Claude Code skills/subagents for extracting new content from source PDFs or HTML and validating it against the engine.
+2. **A toolkit AI agents can use** to extend and operate on that builder — a REST API, a fully data-driven JSON content format, a PCGen `.pcg` importer, and first-class Codex/Claude Code skills for extracting and validating rules content.
 
 Built initially for a campaign I run, but designed from the start so that both humans (via the Blazor UI) and AI agents (via the API and content pipeline) can collaborate on the same character data and the same rules engine.
 
@@ -31,7 +31,7 @@ See [WORLD.md](WORLD.md) for more.
 
 - **REST API** at `/api/*` — content catalog, character CRUD, deterministic evaluation, next-step previews, simulation
 - **JSON content format** — every class, race, feat, template, domain, spell, and skill is a plain JSON file. Multiple packs merge automatically; later files override earlier ones by ID
-- **Content extraction skills** (`.claude/skills/`) — Claude Code skills for extracting `class`, `race`, `feat`, `template`, `domain`, `spell`, and `skill` definitions from D&D 3.5e source HTML or PDFs into engine-ready JSON
+- **Portable agent skills** (`agent-skills/skills/`) — one canonical workflow set projected into both Codex and Claude Code, including extraction, verification, API audits, PCGen diagnosis, and content QA
 - **Orchestrating subagents** (`.claude/agents/`) — `content-extractor` runs the full extraction pipeline for a book; `content-qa` validates JSON against schemas and runs the test suite; `gap-filler` runs end-to-end from "what's missing?" to "fill it from this PDF"
 - **`gap-analysis` skill** — runs PCGen character reconstruction tests to report which characters are buildable and what content is blocking each one
 - **PCGen import as a batch tool** — drop `.pcg` files into a directory, run one test, and get engine-format JSON character files out (see [PCGen import](#pcgen-import) below)
@@ -46,7 +46,7 @@ Only user decisions (race, class picks, feat choices, skill allocations) are sav
 |---------|------|
 | **NotOnlyFiendsStudio** | .NET 10.0 class library. Pure rules engine — no UI dependencies. **Produces** content. |
 | **NotOnlyFiendsFeed** | Blazor Server app. Character builder UI + REST API. **Displays** content. |
-| **NotOnlyFiendsStudio.Tests** | xUnit test suite (314+ tests). |
+| **NotOnlyFiendsStudio.Tests** | xUnit test suite with more than 1,000 test cases. |
 
 The engine is designed to be consumed by any .NET frontend. The Blazor app is the current consumer.
 
@@ -174,9 +174,13 @@ filled in. Pass `includePreviews=false` to drop the previews entirely (~19 KB).
 
 ## Agent skills
 
-The `.claude/` directory ships Claude Code skills and subagents for content extraction and analysis. They live with the codebase so they evolve alongside the engine.
+The canonical workflows live under [`agent-skills/skills/`](agent-skills/skills/). A deterministic
+tool projects them into `.agents/skills/` for Codex and `.claude/skills/` for Claude Code, so users
+get the same named capabilities and safety rules on either host. See the
+[agent skill architecture](agent-skills/README.md) for the layout and contribution workflow.
 
-**Extraction skills** (`.claude/skills/extract-*`) — read a 3.5e source (HTML preferred, PDF fallback), parse it into engine JSON matching the relevant schema, and write into the appropriate `Content/` subdirectory:
+**Extraction skills** (`extract-*`) — read a 3.5e source (HTML preferred, PDF fallback), parse it into
+engine JSON matching the relevant schema, and write into the appropriate `Content/` subdirectory:
 
 - `extract-class` — base and prestige classes (HDDrivers)
 - `extract-race` — playable races + racial HD
@@ -186,17 +190,28 @@ The `.claude/` directory ships Claude Code skills and subagents for content extr
 - `extract-spell` — spell definitions
 - `extract-skill` — skill definitions
 
-**Analysis skills:**
+**Analysis and operation skills:**
 
 - `gap-analysis` — runs the PCGen reconstruction test suite and reports which characters are buildable, what content is blocking each one, and prioritized gaps to fill
+- `verify-content` / `verify-content-lst` — audit public or private content against its configured source of truth
+- `audit-agent-api` / `api-build-character` — exercise the REST API as an external agent
+- `debug-pcg-import` / `pcg-baseline` / `pcg-rebuild-regression` — diagnose and regression-test PCGen workflows
+- `content-extractor` / `content-qa` / `gap-filler` — compose extraction and validation into end-to-end workflows
 
-**Subagents** (`.claude/agents/`):
+**Claude orchestration adapters** (`.claude/agents/`):
 
 - `content-extractor` — surveys a book's table of contents, identifies all extractable types, and runs the appropriate extraction skills for each
 - `content-qa` — read-only validation pass: checks JSON against schemas, validates cross-references, runs the test suite
 - `gap-filler` — full pipeline from `gap-analysis` → cross-reference gaps against a provided source PDF → extract in priority order → update ID mappings → re-run analysis
 
 Schemas for each content type live in [`schemas/`](schemas/).
+
+After editing a canonical skill, regenerate and check both projections:
+
+```bash
+python3 tools/sync_agent_skills.py
+python3 tools/sync_agent_skills.py --check
+```
 
 ## PCGen import
 
@@ -238,7 +253,7 @@ The harness never writes to `CHARACTERS_PATH`. Those are real characters edited 
 ```
 NotOnlyFiendsStudio/
   Models/       # Core types: Character, CharacterState, Driver, Permabuff, etc.
-  Studio/       # ReplayStudio, ContentRegistry, ContentTypeHandler
+  Studio/       # ReplayEngine (ReplayStudio), ContentRegistry, ContentTypeHandler
   Content/      # SRD content packs as JSON
 
 NotOnlyFiendsFeed/
@@ -251,13 +266,19 @@ NotOnlyFiendsFeed/
 NotOnlyFiendsStudio.Tests/
                 # xUnit tests covering replay, drivers, permabuffs, content, API, etc.
 
+agent-skills/
+  skills/       # Canonical, platform-neutral agent workflows
+
+.agents/
+  skills/       # Generated Codex projection
+
 .claude/
   agents/       # Subagents (content-extractor, content-qa, gap-filler)
-  skills/       # Per-content-type extraction skills + gap-analysis
+  skills/       # Generated Claude Code projection
   settings.json # Shared project settings for Claude Code
 
 schemas/        # JSON schemas + per-skill prompts for content extraction
-tools/          # Python helpers (PCGen converter, content audit)
+tools/          # Python helpers, including the agent-skill parity generator
 ```
 
 ## Content format

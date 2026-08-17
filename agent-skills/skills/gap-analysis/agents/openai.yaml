@@ -1,0 +1,4 @@
+interface:
+  display_name: "PCGen Gap Analysis"
+  short_description: "Find content gaps blocking PCGen character imports"
+  default_prompt: "Use $gap-analysis to report which PCGen characters are blocked by missing content."

@@ -1,0 +1,68 @@
+---
+name: extract-equipment
+description: Extract equipment (weapons, armor, shields, magic items, gear) from a D&D 3.5e source (HTML preferred, PDF fallback). Produces equipment JSON matching the EquipmentDefinition schema.
+---
+
+# Extract Equipment from D&D 3.5e Source Material
+
+You are extracting equipment for the NotOnlyFiendsStudio content pipeline.
+
+## Source selection
+
+Prefer HTML — the d20srd.org mirror at [NotOnlyFiendsStudio/Content/srd_html/](../../../NotOnlyFiendsStudio/Content/srd_html/) is the canonical SRD source. PCGen LST is the fallback when an item isn't in the SRD (handled by `tools/convert_pcgen.py equipment`, not by this skill).
+
+Dispatch on the argument:
+- Ends in `.html`/`.htm` → HTML extraction (see below).
+- Ends in `.pdf` → PDF extraction (treat the source as a third-party supplement).
+- No path given → ask the user; default suggestion is the local SRD mirror files below.
+
+### SRD HTML landmark files
+
+Equipment is split across many SRD pages:
+
+- [weapons.html](../../../NotOnlyFiendsStudio/Content/srd_html/weapons.html) — mundane and masterwork weapons.
+- [armor.html](../../../NotOnlyFiendsStudio/Content/srd_html/armor.html) — mundane and masterwork armor + shields.
+- [goodsAndServices.html](../../../NotOnlyFiendsStudio/Content/srd_html/goodsAndServices.html) — mundane gear, services.
+- [magicItemsAW.html](../../../NotOnlyFiendsStudio/Content/srd_html/magicItemsAW.html) — magic armor & weapons (specific items + special abilities).
+- [magicItemsPRR.html](../../../NotOnlyFiendsStudio/Content/srd_html/magicItemsPRR.html) — potions, rings, rods.
+- [magicItemsSSW.html](../../../NotOnlyFiendsStudio/Content/srd_html/magicItemsSSW.html) — scrolls, staves, wands.
+- [magicItemsWI.html](../../../NotOnlyFiendsStudio/Content/srd_html/magicItemsWI.html) — wondrous items (cloaks, amulets, gauntlets, periapts, headbands, bracers).
+- [magicItemsICA.html](../../../NotOnlyFiendsStudio/Content/srd_html/magicItemsICA.html) — intelligent, cursed, artifacts.
+- [epicMagicItems.html](../../../NotOnlyFiendsStudio/Content/srd_html/epicMagicItems.html) and [epicMagicItemsOther.html](../../../NotOnlyFiendsStudio/Content/srd_html/epicMagicItemsOther.html) — epic items.
+
+## HTML extraction workflow
+
+1. **Read schema & prompt** — [schemas/equipment.schema.json](../../../schemas/equipment.schema.json) and [schemas/prompts/extract-equipment.md](../../../schemas/prompts/extract-equipment.md) are authoritative.
+2. **Load the HTML file** — entries are typically delimited by `<h5>`, `<h6>`, or table rows. Weapons and armor are mostly tables (parse rows); magic items are h5/h6 sections.
+3. **Pick items** — if the user supplied IDs, extract only those. Otherwise grep the anchors and ask.
+4. **Parse fields**:
+   - **Weapons**: extract Cost, Damage (Medium column), Critical, Range, Weight, Type from the table.
+   - **Armor**: Cost, Armor Bonus, Max Dex, Check Penalty, Arcane Spell Failure, Speed (30/20), Weight.
+   - **Magic items**: Aura/CL/Slot/Price/Weight are in the description block; the *mechanical effect* is in the prose ("+3 resistance bonus on all saves", "+2 enhancement bonus to Strength", etc.).
+5. **Map item powers to permabuffs** — see the mapping table in the extraction prompt. Items the engine can't represent mechanically (sentient items, charged items, single-use scrolls) get an empty `grantedPermabuffs` and a useful `description`.
+6. **Write output** — write to:
+   - Core SRD items → [NotOnlyFiendsStudio/Content/packs/srd_core/equipment/](../../../NotOnlyFiendsStudio/Content/packs/srd_core/equipment/) (group by source page: `weapons.json`, `armor_shields.json`, `wondrous.json`, `rings.json`, `rods.json`, `gear.json`, `magic_armor_weapons.json`, etc.).
+   - Supplements → new pack directory under `NotOnlyFiendsStudio/Content/packs/<pack_id>/equipment/`.
+7. **Run tests** — `dotnet test` to verify load + schema.
+
+## PDF extraction workflow (fallback)
+
+1. Locate the equipment chapter from the table of contents.
+2. For each item, capture: name → `id` (snake_case with category prefix), category, slot, weight, price, description, and mechanical permabuffs.
+3. Avoid duplicating IDs already in the target pack.
+4. Write output and test as in steps 6–7 above.
+
+## Key conventions
+
+- IDs prefixed by category: `weapon:`, `armor:`, `shield:`, `wondrous:`, `ring:`, `rod:`, `staff:`, `wand:`, `scroll:`, `potion:`, `gear:`, `ammunition:`.
+- For graded magic items (Cloak of Resistance +1..+5, Ring of Protection +1..+5), produce **one entry per grade**: `wondrous:cloak_of_resistance_1` through `wondrous:cloak_of_resistance_5`. Convention encourages picking the specific grade from the catalog.
+- `priceCp` in **copper pieces** (1 gp = 100 cp). Avoids fractional gp for 5 cp / 1 sp items.
+- `checkPenalty` is **negative** (e.g., −6 for full plate, 0 for padded).
+- Weapon damage is the **Medium-size** column. The engine doesn't yet track size scaling.
+- 3.5e bonus types matter for stacking — see the extraction prompt for type assignments per item.
+
+## Reference files
+
+- Schema: [schemas/equipment.schema.json](../../../schemas/equipment.schema.json)
+- Prompt: [schemas/prompts/extract-equipment.md](../../../schemas/prompts/extract-equipment.md)
+- Existing seed items (hand-crafted): [NotOnlyFiendsStudio/Content/packs/srd_core/equipment/](../../../NotOnlyFiendsStudio/Content/packs/srd_core/equipment/)

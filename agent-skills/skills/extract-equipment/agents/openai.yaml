@@ -1,0 +1,4 @@
+interface:
+  display_name: "Extract Equipment"
+  short_description: "Extract equipment into validated content JSON"
+  default_prompt: "Use $extract-equipment to extract the requested equipment from the supplied source."

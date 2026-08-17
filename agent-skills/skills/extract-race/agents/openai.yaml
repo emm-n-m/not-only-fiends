@@ -1,0 +1,4 @@
+interface:
+  display_name: "Extract Races"
+  short_description: "Extract playable races and racial HD definitions"
+  default_prompt: "Use $extract-race to extract the requested races and any racial HD definitions."

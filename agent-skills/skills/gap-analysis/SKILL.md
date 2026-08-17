@@ -1,0 +1,68 @@
+---
+name: gap-analysis
+description: Run PCGen character reconstruction tests to identify missing content (races, classes, feats, templates, domains) in the engine. Shows what's buildable and what's blocking each character.
+---
+
+# PCGen Gap Analysis
+
+Run the PCGen character reconstruction tests to discover what content is missing from the engine.
+
+## Workflow
+
+1. **Run the buildability report** to get a high-level overview:
+   ```bash
+   dotnet test --filter "FullyQualifiedName~BuildabilityReport" --logger "console;verbosity=detailed" 2>&1 | grep -A 500 "BUILDABILITY REPORT"
+   ```
+   This shows which of the 33 sample PCGen characters can be fully built and which are blocked, with per-character blocker lists and a unique content-needed summary.
+
+2. **Run gap analysis by category** to get detailed per-file results. Pick the relevant category or run all:
+   ```bash
+   # All gap analysis tests (races, classes, feats, templates, domains)
+   dotnet test --filter "FullyQualifiedName~GapAnalysis" 2>&1
+
+   # By category
+   dotnet test --filter "FullyQualifiedName~GapAnalysis_Race" 2>&1
+   dotnet test --filter "FullyQualifiedName~GapAnalysis_Classes" 2>&1
+   dotnet test --filter "FullyQualifiedName~GapAnalysis_Feats" 2>&1
+   dotnet test --filter "FullyQualifiedName~GapAnalysis_Templates" 2>&1
+   dotnet test --filter "FullyQualifiedName~GapAnalysis_Domains" 2>&1
+   ```
+
+3. **Run reconstruction tests** to verify mechanical correctness for buildable characters:
+   ```bash
+   dotnet test --filter "FullyQualifiedName~Reconstruct" 2>&1
+   ```
+
+4. **Summarize findings** for the user:
+   - How many characters are buildable vs blocked
+   - The top content gaps (most-needed races, classes, templates)
+   - Which characters are closest to buildable (fewest blockers)
+   - Any reconstruction test failures indicating mechanical bugs
+
+## Key Files
+
+- **Test suite**: `NotOnlyFiendsStudio.Tests/PcGen/PcgReconstructionTests.cs`
+- **Parser**: `NotOnlyFiendsStudio.Tests/PcGen/PcgParser.cs` — reads `.pcg` files
+- **ID mapper**: `NotOnlyFiendsStudio.Tests/PcGen/PcgIdMapper.cs` — PCGen names → engine content IDs
+- **Sample characters**: PCGen `.pcg` files (path configured via `PCGEN_CHARACTERS_PATH` in `.env`)
+- **Studio content**: `NotOnlyFiendsStudio/Content/` (classes, races, feats, templates, domains, skills, spells)
+
+## Reading the Results
+
+- **Gap analysis failures are expected** — each failure means content is missing. The failure message tells you exactly what: e.g., `Race 'Pixie' has no engine mapping` or `Missing classes: 'Favored Soul' (level 4) -- no mapping`.
+- **Passing gap tests** mean the content exists. As content is added, more tests will pass.
+- **Reconstruction test failures** indicate mechanical bugs (wrong HP, BAB, saves, etc.) and should be investigated.
+
+## After Adding Content
+
+When new content is added (new races, classes, templates, feats, domains):
+1. Update `PcgIdMapper.cs` if the PCGen name → engine ID mapping needs a new entry
+2. Re-run the gap analysis to see updated results
+3. If a character becomes fully buildable, consider adding a `Reconstruct_` test for it
+
+## Interpreting the Buildability Report
+
+The report groups characters into:
+- **BUILDABLE**: All required race, class, and template content exists
+- **BLOCKED**: Lists each blocker (missing race, class, or template)
+- **CONTENT NEEDED (unique)**: Deduplicated list of all missing content across all characters — this is the prioritized backlog

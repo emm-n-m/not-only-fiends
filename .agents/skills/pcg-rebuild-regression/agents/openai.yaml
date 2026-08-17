@@ -1,0 +1,4 @@
+interface:
+  display_name: "PCG Agent Rebuild Regression"
+  short_description: "Rebuild the PCG corpus through the agent API"
+  default_prompt: "Use $pcg-rebuild-regression to rebuild the PCG corpus through the REST API and compare results."

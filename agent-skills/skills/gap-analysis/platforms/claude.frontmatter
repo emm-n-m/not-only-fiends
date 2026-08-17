@@ -1,0 +1,1 @@
+allowed-tools: Bash(dotnet test*), Bash(dotnet build*), Read, Glob, Grep

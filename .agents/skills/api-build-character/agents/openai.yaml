@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Character through API"
+  short_description: "Build and inspect a character through the REST API"
+  default_prompt: "Use $api-build-character to build the requested character through the REST API."

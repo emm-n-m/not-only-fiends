@@ -12,6 +12,21 @@ A character building and display tool for D&D 3.5e, mechanically accurate throug
 
 The only persisted data is user decisions. All derived values are computed by ordered replay of the character's HD timeline. There is no cached or stored state for computed values.
 
+### Human and agent interfaces are peers
+
+The Blazor UI and REST API are two consumers of the same replay and content services. Agent
+support is a product boundary, not a development convenience:
+
+| Interface | Contract |
+|---|---|
+| Human UI | Builder and sheet views expose choices and computed state interactively. |
+| Agent API | Discovery, next-step previews, simulation, mutation, evaluation, and cleanup are available under `/api/*` with OpenAPI metadata. |
+| Agent workflows | Portable skills under `agent-skills/skills/` teach Codex and Claude Code the same safe operating and content-authoring procedures. |
+
+`.agents/skills/` and `.claude/skills/` are generated host discovery trees. The neutral source,
+platform overlays, thin orchestration adapters, and parity check are documented in
+`agent-skills/README.md`. Domain workflow knowledge must not diverge by agent host.
+
 ---
 
 ## Three-Layer Architecture
@@ -50,6 +65,9 @@ public class Character
     // Initial State
     public string RaceId { get; set; }
     public List<string> TemplateIds { get; set; } = new();
+    // Optional 1-based HD at which an acquired template becomes active. Missing entries
+    // preserve the creation-time behavior used by inherited templates and old saves.
+    public Dictionary<string, int> TemplateAcquisitionHD { get; set; } = new();
     public AbilityScoreSet BaseAbilityScores { get; set; }
 
     // HD Timeline — the build
@@ -232,8 +250,10 @@ public class TemplateDriver
 {
     public string Id { get; set; }
     public string Name { get; set; }
+    public TemplateAcquisitionKind AcquisitionKind { get; set; }
 
-    // One-time modifications at creation
+    // One-time modifications when the template is applied. Inherited templates apply at
+    // creation; acquired templates apply at their recorded acquisition HD.
     public CreatureType? TypeOverride { get; set; }
     public List<string> SubtypeAdditions { get; set; } = new();
     public AbilityScoreSet? AbilityModifiers { get; set; }
@@ -251,6 +271,8 @@ public class TemplateDriver
 
     public List<Permabuff> GetTickPermabuffs(int totalHD, CharacterState state) { ... }
 }
+
+public enum TemplateAcquisitionKind { Internal, Inherited, Acquired }
 ```
 
 ### GameRules + PermabuffContext
@@ -496,7 +518,7 @@ public class ReplayStudio
         var ctx = new PermabuffContext(state, _rules, _content);
 
         // 1. Apply race
-        // 2. Apply templates (in order)
+        // 2. Apply creation-time templates (inherited templates and old saves)
         // 3. Apply base ability scores (added to racial/template modifiers)
 
         // 4. Process each tick
@@ -506,11 +528,15 @@ public class ReplayStudio
             state.TotalHD = i + 1;
             state.MaxHalfRanks = _rules.MaxHalfRanks(state.TotalHD);
 
+            // Apply templates acquired at this HD before the driver's grants. Their
+            // ability modifiers affect this tick's skill points and prerequisites; accrued
+            // values from earlier ticks are not reopened. Hit-die floors explicitly restate
+            // current and future dice as required by the SRD.
             // a. Validate driver prerequisites → Warnings
             // b. Track class levels (driver is HDDriver hd && hd.Kind == DriverKind.Class)
             // c. Get and apply driver permabuffs (via ctx)
             // d. Epic progression (past _rules.EpicThreshold)
-            // e. Template tick injections
+            // e. Template tick injections from templates active so far
             // f. Racial bonus skill points per HD
             // g. Race scaling formulas → SetAttribute
             // h. Ability score increase (every _rules.AbilityIncreaseInterval HD)
@@ -679,7 +705,7 @@ NotOnlyFiendsStudio/                          # Class library — "Studio" produ
     Formula.cs                        # Formula DSL
     GameRules.cs                      # GameRules, PermabuffContext, IContentLookup
   Studio/
-    ReplayStudio.cs                   # Core: Character → CharacterState
+    ReplayEngine.cs                   # Core ReplayStudio: Character → CharacterState
     ContentRegistry.cs                # Loads, indexes, validates all content JSON
     ContentTypeHandler.cs             # Generic content loading handlers
   Content/
@@ -707,7 +733,7 @@ NotOnlyFiendsFeed/                             # Blazor Server app — "Feed" di
   Program.cs                          # Host setup, service registration, API endpoint mapping
   wwwroot/                            # Static assets (CSS, JS, icons)
 
-NotOnlyFiendsStudio.Tests/                    # xUnit test suite (314+ tests)
+NotOnlyFiendsStudio.Tests/                    # xUnit test suite (1,000+ cases)
   ReplayStudioTests.cs
   DriverTests.cs
   PermabuffTests.cs
@@ -751,7 +777,11 @@ Repo root:
 - **List-format content files**: Every content file is a JSON array. Merging multiple files of the same type is automatic.
 - **Content validation**: Cross-reference checking catches broken references at load time instead of runtime.
 - **Template declarative mutations**: Template scaling uses POST/DELETE/PUT semantics. Each HD threshold declares exactly what to add, remove, or replace — fires once when `totalHD == key`. Only formula-based abilities recalculate every tick (via `SetAttribute`, which overwrites). No idempotency or provenance tracking needed.
-- **Templates are initial state**: Acquired at creation. Inject deterministically at each tick based on total HD.
+- **Template timing**: Inherited templates apply at creation. Acquired templates use
+  `Character.TemplateAcquisitionHD` and apply forward at the start of their acquisition tick;
+  missing entries retain creation-time behavior for backwards-compatible saves. The replay
+  keeps accrued per-tick values (such as skill points) intact while re-deriving effects the SRD
+  says apply to current and future Hit Dice.
 - **Skill ranks as doubled ints**: Stored as half-ranks (`int`). 5 ranks = 10, cross-class 2.5 ranks = 5. Display divides by 2. Avoids floating-point comparison issues. **Content authoring uses whole ranks**: `MinSkillRanks.Value` is authored in whole ranks (e.g., "5 ranks" → `value: 5`) — the prerequisite doubles at comparison time. Do not pre-double `value` in content files.
 - **Equipment is post-tick only**: Equipment never retroactively affects per-level calculations. Post-tick only.
 - **Tomes and inherent bonuses**: `PermanentEvent`s slotted between ticks. Affect all subsequent ticks naturally.

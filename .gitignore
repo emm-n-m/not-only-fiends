@@ -2,6 +2,8 @@
 [Bb]in/
 [Oo]bj/
 [Oo]ut/
+__pycache__/
+*.py[cod]
 
 # Visual Studio
 .vs/

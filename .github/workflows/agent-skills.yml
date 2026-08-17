@@ -1,0 +1,18 @@
+name: Agent skill parity
+
+on: [pull_request, push]
+
+permissions:
+  contents: read
+
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install skill tooling dependencies
+        run: python3 -m pip install --requirement tools/requirements-agent-skills.txt
+      - name: Test skill projection tooling
+        run: python3 -m unittest discover --start-directory tools/tests
+      - name: Check generated skill projections
+        run: python3 tools/sync_agent_skills.py --check

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Run Feed App"
+  short_description: "Launch and smoke-test an isolated Feed instance"
+  default_prompt: "Use $run-app to launch an isolated Feed instance and smoke-test its routes."

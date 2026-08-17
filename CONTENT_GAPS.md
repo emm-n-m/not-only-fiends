@@ -21,7 +21,7 @@ iron, adamantine) still have no representation.
 ## Unearthed Arcana variant classes
 
 `unearthedCoreClass.html` presents "sixteen variant versions of the standard character classes",
-plus one simple variant per class. Six are extracted; the rest are backlog.
+plus one simple variant per class. The table below lists the remaining named variants.
 
 Each variant is its own driver, not a flag on the base class. That is the existing convention
 here (the paladin variants, the cloistered cleric) and it is the only shape that can express what
@@ -36,18 +36,16 @@ importer change is needed.
 | Bardic Sage | Bard | missing — casts off Intelligence, one bonus divination per level, adds 13 spells to the list |
 | Divine Bard | Bard | missing — casts off Wisdom, spells become divine, adds 20 spells to the list |
 | Savage Bard | Bard | missing — illiterate, good Fort/Will, alters class skills, removes 6 spells and adds 17 |
-| Cloistered Cleric | Cleric | **done** |
 | Druidic Avenger | Druid | missing |
 | Thug | Fighter | missing |
 | Monk Fighting Styles | Monk | missing — several, and UA bars multiclassing between them |
-| Paladin of Freedom / Slaughter / Tyranny | Paladin | **done** |
-| Planar Ranger | Ranger | **done** |
 | Urban Ranger | Ranger | missing — also needs the Urban Tracking feat |
 | Wilderness Rogue | Rogue | missing |
 | Battle Sorcerer | Sorcerer | missing — d8, cleric BAB, one fewer spell known and per day |
 | Domain Wizard | Wizard | missing — needs arcane domains, which are themselves unextracted |
 
-**Simple variants** — one per class, each swapping named features for another class's. PCGen
+**Simple variants** — one per class, each swapping named features for another class's. Completed
+variants are omitted. PCGen
 records these as an alternate class feature *on the base class*, so extracting the content is only
 half the job: each also needs an entry in `PcgIdMapper.ClassSelectingAcf` keyed by the ACF's
 PCGen KEY, or the import silently builds the base class and drops the row as an unmatched
@@ -55,7 +53,6 @@ selection.
 
 | Gains | Loses | Base | PCGen ACF key | Status |
 |:--|:--|:--|:--|:--|
-| Animal companion, nature sense, resist nature's lure, wild empathy (as druid) | Bardic knowledge, all four inspire abilities | Bard | `Bard Variant ~ Druid-like Bard`, `Bard ~ Animal Companion` | **done** (`class:druid_like_bard`) |
 | Favored enemy; archery combat style chain (as ranger) | Rage chain | Barbarian | `Barbarian ~ Favored Enemy` | missing |
 | Smite evil or good, aura of courage (as paladin) | Turn undead | Cleric | `Cleric ~ Smite Evil`, `Cleric ~ Smite Good` | missing |
 | Monk AC bonus and fast movement; favored enemy, swift tracker, Track (as ranger) | Armor and shield proficiency, all wild shape | Druid | `Druid ~ Monk AC` | missing |

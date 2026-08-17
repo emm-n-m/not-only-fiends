@@ -1,0 +1,27 @@
+{
+  "files": {
+    "api-build-character/SKILL.md": "1ddfee803d01591aeae8059b6c46aa298a889290338199e03fc4f76bbf965bec",
+    "audit-agent-api/SKILL.md": "9a1029c490d7e95a260e5227f372c5bef89b43288bc57273c9332176ceb32893",
+    "audit-cosmetic-permabuffs/SKILL.md": "5dce3da22ca2393bd1e8b96e2fdf6f482d77a70f8040a53a849be02320d311f0",
+    "content-extractor/SKILL.md": "3a26eed76e3a6fce0054d59829448cd4f569a949b4c120a2e94a5626f1a56da4",
+    "content-qa/SKILL.md": "72ea082d7e100a836dc18c2adf385e3137c2886658699ddfdf2438a790f901b1",
+    "debug-pcg-import/SKILL.md": "eba46055b37379fdbb057b32f7ee0623079ba140efb7f4dea807943120edcd56",
+    "extract-class/SKILL.md": "b864886a8c6de797e9caee2afa27ab1f7fa54cfa0ea9f3e9f769962bb5a74c23",
+    "extract-domain/SKILL.md": "6b942943757a383a0344c94a2b474d910522d0bf5d7ccf3452a686062e2dc229",
+    "extract-equipment/SKILL.md": "8a105b67512f059c53a733274631168097debb450b9ea188f85fd46898183ab6",
+    "extract-feat/SKILL.md": "7813cacbcd44c30b62cb2b7621f0956e882b2cc08ab88c2f06c1ded5572b0177",
+    "extract-race/SKILL.md": "d49dd4e22f5392a0a57ca6cf17ac893ef438e4ff8298667314d9f61de7c9f520",
+    "extract-skill/SKILL.md": "c1f2affae9b678bebe69703df121688d63479f34aac1411752ed024b171e2bfc",
+    "extract-spell/SKILL.md": "0bf6c8bbcf0bb5165aec3eb904f9d32702c71ba134eda5ee5aecc8e5207645f4",
+    "extract-template/SKILL.md": "288a17aab4b9c6d8e928a438e54b7ca42a45e9d48041072ca88acbc3c43c459d",
+    "gap-analysis/SKILL.md": "e79dd1909d925bac09f689ebaed55d65f7b1d74d881bf5596858dcfde4165c89",
+    "gap-filler/SKILL.md": "44a11942376e04839188aab2e00b39578ae4dc929ae6d786f1e30579943a4133",
+    "pcg-baseline/SKILL.md": "f65b7abc0cd9039e3a5d371f499e1e9b990b46b752f324307230807c659368b4",
+    "pcg-rebuild-regression/SKILL.md": "549321f7734f49195fa01e6ed55960dcd423f6cc455c3b4a84eeed0f6f74a2ab",
+    "run-app/SKILL.md": "770589eca1953455783f34e5684104332b2da0f8b651178b8d4ef04d812bfe38",
+    "verify-content-lst/SKILL.md": "7cc094444b9a475d6c20a7e20fd94c583a73022a0fca788df246278ea8047bba",
+    "verify-content/SKILL.md": "674918d5cd994fc1536ec5ef70a44eaa867f3d31413106c20e158dc1900fe3ef"
+  },
+  "generator": "tools/sync_agent_skills.py",
+  "schema": 1
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Extract Skills"
+  short_description: "Extract D&D skills into validated content JSON"
+  default_prompt: "Use $extract-skill to extract the requested skills from the supplied source."

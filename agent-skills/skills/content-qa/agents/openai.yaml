@@ -1,0 +1,4 @@
+interface:
+  display_name: "Content QA"
+  short_description: "Validate edited content against schemas and tests"
+  default_prompt: "Use $content-qa to validate the changed content and report any defects."

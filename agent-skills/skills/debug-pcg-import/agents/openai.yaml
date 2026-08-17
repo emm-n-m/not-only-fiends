@@ -1,0 +1,4 @@
+interface:
+  display_name: "Debug PCGen Import"
+  short_description: "Diagnose incorrect PCGen character imports"
+  default_prompt: "Use $debug-pcg-import to diagnose the requested PCGen import mismatch."

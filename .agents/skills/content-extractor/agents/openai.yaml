@@ -1,0 +1,4 @@
+interface:
+  display_name: "Extract Complete Source"
+  short_description: "Orchestrate extraction of every content type in a source"
+  default_prompt: "Use $content-extractor to survey the supplied source and extract all supported content."

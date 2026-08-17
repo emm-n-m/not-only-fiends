@@ -8,7 +8,7 @@ D&D 3.5e character building tool with mechanically accurate progression through 
 
 - **NotOnlyFiendsStudio** — .NET 10.0 class library. Pure rules logic, no UI dependencies. Produces content.
 - **NotOnlyFiendsFeed** — Blazor Server app. Serves the UI (character builder, sheet, import, settings) and REST API. Loads content from filesystem via `ServerContentService`. Displays content.
-- **NotOnlyFiendsStudio.Tests** — xUnit test suite (314+ tests).
+- **NotOnlyFiendsStudio.Tests** — xUnit test suite with more than 1,000 test cases.
 
 ## Commands
 
@@ -17,7 +17,18 @@ dotnet build                                    # Build all projects
 dotnet test                                     # Run all tests
 dotnet test --filter "FullyQualifiedName~ClassName.MethodName"  # Run a single test
 dotnet test --filter "FullyQualifiedName~ClassName"             # Run a single test class
+uv run --isolated --with-requirements tools/requirements-agent-skills.txt python tools/sync_agent_skills.py --check  # Verify skill parity
 ```
+
+### Agent skills
+
+Agent workflows are maintained once under `agent-skills/skills/`. The `.agents/skills/` Codex
+tree and `.claude/skills/` Claude Code tree are generated projections; never edit them directly.
+After changing a canonical skill, run
+`uv run --isolated --with-requirements tools/requirements-agent-skills.txt python tools/sync_agent_skills.py`
+and commit the source and both projections. Claude subagents under `.claude/agents/` are thin
+orchestration adapters and must not duplicate workflow knowledge. See `agent-skills/README.md`
+for the contract.
 
 ### Assertion discipline
 
@@ -48,7 +59,7 @@ The engine (Layers 1+2) has zero knowledge of any specific character or UI.
 
 ### Key Files
 
-- **`NotOnlyFiendsStudio/Studio/ReplayStudio.cs`** — Core evaluation: `Evaluate(Character, int? upToHD)` → `CharacterState`. Applies race → templates → ability scores → tick-by-tick HD progression.
+- **`NotOnlyFiendsStudio/Studio/ReplayEngine.cs`** — Core `ReplayStudio` evaluation: `Evaluate(Character, int? upToHD)` → `CharacterState`. Applies race → templates → ability scores → tick-by-tick HD progression.
 - **`NotOnlyFiendsStudio/Studio/ContentRegistry.cs`** — Loads, indexes, and validates all content JSON. Uses `ContentTypeHandler<T>` for extensible loading. Implements `IContentLookup`.
 - **`NotOnlyFiendsStudio/Studio/ContentTypeHandler.cs`** — Generic content loading handlers. Each handler knows its directory, deserializes `List<T>`, registers items.
 - **`NotOnlyFiendsStudio/Models/Permabuff.cs`** — Permabuff hierarchy. Atomic, permanent, irreversible modifications applied via `PermabuffContext` (state + rules + content). Named to distinguish from temporary D&D buffs.
