@@ -1,28 +1,112 @@
 @page "/about"
+@using NotOnlyFiendsFeed.Services
+@using NotOnlyFiendsStudio.Models
+@inject ServerContentService Content
 
-<PageTitle>D&D 3.5 Character Tool</PageTitle>
+<PageTitle>Charter · Not Only Fiends</PageTitle>
 
-<h1>D&amp;D 3.5e Character Creation Tool</h1>
+@*
+    The registry's charter page. Two voices carry the whole layout: IM Fell
+    English for what a person records (the quill), IBM Plex Mono for what the
+    engine derives (the machine) — the store-inputs/compute-everything split
+    made typographic. Catalog counts are live registry data, not copy.
+*@
+<div class="charter">
+    <section class="charter-writ">
+        <div class="charter-kicker reg-mono">CRYSTAL-BALL BROADCAST &middot; D&amp;D 3.5 REVISED</div>
+        <h1 class="charter-title"><span class="charter-not">NOT&#8209;</span>ONLYFIENDS</h1>
+        <div class="charter-presiding">the crystal-ball platform of record &middot; Imp, Professor of Divination, presiding</div>
 
-<p>A mechanically accurate character building and display tool for D&amp;D 3.5 Edition.</p>
+        <p class="charter-lede">
+            A character registry for D&amp;D 3.5, kept to the letter of the rules: races, templates,
+            racial Hit Dice, prestige classes, multiclassing, and spellcasting &mdash; level by level,
+            through epic.
+        </p>
 
-<div class="row mt-4">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Character Sheet</h5>
-                <p class="card-text">View a character's stats at any HD level with the level slider.</p>
-                <a href="sheet" class="btn btn-primary">View Sheet</a>
-            </div>
+        <div class="charter-epigraph">
+            <span class="charter-epigraph-fell">Write down only what was chosen &mdash;</span>
+            <span class="charter-epigraph-mono">the rest is recomputed from the timeline, every time.</span>
         </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Character Builder</h5>
-                <p class="card-text">Build a character tick-by-tick, selecting race, class, feats, and skills.</p>
-                <a href="builder" class="btn btn-primary">Build Character</a>
-            </div>
+    </section>
+
+    <section class="charter-catalog">
+        <div class="reg-rail-label">@($"THE CATALOG · {_packCount} {(_packCount == 1 ? "PACK" : "PACKS")} ON FILE")</div>
+        <div class="charter-counts">
+            @foreach (var (label, count) in _counts)
+            {
+                <div class="reg-stattile">
+                    <div class="reg-stattile-label">@label</div>
+                    <div class="reg-stattile-value">@count</div>
+                </div>
+            }
         </div>
-    </div>
+    </section>
+
+    <section class="charter-services">
+        <div class="reg-rail-label">SERVICES</div>
+
+        <a class="charter-row" href="">
+            <div class="charter-row-main">
+                <div class="charter-row-name">Roster</div>
+                <div class="charter-row-desc">Every saved character, with what each one still owes.</div>
+                <div class="charter-row-aside">debts of choice are still debts.</div>
+            </div>
+            <div class="charter-row-route">/</div>
+        </a>
+
+        <a class="charter-row" href="builder">
+            <div class="charter-row-main">
+                <div class="charter-row-name">Builder</div>
+                <div class="charter-row-desc">Level a character tick by tick: race, classes, feats, skills, spells.</div>
+                <div class="charter-row-aside">one Hit Die at a time, as is proper.</div>
+            </div>
+            <div class="charter-row-route">/builder</div>
+        </a>
+
+        <a class="charter-row" href="sheet">
+            <div class="charter-row-main">
+                <div class="charter-row-name">Sheet</div>
+                <div class="charter-row-desc">The full derived sheet at any HD, with a level slider.</div>
+                <div class="charter-row-aside">nothing on it was ever written; all of it is true.</div>
+            </div>
+            <div class="charter-row-route">/sheet</div>
+        </a>
+
+        <a class="charter-row" href="import">
+            <div class="charter-row-main">
+                <div class="charter-row-name">Import .pcg</div>
+                <div class="charter-row-desc">Bring a PCGen character in; the registry rebuilds it from its decisions.</div>
+                <div class="charter-row-aside">transfers accepted from lesser institutions.</div>
+            </div>
+            <div class="charter-row-route">/import</div>
+        </a>
+    </section>
+
+    <div class="charter-agents reg-mono">agents: the registry also answers in JSON at /api/*</div>
 </div>
+
+@code {
+    private int _packCount;
+    private readonly List<(string Label, int Count)> _counts = new();
+
+    protected override void OnInitialized()
+    {
+        _packCount = Content.LoadedPacks.Count;
+
+        var registry = Content.Registry;
+        Add("CLASSES", registry.GetAllDrivers().Count(d => d is HDDriver { Kind: DriverKind.Class }));
+        Add("RACES", registry.GetAllRaces().Count());
+        Add("TEMPLATES", registry.GetAllTemplates().Count());
+        Add("FEATS", registry.GetAllFeats().Count());
+        Add("SPELLS", registry.GetAllSpells().Count());
+        Add("DOMAINS", registry.GetAllDomains().Count());
+        Add("SKILLS", registry.GetAllSkills().Count());
+        Add("EQUIPMENT", registry.GetAllEquipment().Count());
+    }
+
+    private void Add(string label, int count)
+    {
+        if (count > 0)
+            _counts.Add((label, count));
+    }
+}

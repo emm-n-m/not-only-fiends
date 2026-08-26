@@ -365,7 +365,41 @@
     color: var(--text);
 }
 
-/* Buttons: keep filled variants (they read fine), retint the outline/link ones. */
+/* Buttons: Bootstrap's saturated blue/green fills fight the palette — primary
+   becomes an accent fill, success the theme's own sage green; outline/link
+   variants are retinted below. */
+:root[data-theme="dark"] .btn-primary,
+:root[data-theme="dark"] .btn-primary:disabled {
+    background: var(--acc);
+    border-color: var(--acc);
+    color: #42102a;
+}
+:root[data-theme="dark"] .btn-primary:hover,
+:root[data-theme="dark"] .btn-primary:focus,
+:root[data-theme="dark"] .btn-primary:active {
+    background: #e87ea9;
+    border-color: #e87ea9;
+    color: #42102a;
+}
+:root[data-theme="dark"] .btn-primary:focus {
+    box-shadow: 0 0 0 .2rem color-mix(in oklab, var(--acc) 28%, transparent);
+}
+:root[data-theme="dark"] .btn-success,
+:root[data-theme="dark"] .btn-success:disabled {
+    background: var(--positive);
+    border-color: var(--positive);
+    color: #14301c;
+}
+:root[data-theme="dark"] .btn-success:hover,
+:root[data-theme="dark"] .btn-success:focus,
+:root[data-theme="dark"] .btn-success:active {
+    background: #93cda2;
+    border-color: #93cda2;
+    color: #14301c;
+}
+:root[data-theme="dark"] .btn-success:focus {
+    box-shadow: 0 0 0 .2rem color-mix(in oklab, var(--positive) 28%, transparent);
+}
 :root[data-theme="dark"] .btn-outline-secondary { color: var(--text-1); border-color: var(--border-strong); }
 :root[data-theme="dark"] .btn-outline-secondary:hover { background: var(--hair); color: var(--text); border-color: var(--border-strong); }
 :root[data-theme="dark"] .btn-outline-success { color: var(--positive); border-color: color-mix(in oklab, var(--positive) 50%, transparent); }
@@ -665,3 +699,141 @@
 .reg-state--warn  { background: color-mix(in oklab, var(--warn) 16%, transparent); color: var(--warn); }
 .reg-state--clean { background: rgba(127, 191, 143, .12); color: var(--positive); }
 .reg-state--unknown { background: var(--hair); color: var(--text-4); }
+
+/* ==========================================================================
+   Charter (Home.razor) — the registry's about page.
+
+   Two voices, one page: IM Fell English (--font-serif) speaks for what a
+   person records, IBM Plex Mono for what the engine derives. Chrome and
+   palette come entirely from the tokens above; the writ reuses the same
+   rolled-scroll treatment as .reg-tick.
+   ========================================================================== */
+.charter {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 44px 0 64px;
+}
+
+.charter-writ {
+    position: relative;
+    background: var(--scroll-body);
+    border-left: 1px solid var(--hair);
+    border-right: 1px solid var(--hair);
+    margin: 7px 7px 40px;
+    padding: 30px 34px 28px;
+}
+.charter-writ::before,
+.charter-writ::after {
+    content: "";
+    position: absolute;
+    left: -7px; right: -7px;
+    height: 13px;
+    border-radius: 9px;
+    background: var(--scroll-roll);
+    border: 1px solid rgba(255, 255, 255, .10);
+    box-shadow: var(--scroll-roll-shadow);
+}
+.charter-writ::before { top: -7px; }
+.charter-writ::after { bottom: -7px; }
+
+.charter-kicker {
+    font: 500 9.5px/1 var(--font-mono);
+    letter-spacing: .18em;
+    color: var(--text-4);
+}
+.charter-title {
+    font: 700 34px/1.1 var(--font-display);
+    letter-spacing: .12em;
+    margin: 14px 0 0;
+}
+.charter-not { color: var(--acc); }
+.charter-presiding {
+    font: italic 400 13.5px/1.5 var(--font-serif);
+    color: var(--text-2);
+    margin-top: 7px;
+}
+
+.charter-lede {
+    font: 400 16px/1.65 var(--font-serif);
+    color: var(--text-1);
+    max-width: 620px;
+    margin: 22px 0 0;
+}
+
+.charter-epigraph {
+    margin-top: 22px;
+    padding: 12px 16px;
+    border-left: 2px solid var(--acc);
+    background: color-mix(in oklab, var(--acc) 6%, transparent);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.charter-epigraph-fell {
+    font: italic 400 16px/1.4 var(--font-serif);
+    color: var(--text);
+}
+.charter-epigraph-mono {
+    font: 400 11.5px/1.5 var(--font-mono);
+    color: var(--text-2);
+}
+
+.charter-catalog { margin-bottom: 40px; }
+.charter-counts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 8px;
+}
+
+.charter-services { margin-bottom: 36px; }
+.charter-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 16px;
+    padding: 15px 10px 14px;
+    border-bottom: 1px solid var(--hair);
+    text-decoration: none;
+    transition: background .12s ease;
+}
+.charter-row:first-of-type { border-top: 1px solid var(--border); }
+.charter-row:hover { background: var(--hair); }
+.charter-row:focus-visible { outline: 2px solid var(--acc); outline-offset: -2px; }
+.charter-row-name {
+    font: 600 14px/1.2 var(--font-body);
+    color: var(--text);
+}
+.charter-row:hover .charter-row-name { color: var(--acc); }
+.charter-row-desc {
+    font: 400 12.5px/1.5 var(--font-body);
+    color: var(--text-2);
+    margin-top: 3px;
+}
+.charter-row-aside {
+    font: italic 400 13px/1.5 var(--font-serif);
+    color: var(--text-3);
+    margin-top: 2px;
+}
+.charter-row-route {
+    font: 400 11px/1 var(--font-mono);
+    color: var(--text-4);
+    white-space: nowrap;
+}
+.charter-row:hover .charter-row-route { color: var(--acc); }
+
+.charter-agents {
+    font: 400 10.5px/1.5 var(--font-mono);
+    color: var(--text-faint);
+    text-align: right;
+}
+
+@media (max-width: 700px) {
+    .charter { padding-top: 28px; }
+    .charter-writ { padding: 24px 20px 22px; }
+    .charter-title { font-size: 26px; }
+    .charter-row { grid-template-columns: 1fr; gap: 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .charter-row { transition: none; }
+}
