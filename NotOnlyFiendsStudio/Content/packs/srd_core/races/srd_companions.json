@@ -955,7 +955,7 @@
       "wis": 2,
       "cha": 4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:outsider",
@@ -1250,7 +1250,7 @@
       "wis": 2,
       "cha": 4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:monstrous_humanoid",

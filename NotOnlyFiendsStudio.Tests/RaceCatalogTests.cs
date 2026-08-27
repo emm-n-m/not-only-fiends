@@ -154,10 +154,20 @@ public class RaceCatalogTests
     [Fact]
     public void EveryBundledRace_StatesALevelAdjustment()
     {
-        // Recorded expectation: the public packs contain no null-LA races, so on a machine with no
-        // private packs the default picker offers everything and the filter is a no-op. If this
-        // ever fails, a public pack has gained an unpriced race and the picker will start hiding
-        // it — which is the intended behaviour, but worth noticing deliberately.
+        // Recorded expectation: exactly these bundled races carry no level adjustment, because
+        // their sources print none — the SRD sanctions a red dragon only through wyrmling age
+        // categories, and imps and medusas were never priced as PCs (2026-08-27; previously they
+        // carried an invented 0). The picker hides them behind the non-PC toggle. If this fails
+        // with a new id, a public pack gained an unpriced race — intended behaviour, but worth
+        // noticing deliberately.
+        var expectedUnpriced = new[]
+        {
+            "race:devil_imp",
+            "race:dragon_red_great_wyrm",
+            "race:dragon_red_great_wyrm_colossal_plus",
+            "race:medusa",
+        };
+
         var registry = TestContentHelper.LoadBundledPacks();
 
         var unpriced = registry.GetAllRaces()
@@ -166,8 +176,7 @@ public class RaceCatalogTests
             .OrderBy(id => id, StringComparer.Ordinal)
             .ToList();
 
-        Assert.True(unpriced.Count == 0,
-            $"bundled races without a level adjustment:\n{string.Join("\n", unpriced)}");
+        Assert.Equal(expectedUnpriced, unpriced);
     }
 
     [RequiresPrivatePacksFact]

@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "id": "race:dragon_red_great_wyrm",
     "name": "Dragon (Red Great Wyrm)",
@@ -20,7 +20,7 @@
       "wis": 16,
       "cha": 16
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:red_dragon",
@@ -42,7 +42,7 @@
         "$type": "GrantAbility",
         "ability": {
           "id": "red_dragon_breath_weapon",
-          "name": "Breath Weapon \u2014 Cone of Fire",
+          "name": "Breath Weapon — Cone of Fire",
           "description": "Cone of fire dealing 24d10 damage (Reflex half)."
         }
       },
@@ -54,8 +54,14 @@
           "description": "Immune to fire damage."
         }
       },
-      { "$type": "GrantImmunity", "immunity": "fire" },
-      { "$type": "GrantImmunity", "immunity": "fire" },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "fire"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "fire"
+      },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -72,10 +78,22 @@
           "description": "Immune to sleep and paralysis effects."
         }
       },
-      { "$type": "GrantImmunity", "immunity": "sleep" },
-      { "$type": "GrantImmunity", "immunity": "paralysis" },
-      { "$type": "GrantImmunity", "immunity": "sleep" },
-      { "$type": "GrantImmunity", "immunity": "paralysis" },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "sleep"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "paralysis"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "sleep"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "paralysis"
+      },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -113,8 +131,16 @@
           "description": "Damage reduction 20/magic."
         }
       },
-      { "$type": "GrantDR", "value": 20, "bypassedBy": "magic" },
-      { "$type": "GrantDR", "value": 20, "bypassedBy": "magic" },
+      {
+        "$type": "GrantDR",
+        "value": 20,
+        "bypassedBy": "magic"
+      },
+      {
+        "$type": "GrantDR",
+        "value": 20,
+        "bypassedBy": "magic"
+      },
       {
         "$type": "GrantSLA",
         "sla": {
@@ -201,7 +227,7 @@
       "wis": 16,
       "cha": 16
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:red_dragon",
@@ -223,7 +249,7 @@
         "$type": "GrantAbility",
         "ability": {
           "id": "red_dragon_breath_weapon",
-          "name": "Breath Weapon \u2014 Cone of Fire",
+          "name": "Breath Weapon — Cone of Fire",
           "description": "Cone of fire dealing 24d10 damage (Reflex half)."
         }
       },
