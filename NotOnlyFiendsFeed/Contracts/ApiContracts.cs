@@ -52,6 +52,14 @@ public sealed class RulesDto
 public sealed class ApiHealthResponse
 {
     public string Status { get; set; } = "ok";
+
+    /// <summary>
+    /// False means CHARACTERS_PATH is unset, so every /api/characters endpoint answers 503.
+    /// Content endpoints still work; Status reads "degraded" so a caller sees it up front
+    /// instead of one 503 at a time.
+    /// </summary>
+    public bool CharacterStoreConfigured { get; set; }
+
     public List<PackSummaryDto> LoadedPacks { get; set; } = new();
     public Dictionary<string, int> Counts { get; set; } = new();
 }

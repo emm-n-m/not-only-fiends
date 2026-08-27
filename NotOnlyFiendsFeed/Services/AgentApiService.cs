@@ -22,6 +22,8 @@ public sealed class AgentApiService
 
     public ApiHealthResponse GetHealth() => new()
     {
+        Status = _characterStore.IsConfigured ? "ok" : "degraded",
+        CharacterStoreConfigured = _characterStore.IsConfigured,
         LoadedPacks = _contentService.LoadedPacks.Select(MapPack).ToList(),
         Counts = new Dictionary<string, int>
         {

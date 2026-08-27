@@ -136,7 +136,7 @@ The same `.env` file is used by `docker compose` for volume bind mounts — one 
 
 The same app serves both the Blazor UI and the REST API. Key endpoints:
 
-- `GET /api/health` — loaded packs and content counts
+- `GET /api/health` — loaded packs, content counts, and whether the character store is configured (`status` is `degraded` when `CHARACTERS_PATH` is unset)
 - `GET /api/rules` — game rules constants (epic threshold, feat schedule, etc.)
 - `GET /api/content/catalog` — machine-friendly content summary
 - `GET /api/content/{races|drivers|templates|feats|domains|skills|class-features|spells}` — typed content discovery and lookup
