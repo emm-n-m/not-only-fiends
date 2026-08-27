@@ -79,8 +79,9 @@ Dispatch on the argument:
 - Racial HD driver IDs: `racial_hd:<race_id>`.
 - Subtypes: include alignment + extraplanar + creature subtypes (`["chaotic", "evil", "extraplanar", "tanar'ri"]`).
 - Ability modifiers are printed score minus the nonelite array (odd score → −11, even → −10),
-  so odd modifiers are normal. Base creatures for stock characters use 11s where the printed
-  score is odd, 10s where even.
+  so every correct modifier is **even** — an odd modifier is the fingerprint of a flat
+  score−10 mis-derivation, and `RaceCatalogTests` enforces evenness across all packs. Base
+  creatures for stock characters use 11s where the printed score is odd, 10s where even.
 - Include all six abilities when any are modified (unmodified → 0); use `null` only when no racial modifiers exist (human).
 - Omit `racialHDDriverId` when the race has no racial HD.
 
