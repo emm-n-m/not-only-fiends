@@ -1235,7 +1235,7 @@
   {
     "id": "race:medusa",
     "name": "Medusa",
-    "description": "Medium monstrous humanoid with a petrifying gaze attack and venomous snake-hair bite.",
+    "description": "Medium monstrous humanoid with a petrifying gaze attack and venomous snake-hair bite. No printed level adjustment — the SRD never priced her as a PC race, and the at-will petrifying gaze is why no honest price exists (confirmed 2026-08-28).",
     "type": "monstrousHumanoid",
     "subtypes": [],
     "size": "medium",
