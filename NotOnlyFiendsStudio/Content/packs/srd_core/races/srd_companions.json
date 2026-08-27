@@ -19,7 +19,7 @@
       "wis": 2,
       "cha": -8
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -83,7 +83,7 @@
       "wis": 2,
       "cha": -8
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -140,7 +140,7 @@
       "wis": 2,
       "cha": -8
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -197,7 +197,7 @@
       "wis": 4,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -248,7 +248,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -355,7 +355,7 @@
       "wis": 4,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -404,7 +404,7 @@
       "wis": 4,
       "cha": -6
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -474,7 +474,7 @@
       "wis": 2,
       "cha": 4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:outsider",
@@ -616,7 +616,7 @@
       "wis": 0,
       "cha": 0
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:elemental_air",
@@ -711,7 +711,7 @@
       "wis": 0,
       "cha": 0
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:elemental_water",
@@ -813,7 +813,7 @@
       "wis": 2,
       "cha": 2
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:undead",

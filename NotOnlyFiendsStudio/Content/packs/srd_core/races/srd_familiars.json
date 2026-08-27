@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "id": "race:familiar_cat",
     "name": "Cat",
@@ -17,7 +17,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -106,7 +106,7 @@
       "wis": 2,
       "cha": -8
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -165,7 +165,7 @@
       "wis": 4,
       "cha": -6
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -221,7 +221,7 @@
       "wis": 2,
       "cha": -8
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -305,7 +305,7 @@
       "wis": 4,
       "cha": -6
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -365,7 +365,7 @@
       "wis": 2,
       "cha": -6
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",

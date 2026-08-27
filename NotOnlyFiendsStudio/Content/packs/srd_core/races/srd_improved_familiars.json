@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "id": "race:familiar_pseudodragon",
     "name": "Pseudodragon",
@@ -18,7 +18,7 @@
       "wis": 2,
       "cha": 0
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:dragon",
@@ -110,7 +110,7 @@
       "wis": 2,
       "cha": 0
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:outsider",
@@ -154,7 +154,10 @@
           "description": "Regain 2 hit points per round."
         }
       },
-      { "$type": "GrantFastHealing", "value": 2 },
+      {
+        "$type": "GrantFastHealing",
+        "value": 2
+      },
       {
         "$type": "GrantImmunity",
         "immunity": "poison"
@@ -253,7 +256,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:magical_beast",
@@ -327,7 +330,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:magical_beast",

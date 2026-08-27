@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "id": "race:companion_badger",
     "name": "Badger",
@@ -18,7 +18,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -83,7 +83,7 @@
       "wis": 0,
       "cha": -6
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -126,7 +126,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -184,7 +184,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -243,7 +243,7 @@
       "wis": 4,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -291,7 +291,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -342,7 +342,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -393,7 +393,7 @@
       "wis": 0,
       "cha": -6
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -444,7 +444,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -506,7 +506,7 @@
       "wis": 2,
       "cha": -6
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -567,7 +567,7 @@
       "wis": 2,
       "cha": -6
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -618,7 +618,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",
@@ -677,7 +677,7 @@
       "wis": 0,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:animal",

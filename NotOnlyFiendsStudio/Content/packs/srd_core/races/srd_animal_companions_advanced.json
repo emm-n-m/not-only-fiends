@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "id": "race:companion_ape",
     "name": "Ape",
@@ -18,7 +18,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -78,7 +78,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -138,7 +138,7 @@
       "wis": 4,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -194,7 +194,7 @@
       "wis": 2,
       "cha": -8
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -260,7 +260,7 @@
       "wis": 2,
       "cha": 0
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -327,7 +327,7 @@
       "wis": 2,
       "cha": -8
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -390,7 +390,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -6,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -456,7 +456,7 @@
       "wis": 2,
       "cha": 0
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -6,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -491,10 +491,26 @@
           "description": "On a successful bite, can attempt to trip as a free action without provoking attacks of opportunity."
         }
       },
-      { "$type": "GrantSkillBonus", "skillId": "skill:hide", "value": 2 },
-      { "$type": "GrantSkillBonus", "skillId": "skill:listen", "value": 2 },
-      { "$type": "GrantSkillBonus", "skillId": "skill:move_silently", "value": 2 },
-      { "$type": "GrantSkillBonus", "skillId": "skill:spot", "value": 2 }
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:hide",
+        "value": 2
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:listen",
+        "value": 2
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
+        "value": 2
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:spot",
+        "value": 2
+      }
     ],
     "scalingFormulas": [],
     "racialClassSkillAdditions": [
@@ -523,7 +539,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -6,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -617,7 +633,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -6,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -713,7 +729,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -9,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -774,7 +790,7 @@
       "wis": 2,
       "cha": 0
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -9,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -862,7 +878,7 @@
       "wis": 2,
       "cha": 0
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -12,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -923,7 +939,7 @@
       "wis": 2,
       "cha": -4
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -12,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
@@ -983,7 +999,7 @@
       "wis": 2,
       "cha": 0
     },
-    "levelAdjustment": 0,
+    "levelAdjustment": null,
     "companionLevelModifier": -15,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,

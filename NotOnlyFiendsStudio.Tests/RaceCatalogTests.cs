@@ -154,13 +154,13 @@ public class RaceCatalogTests
     [Fact]
     public void EveryBundledRace_StatesALevelAdjustment()
     {
-        // Recorded expectation: exactly these bundled races carry no level adjustment, because
-        // their sources print none — the SRD sanctions a red dragon only through wyrmling age
-        // categories, and imps and medusas were never priced as PCs (2026-08-27; previously they
-        // carried an invented 0). The picker hides them behind the non-PC toggle. If this fails
-        // with a new id, a public pack gained an unpriced race — intended behaviour, but worth
-        // noticing deliberately.
-        var expectedUnpriced = new[]
+        // Recorded expectation (2026-08-27): a bundled race is unpriced exactly when its source
+        // prints no level adjustment — every companion_/familiar_ animal and creature entry
+        // (animals have no LA at all), plus these four monster entries which previously carried
+        // an invented 0. The picker hides all of them behind the non-PC toggle. If this fails,
+        // a public pack gained or repriced a race — intended behaviour, but worth noticing
+        // deliberately.
+        var expectedUnpricedOutsideTheMenagerie = new[]
         {
             "race:devil_imp",
             "race:dragon_red_great_wyrm",
@@ -169,14 +169,22 @@ public class RaceCatalogTests
         };
 
         var registry = TestContentHelper.LoadBundledPacks();
+        var all = registry.GetAllRaces().ToList();
 
-        var unpriced = registry.GetAllRaces()
-            .Where(r => !RaceCatalog.IsSanctionedPcRace(r))
-            .Select(r => r.Id)
-            .OrderBy(id => id, StringComparer.Ordinal)
-            .ToList();
+        bool IsMenagerie(RaceDefinition r) =>
+            r.Id.StartsWith("race:companion_", StringComparison.Ordinal)
+            || r.Id.StartsWith("race:familiar_", StringComparison.Ordinal);
 
-        Assert.Equal(expectedUnpriced, unpriced);
+        var pricedMenagerie = all
+            .Where(r => IsMenagerie(r) && RaceCatalog.IsSanctionedPcRace(r))
+            .Select(r => r.Id).OrderBy(id => id, StringComparer.Ordinal).ToList();
+        Assert.True(pricedMenagerie.Count == 0,
+            $"companion/familiar races claiming a level adjustment:\n{string.Join("\n", pricedMenagerie)}");
+
+        var unpricedElsewhere = all
+            .Where(r => !IsMenagerie(r) && !RaceCatalog.IsSanctionedPcRace(r))
+            .Select(r => r.Id).OrderBy(id => id, StringComparer.Ordinal).ToList();
+        Assert.Equal(expectedUnpricedOutsideTheMenagerie, unpricedElsewhere);
     }
 
     [RequiresPrivatePacksFact]
