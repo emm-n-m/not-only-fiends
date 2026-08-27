@@ -613,6 +613,38 @@ public partial class BuilderView
         return GameRules.Standard35e().GrantsAbilityIncrease(index + 1 - freeHD, driver.Kind);
     }
 
+    // Skill families (Craft, Knowledge, Perform, Profession) collapse in the skills table so the
+    // sub-skill wall doesn't bury the ~30 top-level skills. Shared across ticks on purpose —
+    // re-collapsing per tick would fight the user. Sub-skills with ranks stay visible collapsed.
+    private readonly HashSet<string> _expandedSkillFamilies = new(StringComparer.Ordinal);
+
+    private void ToggleSkillFamily(string familyId)
+    {
+        if (!_expandedSkillFamilies.Remove(familyId))
+            _expandedSkillFamilies.Add(familyId);
+    }
+
+    private static string SkillFamilyName(string familyId)
+    {
+        var bare = familyId.StartsWith("skill:") ? familyId["skill:".Length..] : familyId;
+        return char.ToUpperInvariant(bare[0]) + bare[1..].Replace('_', ' ');
+    }
+
+    /// <summary>Top-level skills first (family: null), then one group per parent family.</summary>
+    private List<(string? FamilyId, List<SkillDefinition> Skills)> SkillGroups()
+    {
+        var groups = new List<(string?, List<SkillDefinition>)>
+        {
+            (null, _skills.Where(s => s.ParentSkill == null)
+                .OrderBy(s => s.Name, StringComparer.OrdinalIgnoreCase).ToList()),
+        };
+        foreach (var family in _skills.Where(s => s.ParentSkill != null)
+                     .GroupBy(s => s.ParentSkill!)
+                     .OrderBy(g => g.Key, StringComparer.Ordinal))
+            groups.Add((family.Key, family.OrderBy(s => s.Name, StringComparer.OrdinalIgnoreCase).ToList()));
+        return groups;
+    }
+
     private void AddFeatToTick(int index)
     {
         var input = FeatInput(index);

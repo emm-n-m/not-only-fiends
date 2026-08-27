@@ -1088,13 +1088,35 @@ else
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (var skill in _skills)
+                                            @foreach (var (familyId, familySkills) in SkillGroups())
+                                            {
+                                            var familyExpanded = familyId == null || _expandedSkillFamilies.Contains(familyId);
+                                            @if (familyId != null)
+                                            {
+                                                var fid = familyId;
+                                                var rankedCount = familySkills.Count(s =>
+                                                    skillInfo.SkillHalfRanks.GetValueOrDefault(s.Id) > 0
+                                                    || GetTickSkillAllocation(index, s.Id) > 0);
+                                                <tr class="table-light" style="cursor:pointer" @onclick="() => ToggleSkillFamily(fid)">
+                                                    <td colspan="4">
+                                                        @(familyExpanded ? "▼" : "▶") <strong>@SkillFamilyName(fid)</strong>
+                                                        <span class="text-muted small ms-1">
+                                                            (@familySkills.Count skills@(rankedCount > 0 ? $", {rankedCount} with ranks" : ""))
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            }
+                                            @foreach (var skill in familySkills)
                                             {
                                                 var sid = skill.Id;
                                                 var isClass = skillInfo.CurrentTickClassSkills.Contains(sid);
                                                 var totalHalfRanks = skillInfo.SkillHalfRanks.GetValueOrDefault(sid);
                                                 var thisTickHalfRanks = GetTickSkillAllocation(index, sid);
                                                 var atMax = totalHalfRanks >= skillInfo.MaxHalfRanks;
+                                                @if (!familyExpanded && totalHalfRanks == 0 && thisTickHalfRanks == 0)
+                                                {
+                                                    continue;
+                                                }
                                                 <tr class="@(isClass ? "" : "text-muted")">
                                                     <td title="@skill.Description">
                                                         @skill.Name
@@ -1113,6 +1135,7 @@ else
                                                         </div>
                                                     </td>
                                                 </tr>
+                                            }
                                             }
                                         </tbody>
                                     </table>
