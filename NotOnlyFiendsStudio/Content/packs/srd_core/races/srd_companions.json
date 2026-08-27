@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "id": "race:companion_snake_viper_tiny",
     "name": "Snake, Viper (Tiny)",
@@ -516,7 +516,10 @@
           "description": "Regain 2 hit points per round."
         }
       },
-      { "$type": "GrantFastHealing", "value": 2 },
+      {
+        "$type": "GrantFastHealing",
+        "value": 2
+      },
       {
         "$type": "GrantImmunity",
         "immunity": "poison"
@@ -618,7 +621,12 @@
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:elemental_air",
     "naturalAttacks": [
-      { "name": "Slam", "damage": "1d4", "count": 1, "isPrimary": true }
+      {
+        "name": "Slam",
+        "damage": "1d4",
+        "count": 1,
+        "isPrimary": true
+      }
     ],
     "racialPermabuffs": [
       {
@@ -708,7 +716,12 @@
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:elemental_water",
     "naturalAttacks": [
-      { "name": "Slam", "damage": "1d6", "count": 1, "isPrimary": true }
+      {
+        "name": "Slam",
+        "damage": "1d6",
+        "count": 1,
+        "isPrimary": true
+      }
     ],
     "racialPermabuffs": [
       {
@@ -812,11 +825,25 @@
         "$type": "GrantTypedBonus",
         "target": "ac",
         "bonusType": "deflection",
-        "value": { "expression": "1" }
+        "value": {
+          "expression": "1"
+        }
       },
-      { "$type": "GrantSkillBonus", "skillId": "skill:listen", "value": 2 },
-      { "$type": "GrantSkillBonus", "skillId": "skill:spot", "value": 2 },
-      { "$type": "GrantSkillBonus", "skillId": "skill:search", "value": 4 },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:listen",
+        "value": 2
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:spot",
+        "value": 2
+      },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:search",
+        "value": 4
+      },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -857,7 +884,10 @@
           "description": "+2 bonus on checks to resist being turned."
         }
       },
-      { "$type": "GrantTurnResistance", "value": 2 },
+      {
+        "$type": "GrantTurnResistance",
+        "value": 2
+      },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -866,14 +896,38 @@
           "description": "Immune to mind-affecting effects, poison, sleep, paralysis, stunning, disease, death effects, and critical hits."
         }
       },
-      { "$type": "GrantImmunity", "immunity": "mind-affecting" },
-      { "$type": "GrantImmunity", "immunity": "poison" },
-      { "$type": "GrantImmunity", "immunity": "sleep" },
-      { "$type": "GrantImmunity", "immunity": "paralysis" },
-      { "$type": "GrantImmunity", "immunity": "stunning" },
-      { "$type": "GrantImmunity", "immunity": "disease" },
-      { "$type": "GrantImmunity", "immunity": "death effects" },
-      { "$type": "GrantImmunity", "immunity": "critical hits" }
+      {
+        "$type": "GrantImmunity",
+        "immunity": "mind-affecting"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "poison"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "sleep"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "paralysis"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "stunning"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "disease"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "death effects"
+      },
+      {
+        "$type": "GrantImmunity",
+        "immunity": "critical hits"
+      }
     ],
     "naturalAttacks": [],
     "scalingFormulas": []
@@ -943,7 +997,10 @@
           "description": "Regain 2 hit points per round."
         }
       },
-      { "$type": "GrantFastHealing", "value": 2 },
+      {
+        "$type": "GrantFastHealing",
+        "value": 2
+      },
       {
         "$type": "GrantImmunity",
         "immunity": "poison"
@@ -1439,9 +1496,9 @@
       "fly": 50
     },
     "abilityModifiers": {
-      "str": 3,
-      "dex": 3,
-      "con": 3,
+      "str": 2,
+      "dex": 2,
+      "con": 2,
       "int": 6,
       "wis": 4,
       "cha": 16

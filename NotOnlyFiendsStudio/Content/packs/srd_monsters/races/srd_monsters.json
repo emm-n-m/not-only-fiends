@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "id": "race:aranea",
     "name": "Aranea",
@@ -59,7 +59,7 @@
         "ability": {
           "id": "aranea_poison",
           "name": "Poison",
-          "description": "Bite\u2014Injury, Fort DC 13. Initial damage 1d6 Str, secondary damage 2d6 Str."
+          "description": "Bite—Injury, Fort DC 13. Initial damage 1d6 Str, secondary damage 2d6 Str."
         }
       },
       {
@@ -97,7 +97,11 @@
           "description": "+2 racial bonus on Jump checks."
         }
       },
-      { "$type": "GrantSkillBonus", "skillId": "skill:jump", "value": 2 },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:jump",
+        "value": 2
+      },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -106,7 +110,11 @@
           "description": "+2 racial bonus on Listen checks."
         }
       },
-      { "$type": "GrantSkillBonus", "skillId": "skill:listen", "value": 2 },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:listen",
+        "value": 2
+      },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -115,7 +123,11 @@
           "description": "+2 racial bonus on Spot checks."
         }
       },
-      { "$type": "GrantSkillBonus", "skillId": "skill:spot", "value": 2 }
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:spot",
+        "value": 2
+      }
     ],
     "scalingFormulas": []
   },
@@ -208,7 +220,11 @@
           "description": "+5 racial bonus on Hide checks."
         }
       },
-      { "$type": "GrantSkillBonus", "skillId": "skill:hide", "value": 5 },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:hide",
+        "value": 5
+      },
       {
         "$type": "GrantAbility",
         "ability": {
@@ -217,7 +233,11 @@
           "description": "+5 racial bonus on Move Silently checks."
         }
       },
-      { "$type": "GrantSkillBonus", "skillId": "skill:move_silently", "value": 5 },
+      {
+        "$type": "GrantSkillBonus",
+        "skillId": "skill:move_silently",
+        "value": 5
+      },
       {
         "$type": "GrantBonusFeat",
         "featId": "feat:track"
@@ -241,9 +261,9 @@
       "fly": 50
     },
     "abilityModifiers": {
-      "str": 8,
-      "dex": 2,
-      "con": 8,
+      "str": 10,
+      "dex": 10,
+      "con": 10,
       "int": 4,
       "wis": 8,
       "cha": 10
