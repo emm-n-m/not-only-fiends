@@ -893,19 +893,23 @@ public partial class BuilderView
         LanguageCatalog.OfferedBonusLanguages(SelectedRace(), _languages).ToList();
 
     /// <summary>
-    /// Imported languages that the race offers as bonus picks, capped at the starting-Intelligence
-    /// allowance. A PCG import lists the finished character's languages without saying which were
-    /// creation-time Intelligence purchases, so the builder credits these against the allowance
-    /// instead of re-prompting for picks the character has visibly already made.
+    /// Imported languages credited against the starting-Intelligence allowance, capped at it. A
+    /// PCG import lists the finished character's languages without saying which were creation-time
+    /// Intelligence purchases, so the builder credits every non-automatic one instead of
+    /// re-prompting for picks the character has visibly already made. Deliberately NOT filtered to
+    /// the race's bonus list: PCGen does not enforce that list, so an off-list import (a drow cult
+    /// wizard's Infernal) is a historical fact — filtering it out showed "3/4 selected" on a
+    /// character already speaking four extras, with a phantom free pick for an eighth language.
     /// </summary>
     private HashSet<string> ImportedBonusLanguages()
     {
         if (_character.SourceLanguageIds.Count == 0)
             return new HashSet<string>(StringComparer.Ordinal);
 
-        var offered = OfferedBonusLanguages().Select(l => l.Id).ToHashSet(StringComparer.Ordinal);
+        var automatic = SelectedRace()?.AutomaticLanguages.ToHashSet(StringComparer.Ordinal)
+                        ?? new HashSet<string>(StringComparer.Ordinal);
         return _character.SourceLanguageIds
-            .Where(offered.Contains)
+            .Where(id => !automatic.Contains(id))
             .Distinct(StringComparer.Ordinal)
             .Take(LanguageCatalog.Allowance(GetStartingIntelligence()))
             .ToHashSet(StringComparer.Ordinal);
