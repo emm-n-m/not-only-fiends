@@ -770,6 +770,33 @@ public class ReplayStudioTests
     }
 
     [Fact]
+    public void WizardSchoolSelections_ArePendingButOptional()
+    {
+        // A generalist wizard never answers specialization or prohibited schools. The choices
+        // stay pending so pickers keep offering them, but they are flagged optional so
+        // owed-decision rollups skip them — otherwise every generalist carries three phantom
+        // owed decisions forever. Consistency (a specialist must give up two schools) is
+        // enforced by FinalizeWizardSchools warnings, not by these counts.
+        var registry = TestContentHelper.LoadBundledPacks();
+        var engine = new ReplayStudio(registry);
+        var wizard = new Character
+        {
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 14, WIS = 10, CHA = 10 },
+            Ticks = { new Tick { DriverId = "class:wizard" } }
+        };
+
+        var state = engine.Evaluate(wizard);
+
+        Assert.Equal(1, state.PendingClassFeatureSelections.GetValueOrDefault(WizardSchools.SpecializationFeature));
+        Assert.Equal(2, state.PendingClassFeatureSelections.GetValueOrDefault(WizardSchools.ProhibitedFeature));
+        Assert.Contains(WizardSchools.SpecializationFeature, state.OptionalClassFeatureTypes);
+        Assert.Contains(WizardSchools.ProhibitedFeature, state.OptionalClassFeatureTypes);
+        // And a generalist is a legal wizard: no school warning fires.
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("school"));
+    }
+
+    [Fact]
     public void SavedHitPointRoll_OverridesDeterministicRoll()
     {
         var registry = CreateContentRegistry();

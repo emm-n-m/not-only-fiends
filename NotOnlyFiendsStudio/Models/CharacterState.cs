@@ -345,6 +345,12 @@ public class CharacterState
     // but keyed on linkType for diagnostics/UX).
     public Dictionary<string, int> PendingCompanionSelections { get; set; } = new();
 
+    /// <summary>
+    /// Feature types whose pending selections are optional — offered but never owed (wizard
+    /// specialization for a generalist). Owed-decision rollups exclude these.
+    /// </summary>
+    public HashSet<string> OptionalClassFeatureTypes { get; set; } = new();
+
     // Leadership accumulators. Final values computed in tail pass when feat:leadership present.
     public int LeadershipScore { get; set; }
     public int LeadershipScoreModifier { get; set; }

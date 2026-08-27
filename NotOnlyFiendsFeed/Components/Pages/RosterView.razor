@@ -99,7 +99,9 @@ else if (CharacterStore.IsConfigured)
                 var owed = state.PendingFeatSlots + state.PendingBonusFeatSlots
                     + state.UnspentSkillPoints
                     + state.PendingDomainSelections.Values.Sum()
-                    + state.PendingClassFeatureSelections.Values.Sum();
+                    + state.PendingClassFeatureSelections
+                        .Where(kv => !state.OptionalClassFeatureTypes.Contains(kv.Key))
+                        .Sum(kv => kv.Value);
                 var race = character.RaceId is not null && raceNames.TryGetValue(character.RaceId, out var rn) ? rn : character.RaceId;
                 var classes = string.Join(" / ", state.ClassLevels
                     .Where(kv => kv.Value > 0)

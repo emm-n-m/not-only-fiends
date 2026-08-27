@@ -68,7 +68,9 @@ public class ArchfiendSpellListTests
         var ticks = Enumerable.Range(0, 6)
             .Select(_ => new Tick { DriverId = "class:archfiend" })
             .ToList();
-        // The class grants 2 domain selections at level 1 (asSpellListSources).
+        // template:archfiend grants the 2 domain selections (asSpellListSources), targeted at
+        // class:archfiend — the class itself grants none, or a real archfiend (whose race applies
+        // the template) would carry four slots and two forever-pending "owed" decisions.
         ticks[0].Choices.ClassFeatureChoices = new Dictionary<string, List<string>>
         {
             ["domains"] = new() { "domain:fire", "domain:lust" }
@@ -86,6 +88,7 @@ public class ArchfiendSpellListTests
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 12, INT = 10, WIS = 10, CHA = 20 },
             Ticks = ticks
         };
+        character.TemplateIds.Add("template:archfiend");
         character.TemplateIds.Add("template:archfiend_arcane_list");
 
         var state = new ReplayStudio(content).Evaluate(character);

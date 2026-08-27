@@ -814,10 +814,22 @@ public class GrantClassFeatureSelection : Permabuff
     public string FeatureType { get; set; } = string.Empty;
     public int Count { get; set; } = 1;
 
+    /// <summary>
+    /// True for a selection the character may simply never make — wizard specialization is the
+    /// case in hand: a generalist answers neither it nor the prohibited schools, ever. Optional
+    /// pendings still offer their choices everywhere, but owed-decision rollups skip them, so a
+    /// generalist wizard doesn't show three phantom owed decisions forever. Consistency rules
+    /// (a specialist must give up two schools) are enforced by replay warnings, not by pending
+    /// counts.
+    /// </summary>
+    public bool Optional { get; set; }
+
     public override void Apply(PermabuffContext ctx)
     {
         ctx.State.PendingClassFeatureSelections.TryAdd(FeatureType, 0);
         ctx.State.PendingClassFeatureSelections[FeatureType] += Count;
+        if (Optional)
+            ctx.State.OptionalClassFeatureTypes.Add(FeatureType);
     }
 }
 
