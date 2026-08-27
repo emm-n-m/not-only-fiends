@@ -503,3 +503,19 @@ the committed sheet no longer records ranks under the bogus id.
 
 `next-step` now exposes `skillPointAccruals` (source, base points, Intelligence modifier, first-HD
 multiplier, and awarded points), alongside the remaining pool, so callers can reconcile the total.
+
+## Leadership outputs are computed but not exposed by the API — fixed
+
+`CharacterSheet` now carries a nullable `leadership` block (base/cohort/follower scores, cohort
+cap, follower capacity table, occupancy, modifier notes), mapped in `CharacterSheet.FromState`,
+so `/sheet`, evaluate responses and `next-step`'s `currentSheet` all serve it. Null — omitted
+from JSON — when the character has no Leadership, so a consumer can tell "no Leadership" from a
+score of 0. Found 2026-08-27 while building Ember's followers through the API: the only way to
+learn her follower capacity (135/13/7/4/2/2) was to read the baseline report in the private
+materials repo.
+
+**Residual: `followerOccupancy` is always empty on API paths.** `CompanionResolver` runs only in
+`BuilderView`; no API evaluation resolves companions, so slots-taken counts (and over-capacity
+warnings) exist only in the builder. Wiring the resolver into `AgentApiService` evaluation is a
+deliberate follow-up — it multiplies per-request evaluation cost by the companion count and
+changes the API's warning surface.

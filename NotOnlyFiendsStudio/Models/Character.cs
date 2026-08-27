@@ -294,6 +294,13 @@ public class CharacterSheet
     /// </summary>
     public Dictionary<string, SpellcastingSummary> Spellcasting { get; set; } = new();
 
+    /// <summary>
+    /// Leadership outputs, present only when the character has any (the Leadership feat, or an
+    /// epic extension of it). Null — omitted from JSON — for everyone else, so a consumer can
+    /// distinguish "no Leadership" from a score of 0.
+    /// </summary>
+    public LeadershipSummary? Leadership { get; set; }
+
     public List<string> Warnings { get; set; } = new();
 
     public static CharacterSheet FromState(CharacterState state) => new()
@@ -336,10 +343,45 @@ public class CharacterSheet
         Spellcasting = state.Spellcasting.ToDictionary(
             kv => kv.Key,
             kv => SpellcastingSummary.FromState(kv.Value, state.EquipmentNegativeLevels)),
+        Leadership = LeadershipSummary.FromState(state),
         Warnings = state.Warnings
             .Select(w => w.TickIndex.HasValue ? $"HD {w.TickIndex}: {w.Message}" : w.Message)
             .ToList()
     };
+}
+
+/// <summary>
+/// Serializable, display-oriented view of the Leadership outputs on the sheet. The two effective
+/// scores differ because the SRD's modifier groups differ for cohorts and followers.
+/// </summary>
+public class LeadershipSummary
+{
+    public int Score { get; set; }
+    public int CohortScore { get; set; }
+    public int FollowerScore { get; set; }
+    public int MaxCohortLevel { get; set; }
+    /// <summary>Follower level → how many followers of that level the score allows.</summary>
+    public Dictionary<int, int> FollowerCapacity { get; set; } = new();
+    /// <summary>
+    /// Follower level → slots taken by linked followers, counted by the level they occupy (their
+    /// ECL, not their HD). Populated only when companions are resolved host-side.
+    /// </summary>
+    public Dictionary<int, int> FollowerOccupancy { get; set; } = new();
+    public List<string> ModifierNotes { get; set; } = new();
+
+    public static LeadershipSummary? FromState(CharacterState state) =>
+        state.LeadershipScore == 0 && state.Followers.ByLevel.Count == 0
+            ? null
+            : new()
+            {
+                Score = state.LeadershipScore,
+                CohortScore = state.LeadershipCohortScore,
+                FollowerScore = state.LeadershipFollowerScore,
+                MaxCohortLevel = state.MaxCohortLevel,
+                FollowerCapacity = state.Followers.ByLevel,
+                FollowerOccupancy = state.FollowerOccupancy,
+                ModifierNotes = state.LeadershipModifierNotes,
+            };
 }
 
 /// <summary>

@@ -632,6 +632,48 @@ public class LeadershipTests
         Assert.Equal(4, LeadershipTables.CohortLevelCap(baseFeats, 6));
     }
 
+    // ---------- the sheet exposes what the state computed ----------
+
+    [Fact]
+    public void Sheet_ExposesLeadershipOutputs()
+    {
+        // The API serves CharacterSheet, so leadership planning (which follower slots exist,
+        // what the cohort cap is) must be answerable from the sheet alone — KNOWN_ISSUES
+        // 2026-08-27, found while building followers through the API.
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        var state = engine.Evaluate(BuildFighterWithLeadership(levels: 14, cha: 20));
+        var leadership = CharacterSheet.FromState(state).Leadership;
+
+        Assert.NotNull(leadership);
+        Assert.Equal(state.LeadershipScore, leadership.Score);
+        Assert.Equal(state.LeadershipCohortScore, leadership.CohortScore);
+        Assert.Equal(state.LeadershipFollowerScore, leadership.FollowerScore);
+        Assert.Equal(state.MaxCohortLevel, leadership.MaxCohortLevel);
+        Assert.Equal(state.Followers.ByLevel, leadership.FollowerCapacity);
+        Assert.Equal(state.LeadershipModifierNotes, leadership.ModifierNotes);
+    }
+
+    [Fact]
+    public void Sheet_OmitsLeadership_WithoutTheFeat()
+    {
+        // Null, not zeros: a consumer must be able to tell "no Leadership" from a score of 0,
+        // and the app's WhenWritingNull serialization drops the key entirely.
+        var registry = TestContentHelper.LoadAllPacks();
+        var engine = new ReplayStudio(registry);
+
+        var fighter = new Character
+        {
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 14 },
+            Ticks = Enumerable.Range(0, 6).Select(_ => new Tick { DriverId = "class:fighter" }).ToList()
+        };
+        var state = engine.Evaluate(fighter);
+
+        Assert.Null(CharacterSheet.FromState(state).Leadership);
+    }
+
     private static Character BuildFighterWithLeadership(int levels, int cha)
     {
         // Feat schedule: fighter gets bonus feats at L1, L2, L4, L6, L8, ...
