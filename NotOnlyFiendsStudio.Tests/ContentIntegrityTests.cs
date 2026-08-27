@@ -49,7 +49,15 @@ public class ContentIntegrityTests
         "skill:type_intelligence",
         "skill:type_wisdom",
         "skill:type_charisma",
+    };
 
+    /// <summary>
+    /// Gaps whose *referencing* content lives in the private packs. In a public-only checkout the
+    /// reference does not exist at all, so these entries cannot be asserted still-broken there —
+    /// KnownGaps_AreStillGaps checks them only when the private packs are loaded.
+    /// </summary>
+    private static readonly HashSet<string> PrivatePackKnownGaps = new(StringComparer.Ordinal)
+    {
         // Private pack (en_elements_of_magic). Its feats gate on skills from a different magic
         // system that this content set does not define.
         "skill:scry",
@@ -266,7 +274,7 @@ public class ContentIntegrityTests
         var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
 
         var unexpected = CollectBrokenReferences(registry)
-            .Where(r => !KnownGaps.Contains(r.Id))
+            .Where(r => !KnownGaps.Contains(r.Id) && !PrivatePackKnownGaps.Contains(r.Id))
             .Select(r => r.ToString())
             .OrderBy(s => s, StringComparer.Ordinal)
             .ToList();
@@ -321,7 +329,11 @@ public class ContentIntegrityTests
         var stillBroken = new HashSet<string>(
             CollectBrokenReferences(registry).Select(r => r.Id), StringComparer.Ordinal);
 
-        var obsolete = KnownGaps.Where(gap => !stillBroken.Contains(gap)).ToList();
+        var expectedGaps = TestContentHelper.HasOptionalPrivatePacks()
+            ? KnownGaps.Concat(PrivatePackKnownGaps)
+            : KnownGaps.AsEnumerable();
+
+        var obsolete = expectedGaps.Where(gap => !stillBroken.Contains(gap)).ToList();
 
         Assert.True(obsolete.Count == 0,
             $"KnownGaps entries that now resolve and should be removed:\n{string.Join("\n", obsolete)}");
