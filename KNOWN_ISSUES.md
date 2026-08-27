@@ -386,13 +386,13 @@ class features and the rest are simply absent. Arcane Trickster was given its ep
 on 2026-08-09 because an imported character needed them; every other epic progression is still
 missing, and the 30 cap there is arbitrary rather than a rule.
 
-## IMP.pcg spends one more feat than its own sheet allows
+## IMP.pcg spends one more feat than its own sheet allows — fixed in the source
 
-`IMP.pcg` lists 11 feats — 9 general plus 2 from the Epic Arcane Trickster pool — but at 26 HD
-and Arcane Trickster 14 the budget is 9 general plus 1 pool feat. The .pcg's own
-`USERPOOL:Epic Arcane Trickster Feat|POOLPOINTS:0.0` agrees there is nothing left to spend, so
-the source sheet is over budget, not the engine. The import drops one feat and reports it; which
-one it drops follows list order and is arbitrary. Fix the character in PCGen, not the importer.
+`IMP.pcg` listed 11 feats — 9 general plus 2 from the Epic Arcane Trickster pool — but at 26 HD
+and Arcane Trickster 14 the budget is 9 general plus 1 pool feat, so the import dropped one
+arbitrarily. The character was corrected in PCGen as prescribed: the file now carries exactly
+9 general + 1 pool feat (Automatic Silent Spell), and the 2026-08-27 baseline shows
+`droppedFeats: []` with no replay warnings for IMP.
 
 ## Permanent events scheduled past the last tick are silently dropped — fixed
 
