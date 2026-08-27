@@ -51,7 +51,8 @@ public class RaceCatalogTests
     {
         var offered = RaceCatalog.ForPicker(Fixture(), includeNonPcRaces: false).ToList();
 
-        Assert.Equal(new[] { "race:human", "race:drow" }, offered.Select(r => r.Id));
+        // Name-ordered, no longer insertion-ordered — see OffersRacesPcFirstThenByName.
+        Assert.Equal(new[] { "race:drow", "race:human" }, offered.Select(r => r.Id));
     }
 
     [Fact]
@@ -62,6 +63,19 @@ public class RaceCatalogTests
         Assert.Equal(4, offered.Count);
         Assert.Contains(offered, r => r.Id == "race:monstrous_thing");
         Assert.Contains(offered, r => r.Id == "race:companion_beast");
+    }
+
+    [Fact]
+    public void OffersRacesPcFirstThenByName()
+    {
+        // The picker truncates long lists, so registry load order is a discoverability trap: a
+        // late-loading pack's race can sit past the cut and look absent (the brachina, 2026-08-27).
+        // Sanctioned PC races lead, then non-PC entries, each block alphabetical by name.
+        var offered = RaceCatalog.ForPicker(Fixture(), includeNonPcRaces: true).ToList();
+
+        Assert.Equal(
+            new[] { "race:drow", "race:human", "race:companion_beast", "race:monstrous_thing" },
+            offered.Select(r => r.Id));
     }
 
     [Fact]

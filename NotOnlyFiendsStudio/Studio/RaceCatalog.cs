@@ -35,11 +35,17 @@ public static class RaceCatalog
         bool includeNonPcRaces,
         string? alwaysIncludeId = null)
     {
-        if (includeNonPcRaces)
-            return races;
+        // Ordered PC-first then by name, not left in registry load order: the picker truncates
+        // long lists, and under load order a late-loading pack's race could sit past the cut and
+        // look absent — a private-pack brachina was invisible with "show non-PC races" ticked.
+        var offered = includeNonPcRaces
+            ? races
+            : races.Where(r => IsSanctionedPcRace(r)
+                               || (alwaysIncludeId != null && r.Id == alwaysIncludeId));
 
-        return races.Where(r => IsSanctionedPcRace(r)
-                                || (alwaysIncludeId != null && r.Id == alwaysIncludeId));
+        return offered
+            .OrderByDescending(IsSanctionedPcRace)
+            .ThenBy(r => r.Name, StringComparer.OrdinalIgnoreCase);
     }
 
     /// <summary>

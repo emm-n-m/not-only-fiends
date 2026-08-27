@@ -26,6 +26,12 @@
                     }
                 </div>
             }
+            @if (_truncated)
+            {
+                <div class="search-select-description px-2 py-1 text-muted">
+                    Showing first @MaxResults of @_matchCount — type to narrow
+                </div>
+            }
         </div>
     }
 </div>
@@ -79,6 +85,9 @@
     private string GetTitle(TItem item) => TitleSelector?.Invoke(item) ?? "";
     private string GetDescription(TItem item) => DescriptionSelector?.Invoke(item) ?? "";
 
+    private bool _truncated;
+    private int _matchCount;
+
     private void UpdateFiltered()
     {
         var query = _search.Trim();
@@ -97,7 +106,10 @@
                 });
             });
         }
-        _filtered = source.Take(MaxResults).ToList();
+        var matches = source.ToList();
+        _matchCount = matches.Count;
+        _truncated = matches.Count > MaxResults;
+        _filtered = _truncated ? matches.Take(MaxResults).ToList() : matches;
     }
 
     private void OnSearchChanged()
