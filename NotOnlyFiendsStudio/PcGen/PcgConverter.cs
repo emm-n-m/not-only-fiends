@@ -480,7 +480,7 @@ public static class PcgConverter
                 continue;
             }
 
-            var spellId = mapper.MapSpell(spell.Name, registry);
+            var spellId = mapper.MapSpell(spell.Name, registry, classId);
             if (spellId == null)
             {
                 ReportDroppedSpell(spell,

@@ -406,8 +406,39 @@ public class PcgIdMapper
     /// an exact display-name match for legacy names whose content ID uses different word order.
     /// Without a registry, return the conventional ID so lightweight conversion remains usable.
     /// </summary>
-    public string? MapSpell(string pcgenSpellName, ContentRegistry? registry)
+    /// <summary>
+    /// Deliberate user-directed substitutions (2026-08-27): third-party spells re-specced to an
+    /// SRD equivalent at the same spell level instead of being extracted. Extracting was reserved
+    /// for signature spells (X-Ray Vision); these three are workhorse picks a standard spell
+    /// covers. Substitutes are per receiving class, keyed by class id with "" as the default —
+    /// the corpus proved a flat table wrong: Acid Splash is off-list for a favored soul, and
+    /// Daze is enchantment, which one corpus wizard has given up. Levels verified against the
+    /// .pcg SPELLLEVEL records (0/0/5).
+    /// </summary>
+    private static readonly Dictionary<string, Dictionary<string, string>> SpellSubstitutions =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Dim Illumination"] = new()
+            {
+                ["class:favored_soul"] = "spell:light",
+                [""] = "spell:acid_splash",
+            },
+            ["Lock/Unlock"] = new()
+            {
+                ["class:sorcerer"] = "spell:daze",
+                [""] = "spell:open_close",
+            },
+            ["Blindness/Deafness (Mass)"] = new() { [""] = "spell:prying_eyes" },
+        };
+
+    public string? MapSpell(string pcgenSpellName, ContentRegistry? registry, string? classId = null)
     {
+        if (SpellSubstitutions.TryGetValue(pcgenSpellName, out var byClass))
+        {
+            var substitute = byClass.GetValueOrDefault(classId ?? "") ?? byClass[""];
+            return registry == null || registry.TryGetSpell(substitute, out _) ? substitute : null;
+        }
+
         // PCGen stores parenthesized qualifiers in reverse display order. The content id follows
         // the repository's normal "mass" suffix convention.
         if (pcgenSpellName.Equals("Frog (Mass)", StringComparison.OrdinalIgnoreCase))
