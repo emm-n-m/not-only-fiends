@@ -65,8 +65,13 @@ Dispatch on the argument:
 1. Read table of contents (pages 1–5) to locate monster/race chapters, then scan those pages.
 2. Identify entries with "Advancement by character class" or explicit PC notes.
 3. For each race, parse the stat block header for size/type/subtypes/speeds, the Skills line for class skills, and the special-ability paragraphs for permabuffs.
-4. Derive ability modifiers using `floor((score-10)/2)*2` from the monster stat block.
-5. Estimate LA from ability power (immunities, SLAs, DR, SR) — not from CR.
+4. Derive ability modifiers as **printed score minus the nonelite array** (11/11/11/10/10/10):
+   subtract 11 from an odd printed score, 10 from an even one. Verified against the PCGen RSRD
+   LST `BONUS:STAT` rows (succubus 13/13/13/16/14/26 → +2/+2/+2/+6/+4/+16, erinyes
+   21/21/21/14/18/20 → +10/+10/+10/+4/+8/+10). Never use flat score−10 — odd scores encode an
+   11 base, and a stock character built on the nonelite array must reproduce the statblock.
+5. Transcribe level adjustment exactly as the HTML rule above: copy a printed LA, and write
+   `null` when the book prints none — never estimate one from ability power or CR.
 6. Write output and run tests as in steps 8–9 above.
 
 ## Key conventions
@@ -74,7 +79,9 @@ Dispatch on the argument:
 - Race IDs: `race:<snake_case>` (`race:dwarf`, `race:half_elf`, `race:aasimar`, `race:juvenile_nabassu`).
 - Racial HD driver IDs: `racial_hd:<race_id>`.
 - Subtypes: include alignment + extraplanar + creature subtypes (`["chaotic", "evil", "extraplanar", "tanar'ri"]`).
-- Ability modifiers must be even integers.
+- Ability modifiers are printed score minus the nonelite array (odd score → −11, even → −10),
+  so odd modifiers are normal. Base creatures for stock characters use 11s where the printed
+  score is odd, 10s where even.
 - Include all six abilities when any are modified (unmodified → 0); use `null` only when no racial modifiers exist (human).
 - Omit `racialHDDriverId` when the race has no racial HD.
 
