@@ -343,8 +343,11 @@ public static class PcgConverter
 
             // Ability increase. In this ruleset racial ability adjustments live on the race;
             // PCGen PRESTAT rows on racial-HD levels must not become a second selectable bonus.
+            // A PRESTAT on an unscheduled class level is likewise a stat *edit* PCGen recorded,
+            // not the every-4-HD pick — the engine would ignore it and warn, so don't write it.
             if (level.AbilityIncrease != null &&
                 !driverId.StartsWith("racial_hd:", StringComparison.Ordinal) &&
+                (character.Ticks.Count + 1) % abilityIncreaseInterval == 0 &&
                 Enum.TryParse<Ability>(level.AbilityIncrease, true, out var ability))
             {
                 choices.AbilityIncrease = ability;

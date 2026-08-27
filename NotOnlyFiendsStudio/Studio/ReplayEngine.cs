@@ -286,10 +286,19 @@ public class ReplayStudio
             // i. Ability score increase (scheduled class ticks only; racial adjustments are on the race).
             // Counted from the end of a monster race's free HD, which are not levels the character
             // earned — see RaceDefinition.MonsterClassHD.
-            if (driver is HDDriver abilityDriver
-                && _rules.GrantsAbilityIncrease(state.TotalHD - race.FreeMonsterClassHD, abilityDriver.Kind)
-                && tick.Choices.AbilityIncrease.HasValue)
-                ApplyAbilityIncrease(state, tick.Choices.AbilityIncrease.Value);
+            var abilityIncreaseGranted = driver is HDDriver abilityDriver
+                && _rules.GrantsAbilityIncrease(state.TotalHD - race.FreeMonsterClassHD, abilityDriver.Kind);
+            if (tick.Choices.AbilityIncrease.HasValue)
+            {
+                if (abilityIncreaseGranted)
+                    ApplyAbilityIncrease(state, tick.Choices.AbilityIncrease.Value);
+                else
+                    state.Warnings.Add(new Warning
+                    {
+                        TickIndex = state.TotalHD,
+                        Message = $"ability increase '{tick.Choices.AbilityIncrease.Value}' ignored — no increase is due on this tick"
+                    });
+            }
 
             // j. Feat slots — standard schedule from rules
             if (_rules.GrantsStandardFeat(state.TotalHD))

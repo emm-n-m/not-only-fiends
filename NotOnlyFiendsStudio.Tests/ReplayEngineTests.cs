@@ -727,6 +727,10 @@ public class ReplayStudioTests
 
         // Only HD 4 should apply the increase (HD 1 should be ignored since 1 % 4 != 0)
         Assert.Equal(11, state.AbilityScores.STR);
+        // The ignored choice must not vanish silently — a caller that scheduled it wrong
+        // has to be told, the same way an unknown skill id warns.
+        var warning = Assert.Single(state.Warnings, w => w.Message.Contains("ability increase"));
+        Assert.Equal(1, warning.TickIndex);
     }
 
     [Fact]
@@ -760,6 +764,9 @@ public class ReplayStudioTests
         var state = engine.Evaluate(character);
 
         Assert.Equal(10, state.AbilityScores.STR);
+        // Racial HD never grant the every-4-HD increase; the dropped choice must warn.
+        var warning = Assert.Single(state.Warnings, w => w.Message.Contains("ability increase"));
+        Assert.Equal(4, warning.TickIndex);
     }
 
     [Fact]

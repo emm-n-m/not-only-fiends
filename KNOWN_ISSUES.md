@@ -519,3 +519,24 @@ materials repo.
 warnings) exist only in the builder. Wiring the resolver into `AgentApiService` evaluation is a
 deliberate follow-up — it multiplies per-request evaluation cost by the companion count and
 changes the API's warning surface.
+
+## An ability increase on a tick that grants none is dropped silently — fixed
+
+Racial HD deliberately grant no every-4-HD ability increase (`GameRules.GrantsAbilityIncrease`
+requires `DriverKind.Class`; a monster's printed scores already reflect its innate HD). But a
+tick that carries `abilityIncrease` when none is due was accepted with HTTP 200, no warning, and
+no effect — found 2026-08-27 when a succubus's HD-4 racial tick silently ate a DEX increase that
+by the engine's own rule belongs at total HD 8 (her second class level). The engine now warns
+("ability increase 'X' ignored — no increase is due on this tick"). The new warning exposed two
+corpus imports carrying dead increases from PCGen PRESTAT stat *edits* on unscheduled levels;
+`PcgConverter` now writes `AbilityIncrease` only on scheduled ticks (mirroring its racial-HD
+guard), so the baseline diff is empty rather than accepted-with-noise.
+
+## Known-caster spell selections have no discoverable option groups
+
+The wizard spellbook fix exposed `spellSelections` groups in `next-step`, but a spells-known
+caster (bard at least; likely sorcerer and assassin) gets no `spellChoices` group at any tick —
+building a bard's known list through the API on 2026-08-27 required reading the class table and
+submitting selections blind (they are accepted, validated, and persisted correctly; only the
+discovery surface is missing). Re-verify against `next-step` before relying on this, then extend
+the wizard group mechanism to spells-known progressions with per-level capacity.
