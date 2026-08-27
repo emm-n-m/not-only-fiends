@@ -935,7 +935,7 @@
   {
     "id": "race:devil_imp",
     "name": "Devil (Imp)",
-    "description": "Tiny lawful evil outsider with flight, poison sting, at-will invisibility, and alternate form.",
+    "description": "Tiny lawful evil outsider with flight, poison sting, at-will invisibility, and alternate form. PC-legal at LA +3 per the SRD imp entry — the PCGen LST omits the tag, so the LST is not authoritative for this value.",
     "type": "outsider",
     "subtypes": [
       "evil",
@@ -955,7 +955,7 @@
       "wis": 2,
       "cha": 4
     },
-    "levelAdjustment": null,
+    "levelAdjustment": 3,
     "bonusFeats": 0,
     "bonusSkillPointsPerHD": 0,
     "racialHDDriverId": "racial_hd:outsider",

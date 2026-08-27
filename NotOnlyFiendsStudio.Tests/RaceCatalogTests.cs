@@ -160,9 +160,10 @@ public class RaceCatalogTests
         // an invented 0. The picker hides all of them behind the non-PC toggle. If this fails,
         // a public pack gained or repriced a race — intended behaviour, but worth noticing
         // deliberately.
+        // Not the imp: the SRD imp entry prints LA +3 (PC-legal improved familiar), even though
+        // the PCGen LST omits the tag — the LST's LEVELADJUSTMENT coverage is incomplete.
         var expectedUnpricedOutsideTheMenagerie = new[]
         {
-            "race:devil_imp",
             "race:dragon_red_great_wyrm",
             "race:dragon_red_great_wyrm_colossal_plus",
             "race:medusa",
