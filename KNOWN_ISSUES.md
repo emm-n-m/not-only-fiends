@@ -532,6 +532,22 @@ corpus imports carrying dead increases from PCGen PRESTAT stat *edits* on unsche
 `PcgConverter` now writes `AbilityIncrease` only on scheduled ticks (mirroring its racial-HD
 guard), so the baseline diff is empty rather than accepted-with-noise.
 
+## Familiar link bonuses are unmodelled — and belong to the relationship, not the creature
+
+The SRD's familiar-side improvements — Intelligence rising with master class level, the
+improved natural armor bonus, hit points as half the master's, the share-spells/empathic-link
+family — are not represented anywhere: familiar races carry no scaling formulas, and
+`CompanionOrigin.EffectiveMasterLevel` reaches the familiar's evaluation but nothing consumes
+it for stats. A standalone familiar therefore reads as the base animal (verified 2026-08-27:
+the default tiny viper reproduces the SRD statblock exactly).
+
+**Design decision: keep it that way on the character's own sheet.** These bonuses are courtesy
+of the relationship, not real stats of the creature — so when modelled, they apply only in the
+companion-resolution context (`CompanionResolver` / the builder's Companions facet, where the
+master's level is in view), the same host-side boundary that owns follower occupancy. The
+standalone record stays the base animal; breaking the link must cost the bonuses without
+touching the character file.
+
 ## Known-caster spell selections have no discoverable option groups
 
 The wizard spellbook fix exposed `spellSelections` groups in `next-step`, but a spells-known
