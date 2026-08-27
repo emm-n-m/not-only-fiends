@@ -15,7 +15,7 @@
       "str": -6,
       "dex": 6,
       "con": 0,
-      "int": -9,
+      "int": -10,
       "wis": 2,
       "cha": -8
     },
@@ -79,7 +79,7 @@
       "str": -2,
       "dex": 6,
       "con": 0,
-      "int": -9,
+      "int": -10,
       "wis": 2,
       "cha": -8
     },
@@ -136,7 +136,7 @@
       "str": 0,
       "dex": 6,
       "con": 0,
-      "int": -9,
+      "int": -10,
       "wis": 2,
       "cha": -8
     },
@@ -190,7 +190,7 @@
       "fly": 40
     },
     "abilityModifiers": {
-      "str": -9,
+      "str": -10,
       "dex": 4,
       "con": 0,
       "int": -8,
@@ -397,7 +397,7 @@
       "fly": 40
     },
     "abilityModifiers": {
-      "str": -9,
+      "str": -10,
       "dex": 4,
       "con": 0,
       "int": -8,

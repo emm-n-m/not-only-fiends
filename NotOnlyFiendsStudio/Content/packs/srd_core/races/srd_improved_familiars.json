@@ -12,8 +12,8 @@
     },
     "abilityModifiers": {
       "str": -4,
-      "dex": 5,
-      "con": 3,
+      "dex": 4,
+      "con": 2,
       "int": 0,
       "wis": 2,
       "cha": 0
@@ -104,9 +104,9 @@
     },
     "abilityModifiers": {
       "str": -2,
-      "dex": 7,
+      "dex": 6,
       "con": 0,
-      "int": 1,
+      "int": 0,
       "wis": 2,
       "cha": 0
     },
@@ -247,8 +247,8 @@
     },
     "abilityModifiers": {
       "str": 0,
-      "dex": 5,
-      "con": 3,
+      "dex": 4,
+      "con": 2,
       "int": -8,
       "wis": 2,
       "cha": -4
@@ -320,10 +320,10 @@
       "fly": 40
     },
     "abilityModifiers": {
-      "str": -7,
-      "dex": 9,
+      "str": -8,
+      "dex": 8,
       "con": 0,
-      "int": -9,
+      "int": -10,
       "wis": 2,
       "cha": -4
     },

@@ -96,6 +96,48 @@ public class RaceCatalogTests
     }
 
     [Fact]
+    public void EveryBundledRace_HasEvenAbilityModifiers()
+    {
+        AssertAllRacialAbilityModifiersAreEven(TestContentHelper.LoadBundledPacks().GetAllRaces());
+    }
+
+    [RequiresPrivatePacksFact]
+    public void EveryPrivateRace_HasEvenAbilityModifiers()
+    {
+        AssertAllRacialAbilityModifiersAreEven(
+            TestContentHelper.LoadBundledAndPrivatePacksIfAvailable().GetAllRaces());
+    }
+
+    private static void AssertAllRacialAbilityModifiersAreEven(IEnumerable<RaceDefinition> races)
+    {
+        // Monster stat blocks use 10 as the baseline for even scores and 11 for odd scores, so
+        // every encoded racial ability modifier must be even.
+        var oddModifiers = races
+            .SelectMany(race => GetRacialAbilityModifiers(race))
+            .Where(entry => entry.Value % 2 != 0)
+            .Select(entry => $"{entry.RaceId} {entry.Ability}={entry.Value}")
+            .OrderBy(entry => entry, StringComparer.Ordinal)
+            .ToList();
+
+        Assert.True(oddModifiers.Count == 0,
+            $"races with odd ability modifiers:\n{string.Join("\n", oddModifiers)}");
+    }
+
+    private static IEnumerable<(string RaceId, string Ability, int Value)> GetRacialAbilityModifiers(
+        RaceDefinition race)
+    {
+        if (race.AbilityModifiers == null)
+            yield break;
+
+        yield return (race.Id, "STR", race.AbilityModifiers.STR);
+        yield return (race.Id, "DEX", race.AbilityModifiers.DEX);
+        yield return (race.Id, "CON", race.AbilityModifiers.CON);
+        yield return (race.Id, "INT", race.AbilityModifiers.INT);
+        yield return (race.Id, "WIS", race.AbilityModifiers.WIS);
+        yield return (race.Id, "CHA", race.AbilityModifiers.CHA);
+    }
+
+    [Fact]
     public void EveryBundledRace_StatesALevelAdjustment()
     {
         // Recorded expectation: the public packs contain no null-LA races, so on a machine with no

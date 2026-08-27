@@ -11,12 +11,12 @@
       "climb": 30
     },
     "abilityModifiers": {
-      "str": 11,
-      "dex": 5,
+      "str": 10,
+      "dex": 4,
       "con": 4,
       "int": -8,
       "wis": 2,
-      "cha": -3
+      "cha": -4
     },
     "levelAdjustment": 0,
     "companionLevelModifier": -3,
@@ -71,9 +71,9 @@
       "swim": 30
     },
     "abilityModifiers": {
-      "str": 9,
-      "dex": 3,
-      "con": 5,
+      "str": 8,
+      "dex": 2,
+      "con": 4,
       "int": -8,
       "wis": 2,
       "cha": -4
@@ -131,9 +131,9 @@
       "fly": 40
     },
     "abilityModifiers": {
-      "str": 7,
+      "str": 6,
       "dex": 12,
-      "con": 7,
+      "con": 6,
       "int": -8,
       "wis": 4,
       "cha": -4
@@ -187,10 +187,10 @@
       "swim": 20
     },
     "abilityModifiers": {
-      "str": 7,
-      "dex": 7,
-      "con": 3,
-      "int": -9,
+      "str": 6,
+      "dex": 6,
+      "con": 2,
+      "int": -10,
       "wis": 2,
       "cha": -8
     },
@@ -254,8 +254,8 @@
     },
     "abilityModifiers": {
       "str": 4,
-      "dex": 5,
-      "con": 9,
+      "dex": 4,
+      "con": 8,
       "int": -8,
       "wis": 2,
       "cha": 0
@@ -320,10 +320,10 @@
       "swim": 30
     },
     "abilityModifiers": {
-      "str": 5,
+      "str": 4,
       "dex": 4,
-      "con": 5,
-      "int": -9,
+      "con": 4,
+      "int": -10,
       "wis": 2,
       "cha": -8
     },
@@ -383,9 +383,9 @@
       "swim": 30
     },
     "abilityModifiers": {
-      "str": 17,
-      "dex": 3,
-      "con": 9,
+      "str": 16,
+      "dex": 2,
+      "con": 8,
       "int": -8,
       "wis": 2,
       "cha": -4
@@ -449,9 +449,9 @@
       "land": 50
     },
     "abilityModifiers": {
-      "str": 15,
-      "dex": 5,
-      "con": 7,
+      "str": 14,
+      "dex": 4,
+      "con": 6,
       "int": -8,
       "wis": 2,
       "cha": 0
@@ -516,9 +516,9 @@
       "land": 40
     },
     "abilityModifiers": {
-      "str": 11,
-      "dex": 7,
-      "con": 5,
+      "str": 10,
+      "dex": 6,
+      "con": 4,
       "int": -8,
       "wis": 2,
       "cha": -4
@@ -610,9 +610,9 @@
       "land": 40
     },
     "abilityModifiers": {
-      "str": 13,
-      "dex": 5,
-      "con": 7,
+      "str": 12,
+      "dex": 4,
+      "con": 6,
       "int": -8,
       "wis": 2,
       "cha": -4
@@ -706,9 +706,9 @@
       "swim": 30
     },
     "abilityModifiers": {
-      "str": 15,
-      "dex": 3,
-      "con": 7,
+      "str": 14,
+      "dex": 2,
+      "con": 6,
       "int": -8,
       "wis": 2,
       "cha": -4
@@ -767,9 +767,9 @@
       "land": 40
     },
     "abilityModifiers": {
-      "str": 15,
-      "dex": 5,
-      "con": 7,
+      "str": 14,
+      "dex": 4,
+      "con": 6,
       "int": -8,
       "wis": 2,
       "cha": 0
@@ -855,9 +855,9 @@
       "land": 40
     },
     "abilityModifiers": {
-      "str": 21,
-      "dex": 3,
-      "con": 9,
+      "str": 20,
+      "dex": 2,
+      "con": 8,
       "int": -8,
       "wis": 2,
       "cha": 0
@@ -918,10 +918,10 @@
     "abilityModifiers": {
       "str": 20,
       "dex": 0,
-      "con": 11,
+      "con": 10,
       "int": -8,
-      "wis": 3,
-      "cha": -3
+      "wis": 2,
+      "cha": -4
     },
     "levelAdjustment": 0,
     "companionLevelModifier": -12,
@@ -976,9 +976,9 @@
       "land": 40
     },
     "abilityModifiers": {
-      "str": 17,
-      "dex": 5,
-      "con": 7,
+      "str": 16,
+      "dex": 4,
+      "con": 6,
       "int": -8,
       "wis": 2,
       "cha": 0

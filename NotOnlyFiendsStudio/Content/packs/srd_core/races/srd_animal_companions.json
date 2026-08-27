@@ -12,8 +12,8 @@
     },
     "abilityModifiers": {
       "str": -2,
-      "dex": 7,
-      "con": 5,
+      "dex": 6,
+      "con": 4,
       "int": -8,
       "wis": 2,
       "cha": -4
@@ -80,7 +80,7 @@
       "dex": 6,
       "con": 4,
       "int": -8,
-      "wis": 1,
+      "wis": 0,
       "cha": -6
     },
     "levelAdjustment": 0,
@@ -119,9 +119,9 @@
       "land": 40
     },
     "abilityModifiers": {
-      "str": 3,
-      "dex": 7,
-      "con": 5,
+      "str": 2,
+      "dex": 6,
+      "con": 4,
       "int": -8,
       "wis": 2,
       "cha": -4
@@ -177,9 +177,9 @@
       "land": 40
     },
     "abilityModifiers": {
-      "str": 5,
-      "dex": 5,
-      "con": 5,
+      "str": 4,
+      "dex": 4,
+      "con": 4,
       "int": -8,
       "wis": 2,
       "cha": -4
@@ -237,7 +237,7 @@
     },
     "abilityModifiers": {
       "str": 0,
-      "dex": 5,
+      "dex": 4,
       "con": 2,
       "int": -8,
       "wis": 4,
@@ -285,8 +285,8 @@
     },
     "abilityModifiers": {
       "str": 4,
-      "dex": 3,
-      "con": 5,
+      "dex": 2,
+      "con": 4,
       "int": -8,
       "wis": 2,
       "cha": -4
@@ -336,8 +336,8 @@
     },
     "abilityModifiers": {
       "str": 6,
-      "dex": 3,
-      "con": 7,
+      "dex": 2,
+      "con": 6,
       "int": -8,
       "wis": 2,
       "cha": -4
@@ -386,11 +386,11 @@
       "land": 40
     },
     "abilityModifiers": {
-      "str": 3,
-      "dex": 3,
+      "str": 2,
+      "dex": 2,
       "con": 2,
       "int": -8,
-      "wis": 1,
+      "wis": 0,
       "cha": -6
     },
     "levelAdjustment": 0,
@@ -437,9 +437,9 @@
       "land": 50
     },
     "abilityModifiers": {
-      "str": 3,
-      "dex": 5,
-      "con": 5,
+      "str": 2,
+      "dex": 4,
+      "con": 4,
       "int": -8,
       "wis": 2,
       "cha": -4
@@ -499,11 +499,11 @@
       "land": 40
     },
     "abilityModifiers": {
-      "str": 5,
+      "str": 4,
       "dex": 0,
-      "con": 7,
+      "con": 6,
       "int": -8,
-      "wis": 3,
+      "wis": 2,
       "cha": -6
     },
     "levelAdjustment": 0,
@@ -560,12 +560,12 @@
       "climb": 30
     },
     "abilityModifiers": {
-      "str": -7,
-      "dex": 5,
+      "str": -8,
+      "dex": 4,
       "con": 0,
       "int": -8,
       "wis": 2,
-      "cha": -5
+      "cha": -6
     },
     "levelAdjustment": 0,
     "bonusFeats": 0,
@@ -612,10 +612,10 @@
     },
     "abilityModifiers": {
       "str": 8,
-      "dex": 3,
-      "con": 7,
+      "dex": 2,
+      "con": 6,
       "int": -8,
-      "wis": 3,
+      "wis": 2,
       "cha": -4
     },
     "levelAdjustment": 0,
@@ -670,11 +670,11 @@
       "land": 40
     },
     "abilityModifiers": {
-      "str": 5,
-      "dex": 3,
+      "str": 4,
+      "dex": 2,
       "con": 4,
       "int": -8,
-      "wis": 1,
+      "wis": 0,
       "cha": -4
     },
     "levelAdjustment": 0,

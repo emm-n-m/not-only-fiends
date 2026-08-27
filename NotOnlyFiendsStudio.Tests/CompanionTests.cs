@@ -1600,10 +1600,10 @@ public class CompanionTests
         // Bonus tricks counter: 1 trick at tier 3.
         Assert.Equal(1, wolfBuild.State.Counters["ac_bonus_tricks"]);
 
-        // Wolf base Str (10 + 3 = 13) + AC tier-3 (+1) = 14.
-        Assert.Equal(14, wolfBuild.State.AbilityScores.STR);
-        // Wolf base Dex (10 + 5 = 15) + AC tier-3 (+1) = 16.
-        Assert.Equal(16, wolfBuild.State.AbilityScores.DEX);
+        // Wolf base Str (10 + 2 = 12) + AC tier-3 (+1) = 13.
+        Assert.Equal(13, wolfBuild.State.AbilityScores.STR);
+        // Wolf base Dex (10 + 4 = 14) + AC tier-3 (+1) = 15.
+        Assert.Equal(15, wolfBuild.State.AbilityScores.DEX);
     }
 
     [Fact]
