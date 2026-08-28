@@ -976,9 +976,73 @@ public sealed class AgentApiService
         Type = feat.Type,
         Repeatable = feat.Repeatable,
         SelectionRequired = feat.SelectionRequired,
+        Selection = MapSelectionGuide(feat),
         Tags = feat.Tags.ToList(),
         Prerequisites = feat.Prerequisites.Select(prerequisite => prerequisite.Description).ToList()
     };
+
+    private static FeatSelectionGuideDto? MapSelectionGuide(FeatDefinition feat)
+    {
+        if (feat.SelectionRequired is not { } kind)
+            return null;
+
+        var pattern = feat.Id + "_{selection}";
+        return kind switch
+        {
+            "skill" => new FeatSelectionGuideDto
+            {
+                Kind = kind,
+                IdPattern = pattern,
+                OptionsEndpoint = "/api/content/skills",
+                Hint = $"Append '_' plus a skill id without its 'skill:' prefix, e.g. '{feat.Id}_concentration'."
+            },
+            "school" => new FeatSelectionGuideDto
+            {
+                Kind = kind,
+                IdPattern = pattern,
+                Options = WizardSchools.SchoolNames.ToList(),
+                Hint = $"Append '_' plus a school of magic, e.g. '{feat.Id}_conjuration'."
+            },
+            "weapon" => new FeatSelectionGuideDto
+            {
+                Kind = kind,
+                IdPattern = pattern,
+                OptionsEndpoint = "/api/content/equipment?category=Weapon",
+                Hint = $"Append '_' plus the weapon's full id, e.g. '{feat.Id}_weapon:longsword' — "
+                    + "the full id is what links the bonus to the equipped weapon's attack line."
+            },
+            "spell" => new FeatSelectionGuideDto
+            {
+                Kind = kind,
+                IdPattern = pattern,
+                OptionsEndpoint = "/api/content/spells",
+                Hint = $"Append '_' plus the spell's full id, e.g. '{feat.Id}_spell:fireball'. "
+                    + "Repeat the feat id once per selected spell; the takings share one feat slot."
+            },
+            "special_attack" => new FeatSelectionGuideDto
+            {
+                Kind = kind,
+                IdPattern = pattern,
+                OptionsEndpoint = "/api/characters/{id}/state",
+                Hint = "Append '_' plus one of this character's special attack ids "
+                    + "(specialAttacks[].id in the state endpoint)."
+            },
+            "spell_like_ability" => new FeatSelectionGuideDto
+            {
+                Kind = kind,
+                IdPattern = pattern,
+                OptionsEndpoint = "/api/characters/{id}/state",
+                Hint = "Append '_' plus one of this character's spell-like ability ids or "
+                    + "underscore-normalized names (the state endpoint's SLA list)."
+            },
+            _ => new FeatSelectionGuideDto
+            {
+                Kind = kind,
+                IdPattern = pattern,
+                Hint = $"Append '_' plus the chosen {kind}, lowercased with spaces as underscores."
+            }
+        };
+    }
 
     private static SpellSummaryDto MapSpell(SpellDefinition spell) => new()
     {

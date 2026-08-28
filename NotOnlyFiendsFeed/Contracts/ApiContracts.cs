@@ -163,8 +163,30 @@ public sealed class FeatSummaryDto
     public FeatType Type { get; set; }
     public bool Repeatable { get; set; }
     public string? SelectionRequired { get; set; }
+    /// <summary>How to encode the required selection, when <see cref="SelectionRequired"/> is set.</summary>
+    public FeatSelectionGuideDto? Selection { get; set; }
     public List<string> Tags { get; set; } = new();
     public List<string> Prerequisites { get; set; } = new();
+}
+
+/// <summary>
+/// How to take a selection-required feat: the choice is encoded into the submitted feat id
+/// itself, not passed as a separate field. Substitute a legal value into <see cref="IdPattern"/>.
+/// </summary>
+public sealed class FeatSelectionGuideDto
+{
+    public string Kind { get; set; } = string.Empty;
+
+    /// <summary>The id to submit in featIds, e.g. "feat:skill_focus_{selection}".</summary>
+    public string IdPattern { get; set; } = string.Empty;
+
+    public string Hint { get; set; } = string.Empty;
+
+    /// <summary>Legal {selection} values, inlined when the vocabulary is small.</summary>
+    public List<string>? Options { get; set; }
+
+    /// <summary>Endpoint that enumerates the {selection} vocabulary when it is not inlined.</summary>
+    public string? OptionsEndpoint { get; set; }
 }
 
 public sealed class EquipmentSummaryDto

@@ -230,14 +230,14 @@ public class FeatTests
             Ticks = new List<Tick>
             {
                 new() { DriverId = "class:fighter", Choices = new TickChoices
-                    { FeatIds = new List<string> { "feat:power_attack", "feat:weapon_focus" } } },
+                    { FeatIds = new List<string> { "feat:power_attack", "feat:weapon_focus_weapon:longsword" } } },
             }
         };
 
         var state = engine.Evaluate(character);
         Assert.Empty(state.Warnings);
         Assert.Contains("feat:power_attack", state.Feats);
-        Assert.Contains("feat:weapon_focus", state.Feats);
+        Assert.Contains("feat:weapon_focus_weapon:longsword", state.Feats);
         // 3 slots granted at HD 1, 2 picked → 1 remaining.
         Assert.Single(state.FeatSlots);
     }
@@ -468,5 +468,89 @@ public class FeatTests
         // HasFeatOfType / HasFeatWithTag prerequisites see them.
         Assert.Equal(1, state.FeatTypeCounts.GetValueOrDefault(FeatType.General));
         Assert.Equal(1, state.FeatTagCounts.GetValueOrDefault("defensive"));
+    }
+
+    private static Character FighterWithFeats(params string[] featIds) => new()
+    {
+        Name = "Selection Feats",
+        RaceId = "race:human",
+        BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+        Ticks = new List<Tick>
+        {
+            new()
+            {
+                DriverId = "class:fighter",
+                Choices = new TickChoices { FeatIds = featIds.ToList() }
+            }
+        }
+    };
+
+    [Fact]
+    public void SkillFocus_GrantsPlusThreeToTheSelectedSkill()
+    {
+        var (_, engine) = CreateStudio();
+        var state = engine.Evaluate(FighterWithFeats("feat:skill_focus_concentration"));
+
+        Assert.Equal(3, state.SkillBonuses.GetValueOrDefault("skill:concentration"));
+        Assert.Equal(3, state.SkillTotals.GetValueOrDefault("skill:concentration"));
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("skill_focus"));
+    }
+
+    [Fact]
+    public void SkillFocus_FullIdSuffixDialect_GrantsTheSameBonus()
+    {
+        // The builder UI stores the full skill id in the suffix; PCGen imports store the bare id.
+        var (_, engine) = CreateStudio();
+        var state = engine.Evaluate(FighterWithFeats("feat:skill_focus_skill:concentration"));
+
+        Assert.Equal(3, state.SkillBonuses.GetValueOrDefault("skill:concentration"));
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("skill_focus"));
+    }
+
+    [Fact]
+    public void SkillFocus_WithoutSelection_WarnsAndGrantsNoBonus()
+    {
+        var (_, engine) = CreateStudio();
+        var state = engine.Evaluate(FighterWithFeats("feat:skill_focus"));
+
+        // The feat is kept (legacy saves must replay), but it has no target and says so.
+        Assert.Contains("feat:skill_focus", state.Feats);
+        Assert.Contains(state.Warnings, w => w.Message.Contains("requires a skill selection"));
+        Assert.Empty(state.SkillBonuses);
+    }
+
+    [Fact]
+    public void SkillFocus_UnknownSkillSuffix_Warns()
+    {
+        var (_, engine) = CreateStudio();
+        var state = engine.Evaluate(FighterWithFeats("feat:skill_focus_xyzzy"));
+
+        Assert.Contains(state.Warnings, w => w.Message.Contains("unknown skill 'skill:xyzzy'"));
+    }
+
+    [Fact]
+    public void SkillFocus_SkillFamilySuffix_IsAValidSelection()
+    {
+        // Prestige prerequisites use family suffixes (loremaster: feat:skill_focus_knowledge),
+        // so a family name is legal even though no single skill carries that id.
+        var (_, engine) = CreateStudio();
+        var state = engine.Evaluate(FighterWithFeats("feat:skill_focus_knowledge"));
+
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("unknown skill"));
+    }
+
+    [Fact]
+    public void SpellFocus_SchoolSuffixes_ValidateAgainstTheEightSchools()
+    {
+        var (_, engine) = CreateStudio();
+
+        var valid = engine.Evaluate(FighterWithFeats("feat:spell_focus_conjuration"));
+        Assert.DoesNotContain(valid.Warnings, w => w.Message.Contains("unknown school"));
+
+        var invalid = engine.Evaluate(FighterWithFeats("feat:spell_focus_hairdressing"));
+        Assert.Contains(invalid.Warnings, w => w.Message.Contains("unknown school 'hairdressing'"));
+
+        var bare = engine.Evaluate(FighterWithFeats("feat:spell_focus"));
+        Assert.Contains(bare.Warnings, w => w.Message.Contains("requires a school selection"));
     }
 }

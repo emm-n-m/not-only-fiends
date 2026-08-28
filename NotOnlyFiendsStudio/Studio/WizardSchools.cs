@@ -27,6 +27,16 @@ public static class WizardSchools
     public const string Universal = "universal";
 
     /// <summary>
+    /// The eight SRD schools of magic. Universal is deliberately absent: it is not a school,
+    /// so it can be neither specialized in, prohibited, nor targeted by Spell Focus.
+    /// </summary>
+    public static readonly IReadOnlyList<string> SchoolNames = new[]
+    {
+        "abjuration", "conjuration", "divination", "enchantment",
+        "evocation", "illusion", "necromancy", "transmutation"
+    };
+
+    /// <summary>
     /// SRD: "A wizard can never give up divination to fulfill this requirement." It can still be
     /// specialized in — at the reduced cost of one prohibited school instead of two.
     /// </summary>

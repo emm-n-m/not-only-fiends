@@ -472,6 +472,28 @@ companion links are rejected, and restricted domain grants now expose only their
 An empty choices object is still legal input and produces pending-choice metadata; archfiend-specific
 domain presentation semantics remain follow-up work.
 
+## Parametrized feats gave agents no way to pass the selection — fixed
+
+Selection-required feats (Skill Focus, Spell Focus, Weapon Focus, Spell Mastery…) encode their
+choice into the feat id itself (`feat:skill_focus_concentration`), but nothing in the API said
+so: feat listings carried only the base id plus a bare `selectionRequired` flag, the suffix
+convention lived solely in the Blazor builder and the PCGen importer, and the replay engine
+accepted a bare base id — or any junk suffix — with HTTP 200 and no warning. An agent
+experiment (2026-08) showed workers reliably stall or silently mis-take these feats.
+**Fixed:** feat summaries now include a `selection` guide (`idPattern`, `hint`, inline
+`options` for schools, `optionsEndpoint` otherwise); replay warns on a missing suffix for any
+selection-required feat and on unknown skill/school suffixes (legacy saves keep replaying —
+warnings only, the feat is kept); Skill Focus and Epic Skill Focus now actually grant their
++3/+10 via the new `GrantSelectedSkillBonus` permabuff, which resolves its target skill from
+the variant suffix, accepting both suffix dialects in the wild (bare `spellcraft` from PCGen
+imports and prerequisites, full `skill:spellcraft` from the builder UI). Spell Focus's save-DC
+bonus is still not computed on the sheet; Weapon Focus/Specialization already land on attack
+lines via `GrantSelectedWeaponBonus`, but only with the full-id suffix
+(`feat:weapon_focus_weapon:longsword`) — the PCGen importer's bare suffix does not link up,
+which is a separate open issue. The mirror-image mismatch also stands: the builder UI's
+full-id skill suffix (`feat:skill_focus_skill:spellcraft`) fails prestige prerequisites,
+which prefix-match on the bare form (`feat:skill_focus_spellcraft`).
+
 ## An ineligible class is indistinguishable from a nonexistent one — fixed
 
 `next-step` now returns `excludedDrivers` with the failed prerequisite or max-level reason, and

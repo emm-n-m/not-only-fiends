@@ -1440,7 +1440,13 @@
     "description": "+3 bonus on checks with the selected skill.",
     "type": "general",
     "prerequisites": [],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantSelectedSkillBonus",
+        "selectionPrefix": "feat:skill_focus",
+        "value": 3
+      }
+    ],
     "repeatable": true,
     "selectionRequired": "skill"
   },

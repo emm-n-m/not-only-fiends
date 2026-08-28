@@ -43,6 +43,7 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(ModifyLeadershipScore), "ModifyLeadershipScore")]
 [JsonDerivedType(typeof(GrantTypedBonus), "GrantTypedBonus")]
 [JsonDerivedType(typeof(GrantSelectedWeaponBonus), "GrantSelectedWeaponBonus")]
+[JsonDerivedType(typeof(GrantSelectedSkillBonus), "GrantSelectedSkillBonus")]
 [JsonDerivedType(typeof(GrantEquipmentSkillBonus), "GrantEquipmentSkillBonus")]
 [JsonDerivedType(typeof(GrantArmorProfile), "GrantArmorProfile")]
 [JsonDerivedType(typeof(GrantWeaponLine), "GrantWeaponLine")]
@@ -1308,6 +1309,42 @@ public class GrantSelectedWeaponBonus : Permabuff
             BonusType = BonusType,
             Value = Value.Evaluate(ctx.State)
         });
+    }
+}
+
+/// <summary>
+/// A skill bonus whose target skill comes from the taken feat variant's id suffix:
+/// "feat:skill_focus_concentration" with SelectionPrefix "feat:skill_focus" grants the
+/// bonus to skill:concentration. A base id with no suffix (a legacy save, or a caller
+/// that skipped the selection) grants nothing — replay warns about those separately.
+/// </summary>
+public class GrantSelectedSkillBonus : Permabuff
+{
+    public string SelectionPrefix { get; set; } = string.Empty;
+    public int Value { get; set; }
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        var featId = ctx.CurrentFeatId;
+        if (string.IsNullOrWhiteSpace(featId) || string.IsNullOrWhiteSpace(SelectionPrefix))
+            return;
+
+        var prefix = SelectionPrefix + "_";
+        if (!featId.StartsWith(prefix, StringComparison.Ordinal))
+            return;
+
+        var suffix = featId[prefix.Length..];
+        if (string.IsNullOrWhiteSpace(suffix))
+            return;
+
+        // Two suffix dialects exist in saved characters: the builder UI stores the full
+        // skill id ("feat:skill_focus_skill:concentration"), while PCGen imports and
+        // prestige prerequisites use the bare id ("feat:skill_focus_spellcraft").
+        var skillId = suffix.StartsWith("skill:", StringComparison.Ordinal)
+            ? suffix
+            : "skill:" + suffix;
+        ctx.State.SkillBonuses.TryAdd(skillId, 0);
+        ctx.State.SkillBonuses[skillId] += Value;
     }
 }
 

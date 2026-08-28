@@ -1644,6 +1644,38 @@ public class ReplayStudio
                         state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"feat '{featId}' requires a valid {selectionKind} selection" });
                         continue;
                     }
+
+                    // The kinds above are dropped when invalid because their variant ids are the
+                    // engine's own vocabulary. The rest warn but keep the feat: legacy saves and
+                    // display-friendly suffixes must keep replaying to the same sheet.
+                    if (selection == null)
+                    {
+                        state.Warnings.Add(new Warning
+                        {
+                            TickIndex = state.TotalHD,
+                            Message = $"feat '{featId}' requires a {selectionKind} selection encoded in its id — "
+                                + $"submit '{featDef.Id}_<{selectionKind}>' (e.g. '{featDef.Id}_{SelectionExample(selectionKind)}'); "
+                                + "taken without a selection, the feat has no target and grants nothing"
+                        });
+                    }
+                    else if (selectionKind == "skill" && !IsKnownSkillSelection(selection))
+                    {
+                        state.Warnings.Add(new Warning
+                        {
+                            TickIndex = state.TotalHD,
+                            Message = $"feat '{featId}' selects unknown skill 'skill:{selection}' — "
+                                + "the suffix must be a skill id without the 'skill:' prefix"
+                        });
+                    }
+                    else if (selectionKind == "school" && !WizardSchools.SchoolNames.Contains(selection, StringComparer.OrdinalIgnoreCase))
+                    {
+                        state.Warnings.Add(new Warning
+                        {
+                            TickIndex = state.TotalHD,
+                            Message = $"feat '{featId}' selects unknown school '{selection}' — "
+                                + $"schools are {string.Join(", ", WizardSchools.SchoolNames)}"
+                        });
+                    }
                 }
 
                 // Resolve slot BEFORE mutating state: matching restricted-bonus slot first,
@@ -1901,6 +1933,34 @@ public class ReplayStudio
             }
         }
     }
+
+    /// <summary>
+    /// True when a skill-selection suffix names a real skill ("concentration") or a skill
+    /// family ("knowledge") — family suffixes appear in prestige prerequisites like
+    /// loremaster's feat:skill_focus_knowledge, which any specific Knowledge focus satisfies.
+    /// </summary>
+    private bool IsKnownSkillSelection(string selection)
+    {
+        // Accept both suffix dialects: bare ("spellcraft", used by PCGen imports and
+        // prestige prerequisites) and full id ("skill:spellcraft", used by the builder UI).
+        var skillId = selection.StartsWith("skill:", StringComparison.Ordinal)
+            ? selection
+            : "skill:" + selection;
+        if (_content.TryGetSkill(skillId, out _))
+            return true;
+        return _content.GetAllSkills().Any(s => s.ParentSkill == skillId);
+    }
+
+    private static string SelectionExample(string selectionKind) => selectionKind switch
+    {
+        "skill" => "concentration",
+        "school" => "conjuration",
+        // Weapon and spell variants carry the full content id so the suffix can link back
+        // to equipped weapons and spellbook entries.
+        "weapon" => "weapon:longsword",
+        "spell" => "spell:fireball",
+        _ => "selection"
+    };
 
     private static bool MatchesSpellLikeAbilitySelection(SLA sla, string selection)
     {

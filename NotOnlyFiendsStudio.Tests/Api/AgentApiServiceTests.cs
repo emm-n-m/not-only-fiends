@@ -29,6 +29,28 @@ public class AgentApiServiceTests
     }
 
     [Fact]
+    public void SelectionRequiredFeats_CarryASelectionGuide()
+    {
+        var feats = SharedService.Value.GetFeats().ToList();
+
+        var skillFocus = feats.Single(feat => feat.Id == "feat:skill_focus");
+        Assert.NotNull(skillFocus.Selection);
+        Assert.Equal("skill", skillFocus.Selection!.Kind);
+        Assert.Equal("feat:skill_focus_{selection}", skillFocus.Selection.IdPattern);
+        Assert.Equal("/api/content/skills", skillFocus.Selection.OptionsEndpoint);
+        Assert.Contains("feat:skill_focus_concentration", skillFocus.Selection.Hint);
+
+        // The school vocabulary is small enough to inline.
+        var spellFocus = feats.Single(feat => feat.Id == "feat:spell_focus");
+        Assert.NotNull(spellFocus.Selection);
+        Assert.Equal(8, spellFocus.Selection!.Options!.Count);
+        Assert.Contains("conjuration", spellFocus.Selection.Options);
+
+        var ironWill = feats.Single(feat => feat.Id == "feat:iron_will");
+        Assert.Null(ironWill.Selection);
+    }
+
+    [Fact]
     public void SkillsAndLanguagesCanBeFilteredByQuery()
     {
         var service = SharedService.Value;

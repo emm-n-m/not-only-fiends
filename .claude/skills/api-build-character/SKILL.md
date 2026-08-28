@@ -55,6 +55,20 @@ surfaces only in `currentPendingChoices` after leveling — resolve it by adding
 `classFeatureChoices: {"class_feature:familiar_options": ["race:companion_…"]}` to an existing
 tick via a full-character PUT (key copied exactly from the pending choice's `featureType`).
 
+**Parametrized feats** (Skill Focus, Spell Focus, Weapon Focus, Spell Mastery…): the selection
+is encoded into the feat id itself — there is no separate selection field. Append `_` plus the
+selection to the base id. The suffix vocabulary differs by kind: skills use the bare id
+(`feat:skill_focus_concentration` — the form prestige prerequisites gate on; the full-id
+dialect `feat:skill_focus_skill:concentration` also replays), schools use the eight SRD school
+names (`feat:spell_focus_conjuration`), weapons and spells use the full content id
+(`feat:weapon_focus_weapon:longsword`, `feat:spell_mastery_spell:fireball` — the full weapon id
+is what links the bonus to the equipped weapon's attack line). Feat listings mark these feats
+with `selectionRequired`, and their `selection` object carries the exact `idPattern`, a `hint`,
+and the legal values (`options` inline or `optionsEndpoint`). Submitting the base id without a
+suffix replays with a warning and grants nothing — the feat has no target — and a missing
+suffix also silently disqualifies prestige classes that gate on the variant ids
+(`feat:skill_focus_spellcraft`).
+
 **Equipment** — after leveling: `GET /api/characters/{id}` → take `.character`, append to
 `.equipment`: `{"itemId":"<display name>","contentId":"<catalog id>","slot":"<slot from
 catalog entry>","quantity":1}` → `PUT` the full body back (ticks are preserved). Equipment

@@ -852,7 +852,13 @@
         "value": 20
       }
     ],
-    "grantedPermabuffs": [],
+    "grantedPermabuffs": [
+      {
+        "$type": "GrantSelectedSkillBonus",
+        "selectionPrefix": "feat:epic_skill_focus",
+        "value": 10
+      }
+    ],
     "repeatable": true,
     "selectionRequired": "skill"
   },
