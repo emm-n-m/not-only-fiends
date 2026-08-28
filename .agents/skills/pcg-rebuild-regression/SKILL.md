@@ -31,8 +31,16 @@ the committed golden baseline, not against a previous session's scoreboard.
 
 1. Pilot ONE mid-complexity character (a single-class caster with domains) and diff it before
    fanning out — every harness bug shows up in the pilot for 2% of the cost.
-2. Fan out one agent per `.pcg` (sonnet-tier is sufficient; ~15 concurrent is fine — the app
-   handles parallel builds). Each agent gets the
+2. Work through the corpus **triaged by difficulty, not in one uniform fan-out** — the 2026-08
+   runs showed reconstruction fidelity (fixed feat/spell lists reverse-engineered into a legal
+   tick schedule) needs a top-tier model, and top-tier agents must run per-character or in
+   very small batches or they blow usage limits:
+   - Companions, familiars, and low-HD martials: cheap tier, freely concurrent (~15 is fine —
+     the app handles parallel builds).
+   - Casters, prestige-class entries, epic characters: top tier (Opus/GPT flagship class),
+     one character at a time. Mid tiers complete these structurally but leave resources
+     unspent, mis-schedule spells, and miss skill-rank prestige prereqs.
+   Each agent gets the
    [api-build-character](../api-build-character/SKILL.md) protocol, its `.pcg` path, and must:
    name the character `API Test - <name>`, use the `.pcg`'s per-level HP rolls, attach the
    `.pcg`'s equipment, never substitute unfindable content (record it as unresolved instead),

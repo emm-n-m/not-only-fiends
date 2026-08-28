@@ -34,7 +34,7 @@
     "gap-filler/agents/openai.yaml": "ec29d23c672088228d8a85faaa95348aefef3e40edbbf8fa828e0ae1d50127f1",
     "pcg-baseline/SKILL.md": "b8c9cf681128fc9d8fa00859c89770335f9b0149a43e49e43befc05e8ff3dd92",
     "pcg-baseline/agents/openai.yaml": "1b490f808ea66c9acba5f01ad20f97f465040287820668cae7054a86b25a664d",
-    "pcg-rebuild-regression/SKILL.md": "549321f7734f49195fa01e6ed55960dcd423f6cc455c3b4a84eeed0f6f74a2ab",
+    "pcg-rebuild-regression/SKILL.md": "c828fbcfe97f891ccd26a30e528479a958c8a3316e48185dba9ab9f3ff2c3119",
     "pcg-rebuild-regression/agents/openai.yaml": "edbe13331972911d96eded38d7f8fe172b8dcc17b35fcb810d5123445976ee7e",
     "run-app/SKILL.md": "03db22100008fefd6d9c27fd7755ba25b18ad92d909be86fc5f18a8e6a60ee7c",
     "run-app/agents/openai.yaml": "773cc5e2029efff9af72113c6a8559add5069dad1198c1be70162714d3935154",
