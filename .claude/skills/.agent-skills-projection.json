@@ -1,6 +1,6 @@
 {
   "files": {
-    "api-build-character/SKILL.md": "fb7d00b234ca0db187dfd88cc3c57937dea3a0fa0df9b6eb705ccbe977a8aac7",
+    "api-build-character/SKILL.md": "cad3af4a0faa8b6c756972088889c12654f5459b592ebbe55fa62b9ca697ccf5",
     "audit-agent-api/SKILL.md": "9a1029c490d7e95a260e5227f372c5bef89b43288bc57273c9332176ceb32893",
     "audit-cosmetic-permabuffs/SKILL.md": "5dce3da22ca2393bd1e8b96e2fdf6f482d77a70f8040a53a849be02320d311f0",
     "content-extractor/SKILL.md": "3a26eed76e3a6fce0054d59829448cd4f569a949b4c120a2e94a5626f1a56da4",
@@ -17,7 +17,7 @@
     "gap-analysis/SKILL.md": "e79dd1909d925bac09f689ebaed55d65f7b1d74d881bf5596858dcfde4165c89",
     "gap-filler/SKILL.md": "44a11942376e04839188aab2e00b39578ae4dc929ae6d786f1e30579943a4133",
     "pcg-baseline/SKILL.md": "f65b7abc0cd9039e3a5d371f499e1e9b990b46b752f324307230807c659368b4",
-    "pcg-rebuild-regression/SKILL.md": "5ebb2792ca52e7a4bb83c2b6e69f3907d87a572f01d9551238116d0054ddb986",
+    "pcg-rebuild-regression/SKILL.md": "69c368be9e501a0dc4428f088bfdbb0465ec16d0d6cbb3dcac5e641943021135",
     "run-app/SKILL.md": "770589eca1953455783f34e5684104332b2da0f8b651178b8d4ef04d812bfe38",
     "verify-content-lst/SKILL.md": "7cc094444b9a475d6c20a7e20fd94c583a73022a0fca788df246278ea8047bba",
     "verify-content/SKILL.md": "674918d5cd994fc1536ec5ef70a44eaa867f3d31413106c20e158dc1900fe3ef"

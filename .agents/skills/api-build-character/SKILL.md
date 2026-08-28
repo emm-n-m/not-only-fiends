@@ -6,10 +6,11 @@ description: Build a character end-to-end through the REST API as a player or ex
 
 # Build a Character Through the API
 
-The verified protocol from the 2026-08 corpus rebuild test (55 agents, 13 exact baseline
-matches). [audit-agent-api](../audit-agent-api/SKILL.md) is for *finding* API problems; this
-skill is for *getting a build done*. Everything below was confirmed against a running instance
-— when reality disagrees, that's a new finding for `KNOWN_ISSUES.md`.
+The verified protocol, exercised end-to-end most recently on 2026-08-28 (cleric 7 →
+Thaumaturgist 2 rebuild: one pass, zero warnings, exact baseline match).
+[audit-agent-api](../audit-agent-api/SKILL.md) is for *finding* API problems; this skill is
+for *getting a build done*. Everything below was confirmed against a running instance — when
+reality disagrees, that's a new finding for `KNOWN_ISSUES.md`.
 
 ## Setup
 
@@ -67,12 +68,10 @@ appends `:` plus the bare selection id (no `skill:`/`weapon:`/`spell:` prefix �
 `feat:spell_focus:conjuration`, `feat:weapon_focus:longsword`, `feat:spell_mastery:fireball`.
 Feat listings mark these feats with `selectionRequired`, and their `selection` object carries
 the exact `idPattern`, a `hint`, and the legal values (`options` inline or `optionsEndpoint`).
-Two legacy underscore dialects (`feat:skill_focus_spellcraft`,
-`feat:skill_focus_skill:spellcraft`) still replay — the engine normalizes every dialect to the
-canonical id in state, so prerequisites and bonuses behave identically — but always submit
-canonical. Submitting the base id without a selection replays with a warning and grants
-nothing — the feat has no target — and also silently disqualifies prestige classes that gate
-on the variant ids (`feat:skill_focus:spellcraft`).
+Always submit the canonical colon form — older saves contain underscore spellings that the
+engine normalizes on replay; never copy those. Submitting the base id without a selection
+replays with a warning and grants nothing — the feat has no target — and also silently
+disqualifies prestige classes that gate on the variant ids (`feat:skill_focus:spellcraft`).
 
 **Equipment** — after leveling: `GET /api/characters/{id}` → take `.character`, append to
 `.equipment`: `{"itemId":"<display name>","contentId":"<catalog id>","slot":"<slot from
@@ -84,9 +83,11 @@ by exactly the gear.
 
 ## Payload discipline
 
-Never GET `/api/content/catalog` (~840KB) or dump full lists into context. `?q=` filters work
-on `spells` and `equipment` ONLY — `skills` and `languages` ignore it and return everything
-(KNOWN_ISSUES). Pipe every curl through `python3 -c` extraction.
+Never GET `/api/content/catalog` (~840KB) or dump full lists into context. `?q=` word-search
+filters work on `spells`, `equipment`, `skills`, and `languages` — always search, never guess
+catalog ids (display names don't transform mechanically: "Periapt of Wisdom +2" is
+`wondrous:periapt_wisdom_2`, "Ring of Protection +1" is `ring:protection_ring_1`). Pipe every
+curl through `python3 -c` extraction.
 
 ## Prestige-class planning (2026-08 corpus rerun: 10 of 59 builds stalled here)
 
@@ -102,13 +103,21 @@ Plan **backwards from the prestige class, before tick 1**:
    points are the scarce resource and cross-class scheduling can leave the budget unable to
    cover the prereqs. Example: an Arcane Trickster build buys the rogue-skill prereqs (Disable
    Device, Escape Artist…) only on rogue ticks and spends caster-tick points on Knowledge
-   (arcana)/Spellcraft — each prereq on the ticks where it is cheap. The cap also fixes the
+   (arcana)/Spellcraft — each prereq on the ticks where it is cheap. Cross-class buying is a
+   top-up tool for the last 1–2 ranks at most, never the plan. The cap also fixes the
    earliest legal entry HD: N required ranks need HD ≥ N−3 by the tick before entry.
-3. **Budget prereq feats into slots that exist before the entry HD.** Slots accrue at HD 1,
+   The standard maxed-skill schedule: 4 ranks each at HD 1 (the cap), then +1 rank per skill
+   per level — `halfRanks: 8` at HD 1 and `2` per level after keeps a skill at cap forever.
+3. **Count only chosen feats against slots.** A sheet's (or baseline's) feat list mixes
+   chosen feats with granted ones — class proficiencies, domain grants, and prestige class
+   features (Thaumaturgist 2 grants Augment Summoning as a feat). Before budgeting a slot for
+   a feat, check the feat's provenance: if a class/domain in the plan grants it, taking it
+   yourself wastes a slot — or makes the plan look impossible when the counts don't fit.
+4. **Budget prereq feats into slots that exist before the entry HD.** Slots accrue at HD 1,
    every 3 HD (`GET /api/rules` → `standardFeatHds`), +1 human bonus, + class bonuses — spend
    them on gate feats (Skill Focus, Spell Focus ×2, Dodge→Mobility…) before any flavour pick,
    or the prestige driver never appears.
-4. **Verify before entry, not after.** `GET …/next-step?driverIds=class:arcane_trickster`
+5. **Verify before entry, not after.** `GET …/next-step?driverIds=class:arcane_trickster`
    returns the exclusion entry with each still-unmet prerequisite spelled out. Check it a few
    ticks ahead of the planned entry while there is still budget to correct course.
 
@@ -121,17 +130,13 @@ Plan **backwards from the prestige class, before tick 1**:
   both, deriving an `_2` id. Check `GET /api/characters` before creating, and don't retry a
   create whose response you lost.
 
-## Traps (all in KNOWN_ISSUES.md — re-verify before relying on a fix)
+## Traps (details in KNOWN_ISSUES.md)
 
-- **Unknown choice keys are silently ignored** with HTTP 200 and no warning (`domainSelections`
-  no-ops; wrong `classFeatureChoices` keys get only a soft warning). After any
-  novel choice, confirm the effect landed on the sheet — 200 ≠ applied.
-- **Ineligible ≠ nonexistent is invisible**: `next-step` omits prerequisite-gated drivers
-  entirely, indistinguishable from missing content. Before concluding a class doesn't exist,
-  check `/api/content/drivers/{id}` (it serves authored prerequisites) — the driver catalog is
-  the ground truth, not `next-step`'s silence.
-- **Invalid skill ids half-apply**: soft "unknown skill" warning, but ranks land on the sheet
-  under the bogus id.
+- **200 ≠ applied.** Every accepted-but-ignored input surfaces only in `featOutcomes` /
+  `newWarnings` — an unknown choice key, a bogus skill id (ranks land under the bogus id!),
+  a feat with no slot. Read the receipts on every mutation; never infer success from the
+  status code.
 - Underspending skill points never warns; only overspending does. Unspent points accrue per
-  driver and can be spent in a later tick of the same driver.
+  driver and can be spent in a later tick of the same driver — so zero warnings does not mean
+  the budget was used; check `unspentSkillPoints` at the end.
 - `GET /api/content/classes/...` does not exist — drivers live at `/api/content/drivers/{id}`.

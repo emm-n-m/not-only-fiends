@@ -52,6 +52,20 @@ the committed golden baseline, not against a previous session's scoreboard.
 3. Diff the structured results against the PCG import golden baseline.
 4. Sweep: `GET /api/characters` must show zero `API Test -` characters. Kill the app by port.
 
+## Reading the `.pcg` — facts that are not where they look
+
+- **`STAT:` scores are final, not creation values** — back out the every-4-HD ability
+  increases to get `baseAbilityScores`, and place `abilityIncrease` on the HD-4/8/… ticks.
+  The committed import output (`deceit_characters/NotOnlyFiends/*.json`) already did this
+  arithmetic — read it for the placement instead of guessing which ability grew.
+- **The feat list mixes chosen and granted.** Baseline `feats` include class proficiencies,
+  domain grants, and prestige-class feature grants (Thaumaturgist 2 grants Augment
+  Summoning). Only `ABILITY:FEAT|…|CATEGORY:FEAT` lines in the `.pcg` are chosen; if the
+  baseline shows more feats than feat slots exist, the surplus is granted — do not spend
+  slots on it.
+- `DOMAIN:` lines carry the cleric domain picks; `EQUIPNAME:` display names must be resolved
+  through `?q=` search, never transformed mechanically into catalog ids.
+
 ## Reading the diff — normalization rules that are NOT regressions
 
 - Baseline `skillRanks` are **half-ranks**; sheets report ranks → multiply agent values ×2.
@@ -64,14 +78,14 @@ the committed golden baseline, not against a previous session's scoreboard.
 
 ## Reading incomplete builds
 
-**"Class X doesn't exist" claims from agents are usually wrong.** `next-step` hides
-prerequisite-gated drivers, indistinguishably from missing content. Before filing a gap:
-check the baseline entry's `replayWarnings` (a "prerequisite not met for X" there means the
-*source character* never qualified and the engine is right), and/or build a minimal qualified
-probe character by scripted ticks and confirm `next-step` offers the class. Genuine rule
-conflicts (e.g. a fixed-alignment race in an alignment-restricted class) are source-data
-findings, not bugs — record them in the private repo's `CONTENT_GAPS.md` so nobody "fixes"
-content to make them build.
+**"Class X doesn't exist" claims from agents are usually wrong.** An expected driver missing
+from `next-step` has its reasons spelled out in the same response's `excludedDrivers` (ask
+with `?driverIds=class:x` to target it) — a worker that reports "doesn't exist" without
+quoting an exclusion entry didn't look. Cross-check the baseline entry's `replayWarnings`: a
+"prerequisite not met for X" there means the *source character* never qualified and the
+engine is right. Genuine rule conflicts (e.g. a fixed-alignment race in an
+alignment-restricted class) are source-data findings, not bugs — record them in the private
+repo's `CONTENT_GAPS.md` so nobody "fixes" content to make them build.
 
 ## Filing what you find
 
