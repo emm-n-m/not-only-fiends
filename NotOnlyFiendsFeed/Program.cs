@@ -156,13 +156,8 @@ app.MapPost("/api/characters", (NotOnlyFiendsStudio.Models.Character character, 
         return Results.Created($"/api/characters/{id}", new CharacterEnvelopeDto { Id = id, Character = character });
     }));
 
-app.MapPut("/api/characters/{id}", (string id, NotOnlyFiendsStudio.Models.Character character, CharacterStore store, AgentApiService api) =>
-    RunMutation(() =>
-    {
-        api.EvaluateAndEnvelope(id, character);
-        store.Replace(id, character);
-        return Results.Ok(new CharacterEnvelopeDto { Id = id, Character = character });
-    }));
+app.MapPut("/api/characters/{id}", (string id, NotOnlyFiendsStudio.Models.Character character, AgentApiService api) =>
+    RunMutation(() => Results.Ok(api.ReplaceCharacter(id, character))));
 
 app.MapDelete("/api/characters/{id}", (string id, CharacterStore store) =>
     RunStore(() => store.Delete(id)

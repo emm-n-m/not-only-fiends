@@ -328,8 +328,11 @@ public sealed class AgentApiService
 
         return _characterStore.Update(id, character =>
         {
+            var baseline = TryEvaluateBaseline(character);
             character.Ticks.Add(tick);
-            return EvaluateAndEnvelope(id, character);
+            var response = EvaluateAndEnvelope(id, character);
+            AnnotateTickEffects(response, baseline, tick);
+            return response;
         });
     }
 
@@ -404,8 +407,131 @@ public sealed class AgentApiService
         _ = _content.GetDriver(tick.DriverId);
 
         var character = _characterStore.Get(id).Clone();
+        var baseline = TryEvaluateBaseline(character);
         character.Ticks.Add(tick);
-        return EvaluateAndEnvelope(id, character);
+        var response = EvaluateAndEnvelope(id, character);
+        AnnotateTickEffects(response, baseline, tick);
+        return response;
+    }
+
+    /// <summary>
+    /// Replaces a stored character and reports what the save changed: the full replay warnings
+    /// plus the ones this version introduced over the previous one. Agents repair characters
+    /// through this path (moving feats between ticks), so the response must say whether the
+    /// repair produced a clean replay without a follow-up GET.
+    /// </summary>
+    public CharacterEnvelopeDto ReplaceCharacter(string id, Character character)
+    {
+        List<Warning>? baselineWarnings = null;
+        try
+        {
+            baselineWarnings = TryEvaluateBaseline(_characterStore.Get(id))?.Warnings;
+        }
+        catch (CharacterStoreException)
+        {
+            // No previous version — every warning is new, which NewWarnings = null conveys
+            // poorly, so leave it null and let Warnings carry the whole picture.
+        }
+
+        var evaluated = EvaluateAndEnvelope(id, character);
+        _characterStore.Replace(id, character);
+        return new CharacterEnvelopeDto
+        {
+            Id = id,
+            Character = character,
+            Warnings = evaluated.Warnings,
+            NewWarnings = baselineWarnings == null
+                ? null
+                : DiffWarnings(baselineWarnings, evaluated.Warnings)
+        };
+    }
+
+    private CharacterState? TryEvaluateBaseline(Character character)
+    {
+        try { return _replayStudio.Evaluate(character.Clone()); }
+        catch { return null; }
+    }
+
+    private void AnnotateTickEffects(
+        CharacterMutationResponseDto response, CharacterState? baseline, Tick tick)
+    {
+        response.NewWarnings = baseline == null
+            ? response.State.Warnings.ToList()
+            : DiffWarnings(baseline.Warnings, response.State.Warnings);
+
+        if (tick.Choices.FeatIds is not { } submitted)
+            return;
+
+        var baselineCounts = CountByValue(baseline?.Feats ?? new List<string>());
+        var finalCounts = CountByValue(response.State.Feats);
+        var credited = new Dictionary<string, int>(StringComparer.Ordinal);
+        var outcomes = new List<FeatOutcomeDto>();
+
+        foreach (var raw in submitted)
+        {
+            string? canonical = null;
+            if (_content.TryGetFeat(raw, out var featDef) && featDef != null)
+                canonical = FeatVariantId.TryGetSelection(raw, featDef.Id, out var selection)
+                    ? FeatVariantId.Canonical(featDef.Id, selection)
+                    : featDef.Id;
+
+            var applied = false;
+            if (canonical != null)
+            {
+                var delta = finalCounts.GetValueOrDefault(canonical)
+                    - baselineCounts.GetValueOrDefault(canonical);
+                var used = credited.GetValueOrDefault(canonical);
+                if (used < delta)
+                {
+                    applied = true;
+                    credited[canonical] = used + 1;
+                }
+            }
+
+            outcomes.Add(new FeatOutcomeDto
+            {
+                Submitted = raw,
+                CanonicalId = canonical,
+                Applied = applied,
+                Reason = applied
+                    ? null
+                    : response.NewWarnings.FirstOrDefault(w =>
+                            w.Message.Contains(canonical ?? raw, StringComparison.Ordinal)
+                            || w.Message.Contains(raw, StringComparison.Ordinal))?.Message
+                        ?? (canonical == null ? "unknown feat id" : "not applied — see warnings")
+            });
+        }
+
+        response.FeatOutcomes = outcomes;
+    }
+
+    private static List<Warning> DiffWarnings(IEnumerable<Warning> before, IEnumerable<Warning> after)
+    {
+        var seen = new Dictionary<(int? Tick, string Message), int>();
+        foreach (var warning in before)
+        {
+            var key = (warning.TickIndex, warning.Message);
+            seen[key] = seen.GetValueOrDefault(key) + 1;
+        }
+
+        var fresh = new List<Warning>();
+        foreach (var warning in after)
+        {
+            var key = (warning.TickIndex, warning.Message);
+            if (seen.GetValueOrDefault(key) > 0)
+                seen[key]--;
+            else
+                fresh.Add(warning);
+        }
+        return fresh;
+    }
+
+    private static Dictionary<string, int> CountByValue(IEnumerable<string> values)
+    {
+        var counts = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (var value in values)
+            counts[value] = counts.GetValueOrDefault(value) + 1;
+        return counts;
     }
 
     public CharacterMutationResponseDto ValidateCharacter(Character character) =>
@@ -424,8 +550,11 @@ public sealed class AgentApiService
                 throw new ArgumentException(
                     $"Tick index {index} is out of range (character has {character.Ticks.Count} ticks)");
 
+            var baseline = TryEvaluateBaseline(character);
             character.Ticks[index] = tick;
-            return EvaluateAndEnvelope(id, character);
+            var response = EvaluateAndEnvelope(id, character);
+            AnnotateTickEffects(response, baseline, tick);
+            return response;
         });
     }
 

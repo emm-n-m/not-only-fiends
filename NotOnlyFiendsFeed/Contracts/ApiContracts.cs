@@ -25,6 +25,12 @@ public sealed class CharacterEnvelopeDto
 {
     public string Id { get; set; } = string.Empty;
     public Character Character { get; set; } = new();
+
+    /// <summary>Whole-replay warnings of the saved character. Null on endpoints that never evaluated.</summary>
+    public List<Warning>? Warnings { get; set; }
+
+    /// <summary>Warnings this save introduced relative to the previously stored version. Null for creations.</summary>
+    public List<Warning>? NewWarnings { get; set; }
 }
 
 public sealed class CharacterMutationResponseDto
@@ -36,6 +42,16 @@ public sealed class CharacterMutationResponseDto
     public PendingChoicesDto PendingChoices { get; set; } = new();
     public List<FeatSummaryDto> QualifiedFeats { get; set; } = new();
     public List<Warning> Warnings { get; set; } = new();
+
+    /// <summary>
+    /// Warnings this mutation introduced (diff vs the character before it). The whole-replay
+    /// <see cref="Warnings"/> list repeats every accepted historical warning; this is the part
+    /// the mutation caused. Null on evaluate-only responses that have no before state.
+    /// </summary>
+    public List<Warning>? NewWarnings { get; set; }
+
+    /// <summary>Per-feat receipts for the tick's featIds. Null when the mutation carried no tick.</summary>
+    public List<FeatOutcomeDto>? FeatOutcomes { get; set; }
 }
 
 public sealed class RulesDto
@@ -167,6 +183,26 @@ public sealed class FeatSummaryDto
     public FeatSelectionGuideDto? Selection { get; set; }
     public List<string> Tags { get; set; } = new();
     public List<string> Prerequisites { get; set; } = new();
+}
+
+/// <summary>
+/// What happened to one submitted feat id during a tick mutation. A 200 response never means
+/// every feat landed — a feat without a free slot is dropped with only a warning — so this is
+/// the per-feat receipt callers should check instead of diffing replay-wide warnings.
+/// </summary>
+public sealed class FeatOutcomeDto
+{
+    /// <summary>The feat id exactly as submitted in the tick's featIds.</summary>
+    public string Submitted { get; set; } = string.Empty;
+
+    /// <summary>The canonical id it resolved to, or null when the feat is unknown to content.</summary>
+    public string? CanonicalId { get; set; }
+
+    /// <summary>True when the feat actually landed in the character's state.</summary>
+    public bool Applied { get; set; }
+
+    /// <summary>When not applied: the warning that explains why, if one names this feat.</summary>
+    public string? Reason { get; set; }
 }
 
 /// <summary>

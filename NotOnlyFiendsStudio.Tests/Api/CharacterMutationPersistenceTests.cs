@@ -88,4 +88,76 @@ public sealed class CharacterMutationPersistenceTests : IDisposable
             STR = 14, DEX = 12, CON = 12, INT = 10, WIS = 10, CHA = 10
         }
     };
+
+    [Fact]
+    public void AppendTick_ReportsPerFeatOutcomesAndNewWarnings()
+    {
+        _store.Create(CreateHuman(), "mutation-test");
+
+        // Human fighter HD 1: standard + human bonus take the two general feats; the third
+        // general feat cannot use the fighter-bonus slot and is dropped with only a warning.
+        var response = _api.AppendTick("mutation-test", new Tick
+        {
+            DriverId = "class:fighter",
+            Choices = new TickChoices
+            {
+                FeatIds = new List<string>
+                {
+                    "feat:iron_will",
+                    "feat:skill_focus_skill:concentration",
+                    "feat:lightning_reflexes"
+                }
+            }
+        });
+
+        Assert.NotNull(response.FeatOutcomes);
+        var outcomes = response.FeatOutcomes!;
+        Assert.Equal(3, outcomes.Count);
+
+        Assert.True(outcomes[0].Applied);
+        Assert.Equal("feat:iron_will", outcomes[0].CanonicalId);
+
+        // Legacy dialect resolves to the canonical variant id on the receipt.
+        Assert.True(outcomes[1].Applied);
+        Assert.Equal("feat:skill_focus:concentration", outcomes[1].CanonicalId);
+
+        Assert.False(outcomes[2].Applied);
+        Assert.Contains("no available feat slot", outcomes[2].Reason);
+
+        Assert.NotNull(response.NewWarnings);
+        Assert.Contains(response.NewWarnings!, warning =>
+            warning.Message.Contains("feat:lightning_reflexes") && warning.Message.Contains("dropped"));
+    }
+
+    [Fact]
+    public void SimulateTick_ReportsOutcomesWithoutPersisting()
+    {
+        _store.Create(CreateHuman(), "mutation-test");
+
+        var response = _api.SimulateTick("mutation-test", new Tick
+        {
+            DriverId = "class:fighter",
+            Choices = new TickChoices { FeatIds = new List<string> { "feat:iron_will" } }
+        });
+
+        Assert.NotNull(response.FeatOutcomes);
+        Assert.True(Assert.Single(response.FeatOutcomes!).Applied);
+        Assert.Empty(_store.Get("mutation-test").Ticks);
+    }
+
+    [Fact]
+    public void ReplaceCharacter_ReportsTheWarningsTheSaveIntroduced()
+    {
+        var character = CreateHuman();
+        character.Ticks.Add(new Tick { DriverId = "class:fighter" });
+        _store.Create(character, "mutation-test");
+
+        var repaired = _store.Get("mutation-test");
+        repaired.Ticks[0].Choices.FeatIds = new List<string> { "feat:unheard_of" };
+        var response = _api.ReplaceCharacter("mutation-test", repaired);
+
+        Assert.NotNull(response.NewWarnings);
+        Assert.Contains(response.NewWarnings!, warning => warning.Message.Contains("feat:unheard_of"));
+        Assert.NotNull(response.Warnings);
+    }
 }

@@ -40,9 +40,15 @@ usually take racial HD first):
 1. `GET …/next-step` — legal drivers + pending choice counts
 2. `GET …/next-step?driverIds=class:X&optionDetail=full` — option lists (with ids) for the
    shortlisted driver only; this is also the only sane way to find feat ids
-3. `POST …/simulate` with `{"driverId","choices":{…}}` — dry run; warnings are whole-replay,
-   so diff against warnings already accepted
+3. `POST …/simulate` with `{"driverId","choices":{…}}` — dry run
 4. `POST …/ticks` — commit
+
+Both simulate and ticks responses carry **`featOutcomes`** (a per-feat receipt: `submitted`,
+`canonicalId`, `applied`, and the `reason` when not applied) and **`newWarnings`** (only the
+warnings this mutation introduced — no need to diff the whole-replay `warnings` list
+yourself). Check both on every tick: any `applied: false` or unexpected new warning means the
+tick did not do what you asked, HTTP 200 notwithstanding. `PUT /api/characters/{id}` likewise
+returns `warnings` + `newWarnings`, so a repair confirms itself without a follow-up GET.
 
 **TickChoices**: `hitPointsRolled` (explicit roll — makes builds reproducible), `featIds`,
 `skillAllocations` (`[{"skillId","halfRanks"}]` — halfRanks = 2× ranks, cross-class ranks cost
@@ -87,10 +93,11 @@ on `spells` and `equipment` ONLY — `skills` and `languages` ignore it and retu
   Spell Focus ×2, Dodge→Mobility, …) inside feat slots that exist BEFORE tick N. Slots accrue
   at HD 1, every 3 HD, +1 human bonus, + class bonuses — spend those on the gate feats before
   any flavour pick, or the prestige driver never appears.
-- **A dropped feat is a hard failure.** `feat 'X' dropped — no available feat slot` in the
-  warnings means the feat silently vanished while the tick returned 200. Treat it as a stop
-  signal: repair by PUTting the full character with the feat moved to a tick that has a free
-  slot (or an earlier flavour feat evicted), then re-verify it landed in state.
+- **A dropped feat is a hard failure.** The tick response's `featOutcomes` entry reads
+  `applied: false` with `reason: "… no available feat slot"` while the tick returns 200. Treat
+  it as a stop signal: repair by PUTting the full character with the feat moved to a tick that
+  has a free slot (or an earlier flavour feat evicted), then confirm via the PUT response's
+  `newWarnings` that the replay came back clean.
 - **Ask why a driver is missing.** `GET …/next-step?driverIds=class:archmage` returns the
   exclusion entry with each unmet prerequisite spelled out. Use it the moment an expected
   class fails to appear instead of guessing from the driver catalog.
