@@ -61,6 +61,18 @@ surfaces only in `currentPendingChoices` after leveling — resolve it by adding
 `classFeatureChoices: {"class_feature:familiar_options": ["race:companion_…"]}` to an existing
 tick via a full-character PUT (key copied exactly from the pending choice's `featureType`).
 
+**Prestige caster advancement is a per-tick choice**: a "+1 spellcasting class" PrC level
+advances nothing unless the tick carries
+`classFeatureChoices: {"advance_spellcasting": ["class:sorcerer"]}` naming the advanced
+class. A PrC level that grants no advancement (check the class table) simply omits it.
+
+**Spells known are paced by the class table**: the driver detail's
+`spellcasting.spellsKnown` maps effective class level (class levels + advancement picks) to
+allowed counts per spell level. Submit new spells on the tick where the row first allows
+them — compute the row per tick and top each spell level up to its allowance. The engine
+validates final counts against the final row, but pacing keeps every intermediate evaluation
+legal and makes the schedule reviewable.
+
 **Parametrized feats** (Skill Focus, Spell Focus, Weapon Focus, Spell Mastery…): the selection
 is encoded into the feat id itself — there is no separate selection field. The canonical form
 appends `:` plus the bare selection id (no `skill:`/`weapon:`/`spell:` prefix — the feat's
@@ -77,7 +89,10 @@ disqualifies prestige classes that gate on the variant ids (`feat:skill_focus:sp
 `.equipment`: `{"itemId":"<display name>","contentId":"<catalog id>","slot":"<slot from
 catalog entry>","quantity":1}` → `PUT` the full body back (ticks are preserved). Equipment
 changes saves/HP/abilities on the sheet, so a baseline comparison without the gear will be off
-by exactly the gear.
+by exactly the gear. When copying entries from an existing character, copy them **verbatim**:
+fields beyond id/slot carry mechanical state — `mainHand: true` is what makes a wielded
+intelligent item impose its negative level (a uniform −1 to every skill and save and −5 hp),
+and dropping it silently changes the whole sheet.
 
 **Finish** — `GET …/sheet`, extract what you need with a filter, then `DELETE` (204).
 
@@ -104,8 +119,11 @@ Plan **backwards from the prestige class, before tick 1**:
    cover the prereqs. Example: an Arcane Trickster build buys the rogue-skill prereqs (Disable
    Device, Escape Artist…) only on rogue ticks and spends caster-tick points on Knowledge
    (arcana)/Spellcraft — each prereq on the ticks where it is cheap. Cross-class buying is a
-   top-up tool for the last 1–2 ranks at most, never the plan. The cap also fixes the
-   earliest legal entry HD: N required ranks need HD ≥ N−3 by the tick before entry.
+   top-up tool for the last 1–2 ranks at most, never the plan. The worked pattern: Arcane
+   Trickster wants 7 ranks in three rogue skills, but the rank cap at rogue 3 is 6 — so buy 6
+   on rogue ticks, then one cross-class rank each (2 points apiece) during the sorcerer
+   levels before entry. The cap also fixes the earliest legal entry HD: N required ranks need
+   HD ≥ N−3 by the tick before entry.
    The standard maxed-skill schedule: 4 ranks each at HD 1 (the cap), then +1 rank per skill
    per level — `halfRanks: 8` at HD 1 and `2` per level after keeps a skill at cap forever.
 3. **Count only chosen feats against slots.** A sheet's (or baseline's) feat list mixes
