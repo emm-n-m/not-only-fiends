@@ -30,15 +30,17 @@ the committed golden baseline, not against a previous session's scoreboard.
 
 1. Pilot ONE mid-complexity character (a single-class caster with domains) and diff it before
    fanning out — every harness bug shows up in the pilot for 2% of the cost.
-2. Work through the corpus **triaged by difficulty, not in one uniform fan-out** — the 2026-08
-   runs showed reconstruction fidelity (fixed feat/spell lists reverse-engineered into a legal
-   tick schedule) needs a top-tier model, and top-tier agents must run per-character or in
-   very small batches or they blow usage limits:
-   - Companions, familiars, and low-HD martials: cheap tier, freely concurrent (~15 is fine —
-     the app handles parallel builds).
-   - Casters, prestige-class entries, epic characters: top tier (Opus/GPT flagship class),
-     one character at a time. Mid tiers complete these structurally but leave resources
-     unspent, mis-schedule spells, and miss skill-rank prestige prereqs.
+2. **Split planning from building** — the 2026-08 runs showed the two need different tiers.
+   *Building* (driving the API tick loop from a known plan) is cheap-tier work: sonnet/luna
+   is very sufficient, ~15 concurrent is fine (the app handles parallel builds).
+   *Reconstruction planning* (reverse-engineering a `.pcg`'s fixed feat/spell lists into a
+   legal tick schedule — spell pacing, prestige skill-rank prereqs, feat-slot budgets) needs
+   a flagship model (Opus/GPT top tier), and flagship agents must run per-character or they
+   blow usage limits. Cheap tiers asked to plan complete builds structurally but leave
+   resources unspent, mis-schedule spells, and miss prestige prerequisites. For characters
+   with prestige entries or nontrivial casting, have the flagship produce the per-level
+   schedule and hand it to a cheap builder; simple characters (companions, low-HD martials)
+   need no separate planning pass.
    Each agent gets the
    [api-build-character](../api-build-character/SKILL.md) protocol, its `.pcg` path, and must:
    name the character `API Test - <name>`, use the `.pcg`'s per-level HP rolls, attach the
