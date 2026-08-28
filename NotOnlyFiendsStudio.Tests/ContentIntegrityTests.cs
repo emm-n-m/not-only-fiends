@@ -80,16 +80,16 @@ public class ContentIntegrityTests
 
         var featIds = new HashSet<string>(registry.GetAllFeats().Select(f => f.Id), StringComparer.Ordinal);
 
-        // "feat:spell_focus_conjuration" resolves against the repeatable "feat:spell_focus" with a
+        // "feat:spell_focus:conjuration" resolves against the repeatable "feat:spell_focus" with a
         // selection — the same rule ContentRegistry.IsSelectableFeatVariant applies.
-        var selectableFeatPrefixes = registry.GetAllFeats()
+        var selectableFeatIds = registry.GetAllFeats()
             .Where(f => f.SelectionRequired != null && f.Repeatable)
-            .Select(f => f.Id + "_")
+            .Select(f => f.Id)
             .ToList();
 
         bool FeatResolves(string id) =>
             featIds.Contains(id)
-            || selectableFeatPrefixes.Any(p => id.StartsWith(p, StringComparison.Ordinal))
+            || selectableFeatIds.Any(baseId => FeatVariantId.IsVariant(id, baseId))
             // HasFeatSelections names the base feat and is satisfied by any variant of it.
             || featIds.Any(f => f.StartsWith(id + "_", StringComparison.Ordinal));
 

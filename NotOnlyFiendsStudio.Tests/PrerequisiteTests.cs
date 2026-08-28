@@ -119,9 +119,9 @@ public class PrerequisiteTests
     [Fact]
     public void HasFeat_MatchesSelectionVariant()
     {
-        // Greater Spell Focus requires "feat:spell_focus" — selection stores as "spell_focus_evocation".
+        // Greater Spell Focus requires "feat:spell_focus" — selection stores as "spell_focus:evocation".
         var state = CreateState();
-        state.Feats.Add("feat:spell_focus_evocation");
+        state.Feats.Add("feat:spell_focus:evocation");
         Assert.True(new HasFeat { FeatId = "feat:spell_focus" }.IsMet(state));
     }
 

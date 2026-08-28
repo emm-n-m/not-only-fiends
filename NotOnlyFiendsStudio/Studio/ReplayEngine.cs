@@ -1587,12 +1587,23 @@ public class ReplayStudio
 
         if (choices.FeatIds != null)
         {
-            foreach (var featId in choices.FeatIds)
+            foreach (var rawFeatId in choices.FeatIds)
             {
+                var featId = rawFeatId;
                 _content.TryGetFeat(featId, out var featDef);
+
+                // Normalize any variant dialect to the canonical "base:selection" id before it
+                // reaches state: prerequisites, permabuffs, dedup and the sheet all compare
+                // canonical ids. Saved ticks keep their original spelling.
+                string? featSelection = null;
+                if (featDef != null && FeatVariantId.TryGetSelection(featId, featDef.Id, out var rawSelection))
+                {
+                    featSelection = FeatVariantId.NormalizeSelection(rawSelection);
+                    featId = FeatVariantId.Canonical(featDef.Id, rawSelection);
+                }
+
                 var isSpellMastery = featDef?.Id == SpellMasteryFeatId;
-                var isSpellMasterySelection = isSpellMastery
-                    && featId.StartsWith(SpellMasteryFeatId + "_", StringComparison.Ordinal);
+                var isSpellMasterySelection = isSpellMastery && featSelection != null;
 
                 // Spell Mastery is one feat that grants a number of spell selections, rather
                 // than one feat per spell. Older saves represent each selected spell as a
@@ -1628,15 +1639,14 @@ public class ReplayStudio
 
                 if (featDef?.SelectionRequired is { } selectionKind)
                 {
-                    var prefix = featDef.Id + "_";
-                    var selection = featId.StartsWith(prefix, StringComparison.Ordinal) ? featId[prefix.Length..] : null;
+                    var selection = featSelection;
                     var valid = selectionKind switch
                     {
                         "special_attack" => selection != null && state.SpecialAttacks.Any(a => a.Id == selection),
                         "spell_like_ability" => selection != null && state.SLAs.Any(s => MatchesSpellLikeAbilitySelection(s, selection)),
-                        // Existing feat selections are stored as display-friendly suffixes and
-                        // several legacy callers submit the base ID. Keep those save formats
-                        // valid; only the new typed target sources are enforceable here.
+                        // Selection dialects vary across save formats and several legacy callers
+                        // submit the base ID. Keep those save formats valid; only the typed
+                        // target sources above are enforceable here.
                         _ => true
                     };
                     if (!valid)
@@ -1646,15 +1656,15 @@ public class ReplayStudio
                     }
 
                     // The kinds above are dropped when invalid because their variant ids are the
-                    // engine's own vocabulary. The rest warn but keep the feat: legacy saves and
-                    // display-friendly suffixes must keep replaying to the same sheet.
+                    // engine's own vocabulary. The rest warn but keep the feat: legacy saves
+                    // must keep replaying to the same sheet.
                     if (selection == null)
                     {
                         state.Warnings.Add(new Warning
                         {
                             TickIndex = state.TotalHD,
                             Message = $"feat '{featId}' requires a {selectionKind} selection encoded in its id — "
-                                + $"submit '{featDef.Id}_<{selectionKind}>' (e.g. '{featDef.Id}_{SelectionExample(selectionKind)}'); "
+                                + $"submit '{featDef.Id}:<{selectionKind}>' (e.g. '{featDef.Id}:{SelectionExample(selectionKind)}'); "
                                 + "taken without a selection, the feat has no target and grants nothing"
                         });
                     }
@@ -1664,7 +1674,7 @@ public class ReplayStudio
                         {
                             TickIndex = state.TotalHD,
                             Message = $"feat '{featId}' selects unknown skill 'skill:{selection}' — "
-                                + "the suffix must be a skill id without the 'skill:' prefix"
+                                + "the selection must be a skill id without the 'skill:' prefix"
                         });
                     }
                     else if (selectionKind == "school" && !WizardSchools.SchoolNames.Contains(selection, StringComparer.OrdinalIgnoreCase))
@@ -1941,11 +1951,7 @@ public class ReplayStudio
     /// </summary>
     private bool IsKnownSkillSelection(string selection)
     {
-        // Accept both suffix dialects: bare ("spellcraft", used by PCGen imports and
-        // prestige prerequisites) and full id ("skill:spellcraft", used by the builder UI).
-        var skillId = selection.StartsWith("skill:", StringComparison.Ordinal)
-            ? selection
-            : "skill:" + selection;
+        var skillId = "skill:" + FeatVariantId.NormalizeSelection(selection);
         if (_content.TryGetSkill(skillId, out _))
             return true;
         return _content.GetAllSkills().Any(s => s.ParentSkill == skillId);
@@ -1955,10 +1961,8 @@ public class ReplayStudio
     {
         "skill" => "concentration",
         "school" => "conjuration",
-        // Weapon and spell variants carry the full content id so the suffix can link back
-        // to equipped weapons and spellbook entries.
-        "weapon" => "weapon:longsword",
-        "spell" => "spell:fireball",
+        "weapon" => "longsword",
+        "spell" => "fireball",
         _ => "selection"
     };
 

@@ -56,18 +56,18 @@ surfaces only in `currentPendingChoices` after leveling — resolve it by adding
 tick via a full-character PUT (key copied exactly from the pending choice's `featureType`).
 
 **Parametrized feats** (Skill Focus, Spell Focus, Weapon Focus, Spell Mastery…): the selection
-is encoded into the feat id itself — there is no separate selection field. Append `_` plus the
-selection to the base id. The suffix vocabulary differs by kind: skills use the bare id
-(`feat:skill_focus_concentration` — the form prestige prerequisites gate on; the full-id
-dialect `feat:skill_focus_skill:concentration` also replays), schools use the eight SRD school
-names (`feat:spell_focus_conjuration`), weapons and spells use the full content id
-(`feat:weapon_focus_weapon:longsword`, `feat:spell_mastery_spell:fireball` — the full weapon id
-is what links the bonus to the equipped weapon's attack line). Feat listings mark these feats
-with `selectionRequired`, and their `selection` object carries the exact `idPattern`, a `hint`,
-and the legal values (`options` inline or `optionsEndpoint`). Submitting the base id without a
-suffix replays with a warning and grants nothing — the feat has no target — and a missing
-suffix also silently disqualifies prestige classes that gate on the variant ids
-(`feat:skill_focus_spellcraft`).
+is encoded into the feat id itself — there is no separate selection field. The canonical form
+appends `:` plus the bare selection id (no `skill:`/`weapon:`/`spell:` prefix — the feat's
+`selectionRequired` kind already names the list): `feat:skill_focus:concentration`,
+`feat:spell_focus:conjuration`, `feat:weapon_focus:longsword`, `feat:spell_mastery:fireball`.
+Feat listings mark these feats with `selectionRequired`, and their `selection` object carries
+the exact `idPattern`, a `hint`, and the legal values (`options` inline or `optionsEndpoint`).
+Two legacy underscore dialects (`feat:skill_focus_spellcraft`,
+`feat:skill_focus_skill:spellcraft`) still replay — the engine normalizes every dialect to the
+canonical id in state, so prerequisites and bonuses behave identically — but always submit
+canonical. Submitting the base id without a selection replays with a warning and grants
+nothing — the feat has no target — and also silently disqualifies prestige classes that gate
+on the variant ids (`feat:skill_focus:spellcraft`).
 
 **Equipment** — after leveling: `GET /api/characters/{id}` → take `.character`, append to
 `.equipment`: `{"itemId":"<display name>","contentId":"<catalog id>","slot":"<slot from

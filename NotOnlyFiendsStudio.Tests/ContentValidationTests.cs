@@ -442,14 +442,14 @@ public class ContentValidationTests
             SaveProgression = new SaveProgression(),
             Prerequisites = new List<Prerequisite>
             {
-                new HasFeat { FeatId = "feat:spell_focus_conjuration" }
+                new HasFeat { FeatId = "feat:spell_focus:conjuration" }
             }
         });
 
         registry.Validate();
 
         Assert.DoesNotContain(registry.Errors, error =>
-            error.Kind == ContentErrorKind.BrokenReference && error.Message.Contains("spell_focus_conjuration"));
+            error.Kind == ContentErrorKind.BrokenReference && error.Message.Contains("spell_focus:conjuration"));
     }
 
     [Fact]

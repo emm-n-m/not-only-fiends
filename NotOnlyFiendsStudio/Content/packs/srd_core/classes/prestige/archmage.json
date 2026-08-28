@@ -69,7 +69,7 @@
   "prerequisites": [
     {
       "$type": "HasFeat",
-      "featId": "feat:skill_focus_spellcraft"
+      "featId": "feat:skill_focus:spellcraft"
     },
     {
       "$type": "HasFeatSelections",

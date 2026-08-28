@@ -358,7 +358,7 @@
         },
         {
           "type": "object",
-          "description": "Skill bonus targeting the skill encoded in the taken feat variant's id suffix (e.g. 'feat:skill_focus_concentration' → skill:concentration). selectionPrefix is the feat's own base id.",
+          "description": "Skill bonus targeting the skill encoded in the taken feat variant's id suffix (e.g. 'feat:skill_focus:concentration' → skill:concentration). selectionPrefix is the feat's own base id.",
           "properties": {
             "$type": { "const": "GrantSelectedSkillBonus" },
             "selectionPrefix": { "type": "string" },
@@ -369,7 +369,7 @@
         },
         {
           "type": "object",
-          "description": "Attack or damage bonus targeting the weapon encoded in the taken feat variant's id suffix (e.g. 'feat:weapon_focus_longsword'). selectionPrefix is the feat's own base id.",
+          "description": "Attack or damage bonus targeting the weapon encoded in the taken feat variant's id suffix (e.g. 'feat:weapon_focus:longsword'). selectionPrefix is the feat's own base id.",
           "properties": {
             "$type": { "const": "GrantSelectedWeaponBonus" },
             "selectionPrefix": { "type": "string" },

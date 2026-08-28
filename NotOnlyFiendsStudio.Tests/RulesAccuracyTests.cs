@@ -1107,22 +1107,22 @@ public class RulesAccuracyTests
     {
         // "Feats: Any three metamagic or item creation feats, plus Skill Focus
         //  (Knowledge [any individual Knowledge skill])."
-        // Selection ids are {feat}_{skill} and every Knowledge skill id starts with
-        // "knowledge_", so HasFeat's prefix match discriminates exactly.
+        // Selection ids are {feat}:{skill} and every Knowledge skill id starts with
+        // "knowledge_", so HasFeat's partial-selection match discriminates exactly.
         var driver = (HDDriver)Content.Value.GetDriver("class:loremaster");
         var skillFocus = driver.Prerequisites.OfType<HasFeat>()
             .Single(f => f.FeatId.StartsWith("feat:skill_focus", StringComparison.Ordinal));
 
         var wrongSkill = new CharacterState();
-        wrongSkill.Feats.Add("feat:skill_focus_spellcraft");
+        wrongSkill.Feats.Add("feat:skill_focus:spellcraft");
         Assert.False(skillFocus.IsMet(wrongSkill));
 
         var knowledge = new CharacterState();
-        knowledge.Feats.Add("feat:skill_focus_knowledge_arcana");
+        knowledge.Feats.Add("feat:skill_focus:knowledge_arcana");
         Assert.True(skillFocus.IsMet(knowledge));
 
         var otherKnowledge = new CharacterState();
-        otherKnowledge.Feats.Add("feat:skill_focus_knowledge_religion");
+        otherKnowledge.Feats.Add("feat:skill_focus:knowledge_religion");
         Assert.True(skillFocus.IsMet(otherKnowledge));
     }
 
@@ -1194,6 +1194,8 @@ public class RulesAccuracyTests
             DriverId = "class:fighter",
             Choices = new TickChoices
             {
+                // Deliberately the legacy full-id dialect: normalization must land the same
+                // canonical id and attack-line bonus the new ":longsword" form produces.
                 FeatIds = new List<string> { "feat:weapon_focus_weapon:longsword" }
             }
         });
@@ -1204,7 +1206,7 @@ public class RulesAccuracyTests
 
         Assert.Equal("Longsword", attack.Name);
         Assert.Equal(new[] { 4 }, attack.Bonuses); // BAB 1 + Str 2 + Weapon Focus 1 + size 0
-        Assert.Contains("feat:weapon_focus_weapon:longsword", state.Feats);
+        Assert.Contains("feat:weapon_focus:longsword", state.Feats);
     }
 
     [Fact]
@@ -1212,12 +1214,12 @@ public class RulesAccuracyTests
     {
         var selectedWeaponFeats = new[]
         {
-            "feat:weapon_focus_weapon:longsword",
-            "feat:weapon_specialization_weapon:longsword",
-            "feat:greater_weapon_focus_weapon:longsword",
-            "feat:greater_weapon_specialization_weapon:longsword",
-            "feat:epic_weapon_focus_weapon:longsword",
-            "feat:epic_weapon_specialization_weapon:longsword",
+            "feat:weapon_focus:longsword",
+            "feat:weapon_specialization:longsword",
+            "feat:greater_weapon_focus:longsword",
+            "feat:greater_weapon_specialization:longsword",
+            "feat:epic_weapon_focus:longsword",
+            "feat:epic_weapon_specialization:longsword",
         };
         var character = Human();
         character.Ticks = Enumerable.Range(1, 24)
@@ -1255,11 +1257,11 @@ public class RulesAccuracyTests
         var spellFocus = driver.Prerequisites.OfType<HasFeat>().Single();
 
         var wrongSchool = new CharacterState();
-        wrongSchool.Feats.Add("feat:spell_focus_evocation");
+        wrongSchool.Feats.Add("feat:spell_focus:evocation");
         Assert.False(spellFocus.IsMet(wrongSchool));
 
         var right = new CharacterState();
-        right.Feats.Add("feat:spell_focus_conjuration");
+        right.Feats.Add("feat:spell_focus:conjuration");
         Assert.True(spellFocus.IsMet(right));
     }
 
@@ -1683,8 +1685,8 @@ public class RulesAccuracyTests
         });
 
         var state = Evaluate(character);
-        Assert.Contains("feat:martial_weapon_proficiency_weapon:longsword", state.Feats);
-        Assert.Contains("feat:weapon_focus_weapon:longsword", state.Feats);
+        Assert.Contains("feat:martial_weapon_proficiency:longsword", state.Feats);
+        Assert.Contains("feat:weapon_focus:longsword", state.Feats);
         Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("War domain requires"));
     }
 

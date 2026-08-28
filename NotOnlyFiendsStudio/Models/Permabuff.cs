@@ -396,8 +396,8 @@ public class GrantWarDomainWeaponFeats : Permabuff
 
         // A class-wide martial proficiency already covers every martial weapon.
         if (!ctx.State.Feats.Contains("feat:weapon_proficiency_martial"))
-            new GrantBonusFeat { FeatId = $"feat:martial_weapon_proficiency_{weaponId}" }.Apply(ctx);
-        new GrantBonusFeat { FeatId = $"feat:weapon_focus_{weaponId}" }.Apply(ctx);
+            new GrantBonusFeat { FeatId = FeatVariantId.Canonical("feat:martial_weapon_proficiency", weaponId) }.Apply(ctx);
+        new GrantBonusFeat { FeatId = FeatVariantId.Canonical("feat:weapon_focus", weaponId) }.Apply(ctx);
     }
 }
 
@@ -1277,9 +1277,9 @@ public class GrantTypedBonus : Permabuff
 
 /// <summary>
 /// Applies a typed attack or damage bonus to the weapon selected by a repeatable weapon feat.
-/// Selection IDs are stored as variants such as <c>feat:weapon_focus_weapon:longsword</c>; the
-/// equipment pass later matches the <c>weapon:longsword</c> suffix to the equipped weapon's
-/// content ID.
+/// Selections are stored as variants such as <c>feat:weapon_focus:longsword</c> (legacy
+/// underscore dialects included); the equipment pass later matches the reconstructed
+/// <c>weapon:longsword</c> id to the equipped weapon's content ID.
 /// </summary>
 public class GrantSelectedWeaponBonus : Permabuff
 {
@@ -1294,17 +1294,16 @@ public class GrantSelectedWeaponBonus : Permabuff
         if (string.IsNullOrWhiteSpace(featId) || string.IsNullOrWhiteSpace(SelectionPrefix))
             return;
 
-        var prefix = SelectionPrefix + "_";
-        if (!featId.StartsWith(prefix, StringComparison.Ordinal))
+        if (!FeatVariantId.TryGetSelection(featId, SelectionPrefix, out var selection))
             return;
 
-        var weaponId = featId[prefix.Length..];
-        if (string.IsNullOrWhiteSpace(weaponId))
+        var bareWeaponId = FeatVariantId.NormalizeSelection(selection);
+        if (string.IsNullOrWhiteSpace(bareWeaponId))
             return;
 
         ctx.State.WeaponBonusContributions.Add(new WeaponBonusContribution
         {
-            WeaponId = weaponId,
+            WeaponId = "weapon:" + bareWeaponId,
             Target = Target,
             BonusType = BonusType,
             Value = Value.Evaluate(ctx.State)
@@ -1313,9 +1312,9 @@ public class GrantSelectedWeaponBonus : Permabuff
 }
 
 /// <summary>
-/// A skill bonus whose target skill comes from the taken feat variant's id suffix:
-/// "feat:skill_focus_concentration" with SelectionPrefix "feat:skill_focus" grants the
-/// bonus to skill:concentration. A base id with no suffix (a legacy save, or a caller
+/// A skill bonus whose target skill comes from the taken feat variant's selection:
+/// "feat:skill_focus:concentration" with SelectionPrefix "feat:skill_focus" grants the
+/// bonus to skill:concentration. A base id with no selection (a legacy save, or a caller
 /// that skipped the selection) grants nothing — replay warns about those separately.
 /// </summary>
 public class GrantSelectedSkillBonus : Permabuff
@@ -1329,20 +1328,14 @@ public class GrantSelectedSkillBonus : Permabuff
         if (string.IsNullOrWhiteSpace(featId) || string.IsNullOrWhiteSpace(SelectionPrefix))
             return;
 
-        var prefix = SelectionPrefix + "_";
-        if (!featId.StartsWith(prefix, StringComparison.Ordinal))
+        if (!FeatVariantId.TryGetSelection(featId, SelectionPrefix, out var selection))
             return;
 
-        var suffix = featId[prefix.Length..];
-        if (string.IsNullOrWhiteSpace(suffix))
+        var bareSkillId = FeatVariantId.NormalizeSelection(selection);
+        if (string.IsNullOrWhiteSpace(bareSkillId))
             return;
 
-        // Two suffix dialects exist in saved characters: the builder UI stores the full
-        // skill id ("feat:skill_focus_skill:concentration"), while PCGen imports and
-        // prestige prerequisites use the bare id ("feat:skill_focus_spellcraft").
-        var skillId = suffix.StartsWith("skill:", StringComparison.Ordinal)
-            ? suffix
-            : "skill:" + suffix;
+        var skillId = "skill:" + bareSkillId;
         ctx.State.SkillBonuses.TryAdd(skillId, 0);
         ctx.State.SkillBonuses[skillId] += Value;
     }

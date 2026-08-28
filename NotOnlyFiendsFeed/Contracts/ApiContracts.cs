@@ -177,7 +177,7 @@ public sealed class FeatSelectionGuideDto
 {
     public string Kind { get; set; } = string.Empty;
 
-    /// <summary>The id to submit in featIds, e.g. "feat:skill_focus_{selection}".</summary>
+    /// <summary>The id to submit in featIds, e.g. "feat:skill_focus:{selection}".</summary>
     public string IdPattern { get; set; } = string.Empty;
 
     public string Hint { get; set; } = string.Empty;

@@ -79,12 +79,11 @@ public class MinClassLevel : Prerequisite
 public class HasFeat : Prerequisite
 {
     public string FeatId { get; set; } = string.Empty;
-    // Matches exact FeatId OR any selection variant `{FeatId}_*` (e.g., "spell_focus" satisfied by "spell_focus_evocation").
-    public override bool IsMet(CharacterState state)
-    {
-        var prefix = FeatId + "_";
-        return state.Feats.Any(f => f == FeatId || f.StartsWith(prefix, StringComparison.Ordinal));
-    }
+    // Matches exact FeatId OR any selection variant (e.g., "spell_focus" satisfied by
+    // "spell_focus:evocation"), including partial selections: "skill_focus:knowledge" is
+    // satisfied by "skill_focus:knowledge_arcana".
+    public override bool IsMet(CharacterState state) =>
+        state.Feats.Any(f => FeatVariantId.IsBaseOrVariant(f, FeatId));
     public override string Description => $"Feat: {FeatId}";
 }
 
@@ -212,8 +211,8 @@ public class HasFeatWithTag : Prerequisite
 
 /// <summary>
 /// Requires a repeatable/selectable feat taken at least MinCount times.
-/// Counts feats in state whose ID equals FeatId or starts with FeatId + "_".
-/// E.g. FeatId="spell_focus", MinCount=2 matches spell_focus_conjuration + spell_focus_evocation.
+/// Counts feats in state whose ID equals FeatId or is a selection variant of it.
+/// E.g. FeatId="spell_focus", MinCount=2 matches spell_focus:conjuration + spell_focus:evocation.
 /// </summary>
 public class HasFeatSelections : Prerequisite
 {
@@ -221,8 +220,7 @@ public class HasFeatSelections : Prerequisite
     public int MinCount { get; set; } = 1;
     public override bool IsMet(CharacterState state)
     {
-        var prefix = FeatId + "_";
-        var count = state.Feats.Count(f => f == FeatId || f.StartsWith(prefix, StringComparison.Ordinal));
+        var count = state.Feats.Count(f => FeatVariantId.IsBaseOrVariant(f, FeatId));
         return count >= MinCount;
     }
     public override string Description => MinCount == 1

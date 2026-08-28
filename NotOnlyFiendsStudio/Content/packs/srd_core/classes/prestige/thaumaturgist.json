@@ -92,7 +92,7 @@
   "prerequisites": [
     {
       "$type": "HasFeat",
-      "featId": "feat:spell_focus_conjuration"
+      "featId": "feat:spell_focus:conjuration"
     },
     {
       "$type": "CanCastSpellLevel",

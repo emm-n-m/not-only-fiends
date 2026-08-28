@@ -481,18 +481,21 @@ convention lived solely in the Blazor builder and the PCGen importer, and the re
 accepted a bare base id — or any junk suffix — with HTTP 200 and no warning. An agent
 experiment (2026-08) showed workers reliably stall or silently mis-take these feats.
 **Fixed:** feat summaries now include a `selection` guide (`idPattern`, `hint`, inline
-`options` for schools, `optionsEndpoint` otherwise); replay warns on a missing suffix for any
-selection-required feat and on unknown skill/school suffixes (legacy saves keep replaying —
-warnings only, the feat is kept); Skill Focus and Epic Skill Focus now actually grant their
-+3/+10 via the new `GrantSelectedSkillBonus` permabuff, which resolves its target skill from
-the variant suffix, accepting both suffix dialects in the wild (bare `spellcraft` from PCGen
-imports and prerequisites, full `skill:spellcraft` from the builder UI). Spell Focus's save-DC
-bonus is still not computed on the sheet; Weapon Focus/Specialization already land on attack
-lines via `GrantSelectedWeaponBonus`, but only with the full-id suffix
-(`feat:weapon_focus_weapon:longsword`) — the PCGen importer's bare suffix does not link up,
-which is a separate open issue. The mirror-image mismatch also stands: the builder UI's
-full-id skill suffix (`feat:skill_focus_skill:spellcraft`) fails prestige prerequisites,
-which prefix-match on the bare form (`feat:skill_focus_spellcraft`).
+`options` for schools, `optionsEndpoint` otherwise); replay warns on a missing selection for
+any selection-required feat and on unknown skill/school selections (legacy saves keep
+replaying — warnings only, the feat is kept); Skill Focus and Epic Skill Focus now actually
+grant their +3/+10 via the new `GrantSelectedSkillBonus` permabuff.
+
+The selection encoding is canonicalized (`FeatVariantId`): the one form everywhere is
+`base:selection` with a bare selection id — `feat:skill_focus:spellcraft`,
+`feat:weapon_focus:longsword` — matching the catalog's `type:instance` convention. The UI, the
+PCGen importer, war-domain grants and all content prerequisites emit it; replay normalizes the
+two legacy underscore dialects (`feat:skill_focus_spellcraft` from old imports,
+`feat:skill_focus_skill:spellcraft` from the old builder) into canonical ids in state, so
+saved characters are never rewritten and both old cross-dialect failures are gone: UI-authored
+Skill Focus now satisfies prestige prerequisites, and importer-authored Weapon Focus now links
+to the equipped weapon's attack line. Spell Focus's save-DC bonus is still not computed on the
+sheet.
 
 ## An ineligible class is indistinguishable from a nonexistent one — fixed
 

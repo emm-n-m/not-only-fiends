@@ -150,7 +150,7 @@
     },
     {
       "$type": "HasFeat",
-      "featId": "feat:skill_focus_knowledge"
+      "featId": "feat:skill_focus:knowledge"
     },
     {
       "$type": "CanCastSpellLevel",

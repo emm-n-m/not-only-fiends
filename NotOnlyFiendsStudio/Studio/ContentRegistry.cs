@@ -124,11 +124,12 @@ public class ContentRegistry : IContentLookup
         if (_feats.TryGetValue(id, out feat))
             return true;
 
-        // Match selectable variant IDs like "spell_focus_enchantment" → base "spell_focus"
+        // Match selectable variant IDs like "spell_focus:enchantment" (legacy underscore
+        // dialects included) → base "spell_focus"
         foreach (var f in _feats.Values)
         {
             if (f.SelectionRequired != null && f.Repeatable
-                && id.StartsWith(f.Id + "_", StringComparison.Ordinal))
+                && FeatVariantId.IsVariant(id, f.Id))
             {
                 feat = f;
                 return true;
@@ -550,15 +551,15 @@ public class ContentRegistry : IContentLookup
     }
 
     /// <summary>
-    /// Checks if a feat ID like "spell_focus_conjuration" is a valid selection
-    /// of a repeatable feat with selectionRequired (e.g., "spell_focus").
+    /// Checks if a feat ID like "spell_focus:conjuration" (legacy underscore dialects
+    /// included) is a valid selection of a repeatable feat with selectionRequired.
     /// </summary>
     private bool IsSelectableFeatVariant(string featId)
     {
         foreach (var feat in _feats.Values)
         {
             if (feat.SelectionRequired != null && feat.Repeatable
-                && featId.StartsWith(feat.Id + "_", StringComparison.Ordinal))
+                && FeatVariantId.IsVariant(featId, feat.Id))
                 return true;
         }
         return false;

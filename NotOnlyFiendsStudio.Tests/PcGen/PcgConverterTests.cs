@@ -137,9 +137,9 @@ public class PcgConverterTests
         var result = PcgConverter.Convert(data, mapper, registry);
 
         var feats = result.Character.Ticks[^1].Choices.FeatIds!;
-        Assert.Contains("feat:spell_focus_conjuration", feats);
-        Assert.Contains("feat:spell_focus_evocation", feats);
-        Assert.Contains("feat:skill_focus_knowledge_arcana", feats);
+        Assert.Contains("feat:spell_focus:conjuration", feats);
+        Assert.Contains("feat:spell_focus:evocation", feats);
+        Assert.Contains("feat:skill_focus:knowledge_arcana", feats);
         // The bare id must not be stored: prestige classes such as Cosmic Descryer
         // and Archmage gate on the variant ids.
         Assert.DoesNotContain("feat:spell_focus", feats);
@@ -184,9 +184,9 @@ public class PcgConverterTests
         var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
         var state = new ReplayStudio(registry).Evaluate(result.Character);
 
-        Assert.Contains("feat:quicken_spell_like_ability_charm_monster",
+        Assert.Contains("feat:quicken_spell_like_ability:charm_monster",
             result.Character.Ticks[^1].Choices.FeatIds!);
-        Assert.Contains("feat:quicken_spell_like_ability_charm_monster", state.Feats);
+        Assert.Contains("feat:quicken_spell_like_ability:charm_monster", state.Feats);
         Assert.DoesNotContain(state.Warnings,
             warning => warning.Message.Contains("requires a valid spell_like_ability selection", StringComparison.Ordinal));
     }

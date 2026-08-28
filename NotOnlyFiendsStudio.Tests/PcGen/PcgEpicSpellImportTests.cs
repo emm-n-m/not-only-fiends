@@ -61,7 +61,7 @@ public class PcgEpicSpellImportTests
                 "prerequisite not met for feat Ignore Material Components",
                 StringComparison.Ordinal)
             || warning.Message.Contains(
-                "prerequisite not met for Dark Temptress: Feat: feat:spell_focus_enchantment",
+                "prerequisite not met for Dark Temptress: Feat: feat:spell_focus:enchantment",
                 StringComparison.Ordinal));
     }
 }

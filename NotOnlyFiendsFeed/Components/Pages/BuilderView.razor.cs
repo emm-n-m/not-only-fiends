@@ -659,16 +659,16 @@ public partial class BuilderView
             var selected = SpellMasterySelections(index);
             if (string.IsNullOrWhiteSpace(selection)
                 || selected.Count >= limit
-                || selected.Contains(selection, StringComparer.Ordinal))
+                || selected.Contains(selection.Trim(), StringComparer.Ordinal))
                 return;
-            featId = $"{featId}_{selection.Trim()}";
+            featId = FeatVariantId.Canonical(featId, selection.Trim());
         }
         else if (featDef?.SelectionRequired != null)
         {
             var selection = FeatSelectionInput(index);
             if (string.IsNullOrWhiteSpace(selection)) return;
             var suffix = selection.Trim().ToLowerInvariant().Replace(' ', '_');
-            featId = $"{featId}_{suffix}";
+            featId = FeatVariantId.Canonical(featId, suffix);
         }
 
         _character.Ticks[index].Choices.FeatIds ??= new List<string>();
@@ -1017,10 +1017,10 @@ public partial class BuilderView
 
         foreach (var f in _feats)
         {
-            if (f.SelectionRequired != null && featId.StartsWith(f.Id + "_", StringComparison.Ordinal))
+            if (f.SelectionRequired != null && FeatVariantId.TryGetSelection(featId, f.Id, out var rawSelection))
             {
-                var suffix = featId[(f.Id.Length + 1)..];
-                if (f.Id == "feat:spell_mastery" && Content.Registry.TryGetSpell(suffix, out var spell) && spell != null)
+                var suffix = FeatVariantId.NormalizeSelection(rawSelection);
+                if (f.Id == "feat:spell_mastery" && Content.Registry.TryGetSpell("spell:" + suffix, out var spell) && spell != null)
                     return $"{f.Name} ({spell.Name})";
                 var selection = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(suffix.Replace('_', ' '));
                 return $"{f.Name} ({selection})";
@@ -1345,15 +1345,20 @@ public partial class BuilderView
     {
         var ids = featIds?.ToList() ?? new List<string>();
         var spellMasterySelections = ids.Count(id =>
-            id.StartsWith("feat:spell_mastery_", StringComparison.Ordinal));
+            FeatVariantId.IsVariant(id, "feat:spell_mastery"));
         return ids.Count - Math.Max(0, spellMasterySelections - 1);
     }
 
+    /// <summary>The tick's mastered spells as full spell ids, whatever dialect the save uses.</summary>
     private List<string> SpellMasterySelections(int index) =>
         index >= 0 && index < _character.Ticks.Count
             ? (_character.Ticks[index].Choices.FeatIds ?? new List<string>())
-                .Where(id => id.StartsWith("feat:spell_mastery_", StringComparison.Ordinal))
-                .Select(id => id["feat:spell_mastery_".Length..])
+                .Where(id => FeatVariantId.IsVariant(id, "feat:spell_mastery"))
+                .Select(id =>
+                {
+                    FeatVariantId.TryGetSelection(id, "feat:spell_mastery", out var raw);
+                    return "spell:" + FeatVariantId.NormalizeSelection(raw);
+                })
                 .ToList()
             : new List<string>();
 

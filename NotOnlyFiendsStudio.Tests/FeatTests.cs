@@ -47,10 +47,10 @@ public class FeatTests
                     {
                         FeatIds = new List<string>
                         {
-                            "feat:spell_mastery_spell:magic_missile",
-                            "feat:spell_mastery_spell:shield",
-                            "feat:spell_mastery_spell:detect_magic",
-                            "feat:spell_mastery_spell:identify"
+                            "feat:spell_mastery:magic_missile",
+                            "feat:spell_mastery:shield",
+                            "feat:spell_mastery:detect_magic",
+                            "feat:spell_mastery:identify"
                         }
                     }
                 }
@@ -59,8 +59,8 @@ public class FeatTests
 
         var state = engine.Evaluate(character);
 
-        Assert.Equal(3, state.Feats.Count(feat => feat.StartsWith("feat:spell_mastery_spell:", StringComparison.Ordinal)));
-        Assert.DoesNotContain("feat:spell_mastery_spell:identify", state.Feats);
+        Assert.Equal(3, state.Feats.Count(feat => feat.StartsWith("feat:spell_mastery:", StringComparison.Ordinal)));
+        Assert.DoesNotContain("feat:spell_mastery:identify", state.Feats);
         Assert.Equal(0, state.PendingFeatSlots);
         Assert.Contains(state.Warnings, warning => warning.Message.Contains("Intelligence modifier limit (3)"));
     }
@@ -230,14 +230,14 @@ public class FeatTests
             Ticks = new List<Tick>
             {
                 new() { DriverId = "class:fighter", Choices = new TickChoices
-                    { FeatIds = new List<string> { "feat:power_attack", "feat:weapon_focus_weapon:longsword" } } },
+                    { FeatIds = new List<string> { "feat:power_attack", "feat:weapon_focus:longsword" } } },
             }
         };
 
         var state = engine.Evaluate(character);
         Assert.Empty(state.Warnings);
         Assert.Contains("feat:power_attack", state.Feats);
-        Assert.Contains("feat:weapon_focus_weapon:longsword", state.Feats);
+        Assert.Contains("feat:weapon_focus:longsword", state.Feats);
         // 3 slots granted at HD 1, 2 picked → 1 remaining.
         Assert.Single(state.FeatSlots);
     }
@@ -489,20 +489,25 @@ public class FeatTests
     public void SkillFocus_GrantsPlusThreeToTheSelectedSkill()
     {
         var (_, engine) = CreateStudio();
-        var state = engine.Evaluate(FighterWithFeats("feat:skill_focus_concentration"));
+        var state = engine.Evaluate(FighterWithFeats("feat:skill_focus:concentration"));
 
+        Assert.Contains("feat:skill_focus:concentration", state.Feats);
         Assert.Equal(3, state.SkillBonuses.GetValueOrDefault("skill:concentration"));
         Assert.Equal(3, state.SkillTotals.GetValueOrDefault("skill:concentration"));
         Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("skill_focus"));
     }
 
-    [Fact]
-    public void SkillFocus_FullIdSuffixDialect_GrantsTheSameBonus()
+    [Theory]
+    [InlineData("feat:skill_focus_concentration")]        // old PCGen-import dialect
+    [InlineData("feat:skill_focus_skill:concentration")]  // old builder-UI dialect
+    public void SkillFocus_LegacyDialects_NormalizeToTheCanonicalId(string legacyId)
     {
-        // The builder UI stores the full skill id in the suffix; PCGen imports store the bare id.
+        // Saved characters are never rewritten, so every legacy spelling must replay to the
+        // same canonical state the new form produces.
         var (_, engine) = CreateStudio();
-        var state = engine.Evaluate(FighterWithFeats("feat:skill_focus_skill:concentration"));
+        var state = engine.Evaluate(FighterWithFeats(legacyId));
 
+        Assert.Contains("feat:skill_focus:concentration", state.Feats);
         Assert.Equal(3, state.SkillBonuses.GetValueOrDefault("skill:concentration"));
         Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("skill_focus"));
     }
@@ -520,37 +525,49 @@ public class FeatTests
     }
 
     [Fact]
-    public void SkillFocus_UnknownSkillSuffix_Warns()
+    public void SkillFocus_UnknownSkillSelection_Warns()
     {
         var (_, engine) = CreateStudio();
-        var state = engine.Evaluate(FighterWithFeats("feat:skill_focus_xyzzy"));
+        var state = engine.Evaluate(FighterWithFeats("feat:skill_focus:xyzzy"));
 
         Assert.Contains(state.Warnings, w => w.Message.Contains("unknown skill 'skill:xyzzy'"));
     }
 
     [Fact]
-    public void SkillFocus_SkillFamilySuffix_IsAValidSelection()
+    public void SkillFocus_SkillFamilySelection_IsValid()
     {
-        // Prestige prerequisites use family suffixes (loremaster: feat:skill_focus_knowledge),
+        // Prestige prerequisites use family selections (loremaster: feat:skill_focus:knowledge),
         // so a family name is legal even though no single skill carries that id.
         var (_, engine) = CreateStudio();
-        var state = engine.Evaluate(FighterWithFeats("feat:skill_focus_knowledge"));
+        var state = engine.Evaluate(FighterWithFeats("feat:skill_focus:knowledge"));
 
         Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("unknown skill"));
     }
 
     [Fact]
-    public void SpellFocus_SchoolSuffixes_ValidateAgainstTheEightSchools()
+    public void SpellFocus_SchoolSelections_ValidateAgainstTheEightSchools()
     {
         var (_, engine) = CreateStudio();
 
-        var valid = engine.Evaluate(FighterWithFeats("feat:spell_focus_conjuration"));
+        var valid = engine.Evaluate(FighterWithFeats("feat:spell_focus:conjuration"));
         Assert.DoesNotContain(valid.Warnings, w => w.Message.Contains("unknown school"));
 
-        var invalid = engine.Evaluate(FighterWithFeats("feat:spell_focus_hairdressing"));
+        var invalid = engine.Evaluate(FighterWithFeats("feat:spell_focus:hairdressing"));
         Assert.Contains(invalid.Warnings, w => w.Message.Contains("unknown school 'hairdressing'"));
 
         var bare = engine.Evaluate(FighterWithFeats("feat:spell_focus"));
         Assert.Contains(bare.Warnings, w => w.Message.Contains("requires a school selection"));
+    }
+
+    [Fact]
+    public void SkillFocus_PrestigePrerequisites_MatchAnyDialect()
+    {
+        // Archmage requires feat:skill_focus:spellcraft; a legacy save spelling it the old
+        // builder way must still qualify after normalization.
+        var (_, engine) = CreateStudio();
+        var state = engine.Evaluate(FighterWithFeats("feat:skill_focus_skill:spellcraft"));
+
+        var prereq = new HasFeat { FeatId = "feat:skill_focus:spellcraft" };
+        Assert.True(prereq.IsMet(state));
     }
 }

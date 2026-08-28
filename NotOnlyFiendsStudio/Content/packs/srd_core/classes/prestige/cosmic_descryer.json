@@ -85,7 +85,7 @@
     ]
   },
   "prerequisites": [
-    { "$type": "HasFeat", "featId": "feat:spell_focus_conjuration" },
+    { "$type": "HasFeat", "featId": "feat:spell_focus:conjuration" },
     { "$type": "MinSkillRanks", "skillId": "skill:knowledge_planes", "value": 24 },
     { "$type": "HasFeatSelections", "featId": "feat:energy_resistance", "minCount": 1 },
     { "$type": "CanCastSpellLevel", "spellLevel": 9, "castingType": "Arcane" }

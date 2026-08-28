@@ -36,9 +36,9 @@ public class AgentApiServiceTests
         var skillFocus = feats.Single(feat => feat.Id == "feat:skill_focus");
         Assert.NotNull(skillFocus.Selection);
         Assert.Equal("skill", skillFocus.Selection!.Kind);
-        Assert.Equal("feat:skill_focus_{selection}", skillFocus.Selection.IdPattern);
+        Assert.Equal("feat:skill_focus:{selection}", skillFocus.Selection.IdPattern);
         Assert.Equal("/api/content/skills", skillFocus.Selection.OptionsEndpoint);
-        Assert.Contains("feat:skill_focus_concentration", skillFocus.Selection.Hint);
+        Assert.Contains("feat:skill_focus:concentration", skillFocus.Selection.Hint);
 
         // The school vocabulary is small enough to inline.
         var spellFocus = feats.Single(feat => feat.Id == "feat:spell_focus");

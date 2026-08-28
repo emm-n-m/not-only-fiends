@@ -274,7 +274,7 @@ public static class PcgConverter
             {
                 // For feats with a selection (Spell Focus → school, Skill Focus → skill,
                 // Weapon Focus → weapon) encode the choice into the id, e.g.
-                // "spell_focus_conjuration". Prestige classes gate on those variant ids;
+                // "spell_focus:conjuration". Prestige classes gate on those variant ids;
                 // storing the bare "spell_focus" would fail their prerequisites.
                 var selection = raw.Trim();
                 if (featDef?.SelectionRequired != null && selection.Length > 0)
@@ -282,7 +282,7 @@ public static class PcgConverter
                     var suffix = featDef.SelectionRequired == "skill"
                         ? PcgIdMapper.MapSkillBare(selection)
                         : PcgIdMapper.DefaultIdTransform(selection);
-                    featIds.Add($"{featId}_{suffix}");
+                    featIds.Add(FeatVariantId.Canonical(featId, suffix));
                 }
                 else
                 {
