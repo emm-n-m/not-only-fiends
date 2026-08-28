@@ -82,6 +82,23 @@ Never GET `/api/content/catalog` (~840KB) or dump full lists into context. `?q=`
 on `spells` and `equipment` ONLY — `skills` and `languages` ignore it and return everything
 (KNOWN_ISSUES). Pipe every curl through `python3 -c` extraction.
 
+## Prestige-class planning (2026-08 corpus rerun: 10 of 59 builds stalled here)
+
+- **Budget prereq feats first.** A prestige entry at HD N needs its gate feats (Skill Focus,
+  Spell Focus ×2, Dodge→Mobility, …) inside feat slots that exist BEFORE tick N. Slots accrue
+  at HD 1, every 3 HD, +1 human bonus, + class bonuses — spend those on the gate feats before
+  any flavour pick, or the prestige driver never appears.
+- **A dropped feat is a hard failure.** `feat 'X' dropped — no available feat slot` in the
+  warnings means the feat silently vanished while the tick returned 200. Treat it as a stop
+  signal: repair by PUTting the full character with the feat moved to a tick that has a free
+  slot (or an earlier flavour feat evicted), then re-verify it landed in state.
+- **Ask why a driver is missing.** `GET …/next-step?driverIds=class:archmage` returns the
+  exclusion entry with each unmet prerequisite spelled out. Use it the moment an expected
+  class fails to appear instead of guessing from the driver catalog.
+- **Create once per name.** A second POST with the same name does not fail — the store keeps
+  both, deriving an `_2` id. Check `GET /api/characters` before creating, and don't retry a
+  create whose response you lost.
+
 ## Traps (all in KNOWN_ISSUES.md — re-verify before relying on a fix)
 
 - **Unknown choice keys are silently ignored** with HTTP 200 and no warning (`domainSelections`

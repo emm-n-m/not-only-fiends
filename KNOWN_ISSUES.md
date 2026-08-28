@@ -497,6 +497,15 @@ Skill Focus now satisfies prestige prerequisites, and importer-authored Weapon F
 to the equipped weapon's attack line. Spell Focus's save-DC bonus is still not computed on the
 sheet.
 
+## Prerequisite checks credit overspent skill points
+
+Overspending skill points only soft-warns (`spent N more skill points than available`) and the
+ranks still land, so driver/feat prerequisite checks run against ranks the character may not
+legally have — the 2026-08 corpus rerun produced an imp whose Arcane Trickster eligibility
+rests on a 41-point overspend. Rejecting the ranks outright would break permissive PCG import
+replay (imports overspend routinely where content gaps hide bonus pools), so any fix needs to
+distinguish import replay from API-driven builds. Open design question.
+
 ## An ineligible class is indistinguishable from a nonexistent one — fixed
 
 `next-step` now returns `excludedDrivers` with the failed prerequisite or max-level reason, and
