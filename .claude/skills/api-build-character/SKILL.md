@@ -91,18 +91,33 @@ on `spells` and `equipment` ONLY — `skills` and `languages` ignore it and retu
 
 ## Prestige-class planning (2026-08 corpus rerun: 10 of 59 builds stalled here)
 
-- **Budget prereq feats first.** A prestige entry at HD N needs its gate feats (Skill Focus,
-  Spell Focus ×2, Dodge→Mobility, …) inside feat slots that exist BEFORE tick N. Slots accrue
-  at HD 1, every 3 HD, +1 human bonus, + class bonuses — spend those on the gate feats before
-  any flavour pick, or the prestige driver never appears.
+Plan **backwards from the prestige class, before tick 1**:
+
+1. Decide the PrC(s), then `GET /api/content/drivers/{id}` for each — the detail endpoint
+   (unlike the list) returns typed `prerequisites` (`MinSkillRanks` with skillId + value,
+   `HasFeat` with featId, …) and every class's `classSkills` list. That is the whole
+   requirements contract, machine-readable, before you commit anything.
+2. **Schedule each prereq skill onto ticks of a class that has it as a class skill** — the
+   engine charges 1 point per rank on class-skill ticks and double on cross-class ticks (the
+   uniform rank cap is HD+3; the engine does not model the RAW cross-class half-cap), so
+   points are the scarce resource and cross-class scheduling can leave the budget unable to
+   cover the prereqs. Example: an Arcane Trickster build buys the rogue-skill prereqs (Disable
+   Device, Escape Artist…) only on rogue ticks and spends caster-tick points on Knowledge
+   (arcana)/Spellcraft — each prereq on the ticks where it is cheap. The cap also fixes the
+   earliest legal entry HD: N required ranks need HD ≥ N−3 by the tick before entry.
+3. **Budget prereq feats into slots that exist before the entry HD.** Slots accrue at HD 1,
+   every 3 HD (`GET /api/rules` → `standardFeatHds`), +1 human bonus, + class bonuses — spend
+   them on gate feats (Skill Focus, Spell Focus ×2, Dodge→Mobility…) before any flavour pick,
+   or the prestige driver never appears.
+4. **Verify before entry, not after.** `GET …/next-step?driverIds=class:arcane_trickster`
+   returns the exclusion entry with each still-unmet prerequisite spelled out. Check it a few
+   ticks ahead of the planned entry while there is still budget to correct course.
+
 - **A dropped feat is a hard failure.** The tick response's `featOutcomes` entry reads
   `applied: false` with `reason: "… no available feat slot"` while the tick returns 200. Treat
   it as a stop signal: repair by PUTting the full character with the feat moved to a tick that
   has a free slot (or an earlier flavour feat evicted), then confirm via the PUT response's
   `newWarnings` that the replay came back clean.
-- **Ask why a driver is missing.** `GET …/next-step?driverIds=class:archmage` returns the
-  exclusion entry with each unmet prerequisite spelled out. Use it the moment an expected
-  class fails to appear instead of guessing from the driver catalog.
 - **Create once per name.** A second POST with the same name does not fail — the store keeps
   both, deriving an `_2` id. Check `GET /api/characters` before creating, and don't retry a
   create whose response you lost.
