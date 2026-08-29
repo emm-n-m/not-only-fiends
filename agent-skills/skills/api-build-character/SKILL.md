@@ -94,6 +94,9 @@ intelligent item impose its negative level (a uniform −1 to every skill and sa
 and dropping it silently changes the whole sheet.
 
 **Finish** — `GET …/sheet`, extract what you need with a filter, then `DELETE` (204).
+`?atHd=N` on `/sheet` and `/state` serves the character as they were at HD N (the replay
+truncated to N ticks) — an earlier life stage is a view of the one record, never a separate
+character. Equipment is current possessions, not timeline data, so it still applies in full.
 
 ## Payload discipline
 

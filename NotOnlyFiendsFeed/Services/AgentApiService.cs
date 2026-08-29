@@ -294,7 +294,13 @@ public sealed class AgentApiService
 
     public Character LoadCharacter(string id) => _characterStore.Get(id);
 
-    public CharacterMutationResponseDto EvaluateAndEnvelope(string id, Character character)
+    /// <summary>
+    /// Evaluates and wraps a character. <paramref name="atHd"/> truncates the replay to that
+    /// many ticks — the character as they were at that HD. PCGen needed a separate frozen
+    /// file per life stage; the timeline makes any earlier stage a view of the one record.
+    /// Equipment is current possessions, not timeline data, so it still applies in full.
+    /// </summary>
+    public CharacterMutationResponseDto EvaluateAndEnvelope(string id, Character character, int? atHd = null)
     {
         for (var index = 0; index < character.CompanionLinks.Count; index++)
         {
@@ -304,7 +310,7 @@ public sealed class AgentApiService
                     $"companionLinks[{index}] requires both linkType and companionId");
         }
 
-        var state = _replayStudio.Evaluate(character);
+        var state = _replayStudio.Evaluate(character, atHd);
         var sheet = CharacterSheet.FromState(state);
         character.Sheet = sheet;
         return new CharacterMutationResponseDto

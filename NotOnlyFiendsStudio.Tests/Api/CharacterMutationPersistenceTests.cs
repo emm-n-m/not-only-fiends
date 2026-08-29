@@ -146,6 +146,22 @@ public sealed class CharacterMutationPersistenceTests : IDisposable
     }
 
     [Fact]
+    public void EvaluateAtHd_ServesTheCharacterAsTheyWereAtThatStage()
+    {
+        var character = CreateHuman();
+        character.Ticks.Add(new Tick { DriverId = "class:fighter" });
+        character.Ticks.Add(new Tick { DriverId = "class:fighter" });
+        character.Ticks.Add(new Tick { DriverId = "class:fighter" });
+        _store.Create(character, "mutation-test");
+
+        var snapshot = _api.EvaluateAndEnvelope("mutation-test", _store.Get("mutation-test"), atHd: 1);
+        var current = _api.EvaluateAndEnvelope("mutation-test", _store.Get("mutation-test"));
+
+        Assert.Equal(1, snapshot.Sheet.TotalHD);
+        Assert.Equal(3, current.Sheet.TotalHD);
+    }
+
+    [Fact]
     public void ReplaceCharacter_ReportsTheWarningsTheSaveIntroduced()
     {
         var character = CreateHuman();

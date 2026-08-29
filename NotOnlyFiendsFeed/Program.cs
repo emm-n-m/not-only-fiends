@@ -164,18 +164,18 @@ app.MapDelete("/api/characters/{id}", (string id, CharacterStore store) =>
         ? Results.NoContent()
         : Results.NotFound(new ErrorResponse { Code = "not_found", Message = $"Character not found: {id}" })));
 
-app.MapGet("/api/characters/{id}/sheet", (string id, AgentApiService api) =>
+app.MapGet("/api/characters/{id}/sheet", (string id, int? atHd, AgentApiService api) =>
     RunMutation(() =>
     {
         var character = api.LoadCharacter(id);
-        return Results.Ok(api.EvaluateAndEnvelope(id, character).Sheet);
+        return Results.Ok(api.EvaluateAndEnvelope(id, character, atHd).Sheet);
     }));
 
-app.MapGet("/api/characters/{id}/state", (string id, AgentApiService api) =>
+app.MapGet("/api/characters/{id}/state", (string id, int? atHd, AgentApiService api) =>
     RunMutation(() =>
     {
         var character = api.LoadCharacter(id);
-        return Results.Ok(api.EvaluateAndEnvelope(id, character).State);
+        return Results.Ok(api.EvaluateAndEnvelope(id, character, atHd).State);
     }));
 
 // Previews are on by default now that they no longer inline feat option lists.
