@@ -1214,26 +1214,53 @@ public static class PcgConverter
                 continue;
             }
 
-            var grant = grantTicks
-                .Where(candidate => candidate.FeatureType == mapped.Value.FeatureType
-                    && !usedGrantTicks.Contains((candidate.FeatureType, candidate.TickIndex))
-                    && (string.IsNullOrWhiteSpace(ability.ClassName)
-                        || candidate.DriverName.Equals(ability.ClassName, StringComparison.OrdinalIgnoreCase)
-                        || candidate.DriverId.Equals(ability.ClassName, StringComparison.OrdinalIgnoreCase))
-                    && (ability.ClassLevel <= 0 || candidate.DriverLevel == ability.ClassLevel))
-                .OrderBy(candidate => candidate.TickIndex)
-                .FirstOrDefault();
-
-            if (grant == null)
+            // A dynamic feat-sourced pool records all its takings in one APPLIEDTO list
+            // ("Enlarge Spell,Extend Spell,…"); each pick consumes its own grant tick.
+            // Static features keep the one-entry-one-pick semantics.
+            var optionIds = new List<string> { mapped.Value.OptionId };
+            if (!string.IsNullOrWhiteSpace(ability.AppliedTo)
+                && registry.TryGetClassFeature(mapped.Value.FeatureType, out var featureDef)
+                && featureDef?.DynamicSource?.Kind == "feat")
             {
-                result.DroppedClassAbilities.Add(ability.Key);
-                result.Warnings.Add($"Class ability '{ability.Key}' selection '{ability.AppliedTo}' has no matching pending tick");
-                continue;
+                foreach (var extra in ability.AppliedTo.Split(',').Skip(1))
+                {
+                    var extraKey = PcgIdMapper.DefaultIdTransform(extra.Trim());
+                    var extraOption = MatchDynamicFeatOption(registry, featureDef, extraKey);
+                    if (extraOption != null)
+                    {
+                        optionIds.Add(extraOption);
+                    }
+                    else
+                    {
+                        result.DroppedClassAbilities.Add($"{ability.Key} ~ {extra.Trim()}");
+                        result.Warnings.Add($"Class ability '{ability.Key}' selection '{extra.Trim()}' has no matching class-feature option");
+                    }
+                }
             }
 
-            AddClassFeatureChoices(character.Ticks[grant.TickIndex].Choices,
-                mapped.Value.FeatureType, new[] { mapped.Value.OptionId });
-            usedGrantTicks.Add((grant.FeatureType, grant.TickIndex));
+            foreach (var optionId in optionIds)
+            {
+                var grant = grantTicks
+                    .Where(candidate => candidate.FeatureType == mapped.Value.FeatureType
+                        && !usedGrantTicks.Contains((candidate.FeatureType, candidate.TickIndex))
+                        && (string.IsNullOrWhiteSpace(ability.ClassName)
+                            || candidate.DriverName.Equals(ability.ClassName, StringComparison.OrdinalIgnoreCase)
+                            || candidate.DriverId.Equals(ability.ClassName, StringComparison.OrdinalIgnoreCase))
+                        && (ability.ClassLevel <= 0 || candidate.DriverLevel == ability.ClassLevel))
+                    .OrderBy(candidate => candidate.TickIndex)
+                    .FirstOrDefault();
+
+                if (grant == null)
+                {
+                    result.DroppedClassAbilities.Add(ability.Key);
+                    result.Warnings.Add($"Class ability '{ability.Key}' selection '{optionId}' has no matching pending tick");
+                    continue;
+                }
+
+                AddClassFeatureChoices(character.Ticks[grant.TickIndex].Choices,
+                    mapped.Value.FeatureType, new[] { optionId });
+                usedGrantTicks.Add((grant.FeatureType, grant.TickIndex));
+            }
         }
     }
 
@@ -1335,9 +1362,37 @@ public static class PcgConverter
                 || string.Equals(PcgIdMapper.DefaultIdTransform(candidate.Name), optionKey, StringComparison.Ordinal));
             if (option != null)
                 return (feature.Id, option.Id);
+
+            // Features whose options are the character's own feats (blood witch's Blood
+            // Enhancement selects among known metamagic feats) have no static option list —
+            // the selection maps to the feat's content id.
+            var dynamicOption = MatchDynamicFeatOption(registry, feature, optionKey);
+            if (dynamicOption != null)
+                return (feature.Id, dynamicOption);
         }
 
         return null;
+    }
+
+    private static string? MatchDynamicFeatOption(
+        ContentRegistry registry,
+        ClassFeatureDefinition feature,
+        string optionKey)
+    {
+        if (feature.DynamicSource?.Kind != "feat")
+            return null;
+
+        var candidate = "feat:" + optionKey;
+        if (!registry.TryGetFeat(candidate, out var featDef) || featDef == null)
+            return null;
+
+        if (feature.DynamicSource.FeatType != null
+            && !string.Equals(featDef.Type.ToString(), feature.DynamicSource.FeatType, StringComparison.OrdinalIgnoreCase))
+            return null;
+        if (feature.DynamicSource.Tag != null && !featDef.Tags.Contains(feature.DynamicSource.Tag))
+            return null;
+
+        return candidate;
     }
 
     private sealed class ClassFeatureGrantTick

@@ -390,6 +390,16 @@ public class ReplayStudio
                 });
         }
 
+        foreach (var (tickIndex, featureType, optionId) in ctx.DeferredFeatSelectionChecks)
+        {
+            if (!state.Feats.Any(f => FeatVariantId.IsBaseOrVariant(f, optionId)))
+                state.Warnings.Add(new Warning
+                {
+                    TickIndex = tickIndex,
+                    Message = $"'{featureType}' selection '{optionId}' — character does not have that feat"
+                });
+        }
+
         ctx.CurrentDriverId = null;
         ctx.CurrentDriverKind = null;
         ctx.CurrentRacialHitDieMaximum = null;
@@ -1929,7 +1939,7 @@ public class ReplayStudio
                     }
 
                     // Fall through to dynamic source
-                    if (featureDef.DynamicSource != null && ValidateDynamicSelection(state, featureDef.DynamicSource, optionId, featureType))
+                    if (featureDef.DynamicSource != null && ValidateDynamicSelection(ctx, featureDef.DynamicSource, optionId, featureType))
                     {
                         state.ClassFeatureSelections.TryAdd(featureType, new List<string>());
                         state.ClassFeatureSelections[featureType].Add(optionId);
@@ -2695,15 +2705,16 @@ public class ReplayStudio
     public const string FighterBonusTag = "fighter_bonus";
     public const string SpellMasteryFeatId = "feat:spell_mastery";
 
-    private bool ValidateDynamicSelection(CharacterState state, DynamicOptionSource source, string optionId, string featureType)
+    private bool ValidateDynamicSelection(PermabuffContext ctx, DynamicOptionSource source, string optionId, string featureType)
     {
+        var state = ctx.State;
         if (source.Kind == "feat")
         {
+            // The feat may legitimately sit on a later tick (imports store all feats on the
+            // final one), so the possession check is deferred to end of timeline. Content
+            // facts — the feat exists, has the right type and tag — are checked now.
             if (!state.Feats.Contains(optionId))
-            {
-                state.Warnings.Add(new Warning { TickIndex = state.TotalHD, Message = $"'{featureType}' selection '{optionId}' — character does not have that feat" });
-                return false;
-            }
+                ctx.DeferredFeatSelectionChecks.Add((state.TotalHD, featureType, optionId));
 
             if (!_content.TryGetFeat(optionId, out var featDef) || featDef == null)
             {

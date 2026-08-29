@@ -161,6 +161,64 @@ public class PcgConverterTests
         Assert.Single(feats, f => f == "feat:spell_focus");
     }
 
+    [RequiresPrivatePacksFact]
+    public void Convert_DynamicFeatPool_MapsEveryPickOntoItsGrantTick()
+    {
+        // Blood witch's Blood Enhancement selects among the character's own metamagic feats;
+        // PCGen records all five pool picks in one comma-separated APPLIEDTO. Each pick must
+        // land on its own grant tick (BW 1/3/5/7/9), and the has-the-feat validation defers
+        // to end of timeline because imports store feats on the final tick.
+        var data = new PcgCharacterData
+        {
+            CharacterName = "Blood Pool Test",
+            Race = "Human",
+            Alignment = "NE",
+            BaseStats = new() { ["STR"] = 10, ["DEX"] = 10, ["CON"] = 14, ["INT"] = 10, ["WIS"] = 10, ["CHA"] = 16 },
+            Classes = new()
+            {
+                new PcgClassEntry { Name = "Sorcerer", Level = 5 },
+                new PcgClassEntry { Name = "Blood Witch", Level = 5 },
+            },
+            Levels = Enumerable.Range(1, 5).Select(l => new PcgLevelEntry { ClassName = "Sorcerer", ClassLevel = l })
+                .Concat(Enumerable.Range(1, 5).Select(l => new PcgLevelEntry { ClassName = "Blood Witch", ClassLevel = l }))
+                .ToList(),
+            Feats = new()
+            {
+                new PcgFeatEntry { Key = "Enlarge Spell", Types = new() { "Metamagic" } },
+                new PcgFeatEntry { Key = "Extend Spell", Types = new() { "Metamagic" } },
+                new PcgFeatEntry { Key = "Heighten Spell", Types = new() { "Metamagic" } },
+            },
+            ClassAbilities = new()
+            {
+                new PcgClassAbilityEntry
+                {
+                    Key = "Blood Enhancement",
+                    AppliedTo = "Enlarge Spell,Extend Spell,Heighten Spell",
+                    ClassName = "Blood Witch"
+                },
+            },
+        };
+
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+
+        Assert.Empty(result.DroppedClassAbilities);
+        var picks = result.Character.Ticks
+            .SelectMany(t => (t.Choices.ClassFeatureChoices ?? new())
+                .Where(kv => kv.Key == "class_feature:bw_blood_enhancement")
+                .SelectMany(kv => kv.Value))
+            .ToList();
+        Assert.Equal(
+            new[] { "feat:enlarge_spell", "feat:extend_spell", "feat:heighten_spell" },
+            picks);
+
+        // Feats sit on the final tick; the deferred check must accept them without warnings.
+        var state = new ReplayStudio(registry).Evaluate(result.Character);
+        Assert.DoesNotContain(state.Warnings, w => w.Message.Contains("does not have that feat"));
+        Assert.Equal(3, state.ClassFeatureSelections
+            .GetValueOrDefault("class_feature:bw_blood_enhancement", new List<string>()).Count);
+    }
+
     [Fact]
     public void Convert_MarkerClassAbilities_AreConsumedSilently()
     {

@@ -191,6 +191,14 @@ public class PermabuffContext
     public GameRules Rules { get; }
     public IContentLookup? Content { get; }
     public TickChoices? CurrentTickChoices { get; set; }
+
+    /// <summary>
+    /// Dynamic feat-sourced class-feature selections recorded before their feat appeared in
+    /// state. Feats are stored on the final tick of imported characters, so the has-the-feat
+    /// half of the validation is re-checked once the whole timeline has applied — the same
+    /// deferral driver feat-prerequisites get.
+    /// </summary>
+    public List<(int TickIndex, string FeatureType, string OptionId)> DeferredFeatSelectionChecks { get; } = new();
     // Driver id of the current tick being processed (null outside tick context, e.g. race/template setup).
     public string? CurrentDriverId { get; set; }
     public DriverKind? CurrentDriverKind { get; set; }
