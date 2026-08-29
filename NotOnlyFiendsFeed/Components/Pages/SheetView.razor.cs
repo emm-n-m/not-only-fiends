@@ -140,6 +140,9 @@ public partial class SheetView
 
     [Parameter] public string? Id { get; set; }
 
+    /// <summary>Opens the sheet already positioned at this HD — a shareable life-stage view.</summary>
+    [Parameter, SupplyParameterFromQuery(Name = "atHd")] public int? AtHd { get; set; }
+
     private readonly List<CharacterFileInfo> _savedCharacters = new();
 
     // The route id the character on screen came from, and whether that load actually finished.
@@ -211,7 +214,9 @@ public partial class SheetView
 
             // A character with no HD yet — a blank cohort or follower — still has a race and
             // templates to show, and the slider has to stay at a level it can actually render.
-            _viewHD = Math.Max(1, _character.Ticks.Count);
+            _viewHD = AtHd is int requested
+                ? Math.Clamp(requested, 1, Math.Max(1, _character.Ticks.Count))
+                : Math.Max(1, _character.Ticks.Count);
             _state = _engine.Evaluate(_character, upToHD: _viewHD);
             _raceDefinition = _registry.GetAllRaces().FirstOrDefault(r => r.Id == _character.RaceId);
             NormalizeActiveTab();
