@@ -1171,7 +1171,7 @@ public static class PcgConverter
         {
             foreach (var ability in data.ClassAbilities)
             {
-                if (IsAnimalTrick(ability))
+                if (IsAnimalTrick(ability) || IsMarkerConsumedElsewhere(ability))
                     continue;
                 result.DroppedClassAbilities.Add(ability.Key);
                 result.Warnings.Add($"Class ability '{ability.Key}' was not resolved because content validation was unavailable");
@@ -1195,6 +1195,15 @@ public static class PcgConverter
             // Already consumed at the top of Convert, where it chose the class's driver.
             // There is no per-tick selection left to make.
             if (PcgIdMapper.IsClassSelectingAcf(ability.Key))
+                continue;
+
+            // Markers whose information imports through another path entirely:
+            // *LANGBONUS rows duplicate the LANGUAGE list (and the campaign's LST files
+            // were mass-edited to LANGBONUS:any, so they never match an authored bonus
+            // list), and "Epic Spellcaster (X Spellstat)" records the stat that the
+            // engine already takes from the epic spell selections' classId
+            // (class:epic_spells_cha). Dropping them as missing selections is noise.
+            if (IsMarkerConsumedElsewhere(ability))
                 continue;
 
             var mapped = MapClassAbility(ability, registry);
@@ -1231,6 +1240,10 @@ public static class PcgConverter
     private static bool IsAnimalTrick(PcgClassAbilityEntry ability) =>
         ability.Key.StartsWith("Animal Trick", StringComparison.OrdinalIgnoreCase)
         || ability.AppliedTo?.StartsWith("Animal Trick", StringComparison.OrdinalIgnoreCase) == true;
+
+    private static bool IsMarkerConsumedElsewhere(PcgClassAbilityEntry ability) =>
+        ability.Key.Equals("*LANGBONUS", StringComparison.OrdinalIgnoreCase)
+        || ability.Key.StartsWith("Epic Spellcaster (", StringComparison.OrdinalIgnoreCase);
 
     private static List<ClassFeatureGrantTick> BuildClassFeatureGrantTicks(
         List<Tick> ticks,

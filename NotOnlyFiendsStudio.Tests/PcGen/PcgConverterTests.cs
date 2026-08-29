@@ -162,6 +162,24 @@ public class PcgConverterTests
     }
 
     [Fact]
+    public void Convert_MarkerClassAbilities_AreConsumedSilently()
+    {
+        // *LANGBONUS duplicates the LANGUAGE rows (and the campaign's LST files use
+        // LANGBONUS:any, so it never matches an authored list); the Epic Spellcaster
+        // spellstat marker duplicates the epic spell selections' classId.
+        var data = CreateClericData();
+        data.ClassAbilities.Add(new PcgClassAbilityEntry { Key = "*LANGBONUS", AppliedTo = "Abyssal" });
+        data.ClassAbilities.Add(new PcgClassAbilityEntry { Key = "Epic Spellcaster (CHA Spellstat)" });
+
+        var registry = TestContentHelper.LoadAllPacks();
+        var result = PcgConverter.Convert(data, new PcgIdMapper(), registry);
+
+        Assert.Empty(result.DroppedClassAbilities);
+        Assert.DoesNotContain(result.Warnings, w => w.Contains("*LANGBONUS"));
+        Assert.DoesNotContain(result.Warnings, w => w.Contains("Epic Spellcaster"));
+    }
+
+    [Fact]
     public void Convert_SpellLikeAbilitySelection_UsesPcGenDisplayName()
     {
         var data = new PcgCharacterData
