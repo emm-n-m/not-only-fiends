@@ -268,6 +268,23 @@ public sealed class AgentApiService
         };
     }
 
+    public ExportPcgResponse ExportPcg(Character character, PcgExportOptions? options = null)
+    {
+        var result = PcgExporter.Export(character, _content, _replayStudio,
+            options ?? _contentService.PcgExportOptions);
+        return new ExportPcgResponse
+        {
+            FileName = result.FileName,
+            Content = result.Content,
+            Encoding = result.Encoding,
+            Status = result.Status,
+            Issues = result.Issues,
+        };
+    }
+
+    public ExportPcgResponse ExportPcgById(string id, PcgExportOptions? options = null) =>
+        ExportPcg(_characterStore.Get(id), options);
+
     /// <summary>
     /// Re-points imported companion links at real store ids. PCGen names a follower; it has no
     /// concept of this app's ids, so the converter can only guess one from the name. Where the

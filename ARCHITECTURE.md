@@ -716,7 +716,7 @@ NotOnlyFiendsFeed/                             # Blazor Server app — "Feed" di
     Pages/
       SheetView.razor                 # Read-only character sheet display at any HD
       BuilderView.razor               # Full builder: race, abilities, HD timeline, feats, skills, spells, domains, permanent events, equipment
-      ImportView.razor                # PCGen .pcg file import
+      ImportView.razor                # PCGen .pcg file import; builder action exports with a fidelity report
       SettingsView.razor              # Read-only view of loaded packs and content summary
     Layout/
       MainLayout.razor                # App shell with sidebar navigation

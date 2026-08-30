@@ -5,5 +5,6 @@
   "author": "Wizards of the Coast",
   "version": "1.0.0",
   "priority": 0,
-  "depends": ["srd_core"]
+  "depends": ["srd_core"],
+  "pcgenCampaigns": ["3.5 RSRD Monsters"]
 }

@@ -15,6 +15,12 @@ public class PackManifest
     public int Priority { get; set; } = 10;
     public List<string> Depends { get; set; } = new();
     public ConflictResolution? OnConflict { get; set; }
+
+    /// <summary>
+    /// PCGen campaign keys which provide this pack's content. When present, exports name every
+    /// campaign from every loaded pack, matching PCGen's own save behavior.
+    /// </summary>
+    public List<string> PcgenCampaigns { get; set; } = new();
 }
 
 /// <summary>

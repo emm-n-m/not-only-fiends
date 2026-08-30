@@ -5,5 +5,6 @@
   "author": "Wizards of the Coast",
   "version": "1.0.0",
   "priority": 5,
-  "depends": ["srd_core"]
+  "depends": ["srd_core"],
+  "pcgenCampaigns": ["Unearthed Arcana"]
 }

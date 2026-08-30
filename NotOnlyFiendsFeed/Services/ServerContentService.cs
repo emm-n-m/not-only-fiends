@@ -1,4 +1,5 @@
 using System.Text.Json;
+using NotOnlyFiendsStudio.PcGen;
 using NotOnlyFiendsStudio.Studio;
 
 namespace NotOnlyFiendsFeed.Services;
@@ -9,6 +10,7 @@ public sealed class ServerContentService
     public IReadOnlyList<LoadedPack> LoadedPacks { get; }
     public ReplayStudio ReplayStudio { get; }
     public string? CharactersPath { get; }
+    public PcgExportOptions PcgExportOptions { get; }
 
     public ServerContentService(IConfiguration configuration, ILogger<ServerContentService> logger)
     {
@@ -100,6 +102,11 @@ public sealed class ServerContentService
         Registry = registry;
         LoadedPacks = orderedPacks;
         ReplayStudio = new ReplayStudio(registry);
+        var pcgenCampaigns = orderedPacks.SelectMany(pack => pack.Manifest.PcgenCampaigns)
+            .Distinct(StringComparer.Ordinal).ToList();
+        PcgExportOptions = new PcgExportOptions();
+        if (pcgenCampaigns.Count > 0)
+            PcgExportOptions.Campaigns = pcgenCampaigns;
 
         logger.LogInformation("Content loaded: {PackCount} packs, {RaceCount} races, {DriverCount} drivers, {FeatCount} feats",
             orderedPacks.Count,

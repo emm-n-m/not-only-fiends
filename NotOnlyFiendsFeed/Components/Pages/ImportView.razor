@@ -161,6 +161,8 @@
             var data = PcgParser.ParseText(fileData.Content, fileData.Name ?? "imported.pcg");
             var mapper = new PcgIdMapper();
             _result = PcgConverter.Convert(data, mapper, registry);
+            if (fileData.UsedLegacyEncoding)
+                _result.Warnings.Insert(0, "The file was not valid UTF-8 and was decoded as a legacy Latin1 PCG archive.");
 
             _jsonPreview = JsonSerializer.Serialize(_result.Character, new JsonSerializerOptions
             {

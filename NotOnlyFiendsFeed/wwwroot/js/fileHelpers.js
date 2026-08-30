@@ -11,6 +11,18 @@ window.fileHelpers = {
         URL.revokeObjectURL(url);
     },
 
+    downloadText: function (filename, content, contentType) {
+        const blob = new Blob([content], { type: `${contentType || "text/plain"};charset=utf-8` });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    },
+
     // Cancelling the native file dialog fires no `change` event, so a promise that only
     // resolves there leaves the awaiting Blazor handler pending forever — the "Open..." button
     // then does nothing on every subsequent click. `cancel` covers modern browsers; the
@@ -45,7 +57,8 @@ window.fileHelpers = {
                 const reader = new FileReader();
                 reader.onload = () => settle(project(file, reader.result));
                 reader.onerror = () => settle(null);
-                reader.readAsText(file, encoding);
+                if (encoding === "pcg-auto") reader.readAsArrayBuffer(file);
+                else reader.readAsText(file, encoding);
             };
             input.oncancel = () => settle(null);
             window.addEventListener("focus", onFocus, { once: true });
@@ -59,7 +72,22 @@ window.fileHelpers = {
     },
 
     openPcgFile: function (inputId) {
-        // Read as Latin1 (iso-8859-1) — PCGen's native encoding
-        return this._pickFile(inputId, "iso-8859-1", (file, text) => ({ name: file.name, content: text }));
+        // PCGen 6.08+ writes UTF-8. Keep a Latin1 fallback for older character archives.
+        return this._pickFile(inputId, "pcg-auto", (file, buffer) => {
+            const bytes = new Uint8Array(buffer);
+            try {
+                return {
+                    name: file.name,
+                    content: new TextDecoder("utf-8", { fatal: true }).decode(bytes),
+                    usedLegacyEncoding: false
+                };
+            } catch {
+                return {
+                    name: file.name,
+                    content: new TextDecoder("iso-8859-1").decode(bytes),
+                    usedLegacyEncoding: true
+                };
+            }
+        });
     }
 };

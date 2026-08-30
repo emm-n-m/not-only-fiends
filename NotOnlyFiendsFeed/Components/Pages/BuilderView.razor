@@ -2,6 +2,7 @@
 @page "/builder/{Id}"
 @using NotOnlyFiendsStudio.Studio
 @using NotOnlyFiendsStudio.Models
+@using NotOnlyFiendsStudio.PcGen
 @using NotOnlyFiendsFeed.Services
 @inject ServerContentService Content
 @inject CharacterStore CharacterStore
@@ -29,7 +30,8 @@ else
         <div class="col d-flex flex-wrap gap-2 align-items-start">
             <button class="btn btn-primary" @onclick="EvaluateCharacter">Evaluate</button>
             <button class="btn btn-success" @onclick="SaveCharacter">Save</button>
-            <button class="btn btn-outline-success" @onclick="DownloadCharacter">Download</button>
+            <button class="btn btn-outline-success" @onclick="DownloadCharacter">Download JSON</button>
+            <button class="btn btn-outline-primary" @onclick="ExportPcg">Export PCGen</button>
             @if (CharacterStore.IsConfigured)
             {
                 <div>
@@ -72,6 +74,24 @@ else
            fields below, and replacing the page with the message stranded the character. *@
         <div class="alert alert-danger py-2" role="alert">
             <strong>Evaluation failed:</strong> @_error
+        </div>
+    }
+
+    @if (_pcgExportIssues.Count > 0)
+    {
+        <div class="alert alert-warning py-2" role="alert">
+            <strong>PCGen export report</strong>
+            <ul class="mb-2">
+                @foreach (var issue in _pcgExportIssues)
+                {
+                    <li><code>@issue.Path</code>: @issue.Message</li>
+                }
+            </ul>
+            @if (_pendingPcgExport != null && _pendingPcgExport.Status == PcgExportStatus.Partial)
+            {
+                <button class="btn btn-sm btn-warning" @onclick="DownloadPartialPcg">Download partial .pcg anyway</button>
+            }
+            <button class="btn btn-sm btn-link" @onclick="ClearPcgExportReport">Dismiss</button>
         </div>
     }
 

@@ -219,6 +219,12 @@ app.MapPost("/api/characters/import-pcg", (ImportPcgRequest request, bool? save,
             : Results.Ok(response);
     }));
 
+app.MapPost("/api/characters/export-pcg", (ExportPcgRequest request, AgentApiService api) =>
+    RunEngine(() => Results.Ok(api.ExportPcg(request.Character, request.Options))));
+
+app.MapGet("/api/characters/{id}/export-pcg", (string id, AgentApiService api) =>
+    RunStore(() => Results.Ok(api.ExportPcgById(id))));
+
 // Razor components (catch-all for Blazor pages)
 app.MapRazorComponents<NotOnlyFiendsFeed.Components.App>()
     .AddInteractiveServerRenderMode();

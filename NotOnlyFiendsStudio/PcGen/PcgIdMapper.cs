@@ -6,9 +6,124 @@ namespace NotOnlyFiendsStudio.PcGen;
 
 public class PcgIdMapper
 {
+    private static readonly Dictionary<string, string> PreferredRaceNames = new(StringComparer.Ordinal)
+    {
+        ["race:human"] = "Human",
+        ["race:dwarf"] = "Dwarf",
+        ["race:elf"] = "Elf",
+        ["race:gnome"] = "Gnome",
+        ["race:half_elf"] = "Half-Elf",
+        ["race:half_orc"] = "Half-Orc",
+        ["race:halfling"] = "Halfling",
+        ["race:outsider"] = "Outsider",
+        ["race:pixie"] = "Pixie",
+        ["race:drow"] = "Elf ~ Drow",
+        ["race:devil_imp"] = "Devil (Imp)",
+        ["race:devil_erinyes"] = "Devil (Erinyes)",
+        ["race:demon_succubus"] = "Demon (Succubus)",
+        ["race:medusa"] = "Medusa",
+        ["race:worg"] = "Worg",
+        ["race:sahuagin_mutant"] = "Sahuagin (Mutant)",
+        ["race:satyr"] = "Satyr",
+        ["race:couatl"] = "Couatl",
+        ["race:nymph"] = "Nymph",
+        ["race:aranea"] = "Aranea",
+        ["race:hell_hound"] = "Hell Hound",
+        ["race:archfiend"] = "Archfiend",
+        ["race:companion_snake_viper_tiny"] = "Companion ~ Snake (Viper/Tiny)",
+        ["race:companion_snake_viper_medium"] = "Companion ~ Snake (Viper/Medium)",
+        ["race:companion_snake_viper_large"] = "Companion ~ Snake (Viper/Large)",
+        ["race:companion_snake_constrictor"] = "Snake (Constrictor)",
+        ["race:companion_tiger"] = "Companion ~ Tiger",
+        ["race:companion_devil_imp"] = "Companion ~ Devil (Imp)",
+        ["race:companion_raven"] = "Companion ~ Raven",
+        ["race:companion_leopard"] = "Companion ~ Leopard",
+        ["race:companion_hawk"] = "Companion ~ Hawk",
+        ["race:companion_bat"] = "Companion ~ Bat",
+        ["race:companion_elemental_air_small"] = "Companion ~ Elemental (Air Small)",
+        ["race:companion_elemental_water_small"] = "Companion ~ Elemental (Water Small)",
+        ["race:companion_shadow"] = "Companion ~ Shadow",
+        ["race:familiar_toad"] = "Companion ~ Toad",
+        ["race:dragon_red_great_wyrm"] = "Dragon (Red Great Wyrm)",
+        ["race:dragon_red_great_wyrm_colossal_plus"] = "Dragon (Red Great Wyrm/Colossal Plus)",
+    };
+
+    private static readonly Dictionary<string, string> PreferredClassNames = new(StringComparer.Ordinal)
+    {
+        ["class:fighter"] = "Fighter",
+        ["class:barbarian"] = "Barbarian",
+        ["class:cleric"] = "Cleric",
+        ["class:sorcerer"] = "Sorcerer",
+        ["class:adept"] = "Adept",
+        ["class:aristocrat"] = "Aristocrat",
+        ["class:bard"] = "Bard",
+        ["class:commoner"] = "Commoner",
+        ["class:druid"] = "Druid",
+        ["class:expert"] = "Expert",
+        ["class:monk"] = "Monk",
+        ["class:paladin"] = "Paladin",
+        ["class:ranger"] = "Ranger",
+        ["class:rogue"] = "Rogue",
+        ["class:warrior"] = "Warrior",
+        ["class:wizard"] = "Wizard",
+        ["class:arcane_archer"] = "Arcane Archer",
+        ["class:arcane_trickster"] = "Arcane Trickster",
+        ["class:archmage"] = "Archmage",
+        ["class:assassin"] = "Assassin",
+        ["class:blackguard"] = "Blackguard",
+        ["class:dragon_disciple"] = "Dragon Disciple",
+        ["class:duelist"] = "Duelist",
+        ["class:dwarven_defender"] = "Dwarven Defender",
+        ["class:eldritch_knight"] = "Eldritch Knight",
+        ["class:hierophant"] = "Hierophant",
+        ["class:horizon_walker"] = "Horizon Walker",
+        ["class:loremaster"] = "Loremaster",
+        ["class:mystic_theurge"] = "Mystic Theurge",
+        ["class:shadowdancer"] = "Shadowdancer",
+        ["class:thaumaturgist"] = "Thaumaturgist",
+        ["class:cosmic_descryer"] = "Cosmic Descryer",
+        ["class:cloistered_cleric"] = "Cleric (Cloistered Cleric)",
+        ["class:paladin_of_tyranny"] = "Paladin of Tyranny",
+        ["class:paladin_of_freedom"] = "Paladin of Freedom",
+        ["class:paladin_of_slaughter"] = "Paladin of Slaughter",
+        ["class:planar_ranger"] = "Ranger (Planar Ranger)",
+        ["class:dark_temptress"] = "Dark Temptress",
+        ["class:blood_witch"] = "Blood Witch",
+        ["class:blood_hexer"] = "Blood Hexer",
+        ["class:spectral_loremaster"] = "Spectral Loremaster",
+        ["class:deathseeker"] = "Deathseeker",
+        ["class:demonologist"] = "Demonologist",
+        ["class:binder"] = "Binder",
+        ["class:possessed"] = "Possessed",
+        ["class:demon_summoner"] = "Demon Summoner",
+        ["class:bargainer"] = "Bargainer",
+        ["class:blood_archer"] = "Blood Archer",
+        ["class:favored_soul"] = "Favored Soul",
+        ["class:arcane_hierophant"] = "Arcane Hierophant",
+        ["class:archfiend"] = "Archfiend",
+        ["class:druid_like_bard"] = "Bard",
+        ["class:elemental_druid"] = "Druid",
+        ["racial_hd:outsider"] = "Outsider",
+        ["racial_hd:animal"] = "Animal",
+        ["racial_hd:elemental"] = "Elemental",
+        ["racial_hd:fey"] = "Fey",
+        ["racial_hd:magical_beast"] = "Magical Beast",
+        ["racial_hd:monstrous_humanoid"] = "Monstrous Humanoid",
+        ["racial_hd:undead"] = "Undead",
+        ["racial_hd:red_dragon"] = "Red Dragon",
+        ["racial_hd:cloud_dragon"] = "Cloud Dragon",
+        ["racial_hd:mist_dragon"] = "Mist Dragon",
+        ["racial_hd:the_oinodaemon"] = "The Oinodaemon",
+    };
     private static readonly Dictionary<string, string> RaceMap = new(StringComparer.OrdinalIgnoreCase)
     {
         ["Human"] = "human",
+        ["Dwarf"] = "dwarf",
+        ["Elf"] = "elf",
+        ["Gnome"] = "gnome",
+        ["Half-Elf"] = "half_elf",
+        ["Half-Orc"] = "half_orc",
+        ["Halfling"] = "halfling",
         ["Outsider"] = "outsider",
 
         // SRD monsters as races
@@ -284,6 +399,38 @@ public class PcgIdMapper
         var bare = RaceMap.GetValueOrDefault(pcgenRace);
         return bare == null ? null : "race:" + bare;
     }
+
+    /// <summary>Preferred PCGen save key for an engine race id.</summary>
+    public string? ToPcgenRace(string raceId) => PreferredRaceNames.GetValueOrDefault(raceId);
+
+    /// <summary>
+    /// Preferred PCGen class key for a driver. The race disambiguates monster classes which use
+    /// a shared racial-HD chassis in the engine but retain their own class key in PCGen.
+    /// </summary>
+    public string? ToPcgenClass(string driverId, string? raceId = null)
+    {
+        if (driverId == "racial_hd:outsider" && raceId == "race:archfiend")
+            return "Archfiend";
+        return PreferredClassNames.GetValueOrDefault(driverId);
+    }
+
+    public static string? ToPcgenSubstitutionLevel(string driverId) => driverId switch
+    {
+        "class:elemental_druid" => "Elemental Druid Option",
+        _ => null,
+    };
+
+    public static string? ToPcgenVariantAbility(string driverId) => driverId switch
+    {
+        "class:druid_like_bard" => "Bard Variant ~ Druid-like Bard",
+        _ => null,
+    };
+
+    public static string? ToPcgenRaceAddition(string raceId) => raceId switch
+    {
+        "race:nymph" => "ADD:[SPELLCASTER:Druid|CHOICE:Druid]",
+        _ => null,
+    };
 
     /// <summary>
     /// Unearthed Arcana alternate class features that decide which driver a class row resolves to.

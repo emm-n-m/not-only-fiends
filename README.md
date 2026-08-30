@@ -25,7 +25,7 @@ See [WORLD.md](WORLD.md) for more.
 - Accurate epic-level progression past level 20
 - Per-tick choice validation: feats, skills, spells, domains, class feature picks
 - Companion / familiar / cohort handling with master-level scaling
-- PCGen `.pcg` import
+- PCGen `.pcg` import and export, with a compatibility report before any lossy download
 
 ## For agents
 
@@ -145,6 +145,8 @@ The same app serves both the Blazor UI and the REST API. Key endpoints:
 - `GET /api/characters`, `POST /api/characters`, `PUT /api/characters/{id}`, `DELETE /api/characters/{id}` — character CRUD
 - `POST /api/characters/{id}/ticks`, `PATCH /api/characters/{id}/ticks/{index}`, `DELETE /api/characters/{id}/ticks/last` — tick-level mutations
 - `POST /api/characters/{id}/simulate` — try a tick without persisting
+- `POST /api/characters/export-pcg` — export a supplied character draft and return UTF-8 `.pcg` content plus a fidelity report
+- `GET /api/characters/{id}/export-pcg` — export a stored character through the same pipeline
 
 OpenAPI metadata is served at `/openapi/v1.json`.
 
@@ -213,7 +215,19 @@ python3 tools/sync_agent_skills.py
 python3 tools/sync_agent_skills.py --check
 ```
 
-## PCGen import
+## PCGen import and export
+
+The builder's **Export PCGen** action writes PCGen's version-2 save format. Clean exports download
+immediately. If an engine input has no safe PCGen representation—such as a mid-career template,
+permanent event, or custom equipment permabuff—the builder shows a field-level compatibility
+report and requires an explicit **Download partial .pcg anyway** action. Exports are UTF-8 and use
+the PCGen campaign keys declared by the loaded packs' `pcgenCampaigns` manifest property.
+
+The REST API exposes the same result as JSON at `POST /api/characters/export-pcg` for an unsaved
+draft and `GET /api/characters/{id}/export-pcg` for a stored character. `status` is `exact`,
+`partial`, or `blocked`; blocked results contain no PCG content.
+
+### Import regression
 
 `PcgImportRegression` runs the PCGen importer over every `.pcg` file in `PCGEN_CHARACTERS_PATH` and compares the result to a committed baseline stored in `{EXTRA_PACKS_PATH}/test-reports/`. Useful signal after:
 

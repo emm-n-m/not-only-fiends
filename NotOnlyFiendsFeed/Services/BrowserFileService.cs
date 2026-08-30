@@ -21,6 +21,11 @@ public class BrowserFileService
         await _js.InvokeVoidAsync("fileHelpers.downloadJson", filename, json);
     }
 
+    public async Task DownloadPcgAsync(string filename, string content)
+    {
+        await _js.InvokeVoidAsync("fileHelpers.downloadText", filename, content, "application/x-pcgen");
+    }
+
     public async Task<Character?> OpenCharacterAsync()
     {
         var json = await _js.InvokeAsync<string?>("fileHelpers.openJsonFile", "file-open-input");
@@ -37,5 +42,6 @@ public class BrowserFileService
     {
         public string? Name { get; set; }
         public string? Content { get; set; }
+        public bool UsedLegacyEncoding { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using NotOnlyFiendsStudio.Models;
+using NotOnlyFiendsStudio.PcGen;
 
 namespace NotOnlyFiendsFeed.Contracts;
 
@@ -275,6 +276,21 @@ public sealed class ImportPcgResponse
     public List<string> UnsupportedCustomEquipmentModifiers { get; set; } = new();
     public List<string> IgnoredTemporaryBonuses { get; set; } = new();
     public bool RaceDropped { get; set; }
+}
+
+public sealed class ExportPcgRequest
+{
+    public Character Character { get; set; } = new();
+    public PcgExportOptions? Options { get; set; }
+}
+
+public sealed class ExportPcgResponse
+{
+    public string FileName { get; set; } = "character.pcg";
+    public string Content { get; set; } = string.Empty;
+    public string Encoding { get; set; } = "utf-8";
+    public PcgExportStatus Status { get; set; }
+    public List<PcgExportIssue> Issues { get; set; } = new();
 }
 
 public sealed class EvaluateCharacterRequest

@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using NotOnlyFiendsFeed.Contracts;
 using NotOnlyFiendsFeed.Services;
 using NotOnlyFiendsStudio.Models;
+using NotOnlyFiendsStudio.PcGen;
 using NotOnlyFiendsStudio.Studio;
 
 namespace NotOnlyFiendsFeed.Components.Pages;
@@ -146,6 +147,8 @@ public partial class BuilderView
     private string? _statusMessage;
     private bool _statusIsError;
     private bool _showOpenPicker;
+    private PcgExportResult? _pendingPcgExport;
+    private List<PcgExportIssue> _pcgExportIssues = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -280,6 +283,8 @@ public partial class BuilderView
 
     private void OnCharacterChanged()
     {
+        _pendingPcgExport = null;
+        _pcgExportIssues.Clear();
         RefreshPerTickData();
         EvaluateCharacter();
         NormalizeActiveTab();
@@ -801,6 +806,47 @@ public partial class BuilderView
         {
             SetStatus($"Download failed: {ex.Message}", true);
         }
+    }
+
+    private async Task ExportPcg()
+    {
+        try
+        {
+            var result = PcgExporter.Export(_character, Content.Registry, Content.ReplayStudio,
+                Content.PcgExportOptions);
+            _pendingPcgExport = result;
+            _pcgExportIssues = result.Issues;
+            if (result.Status == PcgExportStatus.Blocked)
+            {
+                SetStatus("PCGen export is blocked; review the export report.", true);
+                return;
+            }
+            if (result.Status == PcgExportStatus.Partial)
+            {
+                SetStatus("PCGen export has compatibility warnings; review them before downloading.", true);
+                return;
+            }
+            await FileService.DownloadPcgAsync(result.FileName, result.Content);
+            SetStatus($"Exported \"{_character.Name}\" for PCGen.", false);
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"PCGen export failed: {ex.Message}", true);
+        }
+    }
+
+    private async Task DownloadPartialPcg()
+    {
+        if (_pendingPcgExport == null || _pendingPcgExport.Status == PcgExportStatus.Blocked)
+            return;
+        await FileService.DownloadPcgAsync(_pendingPcgExport.FileName, _pendingPcgExport.Content);
+        SetStatus($"Exported \"{_character.Name}\" with PCGen compatibility warnings.", false);
+    }
+
+    private void ClearPcgExportReport()
+    {
+        _pendingPcgExport = null;
+        _pcgExportIssues.Clear();
     }
 
     private async Task OpenFile()

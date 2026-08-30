@@ -30,11 +30,22 @@ public static class PcgParser
     };
 
     /// <summary>
-    /// Parse a .pcg file from disk (reads as Latin1 encoding).
+    /// Parse a .pcg file from disk. PCGen 6.08+ writes UTF-8; a strict decode failure falls back
+    /// to Latin1 for older character archives.
     /// </summary>
     public static PcgCharacterData Parse(string filePath)
     {
-        var lines = File.ReadAllLines(filePath, Encoding.Latin1);
+        var bytes = File.ReadAllBytes(filePath);
+        string content;
+        try
+        {
+            content = new UTF8Encoding(false, true).GetString(bytes);
+        }
+        catch (DecoderFallbackException)
+        {
+            content = Encoding.Latin1.GetString(bytes);
+        }
+        var lines = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         var data = ParseLines(lines);
         data.FileName = Path.GetFileName(filePath);
         return data;
@@ -68,16 +79,16 @@ public static class PcgParser
                 continue;
 
             if (line.StartsWith("CHARACTERNAME:"))
-                data.CharacterName = line["CHARACTERNAME:".Length..];
+                data.CharacterName = Decode(line["CHARACTERNAME:".Length..]);
             else if (line.StartsWith("RACE:"))
                 ParseRace(line, data);
             else if (line.StartsWith("ALIGN:"))
-                data.Alignment = line["ALIGN:".Length..];
+                data.Alignment = Decode(line["ALIGN:".Length..]);
             else if (line.StartsWith("DEITY:"))
                 // First pipe segment only — the rest is domain/weapon/alignment noise.
-                data.Deity = line["DEITY:".Length..].Split('|')[0].Trim();
+                data.Deity = Decode(line["DEITY:".Length..].Split('|')[0].Trim());
             else if (line.StartsWith("GENDER:"))
-                data.Gender = line["GENDER:".Length..].Split('|')[0].Trim();
+                data.Gender = Decode(line["GENDER:".Length..].Split('|')[0].Trim());
             else if (line.StartsWith("STAT:"))
                 ParseStat(line, data);
             else if (line.StartsWith("CLASS:"))
@@ -119,7 +130,7 @@ public static class PcgParser
     {
         var value = line["RACE:".Length..];
         var pipeIdx = value.IndexOf('|');
-        data.Race = pipeIdx >= 0 ? value[..pipeIdx] : value;
+        data.Race = Decode(pipeIdx >= 0 ? value[..pipeIdx] : value);
     }
 
     /// <summary>
@@ -135,7 +146,7 @@ public static class PcgParser
             if (!trimmed.StartsWith("LANGUAGE:", StringComparison.Ordinal))
                 continue;
 
-            var name = trimmed["LANGUAGE:".Length..].Trim();
+            var name = Decode(trimmed["LANGUAGE:".Length..].Trim());
             if (name.Length > 0 && !data.Languages.Contains(name, StringComparer.OrdinalIgnoreCase))
                 data.Languages.Add(name);
         }
@@ -175,8 +186,7 @@ public static class PcgParser
 
     private static void ParseLevel(string line, PcgCharacterData data)
     {
-        var normalized = line.Replace("&pipe;", "\x01");
-        var fields = ParseFields(normalized);
+        var fields = ParseFields(line);
 
         if (!fields.TryGetValue("CLASSABILITIESLEVEL", out var classLevel)) return;
 
@@ -214,7 +224,7 @@ public static class PcgParser
                      @"ADD:\[SPELLCASTER:[^|\]]+\|CHOICE:([^\]]+)\]",
                      RegexOptions.IgnoreCase))
         {
-            var choice = match.Groups[1].Value.Trim();
+            var choice = Decode(match.Groups[1].Value.Trim());
             if (choice.Length > 0)
                 entry.SpellcasterChoices.Add(choice);
         }
@@ -231,7 +241,7 @@ public static class PcgParser
         var nameStart = "SKILL:".Length;
         var nameEnd = line.IndexOf('|', nameStart);
         if (nameEnd < 0) return;
-        var skillName = line[nameStart..nameEnd];
+        var skillName = Decode(line[nameStart..nameEnd]);
 
         const string Marker = "CLASSBOUGHT:[";
         var searchFrom = 0;
@@ -274,7 +284,7 @@ public static class PcgParser
     private static void ParseAbility(string line, PcgCharacterData data)
     {
         var category = ParseFields(line).GetValueOrDefault("CATEGORY")
-            ?? line["ABILITY:".Length..].Split('|')[0].Trim();
+            ?? Decode(line["ABILITY:".Length..].Split('|')[0].Trim());
         if (category.StartsWith("CATEGORY=", StringComparison.OrdinalIgnoreCase))
             category = category["CATEGORY=".Length..];
 
@@ -302,7 +312,7 @@ public static class PcgParser
         {
             var typeFields = line.Split('|')
                 .Where(f => f.StartsWith("TYPE:"))
-                .Select(f => f["TYPE:".Length..])
+                .Select(f => Decode(f["TYPE:".Length..]))
                 .ToList();
 
             var featTypes = typeFields.LastOrDefault() ?? "";
@@ -316,7 +326,7 @@ public static class PcgParser
     {
         var fields = ParseFields(line);
         var category = fields.GetValueOrDefault("CATEGORY") ??
-            line["ABILITY:".Length..].Split('|')[0].Trim();
+            Decode(line["ABILITY:".Length..].Split('|')[0].Trim());
 
         if (category.StartsWith("CATEGORY=", StringComparison.OrdinalIgnoreCase))
             category = category["CATEGORY=".Length..];
@@ -325,7 +335,7 @@ public static class PcgParser
 
         var key = fields.GetValueOrDefault("KEY");
         if (string.IsNullOrWhiteSpace(key))
-            key = line["ABILITY:".Length..].Split('|')[0].Trim();
+            key = Decode(line["ABILITY:".Length..].Split('|')[0].Trim());
         if (string.IsNullOrWhiteSpace(key) || key.Contains('='))
             return;
 
@@ -349,7 +359,7 @@ public static class PcgParser
         var match = Regex.Match(line, @"TEMPLATESAPPLIED:\[NAME:([^\]|]+)");
         if (!match.Success) return;
 
-        var name = match.Groups[1].Value;
+        var name = Decode(match.Groups[1].Value);
         var isInternal = InternalTemplates.Contains(name) ||
                          name.StartsWith("Base Race Type", StringComparison.OrdinalIgnoreCase);
 
@@ -456,7 +466,7 @@ public static class PcgParser
     {
         var rest = line["EQUIPNAME:".Length..];
         var firstPipe = rest.IndexOf('|');
-        var name = firstPipe >= 0 ? rest[..firstPipe] : rest;
+        var name = Decode(firstPipe >= 0 ? rest[..firstPipe] : rest);
 
         if (NaturalAttackSuffix.IsMatch(name))
             return;
@@ -498,7 +508,7 @@ public static class PcgParser
         var rest = line["EQUIPSET:".Length..];
         var firstPipe = rest.IndexOf('|');
         if (firstPipe < 0) return;
-        var slot = rest[..firstPipe];
+        var slot = Decode(rest[..firstPipe]);
 
         var fields = ParseFields(line);
         if (!fields.TryGetValue("ID", out var id)) return;
@@ -550,9 +560,19 @@ public static class PcgParser
 
             var key = part[..colonIdx];
             var value = part[(colonIdx + 1)..];
-            result[key] = value;
+            result[key] = Decode(value);
         }
 
         return result;
     }
+
+    private static string Decode(string value) => value
+        .Replace("&nl;", "\n", StringComparison.Ordinal)
+        .Replace("&cr;", "\r", StringComparison.Ordinal)
+        .Replace("&lf;", "\f", StringComparison.Ordinal)
+        .Replace("&colon;", ":", StringComparison.Ordinal)
+        .Replace("&pipe;", "|", StringComparison.Ordinal)
+        .Replace("&lbracket;", "[", StringComparison.Ordinal)
+        .Replace("&rbracket;", "]", StringComparison.Ordinal)
+        .Replace("&amp;", "&", StringComparison.Ordinal);
 }

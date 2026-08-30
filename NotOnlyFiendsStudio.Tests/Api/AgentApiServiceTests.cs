@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NotOnlyFiendsFeed.Contracts;
 using NotOnlyFiendsFeed.Services;
 using NotOnlyFiendsStudio.Models;
+using NotOnlyFiendsStudio.PcGen;
 
 namespace NotOnlyFiendsStudio.Tests.Api;
 
@@ -125,6 +126,18 @@ public class AgentApiServiceTests
         Assert.Equal(1, response.Sheet.TotalHD);
         Assert.Contains(response.QualifiedFeats, feat => feat.Id == "feat:weapon_focus");
         Assert.Empty(response.PendingChoices.FeatChoices);
+    }
+
+    [Fact]
+    public void ExportPcgReturnsUtf8PcgenDocument()
+    {
+        var response = SharedService.Value.ExportPcg(CreateFirstLevelHumanFighter());
+
+        Assert.Equal(PcgExportStatus.Exact, response.Status);
+        Assert.Equal("utf-8", response.Encoding);
+        Assert.EndsWith(".pcg", response.FileName);
+        Assert.StartsWith("PCGVERSION:2.0\n", response.Content);
+        Assert.Contains("CLASS:Fighter|LEVEL:1", response.Content);
     }
 
     [Fact]
