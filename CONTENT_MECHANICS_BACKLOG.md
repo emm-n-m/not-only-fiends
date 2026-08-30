@@ -16,6 +16,18 @@ and split private-pack findings into the materials repository.
   anti-flanking rules, and effects on other creatures.
 - [ ] Finish weapon-identity and conditional weapon effects, including range- and
   critical-hit-specific bonuses and complete natural/unarmed weapon handling.
+- [ ] Model the paragon template's five unencodable clauses (`srd_epic/templates/paragon.json`
+  carries them as prose only, and every one is a durable number a sheet should show):
+  - **+20 luck on damage for melee and thrown attacks.** `GrantTypedBonus` has one global
+    `Damage` target, so encoding it would also hand the bonus to bows. Same root cause as the
+    weapon-identity row above.
+  - **+13 insight on every special attack.** `GrantSpecialAttack` carries prose and a uses/day
+    string; special attacks have no numeric bonus channel.
+  - **+15 caster level for spell-like abilities.** `GrantCasterLevelModifier` reaches spells
+    only — `SLA.CasterLevel` is a fixed number or tracks total HD, with nothing in between.
+  - **+10 competence on all skill checks.** `CharacterState.SkillBonuses` is keyed by skill id;
+    there is no all-skills channel, and enumerating every skill would break as packs add more.
+  - **Spell resistance equal to CR +25.** The model has no challenge rating at all.
 - [ ] Audit the no-description blind spot: objects with empty `grantedPermabuffs` and no prose
   cannot be classified by the cosmetic-permabuff audit and require `verify-content` against an
   authoritative source.

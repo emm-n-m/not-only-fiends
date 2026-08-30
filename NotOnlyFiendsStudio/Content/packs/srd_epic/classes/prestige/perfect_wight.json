@@ -1,0 +1,169 @@
+[
+  {
+    "$type": "HDDriver",
+    "kind": "Class",
+    "id": "class:perfect_wight",
+    "name": "Perfect Wight",
+    "hitDie": 6,
+    "skillPointsPerLevel": 8,
+    "classSkills": [
+      "skill:appraise",
+      "skill:balance",
+      "skill:bluff",
+      "skill:climb",
+      "skill:craft",
+      "skill:diplomacy",
+      "skill:disable_device",
+      "skill:disguise",
+      "skill:escape_artist",
+      "skill:gather_information",
+      "skill:hide",
+      "skill:jump",
+      "skill:knowledge",
+      "skill:listen",
+      "skill:move_silently",
+      "skill:open_lock",
+      "skill:search",
+      "skill:sense_motive",
+      "skill:spot",
+      "skill:survival",
+      "skill:tumble",
+      "skill:use_rope"
+    ],
+    "babProgression": "poor",
+    "saveProgression": {
+      "fort": "poor",
+      "ref": "poor",
+      "will": "poor"
+    },
+    "levelPermabuffs": {
+      "1": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "weapon_and_armor_proficiency",
+            "name": "Weapon and Armor Proficiency",
+            "description": "Gains no proficiency with any weapons, armor, or shields."
+          }
+        },
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "perfect_wight_greater_invisibility",
+            "name": "Greater Invisibility (Su)",
+            "description": "Greater invisibility as the spell cast by a 20th-level caster, once per day at 1st level plus one additional time per day every five levels thereafter."
+          }
+        },
+        {
+          "$type": "ModifyCounter",
+          "counterId": "perfect_wight_greater_invisibility_uses"
+        }
+      ],
+      "2": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "perfect_wight_improved_legerdemain",
+            "name": "Improved Legerdemain (Su)",
+            "description": "Use Disable Device, Open Lock, Sleight of Hand and Search at a range of 30 feet on objects of 100 lbs. or less, taking 10 if desired; or make one melee sneak attack (or death attack) against a creature within 30 feet as if flanking. Once per day at 2nd level plus one additional time per day every five levels thereafter."
+          }
+        },
+        {
+          "$type": "ModifyCounter",
+          "counterId": "perfect_wight_improved_legerdemain_uses"
+        }
+      ],
+      "3": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "perfect_wight_incorporeal",
+            "name": "Incorporeal (Su)",
+            "description": "Become incorporeal for a number of rounds equal to 20 + perfect wight level. Once per day at 3rd level plus one additional time per day every five levels thereafter."
+          }
+        },
+        {
+          "$type": "ModifyCounter",
+          "counterId": "perfect_wight_incorporeal_uses"
+        }
+      ],
+      "4": [
+        {
+          "$type": "GrantAbility",
+          "ability": {
+            "id": "perfect_wight_shadow_form",
+            "name": "Shadow Form (Su)",
+            "description": "Take shadow form for 1 minute per class level: incorporeal, immune to critical hits, and flying 100 ft. (good). The shadow can also be spent for +1 on a single roll or +1 effective level for a single use, at 7 points of damage each. Once per day at 4th level plus one additional time per day every five levels thereafter."
+          }
+        },
+        {
+          "$type": "ModifyCounter",
+          "counterId": "perfect_wight_shadow_form_uses"
+        }
+      ],
+      "5": [
+        {
+          "$type": "GrantFeatSlot",
+          "restriction": null
+        }
+      ],
+      "6": [
+        {
+          "$type": "ModifyCounter",
+          "counterId": "perfect_wight_greater_invisibility_uses"
+        }
+      ],
+      "7": [
+        {
+          "$type": "ModifyCounter",
+          "counterId": "perfect_wight_improved_legerdemain_uses"
+        }
+      ],
+      "8": [
+        {
+          "$type": "ModifyCounter",
+          "counterId": "perfect_wight_incorporeal_uses"
+        }
+      ],
+      "9": [
+        {
+          "$type": "ModifyCounter",
+          "counterId": "perfect_wight_shadow_form_uses"
+        }
+      ],
+      "10": [
+        {
+          "$type": "GrantFeatSlot",
+          "restriction": null
+        }
+      ]
+    },
+    "perLevelPermabuffs": [],
+    "prerequisites": [
+      {
+        "$type": "MinHD",
+        "value": 21
+      },
+      {
+        "$type": "MinSkillRanks",
+        "skillId": "skill:hide",
+        "value": 24
+      },
+      {
+        "$type": "MinSkillRanks",
+        "skillId": "skill:move_silently",
+        "value": 24
+      },
+      {
+        "$type": "HasFeat",
+        "featId": "feat:self_concealment"
+      },
+      {
+        "$type": "MinCounter",
+        "counterId": "sneak_attack_dice",
+        "value": 10
+      }
+    ],
+    "maxLevel": 10
+  }
+]

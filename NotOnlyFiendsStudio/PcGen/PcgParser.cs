@@ -360,8 +360,12 @@ public static class PcgParser
         if (!match.Success) return;
 
         var name = Decode(match.Groups[1].Value);
+        // Divine-rank templates are not dropped — PcgConverter reads the rank out of them and
+        // stores it as the character's divinity — so they are internal here for the same reason
+        // the base-race-type rows are: nothing downstream should look for a matching template.
         var isInternal = InternalTemplates.Contains(name) ||
-                         name.StartsWith("Base Race Type", StringComparison.OrdinalIgnoreCase);
+                         name.StartsWith("Base Race Type", StringComparison.OrdinalIgnoreCase) ||
+                         PcgConverter.IsDivineRankTemplate(name);
 
         data.Templates.Add(new PcgTemplateEntry
         {

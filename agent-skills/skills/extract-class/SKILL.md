@@ -96,6 +96,16 @@ missing across the board. When a character needs them, the SRD pages are `epicCl
 `epicPrestigeClasses.html`, and PCGen's `rsrd_classes_prestige_epic.lst` gives the cadence
 directly (`14:REPEATLEVEL:4` = every four levels from 14th). Add explicit entries for the levels
 you need and say in the commit how far you went — the cap is arbitrary, not a rule.
+`arcane_trickster` and `assassin` are the worked examples; both stop at class level 30.
+
+A class that can only be *entered* at epic level is a different thing from an epic progression on
+an ordinary class. It gets its own SRD page (`perfectWight.html`, `cosmicDescryer.html`,
+`agentRetriever.html`, …), its table prints only Level and Special because base attack and saves
+stop at 20th, and it belongs in `srd_epic/classes/prestige/`. Author the entry gate explicitly —
+`MinHD` 21 alongside the printed skill/feat requirements — since the printed requirements often
+imply it without stating it (24 ranks is unreachable below 21st level). The BAB and save
+progressions are inert for these, because `HDDriver.GetPermabuffs` stops granting both past the
+epic threshold; author the honest "none" rather than borrowing a neighbour's.
 
 ## Key conventions
 

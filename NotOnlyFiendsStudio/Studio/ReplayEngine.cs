@@ -658,15 +658,20 @@ public class ReplayStudio
     private void FinalizeHitPoints(CharacterState state)
     {
         var conMod = state.AbilityModifier(Ability.CON);
+        // Divine rank and the paragon template both say "maximum hit points", which outranks a
+        // saved roll: the die is not rolled at all.
+        var maximized = state.Divinity != null || state.MaximizeHitDice;
         state.HP = state.HitDice.Select((hitDie, index) =>
         {
-            var roll = state.Divinity != null
+            var roll = maximized
                 ? hitDie.DieSize
                 : hitDie.SavedRoll
                 ?? (_rules.FirstHDMaxHP && index == 0
                     ? hitDie.DieSize
                     : hitDie.DieSize / 2 + 1);
-            return Math.Max(1, roll + conMod);
+            // The per-die minimum of 1 floors what the die itself earns; a per-HD grant is
+            // added on top of that floor, not folded into it.
+            return Math.Max(1, roll + conMod) + state.BonusHitPointsPerHitDie;
         }).Sum() + state.FlatHitPointBonuses - 5 * state.EquipmentNegativeLevels;
         state.HP = Math.Max(0, state.HP);
     }
@@ -782,7 +787,9 @@ public class ReplayStudio
             state.Capabilities.Add("plane shift at will");
         }
 
-        state.DamageReduction.Add(new DREntry { Value = DivineRankRules.DamageReduction(rank), BypassedBy = "epic" });
+        // Through GrantDR, not a direct Add: damage reduction with the same bypass does not stack,
+        // and a deity can already carry DR 10/epic from a template such as paragon.
+        new GrantDR { Value = DivineRankRules.DamageReduction(rank), BypassedBy = "epic" }.Apply(ctx);
         state.Resistances["fire"] = Math.Max(state.Resistances.GetValueOrDefault("fire"), 5 + rank);
         state.SpellResistance = Math.Max(state.SpellResistance ?? 0, 32 + rank);
 
@@ -950,14 +957,21 @@ public class ReplayStudio
         };
     }
 
+    /// <summary>
+    /// "A deity can use any domain spell it can grant as a spell-like ability at will." The rule
+    /// carries no rank qualifier — unlike the Domain Powers entry printed beside it, which does —
+    /// so a rank-0 quasi-deity gets these as well, and no cleric level is required for any of it.
+    /// The domains are read from both sides: a deity's own creation choices, and any the character
+    /// selected through a class or brought in from an import.
+    /// </summary>
     private void FinalizeDivineSpellLikeAbilities(CharacterState state)
     {
         var divine = state.Divinity;
-        if (divine == null || divine.DivineRank is < 1 or > 20) return;
+        if (divine == null || divine.DivineRank > 20) return;
         var rank = divine.DivineRank;
         var cha = state.AbilityModifier(Ability.CHA);
 
-        foreach (var domainId in divine.DomainIds)
+        foreach (var domainId in divine.DomainIds.Concat(state.Domains).Distinct(StringComparer.Ordinal))
         {
             if (!_content.TryGetDomain(domainId, out var domain) || domain == null) continue;
             foreach (var (spellLevel, spellId) in domain.BonusSpells)
@@ -976,7 +990,10 @@ public class ReplayStudio
             }
         }
 
-        AddDivineTravelSla(state, "spell:teleport_greater", "Greater Teleport");
+        // Divine travel is a rank-1 capability, not a rank-0 one: it sits beside "grant spells"
+        // in the list ApplyDivinity gates behind rank > 0.
+        if (rank >= 1)
+            AddDivineTravelSla(state, "spell:teleport_greater", "Greater Teleport");
         if (rank >= 6)
             AddDivineTravelSla(state, "spell:plane_shift", "Plane Shift");
     }

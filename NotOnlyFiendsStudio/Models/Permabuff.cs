@@ -29,6 +29,9 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(ModifyCounter), "ModifyCounter")]
 [JsonDerivedType(typeof(GrantImmunity), "GrantImmunity")]
 [JsonDerivedType(typeof(GrantFastHealing), "GrantFastHealing")]
+[JsonDerivedType(typeof(GrantEnergyResistance), "GrantEnergyResistance")]
+[JsonDerivedType(typeof(MaximizeHitDice), "MaximizeHitDice")]
+[JsonDerivedType(typeof(GrantHitPointsPerHitDie), "GrantHitPointsPerHitDie")]
 [JsonDerivedType(typeof(GrantTurnResistance), "GrantTurnResistance")]
 [JsonDerivedType(typeof(GrantNaturalAttack), "GrantNaturalAttack")]
 [JsonDerivedType(typeof(GrantAbilityModifierToSaves), "GrantAbilityModifierToSaves")]
@@ -999,6 +1002,24 @@ public class GrantImmunity : Permabuff
     }
 }
 
+/// <summary>
+/// Energy resistance that does not stack with what the creature already has — the template
+/// wording "resistance 10; if the creature already possesses such resistance, use whichever
+/// is better". <see cref="ModifyAttribute"/> with an AttributeTarget.Resistance target is the
+/// additive form, for sources the SRD really does add together.
+/// </summary>
+public class GrantEnergyResistance : Permabuff
+{
+    public string Element { get; set; } = string.Empty;
+    public int Value { get; set; }
+
+    public override void Apply(PermabuffContext ctx)
+    {
+        var resistances = ctx.State.Resistances;
+        resistances[Element] = Math.Max(resistances.GetValueOrDefault(Element), Value);
+    }
+}
+
 /// <summary>Sets the creature's fast-healing rate to the highest granted value.</summary>
 public class GrantFastHealing : Permabuff
 {
@@ -1006,6 +1027,28 @@ public class GrantFastHealing : Permabuff
 
     public override void Apply(PermabuffContext ctx) =>
         ctx.State.FastHealing = Math.Max(ctx.State.FastHealing, Value);
+}
+
+/// <summary>
+/// "A paragon creature always has maximum hit points." Every Hit Die rolls its maximum,
+/// dice banked before the grant included, and a saved roll is overridden — the same
+/// arithmetic divine rank already gets.
+/// </summary>
+public class MaximizeHitDice : Permabuff
+{
+    public override void Apply(PermabuffContext ctx) => ctx.State.MaximizeHitDice = true;
+}
+
+/// <summary>
+/// Extra hit points on every Hit Die — the paragon template's "additional 12 hit points per HD".
+/// The tail pass adds it after the per-die minimum of 1, so it reaches dice banked before the
+/// grant and every die taken after it.
+/// </summary>
+public class GrantHitPointsPerHitDie : Permabuff
+{
+    public int Value { get; set; }
+
+    public override void Apply(PermabuffContext ctx) => ctx.State.BonusHitPointsPerHitDie += Value;
 }
 
 /// <summary>Records the creature's bonus on checks to resist being turned or rebuked.</summary>

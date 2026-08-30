@@ -353,8 +353,37 @@ public static class PcgExporter
                 continue; // Engine implementation detail; PCGen rebuilds its own internal templates.
             writer.Line($"TEMPLATESAPPLIED:[NAME:{PcgWriter.Encode(template.Name)}]");
         }
+        WriteDivineRankTemplates(writer, character);
         writer.Section("Character Region");
         writer.Line("REGION:None");
+    }
+
+    /// <summary>
+    /// Divine rank goes back out the way PCGen states it: the chooser, the numbered rank, and the
+    /// band, each row naming the next. The engine stores one integer, so this is the inverse of
+    /// <c>PcgConverter.ApplyDivineRankTemplates</c> — without it an import/export round trip
+    /// silently demotes a deity to a mortal.
+    /// </summary>
+    private static void WriteDivineRankTemplates(PcgWriter writer, Character character)
+    {
+        var rank = character.Divinity?.DivineRank;
+        if (rank == null) return;
+
+        // PCGen has one row for everything past the printed table rather than a row per rank.
+        var rankName = rank.Value > 20 ? "Divine Rank (21+)" : $"Divine Rank ({rank.Value})";
+        var band = DivineRankRules.Status(rank.Value) switch
+        {
+            DivineStatus.QuasiDeity => "Quasideity",
+            DivineStatus.Demigod => "Demigod",
+            DivineStatus.LesserDeity => "Lesser Deity",
+            DivineStatus.IntermediateDeity => "Intermediate Deity",
+            DivineStatus.GreaterDeity => "Greater Deity",
+            _ => "Overdeity",
+        };
+
+        writer.Line($"TEMPLATESAPPLIED:[NAME:Divine Rank|CHOSENTEMPLATE:[NAME:{rankName}]]");
+        writer.Line($"TEMPLATESAPPLIED:[NAME:{rankName}|CHOSENTEMPLATE:[NAME:{band}]]");
+        writer.Line($"TEMPLATESAPPLIED:[NAME:{band}]");
     }
 
     private static void WriteSkills(

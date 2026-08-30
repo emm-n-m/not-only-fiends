@@ -330,4 +330,165 @@ public class EpicIntegrationTests
         Assert.Equal(10, state10.TotalHD);
         Assert.Equal(10, state10.BaseBAB);
     }
+
+    [Fact]
+    public void EpicAssassin_ContinuesSneakAttackAndBonusFeatsPastTenthLevel()
+    {
+        var (_, engine) = CreateStudio();
+
+        var ticks = Enumerable.Repeat("class:rogue", 10)
+            .Concat(Enumerable.Repeat("class:assassin", 20))
+            .Select(driverId => new Tick { DriverId = driverId })
+            .ToList();
+        var character = new Character
+        {
+            Name = "Epic Assassin",
+            RaceId = "race:human",
+            Alignment = Alignment.NE,
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 16, CON = 12, INT = 14, WIS = 10, CHA = 10
+            },
+            Ticks = ticks
+        };
+
+        var state = engine.Evaluate(character);
+
+        // Rogue 1-9 odd levels (5d6) plus assassin 1-19 odd levels (10d6): the epic assassin's
+        // sneak attack keeps rising +1d6 every two levels after 9th.
+        Assert.Equal(15, state.Counters["sneak_attack_dice"]);
+        Assert.DoesNotContain(state.Warnings, warning =>
+            warning.Message.Contains("exceeds max level", StringComparison.Ordinal));
+
+        // Control: the same 30 character levels with the assassin capped at 10 and the rest in a
+        // class that grants no slots of its own. The difference is the epic assassin's bonus feat
+        // every four levels after 10th — assassin 14 and 18.
+        character.Ticks = Enumerable.Repeat("class:rogue", 10)
+            .Concat(Enumerable.Repeat("class:assassin", 10))
+            .Concat(Enumerable.Repeat("class:sorcerer", 10))
+            .Select(driverId => new Tick { DriverId = driverId })
+            .ToList();
+        var control = engine.Evaluate(character);
+
+        Assert.Equal(10, control.Counters["sneak_attack_dice"]);
+        Assert.Equal(control.FeatSlots.Count(slot => slot.Restriction == null) + 2,
+            state.FeatSlots.Count(slot => slot.Restriction == null));
+    }
+
+    [Fact]
+    public void PrestigeClassPastTenth_WarnsOnlyWhileTheCharacterIsStillNonEpic()
+    {
+        var (_, engine) = CreateStudio();
+
+        // Assassin 11 is reached at HD 17 here, which the SRD forbids: "a ten-level prestige
+        // class can progress beyond 10th level, but only if the character level is already 20th
+        // or higher". Assassin 15 lands at HD 21 and is legal.
+        var ticks = Enumerable.Repeat("class:rogue", 6)
+            .Concat(Enumerable.Repeat("class:assassin", 20))
+            .Select(driverId => new Tick { DriverId = driverId })
+            .ToList();
+        var character = new Character
+        {
+            Name = "Premature Epic Assassin",
+            RaceId = "race:human",
+            Alignment = Alignment.NE,
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 16, CON = 12, INT = 14, WIS = 10, CHA = 10
+            },
+            Ticks = ticks
+        };
+
+        var state = engine.Evaluate(character);
+
+        var overruns = state.Warnings
+            .Where(warning => warning.Message.Contains("exceeds max level", StringComparison.Ordinal))
+            .Select(warning => warning.TickIndex)
+            .ToList();
+        Assert.Equal(new int?[] { 17, 18, 19, 20 }, overruns);
+    }
+
+    [Fact]
+    public void PerfectWight_EntersOnlyOnceEpicAndScalesItsFourDailyPowers()
+    {
+        var (_, engine) = CreateStudio();
+
+        // 24 ranks of Hide and Move Silently cannot exist before 21st level (max ranks = level + 3),
+        // which is the SRD's own reason this class is epic-only. Buy 4 ranks of each at 1st level
+        // and 1 more per level after, then take the class from HD 22 on.
+        var ticks = new List<Tick>();
+        for (var level = 1; level <= 21; level++)
+        {
+            var halfRanks = level == 1 ? 8 : 2;
+            ticks.Add(new Tick
+            {
+                DriverId = "class:rogue",
+                Choices = new TickChoices
+                {
+                    SkillAllocations = new List<SkillAllocation>
+                    {
+                        new() { SkillId = "skill:hide", HalfRanks = halfRanks },
+                        new() { SkillId = "skill:move_silently", HalfRanks = halfRanks },
+                    }
+                }
+            });
+        }
+        ticks.AddRange(Enumerable.Range(0, 10).Select(_ => new Tick { DriverId = "class:perfect_wight" }));
+        ticks[^1].Choices = new TickChoices { FeatIds = new List<string> { "feat:self_concealment" } };
+
+        var character = new Character
+        {
+            Name = "Perfect Wight",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 30, CON = 12, INT = 14, WIS = 10, CHA = 10
+            },
+            Ticks = ticks
+        };
+
+        var state = engine.Evaluate(character);
+
+        Assert.Equal(10, state.ClassLevels["class:perfect_wight"]);
+        Assert.Equal(24, state.SkillHalfRanks["skill:hide"] / 2);
+        // Rogue 19 caps sneak attack at 10d6, which is the class's own entry requirement.
+        Assert.Equal(10, state.Counters["sneak_attack_dice"]);
+        Assert.DoesNotContain(state.Warnings, warning =>
+            warning.Message.Contains("prerequisite not met for Perfect Wight", StringComparison.Ordinal));
+
+        // 1st and 6th, 2nd and 7th, 3rd and 8th, 4th and 9th.
+        Assert.Equal(2, state.Counters["perfect_wight_greater_invisibility_uses"]);
+        Assert.Equal(2, state.Counters["perfect_wight_improved_legerdemain_uses"]);
+        Assert.Equal(2, state.Counters["perfect_wight_incorporeal_uses"]);
+        Assert.Equal(2, state.Counters["perfect_wight_shadow_form_uses"]);
+        Assert.Contains(state.Abilities, ability => ability.Id == "perfect_wight_shadow_form");
+    }
+
+    [Fact]
+    public void PerfectWight_TakenBeforeEpicWarnsOnEveryUnmetRequirement()
+    {
+        var (_, engine) = CreateStudio();
+
+        var character = new Character
+        {
+            Name = "Premature Wight",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 10, DEX = 14, CON = 12, INT = 14, WIS = 10, CHA = 10
+            },
+            Ticks = new List<Tick> { new() { DriverId = "class:perfect_wight" } }
+        };
+
+        var state = engine.Evaluate(character);
+
+        var unmet = state.Warnings
+            .Where(warning => warning.Message.Contains("prerequisite not met for Perfect Wight", StringComparison.Ordinal))
+            .Select(warning => warning.Message)
+            .ToList();
+        Assert.Contains(unmet, message => message.Contains("21", StringComparison.Ordinal));
+        Assert.Contains(unmet, message => message.Contains("skill:hide", StringComparison.Ordinal));
+        Assert.Contains(unmet, message => message.Contains("sneak_attack_dice", StringComparison.Ordinal));
+        Assert.Contains(unmet, message => message.Contains("feat:self_concealment", StringComparison.Ordinal));
+    }
 }

@@ -736,4 +736,70 @@ public class TemplateTests
         Assert.Single(state.NaturalAttacks);
         Assert.Contains(state.Abilities, a => a.Id == "test_ability");
     }
+
+    [Fact]
+    public void Paragon_MaximizesHitDiceAndAppliesTheEpicChassis()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var character = new Character
+        {
+            Name = "Paragon Fighter",
+            RaceId = "race:human",
+            TemplateIds = new List<string> { "template:paragon" },
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick>
+            {
+                new() { DriverId = "class:fighter", Choices = new TickChoices { HitPointsRolled = 3 } },
+                new() { DriverId = "class:fighter", Choices = new TickChoices { HitPointsRolled = 3 } }
+            }
+        };
+
+        var state = new ReplayStudio(registry).Evaluate(character);
+
+        // "All ability scores are 15 points higher than those of the base creature."
+        Assert.Equal(25, state.AbilityScores.CON);
+        // Maximum hit points outrank the saved rolls of 3: two d10s at 10, +7 Con each, and the
+        // template's additional 12 hit points per Hit Die.
+        Assert.Equal(2 * (10 + 7 + 12), state.HP);
+        // Speed triples; natural armor is a floor of +5 over the base creature's.
+        Assert.Equal(90, state.Speeds[MovementMode.Land]);
+        Assert.Equal(5, state.NaturalArmor);
+        Assert.Equal(12, state.AC.Components[BonusType.Insight]);
+        Assert.Equal(12, state.AC.Components[BonusType.Luck]);
+        Assert.Equal(10, state.Resistances["fire"]);
+        Assert.Equal(10, state.Resistances["cold"]);
+        Assert.Equal(20, state.FastHealing);
+        Assert.Equal(10, Assert.Single(state.DamageReduction, entry => entry.BypassedBy == "epic").Value);
+        foreach (var target in new[] { SaveTarget.Fort, SaveTarget.Ref, SaveTarget.Will })
+            Assert.Equal(10, state.SaveBonuses
+                .Where(bonus => bonus.Target == target && bonus.BonusType == BonusType.Insight)
+                .Sum(bonus => bonus.Value));
+        foreach (var slaId in new[] { "pgn_sla_greater_dispel_magic", "pgn_sla_haste", "pgn_sla_see_invisibility" })
+            Assert.Equal(15, Assert.Single(state.SLAs, sla => sla.Id == slaId).CasterLevel);
+    }
+
+    [Fact]
+    public void Paragon_KeepsTheBetterResistanceAndNaturalArmorOfTheBaseCreature()
+    {
+        var registry = TestContentHelper.LoadAllPacks();
+        var baseline = new Character
+        {
+            Name = "Succubus",
+            RaceId = "race:demon_succubus",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick> { new() { DriverId = "racial_hd:outsider" } }
+        };
+        var paragon = baseline.Clone();
+        paragon.TemplateIds = new List<string> { "template:paragon" };
+
+        var studio = new ReplayStudio(registry);
+        var plain = studio.Evaluate(baseline);
+        var state = studio.Evaluate(paragon);
+
+        // "If the creature already possesses such resistance, use whichever is better" — a demon's
+        // fire and cold resistance 10 must not be added to the template's own 10.
+        Assert.Equal(Math.Max(10, plain.Resistances.GetValueOrDefault("fire")), state.Resistances["fire"]);
+        Assert.Equal(Math.Max(10, plain.Resistances.GetValueOrDefault("cold")), state.Resistances["cold"]);
+        Assert.Equal(Math.Max(5, plain.NaturalArmor), state.NaturalArmor);
+    }
 }

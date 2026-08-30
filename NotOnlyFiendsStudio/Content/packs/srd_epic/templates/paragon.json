@@ -1,0 +1,205 @@
+[
+  {
+    "id": "template:paragon",
+    "name": "Paragon",
+    "acquisitionKind": "inherited",
+    "subtypeAdditions": [],
+    "abilityModifiers": {
+      "str": 15,
+      "dex": 15,
+      "con": 15,
+      "int": 15,
+      "wis": 15,
+      "cha": 15
+    },
+    "naturalArmorFloor": 5,
+    "derivedSpeedRules": [
+      {
+        "mode": "land",
+        "sourceMode": "land",
+        "multiplier": 3
+      },
+      {
+        "mode": "fly",
+        "sourceMode": "fly",
+        "multiplier": 3
+      },
+      {
+        "mode": "swim",
+        "sourceMode": "swim",
+        "multiplier": 3
+      },
+      {
+        "mode": "burrow",
+        "sourceMode": "burrow",
+        "multiplier": 3
+      },
+      {
+        "mode": "climb",
+        "sourceMode": "climb",
+        "multiplier": 3
+      }
+    ],
+    "levelAdjustment": 0,
+    "naturalAttacks": [],
+    "creationPermabuffs": [
+      {
+        "$type": "MaximizeHitDice"
+      },
+      {
+        "$type": "GrantHitPointsPerHitDie",
+        "value": 12
+      },
+      {
+        "$type": "GrantTypedBonus",
+        "target": "AC",
+        "bonusType": "Insight",
+        "value": {
+          "expression": "12"
+        }
+      },
+      {
+        "$type": "GrantTypedBonus",
+        "target": "AC",
+        "bonusType": "Luck",
+        "value": {
+          "expression": "12"
+        }
+      },
+      {
+        "$type": "GrantTypedBonus",
+        "target": "Attack",
+        "bonusType": "Luck",
+        "value": {
+          "expression": "25"
+        }
+      },
+      {
+        "$type": "GrantSaveBonus",
+        "target": "Fort",
+        "bonusType": "Insight",
+        "value": 10
+      },
+      {
+        "$type": "GrantSaveBonus",
+        "target": "Ref",
+        "bonusType": "Insight",
+        "value": 10
+      },
+      {
+        "$type": "GrantSaveBonus",
+        "target": "Will",
+        "bonusType": "Insight",
+        "value": 10
+      },
+      {
+        "$type": "GrantEnergyResistance",
+        "element": "fire",
+        "value": 10
+      },
+      {
+        "$type": "GrantEnergyResistance",
+        "element": "cold",
+        "value": 10
+      },
+      {
+        "$type": "GrantDR",
+        "value": 10,
+        "bypassedBy": "epic"
+      },
+      {
+        "$type": "GrantFastHealing",
+        "value": 20
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "pgn_sla_greater_dispel_magic",
+          "name": "Greater Dispel Magic",
+          "usesPerDay": "3/day",
+          "casterLevel": 15
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "pgn_sla_haste",
+          "name": "Haste",
+          "usesPerDay": "3/day",
+          "casterLevel": 15
+        }
+      },
+      {
+        "$type": "GrantSLA",
+        "sla": {
+          "id": "pgn_sla_see_invisibility",
+          "name": "See Invisibility",
+          "usesPerDay": "3/day",
+          "casterLevel": 15
+        }
+      },
+      {
+        "$type": "GrantFeatSlot",
+        "restriction": null
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "pgn_melee_damage",
+          "name": "Paragon Damage",
+          "description": "+20 luck bonus on damage rolls for all melee and thrown ranged attacks."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "pgn_special_attack_insight",
+          "name": "Paragon Special Attacks",
+          "description": "Every special attack the base creature has gains a +13 insight bonus where applicable. The bonus applies only once to any given special ability."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "pgn_spell_like_caster_level",
+          "name": "Paragon Spell-Like Abilities",
+          "description": "+15 to caster level for the base creature's spell-like abilities."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "pgn_skill_mastery",
+          "name": "Paragon Skill Mastery",
+          "description": "+10 competence bonus on all skill checks."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "pgn_spell_resistance",
+          "name": "Paragon Spell Resistance",
+          "description": "Spell resistance equal to the paragon creature's CR +25, or the base creature's spell resistance, whichever is higher."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "pgn_natural_weapons_epic",
+          "name": "Natural Weapons Treated as Epic",
+          "description": "Natural weapons are treated as epic weapons for overcoming damage reduction."
+        }
+      },
+      {
+        "$type": "GrantAbility",
+        "ability": {
+          "id": "pgn_challenge_rating",
+          "name": "Paragon Challenge Rating",
+          "description": "Challenge Rating is the base creature's +15."
+        }
+      }
+    ],
+    "scalingPermabuffs": {},
+    "scalingFormulas": []
+  }
+]

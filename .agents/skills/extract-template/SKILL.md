@@ -39,7 +39,8 @@ The following templates are present in the mirror:
 | Demilich, Paragon, Pseudonatural, Worm That Walks | `epicNonAbominations.html` |
 | Phrenic | `psionicMonsters.html` |
 
-Already extracted: `half_fiend`, `half_dragon`, `fiendish`, `lich` (see `srd_core/templates/`).
+Already extracted: `half_fiend`, `half_dragon`, `fiendish`, `lich` (see `srd_core/templates/`)
+and `paragon` (see `srd_epic/templates/`).
 
 Other landmark files:
 

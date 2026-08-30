@@ -31,6 +31,65 @@ public class PrivatePackRulesAccuracyTests
         }, languages);
     }
 
+    // "Succubus Step Mom.pcg" EQUIPNAME witnesses, each with its PCGen CUSTOMIZATION line:
+    // Lawbane        BASEITEM:Assassin's Dagger, EQMOD STEEL.PLUS_10_WEAP.BNS_AC_SCRD|+5
+    //                .CHAOS_POWER_MELEE.DEFEND.UNHOLY_POWER_MELEE, COST 14653102, WT 1.
+    // Rainbow Piercer BASEITEM:Longbow, EQMOD WOOD.FAERIES_SPELLTCH.FAERIES_PRISMTC.PLUS_10_WEAP
+    //                .CHAOS_POWER_RANGED.KEEN.UNERRING_ACCURACY, COST 18000375, WT 3.
+    // Pleasure Bringer BASEITEM:Lash of Languishing (as dagger) — enchantment_equip_weap.lst:10
+    //                gives CRITRANGE:4 (17-20) and SPROP "Keen Icy Dagger +3" — EQMOD PLUS_10_WEAP
+    //                .VICIOUS.WOUND…RETRN.THROW, COST 4592900, WT 4.
+    // Grace's Gown   BASEITEM:Robe of Stars, EQMOD BNS_SKL_CMP|Bluff=+10|Gather Information=+10
+    //                |Diplomacy=+10|Perform ~ Dance=+20, COST 158000, WT 1.
+    [RequiresPrivatePacksFact]
+    public void ArchDemonessItems_MatchTheirPcgCustomizationLines()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+
+        var lawbane = registry.GetEquipment("deceit:lawbane");
+        Assert.Equal(10, lawbane.EnhancementBonus);
+        Assert.Equal(1_465_310_200, lawbane.PriceCp);
+        Assert.Equal("1d4", lawbane.Weapon!.Damage);
+        Assert.Equal(19, lawbane.Weapon.CritRangeLow);
+        var sacred = Assert.Single(lawbane.GrantedPermabuffs.OfType<GrantTypedBonus>());
+        Assert.Equal(BonusTarget.AC, sacred.Target);
+        Assert.Equal(BonusType.Sacred, sacred.BonusType);
+
+        var piercer = registry.GetEquipment("deceit:rainbow_piercer");
+        Assert.Equal(10, piercer.EnhancementBonus);
+        Assert.Equal(19, piercer.Weapon!.CritRangeLow); // keen, on a longbow that normally threatens on 20.
+        Assert.Equal(3, piercer.Weapon.CritMultiplier);
+        Assert.True(piercer.Weapon.Ranged);
+
+        // Keen is already folded into the printed threat range of the base weapon.
+        Assert.Equal(17, registry.GetEquipment("deceit:pleasure_bringer").Weapon!.CritRangeLow);
+
+        var gown = registry.GetEquipment("deceit:graces_gown");
+        Assert.Equal(
+            new[] { 10, 10, 10, 20 },
+            gown.GrantedPermabuffs.OfType<GrantEquipmentSkillBonus>()
+                .OrderBy(bonus => bonus.SkillId, StringComparer.Ordinal)
+                .Select(bonus => bonus.Value.Evaluate(new CharacterState()))
+                .ToArray());
+        // The base robe of stars' own +1 luck bonus on all saves survives the tailoring.
+        Assert.Single(gown.GrantedPermabuffs.OfType<GrantTypedBonus>(),
+            bonus => bonus.Target == BonusTarget.AllSaves && bonus.BonusType == BonusType.Luck);
+    }
+
+    // PCGen writes a variant as "Base (Variant)" where the SRD prints "Base, Variant", and appends
+    // the chooser's own record after a slash. rsrd_equip_arms_and_armor.lst:265 is the item;
+    // line 304 onward are the per-creature-type chooser rows the corpus character carries.
+    [RequiresPrivatePacksFact]
+    public void PcgenVariantNaming_ResolvesToTheSrdItemRatherThanTheBaseOne()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+        var mapper = new NotOnlyFiendsStudio.PcGen.PcgIdMapper();
+
+        Assert.Equal("ammunition:slaying_arrow_greater",
+            mapper.MapEquipment("Slaying Arrow (Greater/Outsiders Slaying Arrow (Greater/lawful))", registry));
+        Assert.Equal("weapon:longbow_composite", mapper.MapEquipment("Longbow (Composite)", registry));
+    }
+
     // mongoose_publishing/encyclopaedia_divine/fey_magic/fey_skills.lst:7:
     // Knowledge (Reverie) KEYSTAT:INT USEUNTRAINED:NO.
     [RequiresPrivatePacksFact]

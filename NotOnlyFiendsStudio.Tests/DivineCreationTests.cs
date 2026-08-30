@@ -169,6 +169,78 @@ public class DivineCreationTests
         Assert.Contains("good", state.Subtypes);
     }
 
+    [Fact]
+    public void QuasiDeity_CastsEveryDomainSpellItGrantsAtWillWithoutClericLevels()
+    {
+        var character = HumanFighter();
+        character.BaseAbilityScores.CHA = 18;
+        character.Divinity = new DivinityChoices
+        {
+            DivineRank = 0,
+            DomainIds = new() { "domain:fire" },
+        };
+
+        var state = Evaluate(character);
+
+        // "A deity can use any domain spell it can grant as a spell-like ability at will" carries
+        // no rank qualifier, so rank 0 gets these even though it grants no spells to worshippers
+        // and has no cleric level of its own.
+        Assert.False(state.Divinity!.GrantsSpells);
+        Assert.DoesNotContain(state.ClassLevels, level => level.Key == "class:cleric");
+        var burningHands = Assert.Single(state.SLAs,
+            sla => sla.Id == "divine_domain_sla_spell:burning_hands");
+        Assert.Equal("at will", burningHands.UsesPerDay);
+        Assert.Equal(10, burningHands.CasterLevel); // 10 + divine rank 0.
+        Assert.Equal(15, burningHands.SaveDC); // 10 + spell level 1 + Cha 4 + rank 0.
+        // Every level of the domain, not just the low ones.
+        Assert.Contains(state.SLAs, sla => sla.Id == "divine_domain_sla_spell:elemental_swarm");
+        // Divine travel stays a rank-1 power.
+        Assert.DoesNotContain(state.SLAs, sla => sla.Id.StartsWith("divine_travel_", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Deity_TreatsDomainsChosenThroughAClassAsItsOwn()
+    {
+        var character = HumanFighter();
+        character.BaseAbilityScores.WIS = 14;
+        character.Ticks = new()
+        {
+            new Tick
+            {
+                DriverId = "class:cleric",
+                Choices = new TickChoices
+                {
+                    ClassFeatureChoices = new() { ["domains"] = new() { "domain:fire", "domain:magic" } }
+                }
+            }
+        };
+        character.Divinity = new DivinityChoices { DivineRank = 1 };
+
+        var state = Evaluate(character);
+
+        // The deity declared no domains of its own; the ones it took as a cleric are the ones it
+        // can grant, so they are the ones it casts at will.
+        Assert.Empty(state.Divinity!.DomainIds);
+        Assert.Contains("domain:fire", state.Domains);
+        Assert.Contains(state.SLAs, sla =>
+            sla.Id == "divine_domain_sla_spell:burning_hands" && sla.UsesPerDay == "at will");
+    }
+
+    [Fact]
+    public void Deity_DoesNotStackItsDamageReductionWithATemplateThatAlreadyGrantsEpicDR()
+    {
+        var character = HumanFighter();
+        character.TemplateIds = new List<string> { "template:paragon" };
+        character.Divinity = new DivinityChoices { DivineRank = 0 };
+
+        var state = Evaluate(character);
+
+        // Paragon grants DR 10/epic and a rank-0 deity grants DR 10/epic. Same bypass, so one
+        // entry at the better value — not two rows the sheet would read as 20.
+        var epic = Assert.Single(state.DamageReduction, dr => dr.BypassedBy == "epic");
+        Assert.Equal(10, epic.Value);
+    }
+
     private static Character HumanFighter() => new()
     {
         Name = "Divine Test",

@@ -735,6 +735,56 @@ public class PcgConverterTests
     }
 
     [Fact]
+    public void Convert_DivineRankTemplates_BecomeADivineRankRatherThanMissingTemplates()
+    {
+        var data = CreateClericData();
+        // The chain PCGen writes for a quasi-deity: chooser, chosen rank, band. Parsed rather
+        // than hand-built, so the test covers the parser's internal marking too.
+        data.Templates = PcgParser.ParseText(
+            """
+            TEMPLATESAPPLIED:[NAME:Divine Rank|CHOSENTEMPLATE:[NAME:Divine Rank (0)]]
+            TEMPLATESAPPLIED:[NAME:Divine Rank (0)|CHOSENTEMPLATE:[NAME:Quasideity]]
+            TEMPLATESAPPLIED:[NAME:Quasideity]
+            TEMPLATESAPPLIED:[NAME:Half-Fiend]
+            """).Templates;
+        Assert.Equal(3, data.Templates.Count(template => template.IsInternal));
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper());
+
+        Assert.Equal(0, result.Character.Divinity?.DivineRank);
+        Assert.Equal(new[] { "template:half_fiend" }, result.Character.TemplateIds);
+        Assert.Empty(result.DroppedTemplates);
+        Assert.DoesNotContain(result.Warnings, warning =>
+            warning.Contains("Divine Rank", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Convert_DivineBandWithoutANumericRank_ImportsTheBandFloorAndSaysSo()
+    {
+        var data = CreateClericData();
+        data.Templates = PcgParser.ParseText("TEMPLATESAPPLIED:[NAME:Lesser Deity]").Templates;
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper());
+
+        Assert.Equal(6, result.Character.Divinity?.DivineRank);
+        Assert.Empty(result.DroppedTemplates);
+        Assert.Contains(result.Warnings, warning =>
+            warning.Contains("Lesser Deity", StringComparison.Ordinal)
+            && warning.Contains("divine rank 6", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Convert_NoDivineTemplates_LeavesTheCharacterMortal()
+    {
+        var data = CreateClericData();
+        data.Templates = new() { new PcgTemplateEntry { Name = "Half-Fiend" } };
+
+        var result = PcgConverter.Convert(data, new PcgIdMapper());
+
+        Assert.Null(result.Character.Divinity);
+    }
+
+    [Fact]
     public void Convert_Templates_Included()
     {
         var data = CreateClericData();

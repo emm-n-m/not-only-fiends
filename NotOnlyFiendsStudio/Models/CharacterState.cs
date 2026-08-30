@@ -164,6 +164,21 @@ public class CharacterState
     [System.Text.Json.Serialization.JsonIgnore]
     public int FlatHitPointBonuses { get; set; }
 
+    /// <summary>
+    /// Every Hit Die rolls its maximum — the paragon template's "always has maximum hit points",
+    /// and the same rule divine rank already applies. Read by the hit-point tail pass, so it
+    /// restates dice banked before the grant as well as every die after it.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public bool MaximizeHitDice { get; set; }
+
+    /// <summary>
+    /// Extra hit points earned by every Hit Die — the paragon template's "+12 hit points per HD".
+    /// Applied by the tail pass on top of the per-die minimum of 1, retroactively like Constitution.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public int BonusHitPointsPerHitDie { get; set; }
+
     // Skills — ranks stored as half-ranks (int). 5 ranks = 10, 2.5 ranks = 5.
     public Dictionary<string, int> SkillHalfRanks { get; set; } = new();
     public HashSet<string> ClassSkills { get; set; } = new();

@@ -42,6 +42,27 @@ public class PcgConversionResult
 
 public static class PcgConverter
 {
+    private static readonly Regex DivineRankTemplate =
+        new(@"^Divine Rank \((\d+)\+?\)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    /// <summary>The chooser shells PCGen writes beside the chosen rank; they carry no rank of their own.</summary>
+    private static readonly HashSet<string> DivineRankChoosers = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Divine Rank",
+        "Innate Divine Rank",
+    };
+
+    /// <summary>Each band's lowest rank, used only when no numeric template accompanies it.</summary>
+    private static readonly Dictionary<string, int> DivineRankBands = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Quasideity"] = 0,
+        ["Demigod"] = 1,
+        ["Lesser Deity"] = 6,
+        ["Intermediate Deity"] = 11,
+        ["Greater Deity"] = 16,
+        ["Overdeity"] = 21,
+    };
+
     /// <summary>
     /// Convert parsed PCGen data to an engine Character.
     /// If registry is provided, validates that mapped IDs exist in content.
@@ -196,7 +217,9 @@ public static class PcgConverter
             character.RaceId = raceId;
         }
 
-        // Map templates
+        // Map templates. Divinity comes first: PCGen states it as templates, and the parser has
+        // already marked those internal so the mapping loop below never sees them.
+        ApplyDivineRankTemplates(data, character, result);
         foreach (var template in data.Templates.Where(t => !t.IsInternal))
         {
             var templateId = mapper.MapTemplate(template.Name);
@@ -621,6 +644,61 @@ public static class PcgConverter
         result.Character = character;
         return result;
     }
+
+    /// <summary>
+    /// PCGen has no divine-rank field: it states divinity as a chain of templates — the
+    /// <c>Divine Rank</c> chooser, the chosen <c>Divine Rank (N)</c>, and the band name
+    /// (<c>Quasideity</c>, <c>Demigod</c>, …). Only the numeric one carries anything the engine
+    /// cannot derive for itself — <c>DivineRankRules.Status</c> re-derives the band from the rank —
+    /// so that one sets <see cref="Character.Divinity"/> and the rest are consumed.
+    ///
+    /// A band with no numeric template beside it still means the character is a deity. Rather than
+    /// drop that, take the band's lowest rank and say so: the alternative is a sheet that quietly
+    /// stops being divine.
+    /// </summary>
+    private static void ApplyDivineRankTemplates(
+        PcgCharacterData data, Character character, PcgConversionResult result)
+    {
+        int? rank = null;
+        string? band = null;
+
+        foreach (var template in data.Templates)
+        {
+            var match = DivineRankTemplate.Match(template.Name);
+            if (match.Success)
+            {
+                // "Divine Rank (21+)" is PCGen's overdeity row. Import it as 21 rather than
+                // inventing a ceiling: the engine warns about the missing rank table itself.
+                if (int.TryParse(match.Groups[1].Value, out var value))
+                    rank = rank.HasValue ? Math.Max(rank.Value, value) : value;
+                continue;
+            }
+
+            if (DivineRankBands.ContainsKey(template.Name))
+                band ??= template.Name;
+        }
+
+        if (rank == null && band != null)
+        {
+            rank = DivineRankBands[band];
+            result.Warnings.Add(
+                $"Divine band template '{band}' has no 'Divine Rank (N)' beside it — imported as divine rank {rank}");
+        }
+
+        if (rank == null) return;
+
+        character.Divinity = new DivinityChoices { DivineRank = rank.Value };
+    }
+
+    /// <summary>
+    /// True for the templates PCGen uses to state divine rank. The engine models these as
+    /// <see cref="Character.Divinity"/> rather than as templates, so the parser marks them
+    /// internal and <see cref="ApplyDivineRankTemplates"/> reads the rank out of them instead.
+    /// </summary>
+    public static bool IsDivineRankTemplate(string name) =>
+        DivineRankTemplate.IsMatch(name)
+        || DivineRankChoosers.Contains(name)
+        || DivineRankBands.ContainsKey(name);
 
     /// <summary>
     /// PCGen materializes every template a transformation drags along as its own

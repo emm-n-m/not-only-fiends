@@ -124,7 +124,7 @@
       "type": "object",
       "properties": {
         "damage": { "type": "string", "description": "Medium-size damage dice, e.g., '1d8', '2d6'." },
-        "critRangeLow": { "type": "integer", "minimum": 18, "maximum": 20, "default": 20 },
+        "critRangeLow": { "type": "integer", "minimum": 15, "maximum": 20, "default": 20, "description": "Lowest natural roll that threatens a critical. No printed base weapon goes below 18, but a keen or Improved Critical weapon is authored with the doubled range already applied — 17 for a keen dagger, 15 for a keen rapier." },
         "critMultiplier": { "type": "integer", "minimum": 2, "maximum": 4, "default": 2 },
         "rangeFt": { "type": "integer", "minimum": 0, "default": 0 },
         "damageType": { "type": "string", "description": "e.g., 'slashing', 'piercing', 'bludgeoning', 'piercing+slashing'." },

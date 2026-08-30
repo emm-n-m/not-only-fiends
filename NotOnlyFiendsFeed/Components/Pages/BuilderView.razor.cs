@@ -22,6 +22,10 @@ public partial class BuilderView
         "wild_shape_uses" => $"Wild Shape {value}/day",
         "bardic_music_uses" => $"Bardic Music {value}/day",
         "shadow_jump_distance" => $"Shadow Jump {value} ft.",
+        "perfect_wight_greater_invisibility_uses" => $"Greater Invisibility {value}/day",
+        "perfect_wight_improved_legerdemain_uses" => $"Improved Legerdemain {value}/day",
+        "perfect_wight_incorporeal_uses" => $"Incorporeal {value}/day",
+        "perfect_wight_shadow_form_uses" => $"Shadow Form {value}/day",
         _ => $"{key}: {value}"
     };
 

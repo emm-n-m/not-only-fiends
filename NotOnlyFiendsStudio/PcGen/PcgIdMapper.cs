@@ -82,6 +82,7 @@ public class PcgIdMapper
         ["class:shadowdancer"] = "Shadowdancer",
         ["class:thaumaturgist"] = "Thaumaturgist",
         ["class:cosmic_descryer"] = "Cosmic Descryer",
+        ["class:perfect_wight"] = "Perfect Wight",
         ["class:cloistered_cleric"] = "Cleric (Cloistered Cleric)",
         ["class:paladin_of_tyranny"] = "Paladin of Tyranny",
         ["class:paladin_of_freedom"] = "Paladin of Freedom",
@@ -217,6 +218,7 @@ public class PcgIdMapper
 
         // SRD epic prestige classes
         ["Cosmic Descryer"] = "class:cosmic_descryer",
+        ["Perfect Wight"] = "class:perfect_wight",
 
         // Unearthed Arcana variant classes
         ["Cleric (Cloistered Cleric)"] = "class:cloistered_cleric",
@@ -630,6 +632,18 @@ public class PcgIdMapper
         var stripped = Regex.Replace(pcgenName, @"\s*\+\d+\s*$", "").Trim();
         if (stripped != pcgenName && registry.TryGetEquipmentByName(stripped, out def))
             return def!.Id;
+
+        // PCGen names a variant "Base (Variant)" where the SRD prints "Base, Variant" — the same
+        // item under two house styles ("Longbow (Composite)", "Slaying Arrow (Greater)"). Anything
+        // after the variant is the chooser's own record ("Slaying Arrow (Greater/Outsiders …)") and
+        // is not part of the item's identity, so the first segment is the whole of the variant.
+        var variant = Regex.Match(pcgenName, @"^(?<base>[^(]+?)\s*\((?<variant>[^/()]+)");
+        if (variant.Success)
+        {
+            var reordered = $"{variant.Groups["base"].Value.Trim()}, {variant.Groups["variant"].Value.Trim()}";
+            if (registry.TryGetEquipmentByName(reordered, out def))
+                return def!.Id;
+        }
 
         return null;
     }

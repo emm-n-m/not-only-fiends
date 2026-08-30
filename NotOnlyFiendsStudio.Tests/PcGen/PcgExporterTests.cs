@@ -80,6 +80,29 @@ public class PcgExporterTests
             allocation.SkillId == "skill:intimidate" && allocation.HalfRanks == 8);
     }
 
+    [Theory]
+    [InlineData(0, "Divine Rank (0)", "Quasideity")]
+    [InlineData(6, "Divine Rank (6)", "Lesser Deity")]
+    [InlineData(25, "Divine Rank (21+)", "Overdeity")]
+    public void ExportThenImport_PreservesDivineRank(int rank, string rankName, string band)
+    {
+        var registry = TestContentHelper.LoadBundledPacks();
+        var character = Fighter();
+        character.Divinity = new DivinityChoices { DivineRank = rank };
+
+        var exported = PcgExporter.Export(character, registry);
+
+        Assert.Contains($"TEMPLATESAPPLIED:[NAME:Divine Rank|CHOSENTEMPLATE:[NAME:{rankName}]]", exported.Content);
+        Assert.Contains($"TEMPLATESAPPLIED:[NAME:{rankName}|CHOSENTEMPLATE:[NAME:{band}]]", exported.Content);
+
+        var parsed = PcgParser.ParseText(exported.Content, exported.FileName);
+        var reimported = PcgConverter.Convert(parsed, new PcgIdMapper(), registry);
+
+        // 21+ is one PCGen row for every overdeity rank, so it round-trips to 21, not to 25.
+        Assert.Equal(rank > 20 ? 21 : rank, reimported.Character.Divinity?.DivineRank);
+        Assert.Empty(reimported.DroppedTemplates);
+    }
+
     [Fact]
     public void Export_CrossClassSkill_WritesPcgenCostAndClassSkillFlag()
     {
