@@ -542,7 +542,12 @@ public static class PcgExporter
     {
         writer.Section("Character Deity/Domain");
         if (!string.IsNullOrWhiteSpace(character.Deity))
-            writer.Line($"DEITY:{PcgWriter.Encode(character.Deity)}");
+        {
+            var deityName = registry.TryResolveDeity(character.Deity, out var deity) && deity != null
+                ? deity.Name
+                : character.Deity;
+            writer.Line($"DEITY:{PcgWriter.Encode(deityName)}");
+        }
         foreach (var row in ticks)
         {
             foreach (var feature in new[] { "domains", "imported_source_domains" })

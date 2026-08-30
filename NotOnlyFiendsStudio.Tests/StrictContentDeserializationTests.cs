@@ -21,6 +21,8 @@ public class StrictContentDeserializationTests
         ["racial_hd"] = typeof(List<Driver>),
         ["templates"] = typeof(List<TemplateDriver>),
         ["feats"] = typeof(List<FeatDefinition>),
+        ["deities"] = typeof(List<DeityDefinition>),
+        ["salient_divine_abilities"] = typeof(List<SalientDivineAbilityDefinition>),
         ["domains"] = typeof(List<DomainDefinition>),
         ["spells"] = typeof(List<SpellDefinition>),
         ["skills"] = typeof(List<SkillDefinition>),

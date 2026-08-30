@@ -27,6 +27,7 @@ public class CharacterState
     public bool IsCorporeal { get; set; } = true;
     public Alignment Alignment { get; set; }
     public string? Deity { get; set; }
+    public DivineCharacteristics? Divinity { get; set; }
     public List<string> TemplateIds { get; set; } = new();
     public HashSet<string> Languages { get; set; } = new();
 
@@ -141,11 +142,12 @@ public class CharacterState
 
     // Effective totals (base + epic)
     public int EffectiveBAB => BaseBAB + EpicAttackBonus;
+    public int DivineRankBonus => Divinity?.DivineRank is > 0 and <= 20 ? Divinity.DivineRank : 0;
     public SaveSet EffectiveSaves => new()
     {
-        Fort = BaseSaves.Fort + EpicSaveBonus + AbilityModifier(Ability.CON) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Fort) - EquipmentNegativeLevels,
-        Ref = BaseSaves.Ref + EpicSaveBonus + AbilityModifier(Ability.DEX) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Ref) - EquipmentNegativeLevels,
-        Will = BaseSaves.Will + EpicSaveBonus + AbilityModifier(Ability.WIS) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Will) - EquipmentNegativeLevels
+        Fort = BaseSaves.Fort + EpicSaveBonus + AbilityModifier(Ability.CON) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Fort) + DivineRankBonus - EquipmentNegativeLevels,
+        Ref = BaseSaves.Ref + EpicSaveBonus + AbilityModifier(Ability.DEX) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Ref) + DivineRankBonus - EquipmentNegativeLevels,
+        Will = BaseSaves.Will + EpicSaveBonus + AbilityModifier(Ability.WIS) + AbilitySaveBonusTotal + SaveBonusTotal(SaveTarget.Will) + DivineRankBonus - EquipmentNegativeLevels
     };
 
     private int SaveBonusTotal(SaveTarget target) =>
@@ -540,7 +542,15 @@ public class ItemActivationLevelRule
     public string SourceClassId { get; set; } = string.Empty;
     public int Divisor { get; set; } = 1;
     public int MinimumLevel { get; set; }
-    public int EffectiveLevel(CharacterState state) => Math.Max(MinimumLevel, state.ClassLevels.GetValueOrDefault(SourceClassId) / Divisor);
+    public int EffectiveLevel(CharacterState state)
+    {
+        var sourceLevel = state.ClassLevels.GetValueOrDefault(SourceClassId);
+        var divineClericLevel = state.Divinity?.DomainPowerEffectiveClericLevel ?? 0;
+        if (sourceLevel == 0 && SourceClassId == "class:cleric"
+            && divineClericLevel > 0)
+            sourceLevel = divineClericLevel;
+        return Math.Max(MinimumLevel, sourceLevel / Divisor);
+    }
 }
 
 /// <summary>

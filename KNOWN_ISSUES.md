@@ -404,13 +404,24 @@ tome or wish read after the final level is visible in the final state.
 The converter now maps the selected options for Archmage High Arcana and Loremaster Secrets to
 their granting ticks. Unsupported or unmapped private-pack selections remain reported as drops.
 
-## War-domain favored weapon mapping remains deity-dependent
+## War-domain favored weapon mapping is pack-supplied — fixed
 
-The War domain asks the player to choose a weapon from the equipment catalog. It grants Martial
-Weapon Proficiency when the character lacks the class-wide martial proficiency and always grants
-Weapon Focus for that chosen weapon; this choice is persisted and replayed. The content model does
-not yet contain authoritative deity-to-favored-weapon mappings, so the engine cannot derive the
-choice from `Character.Deity`.
+`DeityDefinition` now carries domains and a favored-weapon content ID. When
+`Character.Deity` resolves by content ID or imported display name, the War domain derives its
+weapon feats from that definition; uncatalogued/free-form patrons retain the persisted manual
+weapon fallback. The public SRD pack intentionally contains no named deities: PCGen's RSRD source
+confirms that the pantheon is closed content, so setting/private packs must supply the mappings.
+
+## Deity characters had no divine-rank creation rules — fixed
+
+`Character.Divinity` now stores only deity-creation decisions (rank, form, identity details,
+portfolio, domains, and salient ability picks). Replay derives the rank 0–20 chassis from the
+bundled SRD mirror, including maximum HP, movement, defenses, divine bonuses, immunities,
+domain powers/SLAs, and the structured aura/senses/realm tables. The epic pack includes all 99
+common salient abilities extracted from `salientAbilities.html`; enforceable prerequisites are
+typed, and selection-dependent conditions that cannot yet be compared exactly produce an explicit
+manual-review warning. Rank 21+ remains intentionally unbuilt because the SRD describes
+overdeities but supplies no statistics for them.
 
 ## Nymph Archdruid's tiger is above her tier
 

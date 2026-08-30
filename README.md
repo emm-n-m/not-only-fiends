@@ -139,7 +139,7 @@ The same app serves both the Blazor UI and the REST API. Key endpoints:
 - `GET /api/health` — loaded packs, content counts, and whether the character store is configured (`status` is `degraded` when `CHARACTERS_PATH` is unset)
 - `GET /api/rules` — game rules constants (epic threshold, feat schedule, etc.)
 - `GET /api/content/catalog` — machine-friendly content summary
-- `GET /api/content/{races|drivers|templates|feats|domains|skills|class-features|spells}` — typed content discovery and lookup
+- `GET /api/content/{races|drivers|templates|feats|deities|salient-divine-abilities|domains|skills|class-features|spells}` — typed content discovery and lookup
 - `POST /api/characters/evaluate` — deterministic replay result for a supplied character JSON
 - `POST /api/characters/next-step` — preview every legal next HD choice with pending decisions
 - `GET /api/characters`, `POST /api/characters`, `PUT /api/characters/{id}`, `DELETE /api/characters/{id}` — character CRUD
@@ -306,12 +306,26 @@ Content/packs/srd_core/
   feats/general.json            # List<FeatDefinition>
   templates/half_fiend.json     # List<TemplateDriver>
   racial_hd/outsider.json       # List<Driver>
+  deities/pantheon.json         # List<DeityDefinition> (setting/private packs)
+  salient_divine_abilities/     # List<SalientDivineAbilityDefinition>
   domains/srd.json              # List<DomainDefinition>
   spells/srd.json               # List<SpellDefinition>
   skills/srd.json               # List<SkillDefinition>
 ```
 
 Schemas for each type live in [`schemas/`](schemas/) and double as the contract the agent extraction skills produce against.
+
+Deities are a supported pack content type, but `srd_core` intentionally ships no named
+pantheon: those names and profiles are closed D&D content rather than part of the Revised SRD.
+Setting and private packs can supply them with [`deity.schema.json`](schemas/deity.schema.json).
+
+Characters that are themselves deities use `Character.Divinity`, independently of the patron in
+`Character.Deity`. The builder supports divine ranks 0–20, form, titles, portfolio, symbol, favored
+weapon, granted domains, and salient divine abilities. Replay derives the SRD divine chassis:
+maximum hit points, speed, AC/attack/save/check bonuses, immunities, DR, fire resistance, SR,
+domain powers and at-will domain spells, aura/senses/realm limits, and the rank-based salient
+ability budget. The 99 common salient abilities are extracted from the bundled SRD mirror into
+the epic pack; regenerate them with `python3 tools/extract_salient_divine_abilities.py`.
 
 ## License
 

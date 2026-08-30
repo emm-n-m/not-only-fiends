@@ -181,6 +181,8 @@ public interface IContentLookup
     bool TryGetFeat(string id, out FeatDefinition? feat);
     bool TryGetTemplate(string id, out TemplateDriver? template);
     bool TryGetClassFeature(string id, out ClassFeatureDefinition? classFeature);
+    bool TryResolveDeity(string reference, out DeityDefinition? deity);
+    bool TryGetSalientDivineAbility(string id, out SalientDivineAbilityDefinition? ability);
     bool TryGetDomain(string id, out DomainDefinition? domain);
     bool TryGetEquipment(string id, out EquipmentDefinition? equipment);
 }

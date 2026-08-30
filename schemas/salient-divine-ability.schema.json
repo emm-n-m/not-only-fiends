@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "salient-divine-ability.schema.json",
+  "title": "D&D 3.5e Salient Divine Ability Definitions",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^salient:[a-z0-9_]+$"
+      },
+      "name": { "type": "string", "minLength": 1 },
+      "description": { "type": "string", "minLength": 1 },
+      "prerequisiteText": { "type": ["string", "null"] },
+      "notes": { "type": ["string", "null"] },
+      "rest": { "type": ["string", "null"] },
+      "minimumDivineRank": { "type": "integer", "minimum": 1, "maximum": 20 },
+      "prerequisites": {
+        "type": "array",
+        "description": "Mechanically enforced prerequisites extracted from the printed prerequisite line.",
+        "items": { "type": "object" }
+      },
+      "requiresManualReview": {
+        "type": "boolean",
+        "description": "True when the printed prerequisite includes a selected parameter or class feature the generic grammar cannot compare exactly."
+      },
+      "suggestedPortfolioElements": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "repeatable": { "type": "boolean" }
+    },
+    "required": [
+      "id",
+      "name",
+      "description",
+      "minimumDivineRank",
+      "prerequisites",
+      "requiresManualReview",
+      "suggestedPortfolioElements",
+      "repeatable"
+    ],
+    "additionalProperties": false
+  }
+}

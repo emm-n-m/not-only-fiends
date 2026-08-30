@@ -150,6 +150,34 @@ else if (_state != null && _character != null)
             </div>
         </div>
 
+        @if (_state.Divinity is { } divine)
+        {
+            <div class="card mb-3">
+                <div class="card-header">Divinity · @divine.Status · Rank @divine.DivineRank</div>
+                <div class="card-body">
+                    @if (divine.Titles.Count > 0) { <p><strong>Titles:</strong> @string.Join(", ", divine.Titles)</p> }
+                    @if (divine.Portfolio.Count > 0) { <p><strong>Portfolio:</strong> @string.Join(", ", divine.Portfolio)</p> }
+                    @if (divine.DomainIds.Count > 0) { <p><strong>Domains:</strong> @string.Join(", ", divine.DomainIds.Select(id => id.Replace("domain:", "")))</p> }
+                    @if (!string.IsNullOrWhiteSpace(divine.Symbol)) { <p><strong>Symbol:</strong> @divine.Symbol</p> }
+                    <p>
+                        <strong>Salient abilities:</strong>
+                        @divine.SalientDivineAbilityIds.Count / @divine.SalientDivineAbilitySlots
+                        @if (divine.SalientDivineAbilityIds.Count > 0)
+                        {
+                            <span>· @string.Join(", ", divine.SalientDivineAbilityIds.Select(id => id.Replace("salient:", "")))</span>
+                        }
+                    </p>
+                    @if (divine.DivineRank >= 1 && divine.DivineRank <= 20)
+                    {
+                        <p><strong>Senses:</strong> @divine.SensesRadiusMiles miles · <strong>Remote locations:</strong> @divine.RemoteSensingLocations</p>
+                        <p><strong>Aura:</strong> @divine.DivineAuraRadius · Will DC @divine.DivineAuraSaveDc</p>
+                        <p><strong>Portfolio sense:</strong> @divine.PortfolioSense</p>
+                        <p class="mb-0"><strong>Godly realm:</strong> @divine.GodlyRealmControl</p>
+                    }
+                </div>
+            </div>
+        }
+
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-3">

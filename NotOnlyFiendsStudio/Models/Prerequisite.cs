@@ -35,10 +35,34 @@ namespace NotOnlyFiendsStudio.Models;
 [JsonDerivedType(typeof(HasCreatureTrait), "HasCreatureTrait")]
 [JsonDerivedType(typeof(HasSpecialAttack), "HasSpecialAttack")]
 [JsonDerivedType(typeof(MinSpellLikeAbilityCasterLevel), "MinSpellLikeAbilityCasterLevel")]
+[JsonDerivedType(typeof(HasDivineDomain), "HasDivineDomain")]
+[JsonDerivedType(typeof(HasSalientDivineAbility), "HasSalientDivineAbility")]
+[JsonDerivedType(typeof(HasFastHealing), "HasFastHealing")]
 public abstract class Prerequisite
 {
     public abstract bool IsMet(CharacterState state);
     public abstract string Description { get; }
+}
+
+public class HasDivineDomain : Prerequisite
+{
+    public string DomainId { get; set; } = string.Empty;
+    public override bool IsMet(CharacterState state) => state.Divinity?.DomainIds.Contains(DomainId) == true;
+    public override string Description => $"Divine domain: {DomainId}";
+}
+
+public class HasSalientDivineAbility : Prerequisite
+{
+    public string AbilityId { get; set; } = string.Empty;
+    public override bool IsMet(CharacterState state) =>
+        state.Divinity?.SalientDivineAbilityIds.Contains(AbilityId) == true;
+    public override string Description => $"Salient divine ability: {AbilityId}";
+}
+
+public class HasFastHealing : Prerequisite
+{
+    public override bool IsMet(CharacterState state) => state.FastHealing > 0;
+    public override string Description => "Fast healing";
 }
 
 public class MinBAB : Prerequisite

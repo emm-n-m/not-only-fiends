@@ -10,6 +10,8 @@ public class ContentRegistry : IContentLookup
     private readonly Dictionary<string, RaceDefinition> _races = new();
     private readonly Dictionary<string, TemplateDriver> _templates = new();
     private readonly Dictionary<string, FeatDefinition> _feats = new();
+    private readonly Dictionary<string, DeityDefinition> _deities = new();
+    private readonly Dictionary<string, SalientDivineAbilityDefinition> _salientDivineAbilities = new();
     private readonly Dictionary<string, DomainDefinition> _domains = new();
     private readonly Dictionary<string, SpellDefinition> _spells = new();
     private readonly Dictionary<string, SkillDefinition> _skills = new();
@@ -33,6 +35,10 @@ public class ContentRegistry : IContentLookup
             "templates", template => Register(_templates, template, t => t.Id)));
         RegisterContentType(new ContentTypeHandler<FeatDefinition>(
             "feats", feat => Register(_feats, feat, f => f.Id)));
+        RegisterContentType(new ContentTypeHandler<DeityDefinition>(
+            "deities", deity => Register(_deities, deity, d => d.Id)));
+        RegisterContentType(new ContentTypeHandler<SalientDivineAbilityDefinition>(
+            "salient_divine_abilities", ability => Register(_salientDivineAbilities, ability, a => a.Id)));
         RegisterContentType(new ContentTypeHandler<DomainDefinition>(
             "domains", domain => Register(_domains, domain, d => d.Id)));
         RegisterContentType(new ContentTypeHandler<SpellDefinition>(
@@ -80,6 +86,9 @@ public class ContentRegistry : IContentLookup
     public void RegisterRace(RaceDefinition race) => Register(_races, race, r => r.Id);
     public void RegisterTemplate(TemplateDriver template) => Register(_templates, template, t => t.Id);
     public void RegisterFeat(FeatDefinition feat) => Register(_feats, feat, f => f.Id);
+    public void RegisterDeity(DeityDefinition deity) => Register(_deities, deity, d => d.Id);
+    public void RegisterSalientDivineAbility(SalientDivineAbilityDefinition ability) =>
+        Register(_salientDivineAbilities, ability, a => a.Id);
     public void RegisterDomain(DomainDefinition domain) => Register(_domains, domain, d => d.Id);
     public void RegisterSpell(SpellDefinition spell)
     {
@@ -139,6 +148,33 @@ public class ContentRegistry : IContentLookup
         feat = null;
         return false;
     }
+
+    public DeityDefinition GetDeity(string id) =>
+        _deities.TryGetValue(id, out var deity)
+            ? deity
+            : throw new KeyNotFoundException($"Deity not found: {id}");
+
+    /// <summary>
+    /// Resolves the value persisted in <see cref="Character.Deity"/>. New content may use a
+    /// stable <c>deity:*</c> ID, while PCGen imports and existing saves carry a display name.
+    /// </summary>
+    public bool TryResolveDeity(string reference, out DeityDefinition? deity)
+    {
+        if (_deities.TryGetValue(reference, out deity))
+            return true;
+
+        deity = _deities.Values.FirstOrDefault(candidate =>
+            string.Equals(candidate.Name, reference, StringComparison.OrdinalIgnoreCase));
+        return deity != null;
+    }
+
+    public SalientDivineAbilityDefinition GetSalientDivineAbility(string id) =>
+        _salientDivineAbilities.TryGetValue(id, out var ability)
+            ? ability
+            : throw new KeyNotFoundException($"Salient divine ability not found: {id}");
+
+    public bool TryGetSalientDivineAbility(string id, out SalientDivineAbilityDefinition? ability) =>
+        _salientDivineAbilities.TryGetValue(id, out ability);
 
     public DomainDefinition GetDomain(string id) =>
         _domains.TryGetValue(id, out var domain)
@@ -206,6 +242,9 @@ public class ContentRegistry : IContentLookup
     public IEnumerable<ClassFeatureDefinition> GetAllClassFeatures() => _classFeatures.Values;
 
     public IEnumerable<FeatDefinition> GetAllFeats() => _feats.Values;
+    public IEnumerable<DeityDefinition> GetAllDeities() => _deities.Values;
+    public IEnumerable<SalientDivineAbilityDefinition> GetAllSalientDivineAbilities() =>
+        _salientDivineAbilities.Values;
     public IEnumerable<RaceDefinition> GetAllRaces() => _races.Values;
     public IEnumerable<Driver> GetAllDrivers() => _drivers.Values;
     public IEnumerable<TemplateDriver> GetAllTemplates() => _templates.Values;
@@ -323,6 +362,9 @@ public class ContentRegistry : IContentLookup
     public void LoadRaceFromJson(string json) => LoadJsonForDirectory("races", json);
     public void LoadTemplateFromJson(string json) => LoadJsonForDirectory("templates", json);
     public void LoadFeatsFromJson(string json) => LoadJsonForDirectory("feats", json);
+    public void LoadDeitiesFromJson(string json) => LoadJsonForDirectory("deities", json);
+    public void LoadSalientDivineAbilitiesFromJson(string json) =>
+        LoadJsonForDirectory("salient_divine_abilities", json);
     public void LoadDomainsFromJson(string json) => LoadJsonForDirectory("domains", json);
     public void LoadSpellsFromJson(string json) => LoadJsonForDirectory("spells", json);
 
@@ -330,6 +372,9 @@ public class ContentRegistry : IContentLookup
     public void LoadRaceFromFile(string path) => LoadRaceFromJson(File.ReadAllText(path));
     public void LoadTemplateFromFile(string path) => LoadTemplateFromJson(File.ReadAllText(path));
     public void LoadFeatsFromFile(string path) => LoadFeatsFromJson(File.ReadAllText(path));
+    public void LoadDeitiesFromFile(string path) => LoadDeitiesFromJson(File.ReadAllText(path));
+    public void LoadSalientDivineAbilitiesFromFile(string path) =>
+        LoadSalientDivineAbilitiesFromJson(File.ReadAllText(path));
     public void LoadDomainsFromFile(string path) => LoadDomainsFromJson(File.ReadAllText(path));
     public void LoadSpellsFromFile(string path) => LoadSpellsFromJson(File.ReadAllText(path));
 
@@ -362,6 +407,21 @@ public class ContentRegistry : IContentLookup
             if (string.IsNullOrWhiteSpace(feat.Id))
                 _validationErrors.Add(new ContentError(ContentErrorKind.MissingId, "Feat has empty ID"));
 
+        foreach (var deity in _deities.Values)
+            if (string.IsNullOrWhiteSpace(deity.Id))
+                _validationErrors.Add(new ContentError(ContentErrorKind.MissingId, "Deity has empty ID"));
+
+        foreach (var ability in _salientDivineAbilities.Values)
+        {
+            if (string.IsNullOrWhiteSpace(ability.Id))
+                _validationErrors.Add(new ContentError(ContentErrorKind.MissingId,
+                    "Salient divine ability has empty ID"));
+            if (ability.MinimumDivineRank < 1 || ability.MinimumDivineRank > 20)
+                _validationErrors.Add(new ContentError(ContentErrorKind.InvalidValue,
+                    $"Salient divine ability '{ability.Id}' has invalid minimum divine rank {ability.MinimumDivineRank}"));
+            ValidatePrerequisites(ability.Prerequisites, $"Salient divine ability '{ability.Id}'");
+        }
+
         foreach (var domain in _domains.Values)
             if (string.IsNullOrWhiteSpace(domain.Id))
                 _validationErrors.Add(new ContentError(ContentErrorKind.MissingId, "Domain has empty ID"));
@@ -379,6 +439,25 @@ public class ContentRegistry : IContentLookup
                 foreach (var (benefitSet, buffs) in opt.AdditionalPermabuffs)
                     ValidatePermabuffList(buffs, $"ClassFeature '{cf.Id}' option '{opt.Id}' benefit set '{benefitSet}'");
             }
+        }
+
+        // Cross-reference: deity domain lists and favored weapons are the mechanical half of
+        // the definition. A misspelled ID would otherwise make domain filtering incomplete or
+        // silently put the War-domain rule back onto its manual fallback.
+        foreach (var deity in _deities.Values)
+        {
+            foreach (var domainId in deity.DomainIds)
+            {
+                if (!_domains.ContainsKey(domainId))
+                    _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                        $"Deity '{deity.Id}' references domain '{domainId}' which does not exist"));
+            }
+
+            if (deity.FavoredWeaponId != null
+                && (!_equipment.TryGetValue(deity.FavoredWeaponId, out var weapon)
+                    || weapon.Category != EquipmentCategory.Weapon))
+                _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                    $"Deity '{deity.Id}' references favored weapon '{deity.FavoredWeaponId}' which is not a weapon"));
         }
 
         foreach (var spell in _spells.Values)
@@ -547,6 +626,18 @@ public class ContentRegistry : IContentLookup
             if (prereq is MinClassLevel minClass && !_drivers.ContainsKey(minClass.ClassId))
                 _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
                     $"{context} has MinClassLevel prerequisite referencing unknown driver '{minClass.ClassId}'"));
+
+            if (prereq is HasDivineDomain domain && !_domains.ContainsKey(domain.DomainId))
+                _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                    $"{context} references unknown divine domain '{domain.DomainId}'"));
+
+            if (prereq is HasSalientDivineAbility salient
+                && !_salientDivineAbilities.ContainsKey(salient.AbilityId))
+                _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
+                    $"{context} references unknown salient divine ability '{salient.AbilityId}'"));
+
+            if (prereq is AnyOf anyOf)
+                ValidatePrerequisites(anyOf.Options, context);
         }
     }
 

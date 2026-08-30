@@ -102,6 +102,12 @@ app.MapGet("/api/content/templates/{id}", (string id, AgentApiService api) => Lo
 app.MapGet("/api/content/feats", (AgentApiService api) => TypedResults.Ok(api.GetFeats()));
 app.MapGet("/api/content/feats/{id}", (string id, AgentApiService api) => Lookup(() => api.GetFeat(id)));
 
+app.MapGet("/api/content/deities", (AgentApiService api) => TypedResults.Ok(api.GetDeities()));
+app.MapGet("/api/content/deities/{id}", (string id, AgentApiService api) => Lookup(() => api.GetDeity(id)));
+
+app.MapGet("/api/content/salient-divine-abilities", (AgentApiService api) => TypedResults.Ok(api.GetSalientDivineAbilities()));
+app.MapGet("/api/content/salient-divine-abilities/{id}", (string id, AgentApiService api) => Lookup(() => api.GetSalientDivineAbility(id)));
+
 app.MapGet("/api/content/domains", (AgentApiService api) => TypedResults.Ok(api.GetDomains()));
 app.MapGet("/api/content/domains/{id}", (string id, AgentApiService api) => Lookup(() => api.GetDomain(id)));
 

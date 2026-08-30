@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "deity.schema.json",
+  "title": "D&D 3.5e Deity Definition",
+  "description": "Schema for setting or private-pack deity definitions. The public SRD pack intentionally contains none because the named D&D pantheon is closed content.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^deity:[a-z0-9_]+$"
+      },
+      "name": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": {
+        "type": "string"
+      },
+      "alignment": {
+        "type": "string",
+        "enum": ["lg", "ln", "le", "ng", "n", "ne", "cg", "cn", "ce"]
+      },
+      "titles": {
+        "type": "array",
+        "items": { "type": "string" },
+        "uniqueItems": true
+      },
+      "portfolio": {
+        "type": "array",
+        "items": { "type": "string" },
+        "uniqueItems": true
+      },
+      "domainIds": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^domain:[a-z0-9_]+$"
+        },
+        "uniqueItems": true
+      },
+      "favoredWeaponId": {
+        "type": ["string", "null"],
+        "pattern": "^weapon:[a-z0-9_]+$"
+      },
+      "symbol": {
+        "type": ["string", "null"]
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "description",
+      "alignment",
+      "titles",
+      "portfolio",
+      "domainIds"
+    ],
+    "additionalProperties": false
+  }
+}

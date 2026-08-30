@@ -31,6 +31,8 @@ public sealed class AgentApiService
             ["drivers"] = _content.GetAllDrivers().Count(),
             ["templates"] = _content.GetAllTemplates().Count(),
             ["feats"] = _content.GetAllFeats().Count(),
+            ["deities"] = _content.GetAllDeities().Count(),
+            ["salientDivineAbilities"] = _content.GetAllSalientDivineAbilities().Count(),
             ["domains"] = _content.GetAllDomains().Count(),
             ["skills"] = _content.GetAllSkills().Count(),
             ["classFeatures"] = _content.GetAllClassFeatures().Count(),
@@ -59,6 +61,14 @@ public sealed class AgentApiService
         Feats = _content.GetAllFeats()
             .OrderBy(f => f.Name)
             .Select(MapFeat)
+            .ToList(),
+        Deities = _content.GetAllDeities()
+            .OrderBy(d => d.Name)
+            .Select(MapDeity)
+            .ToList(),
+        SalientDivineAbilities = _content.GetAllSalientDivineAbilities()
+            .OrderBy(ability => ability.Name)
+            .Select(MapSalientDivineAbility)
             .ToList(),
         Domains = _content.GetAllDomains()
             .OrderBy(d => d.Name)
@@ -140,6 +150,15 @@ public sealed class AgentApiService
         .OrderBy(f => f.Name)
         .Select(MapFeat);
 
+    public IEnumerable<DeitySummaryDto> GetDeities() => _content.GetAllDeities()
+        .OrderBy(d => d.Name)
+        .Select(MapDeity);
+
+    public IEnumerable<SalientDivineAbilitySummaryDto> GetSalientDivineAbilities() =>
+        _content.GetAllSalientDivineAbilities()
+            .OrderBy(ability => ability.Name)
+            .Select(MapSalientDivineAbility);
+
     public IEnumerable<ContentSummaryDto> GetDomains() => _content.GetAllDomains()
         .OrderBy(d => d.Name)
         .Select(d => MapSummary(d.Id, d.Name, d.Description));
@@ -204,6 +223,9 @@ public sealed class AgentApiService
     public Driver GetDriver(string id) => _content.GetDriver(id);
     public TemplateDriver GetTemplate(string id) => _content.GetTemplate(id);
     public FeatDefinition GetFeat(string id) => _content.GetFeat(id);
+    public DeityDefinition GetDeity(string id) => _content.GetDeity(id);
+    public SalientDivineAbilityDefinition GetSalientDivineAbility(string id) =>
+        _content.GetSalientDivineAbility(id);
     public DomainDefinition GetDomain(string id) => _content.GetDomain(id);
     public SpellDefinition GetSpell(string id) => _content.GetSpell(id);
 
@@ -738,6 +760,7 @@ public sealed class AgentApiService
         SpellChoices = BuildSpellSelectionChoiceGroups(state, optionDetail),
         PreparedSpellChoices = BuildPreparedSpellChoiceGroups(state, optionDetail),
         CompanionTemplateChoices = BuildCompanionTemplateChoiceGroups(state),
+        SalientDivineAbilities = BuildSalientDivineAbilityChoices(state, optionDetail),
         SpellLists = state.Spellcasting.Values
             .OrderBy(spellcasting => spellcasting.ClassId)
             .Select(spellcasting => new SpellcastingSummaryDto
@@ -756,6 +779,35 @@ public sealed class AgentApiService
             })
             .ToList()
     };
+
+    private SalientDivineAbilityChoiceGroupDto? BuildSalientDivineAbilityChoices(
+        CharacterState state,
+        OptionDetail optionDetail)
+    {
+        var divine = state.Divinity;
+        if (divine == null || divine.PendingSalientDivineAbilitySlots <= 0)
+            return null;
+
+        var selected = divine.SalientDivineAbilityIds.ToHashSet(StringComparer.Ordinal);
+        var options = _content.GetAllSalientDivineAbilities()
+            .Where(ability => ability.MinimumDivineRank <= divine.DivineRank
+                && ability.Prerequisites.All(prerequisite => prerequisite.IsMet(state))
+                && (ability.Repeatable || !selected.Contains(ability.Id)))
+            .OrderBy(ability => ability.Name)
+            .ToList();
+        return new SalientDivineAbilityChoiceGroupDto
+        {
+            Count = divine.PendingSalientDivineAbilitySlots,
+            OptionCount = options.Count,
+            ExistingSelections = new List<string>(divine.SalientDivineAbilityIds),
+            OptionIds = optionDetail == OptionDetail.Ids
+                ? options.Select(ability => ability.Id).ToList()
+                : null,
+            Options = optionDetail == OptionDetail.Full
+                ? options.Select(MapSalientDivineAbility).ToList()
+                : null,
+        };
+    }
 
     private List<CompanionTemplateChoiceGroupDto> BuildCompanionTemplateChoiceGroups(CharacterState state)
     {
@@ -1099,6 +1151,35 @@ public sealed class AgentApiService
         Id = id,
         Name = name,
         Description = description
+    };
+
+    private static DeitySummaryDto MapDeity(DeityDefinition deity) => new()
+    {
+        Id = deity.Id,
+        Name = deity.Name,
+        Description = deity.Description,
+        Alignment = deity.Alignment,
+        Titles = new List<string>(deity.Titles),
+        Portfolio = new List<string>(deity.Portfolio),
+        DomainIds = new List<string>(deity.DomainIds),
+        FavoredWeaponId = deity.FavoredWeaponId,
+        Symbol = deity.Symbol
+    };
+
+    private static SalientDivineAbilitySummaryDto MapSalientDivineAbility(
+        SalientDivineAbilityDefinition ability) => new()
+    {
+        Id = ability.Id,
+        Name = ability.Name,
+        Description = ability.Description,
+        PrerequisiteText = ability.PrerequisiteText,
+        Notes = ability.Notes,
+        Rest = ability.Rest,
+        MinimumDivineRank = ability.MinimumDivineRank,
+        Prerequisites = ability.Prerequisites.Select(prerequisite => prerequisite.Description).ToList(),
+        RequiresManualReview = ability.RequiresManualReview,
+        SuggestedPortfolioElements = new List<string>(ability.SuggestedPortfolioElements),
+        Repeatable = ability.Repeatable,
     };
 
     private static ContentSummaryDto MapTemplateSummary(TemplateDriver template) => new()

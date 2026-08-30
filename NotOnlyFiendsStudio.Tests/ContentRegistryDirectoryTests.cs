@@ -46,6 +46,42 @@ public class ContentRegistryDirectoryTests
     }
 
     [Fact]
+    public void LoadJsonForDirectory_LoadsDeitiesWithoutRequiringClosedContentInTheBundledPack()
+    {
+        var registry = new ContentRegistry();
+
+        registry.LoadJsonForDirectory("deities",
+            """
+            [{
+              "id": "deity:test",
+              "name": "Test Patron",
+              "description": "A test-only patron.",
+              "alignment": "n",
+              "titles": [],
+              "portfolio": ["testing"],
+              "domainIds": [],
+              "favoredWeaponId": null,
+              "symbol": null
+            }]
+            """);
+
+        Assert.Equal("Test Patron", registry.GetDeity("deity:test").Name);
+    }
+
+    [Fact]
+    public void LoadJsonForDirectory_LoadsSalientDivineAbilitiesFromEpicPack()
+    {
+        var path = Path.Combine(TestContentHelper.GetPacksPath(), "srd_epic",
+            "salient_divine_abilities", "srd.json");
+        var registry = new ContentRegistry();
+
+        registry.LoadJsonForDirectory("salient_divine_abilities", File.ReadAllText(path));
+
+        Assert.Equal(99, registry.GetAllSalientDivineAbilities().Count());
+        Assert.Equal(16, registry.GetSalientDivineAbility("salient:divine_creation").MinimumDivineRank);
+    }
+
+    [Fact]
     public void LoadJsonForDirectory_UnknownDirectoryThrows()
     {
         var registry = new ContentRegistry();

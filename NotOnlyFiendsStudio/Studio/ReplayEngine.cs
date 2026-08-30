@@ -404,10 +404,18 @@ public class ReplayStudio
         ctx.CurrentDriverKind = null;
         ctx.CurrentRacialHitDieMaximum = null;
 
+        // Divine rank is a creation input, but its chassis reads the finished HD/type/size and
+        // must be present before the shared equipment pass totals AC and weapon attacks.
+        ApplyDivinity(ctx, character);
+
         // 5. Apply equipment as a structured post-tick pass:
         //    resolve content → apply permabuffs (typed contributions collected in
         //    ctx.EquipmentPass) → finalize AC, attack lines, encumbrance.
         EvaluateEquipment(ctx, character);
+
+        // Charisma may have changed in the equipment pass; refresh aura and divine SLA DCs from
+        // the final score rather than banking a creation-time modifier.
+        RefreshDivineCharacteristics(state);
 
         // Constitution changes are retroactive to every existing hit die, including
         // level increases, permanent events, and worn equipment.
@@ -457,6 +465,9 @@ public class ReplayStudio
         // 10. Tail pass — domain-derived spell-like abilities. Must be a tail pass: the granting
         // template applies at creation, but the domains it reads are chosen during the tick loop.
         FinalizeDomainSpellLikeAbilities(ctx);
+
+        // A deity's own domains are creation choices rather than class-owned domain selections.
+        FinalizeDivineSpellLikeAbilities(state);
 
         // 11. Tail pass — casting-ability bonus spell slots. Ability scores are final only after
         // equipment has been applied, and developed epic spells use a knowledge-based pool rather
@@ -649,13 +660,339 @@ public class ReplayStudio
         var conMod = state.AbilityModifier(Ability.CON);
         state.HP = state.HitDice.Select((hitDie, index) =>
         {
-            var roll = hitDie.SavedRoll
+            var roll = state.Divinity != null
+                ? hitDie.DieSize
+                : hitDie.SavedRoll
                 ?? (_rules.FirstHDMaxHP && index == 0
                     ? hitDie.DieSize
                     : hitDie.DieSize / 2 + 1);
             return Math.Max(1, roll + conMod);
         }).Sum() + state.FlatHitPointBonuses - 5 * state.EquipmentNegativeLevels;
         state.HP = Math.Max(0, state.HP);
+    }
+
+    private void ApplyDivinity(PermabuffContext ctx, Character character)
+    {
+        var choices = character.Divinity;
+        if (choices == null) return;
+
+        var state = ctx.State;
+        var rank = choices.DivineRank;
+        if (rank < 0)
+        {
+            state.Warnings.Add(new Warning { Message = $"divine rank {rank} is invalid; rank must be 0 or higher" });
+            return;
+        }
+
+        var slots = DivineRankRules.SalientAbilitySlots(rank);
+        var clericLevel = state.ClassLevels.GetValueOrDefault("class:cleric");
+        state.Divinity = new DivineCharacteristics
+        {
+            DivineRank = rank,
+            Status = DivineRankRules.Status(rank),
+            Form = choices.Form,
+            Titles = new List<string>(choices.Titles),
+            Portfolio = choices.Portfolio.Distinct(StringComparer.OrdinalIgnoreCase).ToList(),
+            DomainIds = choices.DomainIds.Distinct(StringComparer.Ordinal).ToList(),
+            SalientDivineAbilityIds = new List<string>(choices.SalientDivineAbilityIds),
+            FavoredWeaponId = choices.FavoredWeaponId,
+            Symbol = choices.Symbol,
+            SalientDivineAbilitySlots = slots,
+            PendingSalientDivineAbilitySlots = Math.Max(0, slots - choices.SalientDivineAbilityIds.Count),
+            GrantsSpells = rank is >= 1 and <= 20,
+            DomainPowerUsesPerDay = rank is >= 1 and <= 20 ? rank : 0,
+            DomainPowerEffectiveClericLevel = rank is >= 1 and <= 20
+                ? (clericLevel > 0 ? clericLevel : rank)
+                : 0,
+            AlwaysMaximizesRolls = rank is >= 16 and <= 20,
+            CanTakeTenOnChecks = rank is >= 6 and <= 10,
+            AlwaysGetsTwentyOnChecks = rank is >= 11 and <= 20,
+        };
+
+        state.Capabilities.Add("immortality");
+        state.Capabilities.Add("does not need to eat, sleep, or breathe");
+        state.Immunities.UnionWith(new[]
+        {
+            "form-altering attacks", "petrification", "polymorph", "energy drain",
+            "ability drain", "ability damage", "mind-affecting"
+        });
+
+        if (rank > 20)
+        {
+            state.Warnings.Add(new Warning
+            {
+                Message = $"divine rank {rank} is an overdeity; the SRD provides no statistics or rank table for overdeities"
+            });
+            ValidateDivineChoices(ctx, choices);
+            return;
+        }
+
+        var (bipedSpeed, quadrupedSpeed) = DivineRankRules.BaseLandSpeed(state.Size);
+        var landSpeed = choices.Form == DivineForm.Biped ? bipedSpeed : quadrupedSpeed;
+        SetDivineSpeed(state, MovementMode.Land, landSpeed);
+        if (state.BaseSpeeds.ContainsKey(MovementMode.Burrow)) SetDivineSpeed(state, MovementMode.Burrow, bipedSpeed);
+        if (state.BaseSpeeds.ContainsKey(MovementMode.Swim)) SetDivineSpeed(state, MovementMode.Swim, bipedSpeed);
+        if (state.BaseSpeeds.ContainsKey(MovementMode.Climb)) SetDivineSpeed(state, MovementMode.Climb, bipedSpeed / 2);
+        if (state.BaseSpeeds.ContainsKey(MovementMode.Fly)) SetDivineSpeed(state, MovementMode.Fly, quadrupedSpeed * 2);
+
+        if (state.Type == CreatureType.Outsider)
+            AddAlignmentSubtypes(state);
+
+        if (state.HDList.Count(id => id == "racial_hd:outsider") == 20)
+            state.NaturalArmor = Math.Max(state.NaturalArmor, rank + 13);
+        else if (state.Type != CreatureType.Outsider)
+            state.NaturalArmor += rank;
+
+        state.AbilityACBonuses.Add(new AbilityACBonus
+        {
+            SourceId = "divine_charisma_deflection",
+            Name = "Divine Charisma deflection",
+            Ability = Ability.CHA,
+            BonusType = BonusType.Deflection,
+            PositiveOnly = true,
+        });
+        if (rank > 0)
+        {
+            state.PersistentBonusContributions.Add(new TypedBonusContribution
+            {
+                Target = BonusTarget.AC,
+                BonusType = BonusType.Divine,
+                Value = rank,
+            });
+            state.PersistentBonusContributions.Add(new TypedBonusContribution
+            {
+                Target = BonusTarget.Attack,
+                BonusType = BonusType.Divine,
+                Value = rank,
+            });
+
+            state.Immunities.UnionWith(new[]
+            {
+                "acid", "cold", "electricity", "disease", "poison", "stunning", "sleep",
+                "paralysis", "death effects", "disintegration", "death from massive damage"
+            });
+            state.Capabilities.Add("natural 1 does not automatically fail on attacks or saving throws");
+            state.Capabilities.Add("grant spells and domain powers");
+            state.Capabilities.Add("understand, speak, and read any language");
+            state.Capabilities.Add("greater teleport at will");
+        }
+        if (rank >= 6)
+        {
+            state.Immunities.Add("imprisonment and banishment effects");
+            state.Capabilities.Add("plane shift at will");
+        }
+
+        state.DamageReduction.Add(new DREntry { Value = DivineRankRules.DamageReduction(rank), BypassedBy = "epic" });
+        state.Resistances["fire"] = Math.Max(state.Resistances.GetValueOrDefault("fire"), 5 + rank);
+        state.SpellResistance = Math.Max(state.SpellResistance ?? 0, 32 + rank);
+
+        if (rank >= 1)
+        {
+            foreach (var domainId in state.Divinity.DomainIds)
+            {
+                if (!_content.TryGetDomain(domainId, out var domain) || domain == null)
+                {
+                    state.Warnings.Add(new Warning { Message = $"divine domain '{domainId}' does not exist" });
+                    continue;
+                }
+
+                foreach (var buff in domain.GrantedPermabuffs)
+                    buff.Apply(ctx);
+                state.Abilities.Add(new GrantedAbility
+                {
+                    Id = $"divine_domain_power_{domain.Id["domain:".Length..]}",
+                    Name = $"{domain.Name} Domain Power (Divine)",
+                    Description = $"{domain.Description} Usable {rank}/day, or its normal allowance if greater; without cleric levels, effects based on cleric level use divine rank {rank}.",
+                });
+            }
+        }
+
+        ValidateDivineChoices(ctx, choices);
+        RefreshDivineCharacteristics(state);
+    }
+
+    private void ValidateDivineChoices(PermabuffContext ctx, DivinityChoices choices)
+    {
+        var state = ctx.State;
+        var rank = choices.DivineRank;
+        var slots = DivineRankRules.SalientAbilitySlots(rank);
+        if (choices.SalientDivineAbilityIds.Count > slots)
+            state.Warnings.Add(new Warning
+            {
+                Message = $"{choices.SalientDivineAbilityIds.Count} salient divine abilities selected but divine rank {rank} grants {slots}"
+            });
+
+        foreach (var group in choices.SalientDivineAbilityIds.GroupBy(id => id, StringComparer.Ordinal))
+        {
+            if (!_content.TryGetSalientDivineAbility(group.Key, out var ability) || ability == null)
+            {
+                state.Warnings.Add(new Warning { Message = $"salient divine ability '{group.Key}' does not exist" });
+                continue;
+            }
+
+            if (rank < ability.MinimumDivineRank)
+                state.Warnings.Add(new Warning
+                {
+                    Message = $"prerequisite not met for {ability.Name}: divine rank {ability.MinimumDivineRank}+"
+                });
+            foreach (var prerequisite in ability.Prerequisites)
+            {
+                if (!prerequisite.IsMet(state))
+                    state.Warnings.Add(new Warning
+                    {
+                        Message = $"prerequisite not met for {ability.Name}: {prerequisite.Description}"
+                    });
+            }
+            if (ability.RequiresManualReview)
+                state.Warnings.Add(new Warning
+                {
+                    Message = $"{ability.Name} has a source prerequisite requiring manual verification: {ability.PrerequisiteText}"
+                });
+            if (group.Count() > 1 && !ability.Repeatable)
+                state.Warnings.Add(new Warning { Message = $"salient divine ability {ability.Name} does not stack and may only be selected once" });
+
+            if (!state.Abilities.Any(existing => existing.Id == ability.Id))
+                state.Abilities.Add(new GrantedAbility
+                {
+                    Id = ability.Id,
+                    Name = ability.Name,
+                    Description = ability.Description,
+                });
+
+            ApplyStaticSalientDivineAbility(state, ability.Id, group.Count());
+        }
+    }
+
+    private static void ApplyStaticSalientDivineAbility(CharacterState state, string abilityId, int count)
+    {
+        var rank = state.DivineRankBonus;
+        switch (abilityId)
+        {
+            case "salient:divine_fast_healing":
+                // The printed ability does not stack with a pre-existing fast-healing quality;
+                // repeated selections of this ability do stack with one another.
+                state.FastHealing = Math.Max(state.FastHealing, count * (20 + rank));
+                state.Capabilities.Add("severed limbs reattach instantly when pressed to the wound");
+                break;
+            case "salient:increased_spell_resistance":
+                state.SpellResistance = (state.SpellResistance ?? 0) + 20 * count;
+                break;
+            case "salient:increased_damage_reduction":
+                var divineDr = state.DamageReduction.FirstOrDefault(dr => dr.BypassedBy == "epic");
+                if (divineDr != null)
+                {
+                    divineDr.Value += 5;
+                    divineDr.BypassedBy = $"epic and {OpposedAlignmentBypass(state.Alignment)}";
+                }
+                break;
+        }
+    }
+
+    private static string OpposedAlignmentBypass(Alignment alignment) => alignment switch
+    {
+        Alignment.LG => "evil or chaotic",
+        Alignment.LN => "chaotic",
+        Alignment.LE => "good or chaotic",
+        Alignment.NG => "evil",
+        Alignment.NE => "good",
+        Alignment.CG => "evil or lawful",
+        Alignment.CN => "lawful",
+        Alignment.CE => "good or lawful",
+        _ => "an opposed alignment",
+    };
+
+    private static void SetDivineSpeed(CharacterState state, MovementMode mode, int speed)
+    {
+        state.BaseSpeeds[mode] = speed;
+        state.Speeds[mode] = speed;
+    }
+
+    private static void AddAlignmentSubtypes(CharacterState state)
+    {
+        if (state.Alignment is Alignment.LG or Alignment.LN or Alignment.LE) state.Subtypes.Add("lawful");
+        if (state.Alignment is Alignment.CG or Alignment.CN or Alignment.CE) state.Subtypes.Add("chaotic");
+        if (state.Alignment is Alignment.LG or Alignment.NG or Alignment.CG) state.Subtypes.Add("good");
+        if (state.Alignment is Alignment.LE or Alignment.NE or Alignment.CE) state.Subtypes.Add("evil");
+    }
+
+    private static void RefreshDivineCharacteristics(CharacterState state)
+    {
+        var divine = state.Divinity;
+        if (divine == null || divine.DivineRank is < 1 or > 20) return;
+        var rank = divine.DivineRank;
+        divine.SensesRadiusMiles = rank;
+        divine.DivineAuraSaveDc = 10 + rank + state.AbilityModifier(Ability.CHA);
+        divine.RemoteSensingLocations = rank switch { <= 5 => 2, <= 10 => 5, <= 15 => 10, _ => 20 };
+        divine.AutomaticActionMaximumDc = rank switch { <= 5 => 15, <= 10 => 20, <= 15 => 25, _ => 30 };
+        divine.AutomaticActionsPerRound = rank switch { <= 5 => 2, <= 10 => 5, <= 15 => 10, _ => 20 };
+        divine.MaximumPortfolioItemValueGp = rank switch { <= 5 => 4_500, <= 10 => 30_000, <= 15 => 200_000, _ => null };
+        divine.CanCreateArtifacts = rank >= 16;
+        divine.DivineAuraRadius = rank switch
+        {
+            <= 5 => $"{10 * rank} ft.",
+            <= 10 => $"{100 * rank} ft.",
+            <= 15 => $"{1000 * rank} ft.",
+            _ => $"{rank} miles",
+        };
+        divine.PortfolioSense = rank switch
+        {
+            <= 5 => "Present events affecting at least 1,000 people",
+            <= 10 => "Present events affecting at least 500 people",
+            <= 15 => $"All events, extending {rank} weeks into the past",
+            _ => $"All events, extending {rank} weeks into the past and future",
+        };
+        divine.GodlyRealmControl = rank switch
+        {
+            <= 5 => $"100 ft. per rank ({100 * rank} ft.)",
+            <= 10 => "1 mile on an Outer Plane; 100 ft. per rank elsewhere",
+            <= 15 => "10 miles on an Outer Plane; 100 ft. per rank elsewhere",
+            _ => "100 miles on an Outer Plane; 100 ft. per rank elsewhere",
+        };
+    }
+
+    private void FinalizeDivineSpellLikeAbilities(CharacterState state)
+    {
+        var divine = state.Divinity;
+        if (divine == null || divine.DivineRank is < 1 or > 20) return;
+        var rank = divine.DivineRank;
+        var cha = state.AbilityModifier(Ability.CHA);
+
+        foreach (var domainId in divine.DomainIds)
+        {
+            if (!_content.TryGetDomain(domainId, out var domain) || domain == null) continue;
+            foreach (var (spellLevel, spellId) in domain.BonusSpells)
+            {
+                if (state.SLAs.Any(sla => sla.Id == $"divine_domain_sla_{spellId}")) continue;
+                var name = _content.TryGetSpell(spellId, out var spell) && spell != null ? spell.Name : spellId;
+                state.SLAs.Add(new SLA
+                {
+                    Id = $"divine_domain_sla_{spellId}",
+                    Name = name,
+                    Description = $"{domain.Name} domain spell-like ability (level {spellLevel}).",
+                    UsesPerDay = "at will",
+                    CasterLevel = 10 + rank,
+                    SaveDC = 10 + spellLevel + cha + rank,
+                });
+            }
+        }
+
+        AddDivineTravelSla(state, "spell:teleport_greater", "Greater Teleport");
+        if (rank >= 6)
+            AddDivineTravelSla(state, "spell:plane_shift", "Plane Shift");
+    }
+
+    private static void AddDivineTravelSla(CharacterState state, string spellId, string name)
+    {
+        var id = $"divine_travel_{spellId["spell:".Length..]}";
+        if (state.SLAs.Any(sla => sla.Id == id)) return;
+        state.SLAs.Add(new SLA
+        {
+            Id = id,
+            Name = name,
+            Description = "Divine travel ability.",
+            UsesPerDay = "at will",
+            CasterLevel = 20,
+        });
     }
 
     /// <summary>
@@ -820,7 +1157,10 @@ public class ReplayStudio
             foreach (var synergy in skill.Synergies)
             {
                 state.SkillSynergyBonuses.TryAdd(synergy.TargetSkillId, 0);
-                state.SkillSynergyBonuses[synergy.TargetSkillId] += synergy.Bonus;
+                var divineMultiplier = state.Divinity == null
+                    ? 1
+                    : 1 + Math.Max(0, WholeRanks(skill.Id) - SynergyRankThreshold) / 20;
+                state.SkillSynergyBonuses[synergy.TargetSkillId] += synergy.Bonus * divineMultiplier;
             }
         }
 
@@ -849,6 +1189,7 @@ public class ReplayStudio
                                          + sizeModifier
                                          + state.SkillBonuses.GetValueOrDefault(skillId)
                                          + state.SkillSynergyBonuses.GetValueOrDefault(skillId)
+                                         + state.DivineRankBonus
                                          - state.EquipmentNegativeLevels;
         }
     }

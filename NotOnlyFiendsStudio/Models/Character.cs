@@ -6,8 +6,11 @@ public class Character
     public Alignment Alignment { get; set; } = Alignment.N;
 
     // Deity or patron allegiance (e.g. a cleric's god, a Mark feat's archdevil).
-    // Free-form display name; null/empty means no allegiance.
+    // A deity content ID or free-form display name; null/empty means no allegiance.
     public string? Deity { get; set; }
+
+    /// <summary>Present when this character is itself a deity; unrelated to patron allegiance.</summary>
+    public DivinityChoices? Divinity { get; set; }
 
     /// <summary>
     /// Free text rather than an enum, and deliberately so: it is descriptive rather than
@@ -99,6 +102,7 @@ public class Character
         Name = Name,
         Alignment = Alignment,
         Deity = Deity,
+        Divinity = Divinity?.Clone(),
         Gender = Gender,
         RaceId = RaceId,
         TemplateIds = new List<string>(TemplateIds),
@@ -286,6 +290,7 @@ public class CharacterSheet
     public List<PreparedSpellSelection> PreparedSpellSelections { get; set; } = new();
     public List<IntelligentItemState> IntelligentItems { get; set; } = new();
     public int EquipmentNegativeLevels { get; set; }
+    public DivineCharacteristics? Divinity { get; set; }
 
     /// <summary>
     /// Per-class spellcasting summary keyed by class id (e.g. "class:sorcerer"). Includes the
@@ -340,6 +345,7 @@ public class CharacterSheet
         }).ToList(),
         IntelligentItems = state.IntelligentItems,
         EquipmentNegativeLevels = state.EquipmentNegativeLevels,
+        Divinity = state.Divinity,
         Spellcasting = state.Spellcasting.ToDictionary(
             kv => kv.Key,
             kv => SpellcastingSummary.FromState(kv.Value, state.EquipmentNegativeLevels)),

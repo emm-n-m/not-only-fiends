@@ -377,8 +377,8 @@ public class GrantItemActivationLevelRule : Permabuff
 }
 
 /// <summary>
-/// Grants the War domain's permanent weapon feats. Until deity definitions carry favored-weapon
-/// data, the player supplies a weapon content ID in CurrentTickChoices["war_favored_weapon"].
+/// Grants the War domain's permanent weapon feats. A catalogued deity supplies its favored
+/// weapon; free-form/legacy allegiances retain the explicit per-tick weapon choice fallback.
 /// </summary>
 public class GrantWarDomainWeaponFeats : Permabuff
 {
@@ -387,7 +387,12 @@ public class GrantWarDomainWeaponFeats : Permabuff
     public override void Apply(PermabuffContext ctx)
     {
         var picks = ctx.CurrentTickChoices?.ClassFeatureChoices?.GetValueOrDefault(ChoiceKey);
-        var weaponId = picks?.FirstOrDefault();
+        var weaponId = ctx.State.Divinity?.FavoredWeaponId;
+        if (weaponId == null && ctx.State.Deity != null
+            && ctx.Content?.TryResolveDeity(ctx.State.Deity, out var deity) == true
+            && !string.IsNullOrWhiteSpace(deity?.FavoredWeaponId))
+            weaponId = deity.FavoredWeaponId;
+        weaponId ??= picks?.FirstOrDefault();
         if (string.IsNullOrWhiteSpace(weaponId) || ctx.Content?.TryGetEquipment(weaponId, out var weapon) != true || weapon?.Category != EquipmentCategory.Weapon)
         {
             ctx.State.Warnings.Add(new Warning { TickIndex = ctx.State.TotalHD, Message = "War domain requires a valid favored weapon selection" });

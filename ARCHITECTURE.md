@@ -69,6 +69,8 @@ public class Character
     // preserve the creation-time behavior used by inherited templates and old saves.
     public Dictionary<string, int> TemplateAcquisitionHD { get; set; } = new();
     public AbilityScoreSet BaseAbilityScores { get; set; }
+    public string? Deity { get; set; }                 // patron allegiance
+    public DivinityChoices? Divinity { get; set; }     // this character is a deity
 
     // HD Timeline — the build
     public List<Tick> Ticks { get; set; } = new();
@@ -122,6 +124,7 @@ public class CharacterState
     public HashSet<string> Subtypes { get; set; } = new();
     public Size Size { get; set; }
     public Alignment Alignment { get; set; }
+    public DivineCharacteristics? Divinity { get; set; }
     public List<string> TemplateIds { get; set; } = new();
 
     // Ability Scores (fully modified at current HD)
@@ -304,6 +307,7 @@ public class GameRules
 public interface IContentLookup
 {
     bool TryGetFeat(string id, out FeatDefinition? feat);
+    bool TryResolveDeity(string reference, out DeityDefinition? deity);
 }
 
 public class PermabuffContext
@@ -678,6 +682,8 @@ Content/packs/
       general.json        ← List<FeatDefinition>
       fighter_bonus.json
       epic.json
+    deities/              ← List<DeityDefinition> in setting/private packs;
+                             intentionally absent from SRD Core (closed pantheon content)
     domains/
       srd.json            ← List<DomainDefinition>
     spells/

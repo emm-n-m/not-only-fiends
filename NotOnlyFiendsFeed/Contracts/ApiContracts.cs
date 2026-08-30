@@ -88,6 +88,8 @@ public sealed class ContentCatalogResponse
     public List<DriverSummaryDto> Drivers { get; set; } = new();
     public List<ContentSummaryDto> Templates { get; set; } = new();
     public List<FeatSummaryDto> Feats { get; set; } = new();
+    public List<DeitySummaryDto> Deities { get; set; } = new();
+    public List<SalientDivineAbilitySummaryDto> SalientDivineAbilities { get; set; } = new();
     public List<ContentSummaryDto> Domains { get; set; } = new();
     public List<ContentSummaryDto> Skills { get; set; } = new();
     public List<ContentSummaryDto> ClassFeatures { get; set; } = new();
@@ -122,6 +124,34 @@ public sealed class ContentSummaryDto
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public TemplateAcquisitionKind? AcquisitionKind { get; set; }
+}
+
+public sealed class DeitySummaryDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public Alignment Alignment { get; set; }
+    public List<string> Titles { get; set; } = new();
+    public List<string> Portfolio { get; set; } = new();
+    public List<string> DomainIds { get; set; } = new();
+    public string? FavoredWeaponId { get; set; }
+    public string? Symbol { get; set; }
+}
+
+public sealed class SalientDivineAbilitySummaryDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string? PrerequisiteText { get; set; }
+    public string? Notes { get; set; }
+    public string? Rest { get; set; }
+    public int MinimumDivineRank { get; set; }
+    public List<string> Prerequisites { get; set; } = new();
+    public bool RequiresManualReview { get; set; }
+    public List<string> SuggestedPortfolioElements { get; set; } = new();
+    public bool Repeatable { get; set; }
 }
 
 /// <summary>
@@ -388,6 +418,16 @@ public sealed class PendingChoicesDto
     public List<PreparedSpellChoiceGroupDto> PreparedSpellChoices { get; set; } = new();
     public List<SpellcastingSummaryDto> SpellLists { get; set; } = new();
     public List<CompanionTemplateChoiceGroupDto> CompanionTemplateChoices { get; set; } = new();
+    public SalientDivineAbilityChoiceGroupDto? SalientDivineAbilities { get; set; }
+}
+
+public sealed class SalientDivineAbilityChoiceGroupDto
+{
+    public int Count { get; set; }
+    public int OptionCount { get; set; }
+    public List<string> ExistingSelections { get; set; } = new();
+    public List<string>? OptionIds { get; set; }
+    public List<SalientDivineAbilitySummaryDto>? Options { get; set; }
 }
 
 public sealed class CompanionTemplateChoiceGroupDto

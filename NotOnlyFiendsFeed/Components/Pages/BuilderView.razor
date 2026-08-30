@@ -156,6 +156,20 @@ else
                     </select>
                 </div>
                 <div class="col-md-3">
+                    <label class="form-label">Deity or patron</label>
+                    @* Remains free-form for imported and setting-specific allegiances. Loaded
+                       deity definitions are suggestions that also unlock mechanical lookup. *@
+                    <input type="text" class="form-control" list="deity-options"
+                           @bind="_character.Deity" @bind:event="onchange"
+                           @bind:after="OnCharacterChanged" />
+                    <datalist id="deity-options">
+                        @foreach (var deity in _deities)
+                        {
+                            <option value="@deity.Name">@deity.Alignment · @string.Join(", ", deity.DomainIds.Select(id => id.Replace("domain:", "")))</option>
+                        }
+                    </datalist>
+                </div>
+                <div class="col-md-3">
                     <label class="form-label">Race</label>
                     <SearchSelect TItem="RaceDefinition"
                                   Items="@RaceCatalog.ForPicker(_races, _showNonPcRaces, _character.RaceId)"
@@ -213,6 +227,121 @@ else
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Divinity</span>
+            <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" id="is-deity"
+                       checked="@(_character.Divinity != null)" @onchange="ToggleDivinity" />
+                <label class="form-check-label" for="is-deity">This character is a deity</label>
+            </div>
+        </div>
+        @if (_character.Divinity is { } divinity)
+        {
+            var salientSlots = DivineRankRules.SalientAbilitySlots(divinity.DivineRank);
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label class="form-label">Divine rank</label>
+                        <input type="number" class="form-control" min="0" max="20"
+                               value="@divinity.DivineRank" @onchange="SetDivineRank" />
+                        <div class="form-text">@DivineRankRules.Status(divinity.DivineRank)</div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Form</label>
+                        <select class="form-select" value="@divinity.Form" @onchange="SetDivineForm">
+                            @foreach (var form in Enum.GetValues<DivineForm>())
+                            {
+                                <option value="@form">@form</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Titles <span class="text-muted">(comma-separated)</span></label>
+                        <input class="form-control" value="@string.Join(", ", divinity.Titles)"
+                               @onchange="(e) => SetDivineTextList(e, true)" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Portfolio <span class="text-muted">(comma-separated)</span></label>
+                        <input class="form-control" value="@string.Join(", ", divinity.Portfolio)"
+                               @onchange="(e) => SetDivineTextList(e, false)" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Symbol</label>
+                        <input class="form-control" @bind="divinity.Symbol" @bind:event="onchange"
+                               @bind:after="OnCharacterChanged" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Favored weapon</label>
+                        <SearchSelect TItem="EquipmentDefinition"
+                                      Items="@_equipmentCatalog.Where(item => item.Category == EquipmentCategory.Weapon)"
+                                      Value="@divinity.FavoredWeaponId"
+                                      ValueChanged="(v) => { divinity.FavoredWeaponId = v; OnCharacterChanged(); }"
+                                      DisplaySelector="@(item => item.Name)"
+                                      ValueSelector="@(item => item.Id)"
+                                      Placeholder="Search weapons..." />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Domains</label>
+                        <div class="input-group">
+                            <SearchSelect TItem="DomainDefinition"
+                                          Items="@_domains.Where(domain => !divinity.DomainIds.Contains(domain.Id))"
+                                          Value="@_divineDomainInput"
+                                          ValueChanged="@(v => _divineDomainInput = v ?? string.Empty)"
+                                          DisplaySelector="@(domain => domain.Name)"
+                                          ValueSelector="@(domain => domain.Id)"
+                                          Placeholder="Search domains..." />
+                            <button class="btn btn-outline-primary" @onclick="AddDivineDomain">Add</button>
+                        </div>
+                        @foreach (var domainId in divinity.DomainIds)
+                        {
+                            var domain = _domains.FirstOrDefault(value => value.Id == domainId);
+                            <span class="badge bg-secondary me-1 mt-1">@(domain?.Name ?? domainId)
+                                <button type="button" class="btn btn-sm p-0 border-0 text-white ms-1"
+                                        @onclick="() => RemoveDivineDomain(domainId)">&times;</button>
+                            </span>
+                        }
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">
+                            Salient divine abilities
+                            <span class="text-muted">(@divinity.SalientDivineAbilityIds.Count / @salientSlots)</span>
+                        </label>
+                        @if (divinity.DivineRank == 0)
+                        {
+                            <div class="form-text mb-2">Quasi-deities have no salient divine abilities.</div>
+                        }
+                        else
+                        {
+                            <div class="input-group">
+                                <SearchSelect TItem="SalientDivineAbilityDefinition"
+                                              Items="@_salientDivineAbilities.Where(ability => ability.MinimumDivineRank <= divinity.DivineRank && (_state == null || ability.Prerequisites.All(prerequisite => prerequisite.IsMet(_state))) && (ability.Repeatable || !divinity.SalientDivineAbilityIds.Contains(ability.Id)))"
+                                              Value="@_salientDivineAbilityInput"
+                                              ValueChanged="@(v => _salientDivineAbilityInput = v ?? string.Empty)"
+                                              DisplaySelector="@(ability => ability.Name)"
+                                              ValueSelector="@(ability => ability.Id)"
+                                              TitleSelector="@(ability => ability.PrerequisiteText ?? ability.Description)"
+                                              Placeholder="Search salient abilities..." />
+                                <button class="btn btn-outline-primary" @onclick="AddSalientDivineAbility">Add</button>
+                            </div>
+                        }
+                        @for (var salientIndex = 0; salientIndex < divinity.SalientDivineAbilityIds.Count; salientIndex++)
+                        {
+                            var capturedIndex = salientIndex;
+                            var abilityId = divinity.SalientDivineAbilityIds[salientIndex];
+                            var ability = _salientDivineAbilities.FirstOrDefault(value => value.Id == abilityId);
+                            <span class="badge bg-info text-dark me-1 mt-1" title="@(ability?.PrerequisiteText ?? ability?.Description)">
+                                @(ability?.Name ?? abilityId)
+                                <button type="button" class="btn btn-sm p-0 border-0 ms-1"
+                                        @onclick="() => RemoveSalientDivineAbilityAt(capturedIndex)">&times;</button>
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 
     <!-- Step 2: Base Ability Scores -->

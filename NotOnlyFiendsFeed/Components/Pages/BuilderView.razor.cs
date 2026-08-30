@@ -93,6 +93,8 @@ public partial class BuilderView
     // universalist; a specialist loses the cantrips of its given-up schools too.
     private readonly Dictionary<int, int> _tickAutomaticCantrips = new();
     private List<DomainDefinition> _domains = new();
+    private List<DeityDefinition> _deities = new();
+    private List<SalientDivineAbilityDefinition> _salientDivineAbilities = new();
     private List<ClassFeatureDefinition> _classFeatures = new();
     private List<EquipmentDefinition> _equipmentCatalog = new();
     private string _equipmentPickerCategory = "weapon";
@@ -105,6 +107,8 @@ public partial class BuilderView
     // spell sets silently pointed at the wrong ticks after a removal.
     private readonly HashSet<int> _expandedTicks = new();
     private string _selectedTemplate = "";
+    private string _divineDomainInput = "";
+    private string _salientDivineAbilityInput = "";
     // Keyed by tick index, not single fields: the Feats tab renders every tick's picker at
     // once, so one shared field would let typing into HD 7's box fill HD 3's and let HD 3's
     // "Add" button commit HD 7's feat.
@@ -169,6 +173,9 @@ public partial class BuilderView
             _spells = registry.GetAllSpells().OrderBy(s => s.Name).ToList();
             _skills = registry.GetAllSkills().OrderBy(s => s.Name).ToList();
             _domains = registry.GetAllDomains().OrderBy(d => d.Name).ToList();
+            _deities = registry.GetAllDeities().OrderBy(d => d.Name).ToList();
+            _salientDivineAbilities = registry.GetAllSalientDivineAbilities()
+                .OrderBy(ability => ability.Name).ToList();
             _classFeatures = registry.GetAllClassFeatures().ToList();
             _equipmentCatalog = registry.GetAllEquipment().OrderBy(e => e.Category).ThenBy(e => e.Name).ToList();
             RefreshAvailableCharacters();
@@ -1341,6 +1348,79 @@ public partial class BuilderView
             _character.Alignment = a;
             OnCharacterChanged();
         }
+    }
+
+    private void ToggleDivinity(ChangeEventArgs e)
+    {
+        _character.Divinity = e.Value is true ? new DivinityChoices() : null;
+        _divineDomainInput = string.Empty;
+        _salientDivineAbilityInput = string.Empty;
+        OnCharacterChanged();
+    }
+
+    private void SetDivineRank(ChangeEventArgs e)
+    {
+        if (_character.Divinity != null && int.TryParse(e.Value?.ToString(), out var rank))
+        {
+            _character.Divinity.DivineRank = Math.Clamp(rank, 0, 20);
+            OnCharacterChanged();
+        }
+    }
+
+    private void SetDivineForm(ChangeEventArgs e)
+    {
+        if (_character.Divinity != null
+            && Enum.TryParse<DivineForm>(e.Value?.ToString(), out var form))
+        {
+            _character.Divinity.Form = form;
+            OnCharacterChanged();
+        }
+    }
+
+    private void SetDivineTextList(ChangeEventArgs e, bool titles)
+    {
+        if (_character.Divinity == null) return;
+        var values = (e.Value?.ToString() ?? string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        if (titles) _character.Divinity.Titles = values;
+        else _character.Divinity.Portfolio = values;
+        OnCharacterChanged();
+    }
+
+    private void AddDivineDomain()
+    {
+        if (_character.Divinity == null || string.IsNullOrWhiteSpace(_divineDomainInput)
+            || _character.Divinity.DomainIds.Contains(_divineDomainInput)) return;
+        _character.Divinity.DomainIds.Add(_divineDomainInput);
+        _divineDomainInput = string.Empty;
+        OnCharacterChanged();
+    }
+
+    private void RemoveDivineDomain(string id)
+    {
+        _character.Divinity?.DomainIds.Remove(id);
+        OnCharacterChanged();
+    }
+
+    private void AddSalientDivineAbility()
+    {
+        if (_character.Divinity == null || string.IsNullOrWhiteSpace(_salientDivineAbilityInput)) return;
+        var definition = _salientDivineAbilities.FirstOrDefault(a => a.Id == _salientDivineAbilityInput);
+        if (definition == null) return;
+        if (definition.Repeatable || !_character.Divinity.SalientDivineAbilityIds.Contains(definition.Id))
+            _character.Divinity.SalientDivineAbilityIds.Add(definition.Id);
+        _salientDivineAbilityInput = string.Empty;
+        OnCharacterChanged();
+    }
+
+    private void RemoveSalientDivineAbilityAt(int index)
+    {
+        if (_character.Divinity == null || index < 0
+            || index >= _character.Divinity.SalientDivineAbilityIds.Count) return;
+        _character.Divinity.SalientDivineAbilityIds.RemoveAt(index);
+        OnCharacterChanged();
     }
 
     private static string FormatAlignment(Alignment a) => a switch

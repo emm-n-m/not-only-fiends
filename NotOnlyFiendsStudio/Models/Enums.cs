@@ -125,5 +125,6 @@ public enum BonusType
     Circumstance,
     Size,
     Racial,
+    Divine,
     Untyped
 }
