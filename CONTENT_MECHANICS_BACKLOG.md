@@ -18,10 +18,24 @@ and split private-pack findings into the materials repository.
   there is nothing to supersede — and must not be fiend-specific, since the archfey case is the
   same shape with a different destination. That rules out hard-coding a lookup per ascension.
 
-  Shape: mark nature-establishing templates with a tag (templates carry no `tags` today) and give
-  the ascension a `RevokeTemplatesWithTag`, which revokes what it finds and does nothing when it
-  finds none. Blocked on deciding which templates count as a prior nature — a design call, not a
-  mechanical one. Undeath looks like a separate axis: ascending is unlikely to cure lichdom.
+  Ascension is a complete rewrite of a creature's ontology, not a layer on top of it — Vecna
+  stopped being a lich on reaching lesser deity. So undeath is superseded like anything else, and
+  `lich` and `vampire` belong in the set rather than sitting on a separate axis.
+
+  That makes the set derivable instead of curated: a template that establishes what kind of being
+  you are is exactly one that sets the creature type (`TypeOverride` or `TypeOverridesByBaseType`
+  — fifteen today). It picks up lich, vampire, half-fiend, alu-fiend, half-celestial, half-dragon,
+  half-fey and the succubized dark temptress, and correctly leaves `paragon`, `youthfull_edginess`,
+  the `racesubtype_augmented_*` subtype markers and the spell-access templates alone. Same
+  derive-don't-restate shape as `CreatureTypes.IsLiving` and `WeaponProficiencyFeats`, so no new
+  tag is needed.
+
+  Shape: a `SupersedePriorNature` permabuff revoking every applied type-setting template except
+  the ascending one, which no-ops for a plain human who has none. Two things to settle before
+  building it: revocation already warns "cannot invert" for buffs it cannot undo, and superseding
+  a whole stack will hit that far more often than the single alu-fiend case does; and the
+  resulting creature type must come from the ascension rather than from unwinding to the base
+  race.
 
 - [ ] Model effects applied to summoned creatures before treating `feat:augment_summoning` as a
   character-state content fix.
