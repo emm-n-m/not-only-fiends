@@ -5,6 +5,11 @@ using NotOnlyFiendsFeed.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Keep generated assets (the scoped-CSS bundle and Blazor runtime) available when the
+// app is run from build output under a non-Development environment. Published builds
+// copy these files into wwwroot, but local `dotnet run --no-launch-profile` does not.
+builder.WebHost.UseStaticWebAssets();
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -84,6 +89,7 @@ app.UseStatusCodePages(async statusContext =>
 });
 
 app.MapOpenApi();
+app.MapStaticAssets();
 
 // API endpoints
 app.MapGet("/api/health", (AgentApiService api) => TypedResults.Ok(api.GetHealth()));
