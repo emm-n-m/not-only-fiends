@@ -455,6 +455,16 @@ public class GrantBonusFeat : Permabuff
 
     public override void Apply(PermabuffContext ctx)
     {
+        // Two sources can grant the same proficiency — a succubus rogue gets Simple Weapon
+        // Proficiency from her outsider Hit Dice and again from her class. Granting it twice
+        // would list it twice on the sheet and double its FeatTypeCounts entry. Only
+        // non-repeatable feats are collapsed: a repeatable one granted again is a real second
+        // instance, and tick-chosen repeats never reach here.
+        if (ctx.Content != null
+            && ctx.Content.TryGetFeat(FeatId, out var existing) && existing is { Repeatable: false }
+            && ctx.State.Feats.Contains(FeatId))
+            return;
+
         ctx.State.Feats.Add(FeatId);
         // Cascade: look up FeatDefinition and apply its GrantedPermabuffs,
         // and mirror the user-pick counting so HasFeatOfType / HasFeatWithTag see granted feats.

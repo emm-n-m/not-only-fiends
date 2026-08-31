@@ -324,6 +324,84 @@ public class RulesAccuracyTests
         Ticks = new() { new Tick { DriverId = driverId } }
     });
 
+    /// <summary>
+    /// A creature's monster type carries its weapon and armour proficiencies, and every racial HD
+    /// driver had an empty levelPermabuffs — so a succubus was proficient with nothing her class
+    /// levels did not give her. This is not cosmetic: eldritch knight reads
+    /// HasFeat feat:weapon_proficiency_martial as an entry prerequisite.
+    ///
+    /// SRD monsterTypes, Outsider: "Proficient with all simple and martial weapons and any weapons
+    /// mentioned in its entry." Giant is the same; fey, monstrous humanoid, humanoid and undead
+    /// get simple weapons only. Armour is per-creature ("whatever type it is described as
+    /// wearing"), so no driver grants it. Aberration, elemental and dragon are conditional on
+    /// being "generally humanoid in form" and are deliberately left to the individual races;
+    /// animals, magical beasts and plants are natural weapons only.
+    ///
+    /// Natural weapons need no grant: they live in state.NaturalAttacks and the engine applies no
+    /// non-proficiency penalty, so nothing reads a flag for them.
+    /// </summary>
+    [Theory]
+    [InlineData("race:demon_succubus", "racial_hd:outsider", true)]
+    [InlineData("race:hill_giant", "racial_hd:giant", true)]
+    [InlineData("race:satyr", "racial_hd:fey", false)]
+    [InlineData("race:grimlock", "racial_hd:monstrous_humanoid", false)]
+    [InlineData("race:gnoll", "racial_hd:humanoid", false)]
+    [InlineData("race:companion_shadow", "racial_hd:undead", false)]
+    public void RacialHitDice_GrantTheirMonsterTypeWeaponProficiencies(string raceId, string driverId, bool martial)
+    {
+        var state = Evaluate(new Character
+        {
+            Name = driverId,
+            RaceId = raceId,
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = driverId } }
+        });
+
+        Assert.Contains("feat:simple_weapon_proficiency", state.Feats);
+        Assert.Equal(martial, state.Feats.Contains("feat:weapon_proficiency_martial"));
+    }
+
+    /// <summary>
+    /// Animals are "proficient with natural weapons only", so their driver grants nothing — the
+    /// negative case that stops the grant being copied onto every driver.
+    /// </summary>
+    [Fact]
+    public void AnimalHitDice_GrantNoWeaponProficiency()
+    {
+        var state = Evaluate(new Character
+        {
+            Name = "Animal",
+            RaceId = "race:companion_wolf",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = "racial_hd:animal" } }
+        });
+
+        Assert.DoesNotContain("feat:simple_weapon_proficiency", state.Feats);
+    }
+
+    /// <summary>
+    /// The succubus rogue that motivated the dedupe guard: Simple Weapon Proficiency is granted by
+    /// her outsider Hit Dice and again by rogue 1st, and must appear once.
+    /// </summary>
+    [Fact]
+    public void ProficiencyGrantedByBothRaceAndClass_IsListedOnce()
+    {
+        var state = Evaluate(new Character
+        {
+            Name = "Succubus rogue",
+            RaceId = "race:demon_succubus",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new()
+            {
+                new Tick { DriverId = "racial_hd:outsider" },
+                new Tick { DriverId = "class:rogue" }
+            }
+        });
+
+        Assert.Single(state.Feats, feat => feat == "feat:simple_weapon_proficiency");
+        Assert.Contains("feat:weapon_proficiency_martial", state.Feats);
+    }
+
     // ---- familiar / companion animal skills ----
 
     /// <summary>

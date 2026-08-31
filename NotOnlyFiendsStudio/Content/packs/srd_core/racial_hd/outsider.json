@@ -17,6 +17,17 @@
     "will": "good"
   },
   "prerequisites": [],
-  "levelPermabuffs": {}
+  "levelPermabuffs": {
+    "1": [
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:simple_weapon_proficiency"
+        },
+        {
+          "$type": "GrantBonusFeat",
+          "featId": "feat:weapon_proficiency_martial"
+        }
+    ]
+  }
 }
 ]
