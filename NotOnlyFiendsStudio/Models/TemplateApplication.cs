@@ -36,7 +36,18 @@ public static class TemplateApplication
         // when the type actually moved, so a race's explicit override survives templates that
         // leave the type alone.
         if (state.Type != baseType)
+        {
             state.IsLiving = CreatureTypes.IsLiving(state.Type);
+
+            // The new type brings its weapon proficiencies with it, and for the same reason: a
+            // wizard who becomes a lich is undead, so he is proficient with all simple weapons
+            // whatever his class list said. Granted at the acquisition HD like everything else a
+            // template does, so the timeline before it is unaffected. Not reversed on revocation
+            // — a proficiency cannot be told apart from one the character also has by class, so
+            // it follows the "cannot invert, effect left in place" convention below.
+            foreach (var featId in CreatureTypes.WeaponProficiencyFeats(state.Type))
+                new GrantBonusFeat { FeatId = featId }.Apply(ctx);
+        }
 
         state.RacialHitDieSizeAdjustment += template.RacialHitDieSizeAdjustment;
         if (template.HitDieSizeFloor.HasValue)

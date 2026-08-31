@@ -417,6 +417,42 @@ public class RulesAccuracyTests
         Assert.Contains("feat:weapon_proficiency_martial", state.Feats);
     }
 
+    /// <summary>
+    /// A template that changes the creature's type brings that type's weapon proficiencies with
+    /// it. SRD monsterTypes, Undead: "Proficient with its natural weapons, all simple weapons, and
+    /// any weapons mentioned in its entry" — so a wizard who becomes a lich is proficient with
+    /// every simple weapon, whatever the wizard list said. Same path as IsLiving, which the lich
+    /// and vampire templates also state nowhere but their type.
+    ///
+    /// Granted at the acquisition HD, so the timeline before the transformation is unaffected.
+    /// </summary>
+    [Theory]
+    [InlineData("template:lich", "feat:simple_weapon_proficiency", false)]
+    [InlineData("template:vampire", "feat:simple_weapon_proficiency", false)]
+    [InlineData("template:half_fiend", "feat:weapon_proficiency_martial", true)]
+    [InlineData("template:half_celestial", "feat:weapon_proficiency_martial", true)]
+    public void TypeChangingTemplate_GrantsTheNewTypeProficiencies(
+        string templateId, string featId, bool martial)
+    {
+        var wizard = new Character
+        {
+            Name = "Transformed wizard",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 16, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = "class:wizard" } }
+        };
+
+        // Human wizard: humanoid, so no blanket proficiency before the transformation.
+        var before = Evaluate(wizard);
+        Assert.DoesNotContain(featId, before.Feats);
+
+        wizard.TemplateIds = new List<string> { templateId };
+        var after = Evaluate(wizard);
+
+        Assert.Contains(featId, after.Feats);
+        Assert.Equal(martial, after.Feats.Contains("feat:weapon_proficiency_martial"));
+    }
+
     // ---- familiar / companion animal skills ----
 
     /// <summary>
