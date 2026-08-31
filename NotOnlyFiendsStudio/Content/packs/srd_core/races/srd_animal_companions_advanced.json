@@ -299,6 +299,10 @@
         "$type": "GrantSkillBonus",
         "skillId": "skill:climb",
         "value": 8
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:track"
       }
     ],
     "scalingFormulas": [],
@@ -510,6 +514,10 @@
         "$type": "GrantSkillBonus",
         "skillId": "skill:spot",
         "value": 2
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:track"
       }
     ],
     "scalingFormulas": [],

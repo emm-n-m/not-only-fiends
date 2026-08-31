@@ -172,6 +172,10 @@
           "name": "Stone Camouflage",
           "description": "+10 racial bonus on Hide checks in mountainous or underground terrain."
         }
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:track"
       }
     ],
     "scalingFormulas": []

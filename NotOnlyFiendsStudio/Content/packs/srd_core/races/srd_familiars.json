@@ -67,6 +67,10 @@
         "$type": "GrantSkillBonus",
         "skillId": "skill:move_silently",
         "value": 4
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": [],
@@ -128,6 +132,10 @@
         "$type": "GrantSkillBonus",
         "skillId": "skill:climb",
         "value": 8
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": [],
@@ -192,6 +200,10 @@
         "$type": "GrantSkillBonus",
         "skillId": "skill:move_silently",
         "value": 14
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": [],
@@ -266,6 +278,10 @@
         "$type": "GrantSkillBonus",
         "skillId": "skill:swim",
         "value": 8
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": [],
@@ -408,6 +424,10 @@
         "$type": "GrantSkillBonus",
         "skillId": "skill:move_silently",
         "value": 4
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": [],

@@ -83,6 +83,10 @@
       {
         "$type": "GrantImmunity",
         "immunity": "paralysis"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": []
@@ -371,6 +375,10 @@
           "name": "Blood Drain",
           "description": "Once attached, drains 1d4 Con per round until it has drained 4 Con or is detached."
         }
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": []

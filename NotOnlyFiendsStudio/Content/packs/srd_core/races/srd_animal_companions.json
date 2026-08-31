@@ -56,6 +56,14 @@
         "$type": "GrantSkillBonus",
         "skillId": "skill:escape_artist",
         "value": 4
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:track"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": [],
@@ -156,6 +164,10 @@
         "$type": "GrantSkillBonus",
         "skillId": "skill:jump",
         "value": 4
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:track"
       }
     ],
     "scalingFormulas": [],
@@ -214,6 +226,10 @@
         "$type": "GrantSkillBonus",
         "skillId": "skill:jump",
         "value": 4
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:track"
       }
     ],
     "scalingFormulas": [],
@@ -265,6 +281,10 @@
         "$type": "GrantSkillBonus",
         "skillId": "skill:spot",
         "value": 8
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": [],
@@ -477,6 +497,10 @@
           "name": "Trip",
           "description": "On a successful bite, can attempt to trip as a free action without provoking attacks of opportunity."
         }
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:track"
       }
     ],
     "scalingFormulas": [],
@@ -589,6 +613,10 @@
         "$type": "GrantSkillBonus",
         "skillId": "skill:climb",
         "value": 8
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": [],

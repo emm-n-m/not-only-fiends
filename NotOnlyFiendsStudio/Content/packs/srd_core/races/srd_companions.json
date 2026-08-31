@@ -44,6 +44,10 @@
           "name": "Poison",
           "description": "Bite — Fort DC 10; 1d6 Con/1d6 Con."
         }
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": [],
@@ -108,6 +112,10 @@
           "name": "Poison",
           "description": "Bite — Fort DC 11; 1d6 Con/1d6 Con."
         }
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": [],
@@ -214,6 +222,10 @@
         "$type": "GrantLanguageSlot",
         "count": 1,
         "source": "Raven familiar — speaks one language of its master's choice"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": [],
@@ -377,6 +389,10 @@
         "$type": "GrantSkillBonus",
         "skillId": "skill:spot",
         "value": 8
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": [],
@@ -685,6 +701,14 @@
       {
         "$type": "GrantImmunity",
         "immunity": "critical hits"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:improved_initiative"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:weapon_finesse"
       }
     ],
     "scalingFormulas": []
@@ -1221,6 +1245,14 @@
           "usesPerDay": "at will",
           "casterLevel": 12
         }
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:dodge"
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:mobility"
       }
     ],
     "scalingFormulas": [
@@ -1476,6 +1508,10 @@
           "name": "Speak with Sharks",
           "description": "Telepathically communicate with sharks up to 150 feet away."
         }
+      },
+      {
+        "$type": "GrantBonusFeat",
+        "featId": "feat:multiattack"
       }
     ],
     "scalingFormulas": []
@@ -1677,18 +1713,6 @@
           "usesPerDay": "at will",
           "casterLevel": 12
         }
-      },
-      {
-        "$type": "GrantBonusFeat",
-        "featId": "feat:dodge"
-      },
-      {
-        "$type": "GrantBonusFeat",
-        "featId": "feat:mobility"
-      },
-      {
-        "$type": "GrantBonusFeat",
-        "featId": "feat:persuasive"
       }
     ],
     "scalingFormulas": [

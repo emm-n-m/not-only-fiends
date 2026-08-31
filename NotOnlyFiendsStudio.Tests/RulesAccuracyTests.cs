@@ -220,6 +220,110 @@ public class RulesAccuracyTests
         Assert.Contains("fire", sheet.Immunities);
     }
 
+    /// <summary>
+    /// A monster's statblock feats are the ones it bought with its racial-HD feat slots; only the
+    /// ones flagged with a superscript B are granted on top. Encoding a normal statblock feat as a
+    /// racial grant pays for it twice — the race hands it over free and the racial HD still yield
+    /// the slot — and an imported PCGen build that spent a real slot on it then reports a spurious
+    /// "duplicate feat" and keeps the slot unspent.
+    ///
+    /// SRD succubus: "Feats: Dodge, Mobility, Persuasive" — no B markers. Its 6 outsider HD grant
+    /// exactly three feat slots (HD 1, 3, 6), which is what pays for all three.
+    ///
+    /// SRD erinyes: "Feats: Dodge(B), Mobility(B), Point Blank Shot, Precise Shot, Rapid Shot,
+    /// Shot on the Run" — the first two are bonus feats and are granted.
+    /// </summary>
+    [Fact]
+    public void MonsterRaces_GrantOnlyTheStatblockFeatsMarkedAsBonusFeats()
+    {
+        var succubus = Evaluate(new Character
+        {
+            Name = "Succubus",
+            RaceId = "race:demon_succubus",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = "racial_hd:outsider" } }
+        });
+
+        Assert.DoesNotContain("feat:dodge", succubus.Feats);
+        Assert.DoesNotContain("feat:mobility", succubus.Feats);
+        Assert.DoesNotContain("feat:persuasive", succubus.Feats);
+
+        var erinyes = Evaluate(new Character
+        {
+            Name = "Erinyes",
+            RaceId = "race:devil_erinyes",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new() { new Tick { DriverId = "racial_hd:outsider" } }
+        });
+
+        Assert.Contains("feat:dodge", erinyes.Feats);
+        Assert.Contains("feat:mobility", erinyes.Feats);
+    }
+
+    /// <summary>
+    /// The sweep of every race in the packs against the SRD's superscript-B markers. Two mistakes
+    /// this guards against, both found in the mirror: `monstersAnimal.html` writes the marker as
+    /// bare text ("Alertness, TrackB") rather than a &lt;sup&gt; for the dog, wolf and wolverine
+    /// entries, and the multi-size statblocks share one heading, so the sizes must be read cell by
+    /// cell rather than as one blob.
+    ///
+    /// SRD badger: "Feats: Agile, Track(B), Weapon Finesse(B)" — 1 HD buys one slot, which pays
+    /// for Agile; the other two are granted.
+    ///
+    /// SRD grimlock: "Feats: Alertness, Track(B)". SRD couatl: "Feats: Dodge, Empower Spell,
+    /// Eschew Materials(B), Hover, Improved Initiative" — 9 HD buys four slots for the four
+    /// unmarked feats.
+    ///
+    /// Negative cases matter as much: the large viper's row is "Improved Initiative, Weapon
+    /// Finesse" with no marker (3 HD buys both), the toad's is "Alertness" alone, and the water
+    /// elemental's is "Power Attack" where the air elemental's carries two B feats.
+    /// </summary>
+    [Theory]
+    [InlineData("race:companion_badger", "racial_hd:animal", "feat:track", "feat:weapon_finesse")]
+    [InlineData("race:companion_dog", "racial_hd:animal", "feat:track")]
+    [InlineData("race:companion_wolf", "racial_hd:animal", "feat:track")]
+    [InlineData("race:companion_wolverine", "racial_hd:animal", "feat:track")]
+    [InlineData("race:companion_raven", "racial_hd:animal", "feat:weapon_finesse")]
+    [InlineData("race:companion_snake_viper_tiny", "racial_hd:animal", "feat:weapon_finesse")]
+    [InlineData("race:companion_snake_viper_medium", "racial_hd:animal", "feat:weapon_finesse")]
+    [InlineData("race:familiar_cat", "racial_hd:animal", "feat:weapon_finesse")]
+    [InlineData("race:familiar_stirge", "racial_hd:magical_beast", "feat:weapon_finesse")]
+    [InlineData("race:familiar_pseudodragon", "racial_hd:dragon", "feat:weapon_finesse")]
+    [InlineData("race:couatl", "racial_hd:outsider", "feat:eschew_materials")]
+    [InlineData("race:grimlock", "racial_hd:monstrous_humanoid", "feat:track")]
+    [InlineData("race:sahuagin_mutant", "racial_hd:monstrous_humanoid", "feat:multiattack")]
+    public void RacesGrantTheirBonusFeats(string raceId, string driverId, params string[] expected)
+    {
+        var state = EvaluateRacialHD(raceId, driverId);
+
+        foreach (var featId in expected)
+            Assert.Contains(featId, state.Feats);
+    }
+
+    /// <summary>
+    /// The companions of races whose statblock carries no B marker at all. See
+    /// <see cref="RacesGrantTheirBonusFeats"/> for the SRD quotes.
+    /// </summary>
+    [Theory]
+    [InlineData("race:companion_snake_viper_large", "racial_hd:animal")]
+    [InlineData("race:familiar_toad", "racial_hd:animal")]
+    [InlineData("race:companion_elemental_water_small", "racial_hd:elemental_water")]
+    public void RacesWithNoBonusFeatsGrantNone(string raceId, string driverId)
+    {
+        var state = EvaluateRacialHD(raceId, driverId);
+
+        Assert.DoesNotContain("feat:weapon_finesse", state.Feats);
+        Assert.DoesNotContain("feat:track", state.Feats);
+    }
+
+    private CharacterState EvaluateRacialHD(string raceId, string driverId) => Evaluate(new Character
+    {
+        Name = raceId,
+        RaceId = raceId,
+        BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+        Ticks = new() { new Tick { DriverId = driverId } }
+    });
+
     // ---- familiar / companion animal skills ----
 
     /// <summary>
