@@ -164,6 +164,7 @@
     "type": "general",
     "prerequisites": [],
     "grantedPermabuffs": [],
+    "selectable": false,
     "repeatable": false
   },
   {

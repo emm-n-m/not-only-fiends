@@ -355,6 +355,59 @@ public class FeatTests
         Assert.DoesNotContain(available, f => f.Id == "feat:combat_expertise");
     }
 
+    /// <summary>
+    /// Grant-only entries must not reach the choosable list. Three had: PCGen models an epic
+    /// loremaster's or rogue's "take a secret / special ability instead of a bonus feat" as a
+    /// pseudo-feat whose own data says PRETEXT:"This should be used in the Epic Loremaster Feat
+    /// pool only", and neither appears on its class's SRD bonus feat list — epicPrestigeClasses
+    /// says the loremaster "can choose a loremaster secret instead of a bonus feat". The
+    /// extraction dropped the pool-only warning, leaving two prerequisite-free general feats a
+    /// 1st-level character could take for no effect. The third is a marker for the Sylvan
+    /// Scimitar's conditional Cleave, which no content grants.
+    /// </summary>
+    [Theory]
+    [InlineData("feat:additional_loremaster_secret_epic_loremaster")]
+    [InlineData("feat:additional_rogue_ability_epic_rogue")]
+    [InlineData("feat:cleave_granted_by_sylvan_scimitar")]
+    public void GrantOnlyFeats_AreNotChoosable(string featId)
+    {
+        var (_, engine) = CreateStudio();
+        var state = new CharacterState
+        {
+            TotalHD = 1,
+            BaseBAB = 1,
+            AbilityScores = new AbilityScoreSet
+            {
+                STR = 16, DEX = 14, CON = 14, INT = 14, WIS = 12, CHA = 8
+            }
+        };
+
+        Assert.DoesNotContain(engine.GetAvailableFeats(state), feat => feat.Id == featId);
+
+        // And the back door: submitting it on a tick is refused rather than silently accepted.
+        var character = new Character
+        {
+            Name = "Grant-only feat",
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet
+            {
+                STR = 16, DEX = 14, CON = 14, INT = 14, WIS = 12, CHA = 8
+            },
+            Ticks = new List<Tick>
+            {
+                new()
+                {
+                    DriverId = "class:cleric",
+                    Choices = new TickChoices { FeatIds = new List<string> { featId } }
+                }
+            }
+        };
+        var replayed = engine.Evaluate(character);
+
+        Assert.DoesNotContain(featId, replayed.Feats);
+        Assert.Contains(replayed.Warnings, w => w.Message.Contains("granted, not chosen"));
+    }
+
     [Fact]
     public void GetAvailableFeats_AfterTakingPowerAttack_IncludesCleave()
     {
