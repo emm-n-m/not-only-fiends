@@ -1503,6 +1503,12 @@ public class ReplayStudio
 
         foreach (var buff in race.RacialPermabuffs)
             buff.Apply(ctx);
+
+        // Type-derived weapon proficiencies. Keyed on the type rather than on the racial HD
+        // driver: a pixie trades her single fey Hit Die for a class level and is still fey, so a
+        // pixie wizard is still proficient with every simple weapon.
+        foreach (var featId in CreatureTypes.WeaponProficiencyFeats(race.Type))
+            new GrantBonusFeat { FeatId = featId }.Apply(ctx);
     }
 
     /// <summary>

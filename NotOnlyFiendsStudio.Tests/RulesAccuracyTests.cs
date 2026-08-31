@@ -325,10 +325,14 @@ public class RulesAccuracyTests
     });
 
     /// <summary>
-    /// A creature's monster type carries its weapon and armour proficiencies, and every racial HD
-    /// driver had an empty levelPermabuffs — so a succubus was proficient with nothing her class
-    /// levels did not give her. This is not cosmetic: eldritch knight reads
-    /// HasFeat feat:weapon_proficiency_martial as an entry prerequisite.
+    /// A creature's monster type carries its weapon proficiencies, and nothing granted them — so a
+    /// succubus was proficient with nothing her class levels gave her. This is not cosmetic:
+    /// eldritch knight reads HasFeat feat:weapon_proficiency_martial as an entry prerequisite.
+    ///
+    /// The grant is keyed on the type, not on holding racial Hit Dice: a pixie exchanges her one
+    /// fey HD for a class level and is still fey, and an aasimar or tiefling has no racial HD at
+    /// all and is still an outsider. Only racial_hd:humanoid keeps a driver-level grant, because
+    /// humanoid is the type whose entry defers to the character class.
     ///
     /// SRD monsterTypes, Outsider: "Proficient with all simple and martial weapons and any weapons
     /// mentioned in its entry." Giant is the same; fey, monstrous humanoid, humanoid and undead
@@ -347,7 +351,12 @@ public class RulesAccuracyTests
     [InlineData("race:grimlock", "racial_hd:monstrous_humanoid", false)]
     [InlineData("race:gnoll", "racial_hd:humanoid", false)]
     [InlineData("race:companion_shadow", "racial_hd:undead", false)]
-    public void RacialHitDice_GrantTheirMonsterTypeWeaponProficiencies(string raceId, string driverId, bool martial)
+    // The races that carry no racial HD at all and are still proficient by type: a pixie who
+    // traded her fey Hit Die for a class level, a dromite, a half-giant.
+    [InlineData("race:pixie", "class:wizard", false)]
+    [InlineData("race:dromite", "class:wizard", false)]
+    [InlineData("race:half_giant", "class:wizard", true)]
+    public void CreatureType_GrantsItsWeaponProficiencies(string raceId, string driverId, bool martial)
     {
         var state = Evaluate(new Character
         {
@@ -362,21 +371,27 @@ public class RulesAccuracyTests
     }
 
     /// <summary>
-    /// Animals are "proficient with natural weapons only", so their driver grants nothing — the
-    /// negative case that stops the grant being copied onto every driver.
+    /// The negative cases that stop the grant being sprayed onto every type. Animals are
+    /// "proficient with natural weapons only". A human wizard is humanoid, the one type that reads
+    /// "or by character class", so he keeps the wizard's own proficiency list rather than every
+    /// simple weapon — the same reason a tiefling "gains feats according to its class levels".
     /// </summary>
-    [Fact]
-    public void AnimalHitDice_GrantNoWeaponProficiency()
+    [Theory]
+    [InlineData("race:companion_wolf", "racial_hd:animal")]
+    [InlineData("race:human", "class:wizard")]
+    [InlineData("race:elf", "class:wizard")]
+    public void TypesWithoutABlanketProficiency_GrantNone(string raceId, string driverId)
     {
         var state = Evaluate(new Character
         {
-            Name = "Animal",
-            RaceId = "race:companion_wolf",
+            Name = raceId,
+            RaceId = raceId,
             BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
-            Ticks = new() { new Tick { DriverId = "racial_hd:animal" } }
+            Ticks = new() { new Tick { DriverId = driverId } }
         });
 
         Assert.DoesNotContain("feat:simple_weapon_proficiency", state.Feats);
+        Assert.DoesNotContain("feat:weapon_proficiency_martial", state.Feats);
     }
 
     /// <summary>

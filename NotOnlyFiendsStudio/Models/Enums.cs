@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace NotOnlyFiendsStudio.Models;
 
 public enum Ability { STR, DEX, CON, INT, WIS, CHA }
@@ -21,6 +24,30 @@ public static class CreatureTypes
     /// </summary>
     public static bool IsLiving(CreatureType type) =>
         type is not (CreatureType.Undead or CreatureType.Construct);
+
+    /// <summary>
+    /// SRD monsterTypes: a creature's type carries its weapon proficiencies, and it does so
+    /// whether or not the creature keeps any racial Hit Dice — a pixie who traded her fey HD for a
+    /// class level is still fey, and a tiefling with no racial HD at all is still an outsider.
+    /// Derived from the type for the same reason <see cref="IsLiving"/> is.
+    ///
+    /// Humanoid is deliberately absent. Alone among the types it reads "Proficient with all simple
+    /// weapons, <em>or by character class</em>", so a human wizard keeps wizard proficiencies; the
+    /// classless humanoid monster is covered by racial_hd:humanoid instead. Aberration, elemental
+    /// and dragon are conditional on being "generally humanoid in form", which is per-creature, so
+    /// they are left to the individual races. Animal, magical beast, ooze, plant, vermin and
+    /// construct are natural weapons only.
+    /// </summary>
+    public static IReadOnlyList<string> WeaponProficiencyFeats(CreatureType type) => type switch
+    {
+        // "Proficient with all simple and martial weapons and any weapons mentioned in its entry."
+        CreatureType.Outsider or CreatureType.Giant =>
+            new[] { "feat:simple_weapon_proficiency", "feat:weapon_proficiency_martial" },
+        // "Proficient with all simple weapons and any weapons mentioned in its entry."
+        CreatureType.Fey or CreatureType.MonstrousHumanoid or CreatureType.Undead =>
+            new[] { "feat:simple_weapon_proficiency" },
+        _ => Array.Empty<string>(),
+    };
 
     /// <summary>The incorporeal subtype, spelled once so race and template paths agree.</summary>
     public const string IncorporealSubtype = "incorporeal";
