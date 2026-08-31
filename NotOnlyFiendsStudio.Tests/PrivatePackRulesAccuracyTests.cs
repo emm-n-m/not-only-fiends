@@ -627,4 +627,38 @@ public class PrivatePackRulesAccuracyTests
 
         Assert.Equal(2, state.SkillBonuses["skill:intimidate"]);
     }
+
+    /// <summary>
+    /// A monster's statblock feats are bought with its racial-HD feat slots; only the ones the
+    /// book flags with a superscript B are granted on top. The Fiendish Codices use the same
+    /// convention as the SRD, and the arithmetic corroborates both entries below: the unmarked
+    /// feats are exactly as many as the creature's HD buy.
+    ///
+    /// FC2 134: "Feats Combat Expertise, Dodge(B), Iron Will, Mobility(B), Spring Attack,
+    /// Quicken Spell-Like Ability (charm monster), Weapon Finesse" — 12 HD buys five slots
+    /// (HD 1/3/6/9/12) and there are five unmarked feats, so only Dodge and Mobility are
+    /// granted. All seven had been granted, handing every brachina five free feats.
+    ///
+    /// FC1 55: "Feats Combat Casting, Combat Expertise, Exotic Weapon (hand crossbow)(B),
+    /// Persuasive, Weapon Finesse" — 10 HD buys four slots (HD 1/3/6/9) for the four unmarked
+    /// feats; the hand crossbow proficiency is the bonus feat and was missing entirely.
+    /// </summary>
+    [RequiresPrivatePacksFact]
+    public void FiendishCodexRaces_GrantOnlyTheStatblockFeatsMarkedAsBonusFeats()
+    {
+        var registry = TestContentHelper.LoadBundledAndPrivatePacksIfAvailable();
+
+        var brachina = GrantedBonusFeats(registry, "race:devil_brachina");
+        Assert.Equal(new[] { "feat:dodge", "feat:mobility" }, brachina);
+
+        var yochlol = GrantedBonusFeats(registry, "race:yochlol");
+        Assert.Equal(new[] { "feat:exotic_weapon_proficiency:crossbow_hand" }, yochlol);
+    }
+
+    private static string[] GrantedBonusFeats(ContentRegistry registry, string raceId) =>
+        registry.GetRace(raceId).RacialPermabuffs
+            .OfType<GrantBonusFeat>()
+            .Select(grant => grant.FeatId)
+            .OrderBy(id => id, StringComparer.Ordinal)
+            .ToArray();
 }

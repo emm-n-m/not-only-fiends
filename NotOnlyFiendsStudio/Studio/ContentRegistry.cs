@@ -670,7 +670,10 @@ public class ContentRegistry : IContentLookup
     {
         foreach (var buff in permabuffs)
         {
-            if (buff is GrantBonusFeat gbf && !_feats.ContainsKey(gbf.FeatId))
+            // TryGetFeat, not _feats.ContainsKey: a grant may name a selectable variant such as
+            // "feat:exotic_weapon_proficiency:crossbow_hand", which is what GrantBonusFeat.Apply
+            // resolves at replay time. An exact-key check rejected content the engine can run.
+            if (buff is GrantBonusFeat gbf && !TryGetFeat(gbf.FeatId, out _))
                 _validationErrors.Add(new ContentError(ContentErrorKind.BrokenReference,
                     $"{context} has GrantBonusFeat referencing unknown feat '{gbf.FeatId}'"));
             if (buff is ApplyClassFeatureOptionBenefits benefits && !_classFeatures.ContainsKey(benefits.FeatureType))
