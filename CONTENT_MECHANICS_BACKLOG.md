@@ -7,6 +7,22 @@ and split private-pack findings into the materials repository.
 
 ## Active engine/model gaps
 
+- [ ] Let an ascension template supersede *whatever* prior nature a creature had, rather than one
+  named template. `RevokeTemplate` takes a single `templateId`, so
+  `template:archfiend_ascended` hard-codes `template:alu_fiend` — correct only because that is
+  what Princess Lilly happened to be. The intent is that the creature stops being what it was and
+  becomes lower-plane nobility tied to a portfolio, closer to a minor deification.
+
+  Anything can ascend, including a plain human with no prior-nature template at all (several D&D
+  deities are ex-humans; Iggwilv ascends to archfey), so the mechanism must no-op cleanly when
+  there is nothing to supersede — and must not be fiend-specific, since the archfey case is the
+  same shape with a different destination. That rules out hard-coding a lookup per ascension.
+
+  Shape: mark nature-establishing templates with a tag (templates carry no `tags` today) and give
+  the ascension a `RevokeTemplatesWithTag`, which revokes what it finds and does nothing when it
+  finds none. Blocked on deciding which templates count as a prior nature — a design call, not a
+  mechanical one. Undeath looks like a separate axis: ascending is unlikely to cure lichdom.
+
 - [ ] Model effects applied to summoned creatures before treating `feat:augment_summoning` as a
   character-state content fix.
 - [ ] Finish Dragon Disciple's ancestry-dependent breath weapon and energy immunity, structured
