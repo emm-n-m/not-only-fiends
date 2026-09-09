@@ -143,26 +143,7 @@ public static class TestContentHelper
     private static Dictionary<string, string> LoadEnvFile()
     {
         var envPath = GetEnvFilePath();
-        var vars = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        if (!File.Exists(envPath))
-            return vars;
-
-        foreach (var line in File.ReadAllLines(envPath))
-        {
-            var trimmed = line.Trim();
-            if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith('#'))
-                continue;
-
-            var eqIndex = trimmed.IndexOf('=');
-            if (eqIndex <= 0)
-                continue;
-
-            var key = trimmed[..eqIndex].Trim();
-            var value = trimmed[(eqIndex + 1)..].Trim();
-            vars[key] = value;
-        }
-
-        return vars;
+        return EnvFile.Load(envPath);
     }
 
     private static string? NormalizeOptionalPath(string? path) =>
