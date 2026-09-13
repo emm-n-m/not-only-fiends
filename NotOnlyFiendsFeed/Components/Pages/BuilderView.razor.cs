@@ -946,6 +946,8 @@ public partial class BuilderView
     private RaceDefinition? SelectedRace() =>
         _races.FirstOrDefault(r => r.Id == _character.RaceId);
 
+    private bool SelectedRaceHasEcl => SelectedRace()?.LevelAdjustment.HasValue == true;
+
     private List<LanguageDefinition> OfferedBonusLanguages() =>
         LanguageCatalog.OfferedBonusLanguages(SelectedRace(), _languages).ToList();
 

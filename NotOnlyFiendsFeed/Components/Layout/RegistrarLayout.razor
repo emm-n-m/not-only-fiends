@@ -1,5 +1,6 @@
 @inherits LayoutComponentBase
 @using NotOnlyFiendsFeed.Services
+@using NotOnlyFiendsStudio.Studio
 @inject CharacterStore CharacterStore
 @inject ServerContentService Content
 
@@ -90,12 +91,23 @@
 
         try
         {
+            var races = Content.Registry.GetAllRaces()
+                .GroupBy(r => r.Id, StringComparer.Ordinal)
+                .ToDictionary(g => g.Key, g => g.First(), StringComparer.Ordinal);
             foreach (var info in CharacterStore.List()
                 .OrderByDescending(i => i.ModifiedUtc)
                 .Take(6))
             {
-                var ecl = info.Sheet?.ECL;
-                var meta = ecl.HasValue ? $"ECL {ecl.Value}" : "unbuilt";
+                var sheet = info.Sheet;
+                var race = sheet?.Race is string raceId && races.TryGetValue(raceId, out var foundRace)
+                    ? foundRace
+                    : null;
+                int? ecl = race is not null && RaceCatalog.IsSanctionedPcRace(race)
+                    ? sheet?.ECL
+                    : null;
+                var meta = race is { LevelAdjustment: null }
+                    ? "no ECL"
+                    : ecl.HasValue ? $"ECL {ecl.Value}" : "unbuilt";
                 _openCharacters.Add(new OpenCharacter(info.Id, info.Name, meta));
             }
         }

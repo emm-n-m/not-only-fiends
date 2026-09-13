@@ -88,6 +88,9 @@ else if (CharacterStore.IsConfigured)
         var raceNames = Content.Registry.GetAllRaces()
             .GroupBy(r => r.Id, StringComparer.Ordinal)
             .ToDictionary(g => g.Key, g => g.First().Name, StringComparer.Ordinal);
+        var races = Content.Registry.GetAllRaces()
+            .GroupBy(r => r.Id, StringComparer.Ordinal)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.Ordinal);
 
         foreach (var info in CharacterStore.List())
         {
@@ -103,19 +106,30 @@ else if (CharacterStore.IsConfigured)
                         .Where(kv => !state.OptionalClassFeatureTypes.Contains(kv.Key))
                         .Sum(kv => kv.Value);
                 var race = character.RaceId is not null && raceNames.TryGetValue(character.RaceId, out var rn) ? rn : character.RaceId;
+                int? ecl = character.RaceId is not null
+                    && races.TryGetValue(character.RaceId, out var raceDefinition)
+                    && RaceCatalog.IsSanctionedPcRace(raceDefinition)
+                    ? state.ECL
+                    : null;
                 var classes = string.Join(" / ", state.ClassLevels
                     .Where(kv => kv.Value > 0)
                     .Select(kv => $"{(driverNames.TryGetValue(kv.Key, out var dn) ? dn : kv.Key)} {kv.Value}"));
                 var build = string.Join(" · ", new[] { race, classes }.Where(s => !string.IsNullOrEmpty(s)));
-                entry = new RosterEntry(info.Id, info.Name, build, state.ECL, state.TotalHD, state.HP,
+                entry = new RosterEntry(info.Id, info.Name, build, ecl, state.TotalHD, state.HP,
                     owed, state.Warnings.Count, Loadable: true);
             }
             catch
             {
                 // Not loadable by the store (e.g. a filename that isn't a valid id): show what
                 // the persisted sheet already knows, and mark its decision state unknown.
+                var sheet = info.Sheet;
+                int? fallbackEcl = sheet?.Race is string raceId
+                    && races.TryGetValue(raceId, out var raceDefinition)
+                    && RaceCatalog.IsSanctionedPcRace(raceDefinition)
+                    ? sheet.ECL
+                    : null;
                 entry = new RosterEntry(info.Id, info.Name,
-                    info.Sheet?.Race ?? "", info.Sheet?.ECL, info.Sheet?.TotalHD, null,
+                    info.Sheet?.Race ?? "", fallbackEcl, info.Sheet?.TotalHD, null,
                     Owed: 0, Warnings: 0, Loadable: false);
             }
             _entries.Add(entry);

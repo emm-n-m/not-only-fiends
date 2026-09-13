@@ -38,7 +38,7 @@ else if (_character == null)
                 {
                     <a class="d-flex justify-content-between py-1" href="@($"sheet/{Uri.EscapeDataString(c.Id)}")">
                         <span>@c.Name</span>
-                        <span class="reg-mono text-muted">@(c.Sheet?.ECL is int e ? $"ECL {e}" : "")</span>
+                        <span class="reg-mono text-muted">@(SavedCharacterEcl(c) is int e ? $"ECL {e}" : "")</span>
                     </a>
                 }
             </div>
@@ -73,7 +73,10 @@ else if (_state != null && _character != null)
             <div class="summary-strip d-flex flex-wrap align-items-center gap-3 small border rounded bg-light px-2 py-1 mb-2">
                 <span class="fw-bold">@_character.Name</span>
                 <span>HD <strong>@_state.TotalHD</strong></span>
-                <span>ECL <strong>@_state.ECL</strong></span>
+                @if (HasEcl)
+                {
+                    <span>ECL <strong>@_state.ECL</strong></span>
+                }
                 <span>HP <strong>@_state.HP</strong></span>
                 <span>BAB <strong>@FormatSigned(_state.EffectiveBAB)</strong></span>
                 <span>
@@ -109,8 +112,11 @@ else if (_state != null && _character != null)
                     <strong>Race:</strong> @_state.RaceId |
                     <strong>Type:</strong> @_state.Type |
                     <strong>Size:</strong> @_state.Size |
-                    <strong>HD:</strong> @_state.TotalHD |
-                    <strong>ECL:</strong> @_state.ECL
+                    <strong>HD:</strong> @_state.TotalHD
+                    @if (HasEcl)
+                    {
+                        <text> | <strong>ECL:</strong> @_state.ECL</text>
+                    }
                     @{
                         // Reads the race rather than state.LevelAdjustment, which coalesces null to
                         // 0 and so cannot tell "no sanctioned LA" from "LA +0".
@@ -118,7 +124,7 @@ else if (_state != null && _character != null)
                     }
                     @if (_raceDefinition is { LevelAdjustment: null })
                     {
-                        <span class="badge bg-warning text-dark ms-1" title="Its source never printed a Level Adjustment for this race, so it was not sanctioned as a player-character option. Contributes 0 to ECL.">@laText</span>
+                        <span class="badge bg-warning text-dark ms-1" title="Its source never printed a Level Adjustment for this race, so it was not sanctioned as a player-character option and has no ECL.">@laText</span>
                     }
                     else if (_state.LevelAdjustment > 0)
                     {

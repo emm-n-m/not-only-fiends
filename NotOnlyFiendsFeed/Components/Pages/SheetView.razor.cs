@@ -142,6 +142,13 @@ public partial class SheetView
     private int _viewHD = 1;
     private RaceDefinition? _raceDefinition;
 
+    private bool HasEcl => _raceDefinition?.LevelAdjustment.HasValue == true;
+
+    private int? SavedCharacterEcl(CharacterFileInfo character) =>
+        _registry.GetAllRaces().FirstOrDefault(r => r.Id == character.Sheet?.Race)?.LevelAdjustment.HasValue == true
+            ? character.Sheet?.ECL
+            : null;
+
     [Parameter] public string? Id { get; set; }
 
     /// <summary>Opens the sheet already positioned at this HD — a shareable life-stage view.</summary>

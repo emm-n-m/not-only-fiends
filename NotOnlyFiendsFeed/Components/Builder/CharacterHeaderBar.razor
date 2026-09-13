@@ -39,7 +39,10 @@
     </div>
 
     <div class="reg-header-stats">
-        @Tile("ECL", State.ECL.ToString())
+        @if (ShowEcl)
+        {
+            @Tile("ECL", State.ECL.ToString())
+        }
         @Tile("HD", State.TotalHD.ToString())
         @Tile("HP", State.HP.ToString())
         @Tile("AC", $"{State.AC.Total}")
@@ -54,6 +57,7 @@
 
 @code {
     [Parameter, EditorRequired] public CharacterState State { get; set; } = default!;
+    [Parameter] public bool ShowEcl { get; set; }
     [Parameter] public string? Name { get; set; }
     [Parameter] public string? Subtitle { get; set; }
     [Parameter] public EventCallback<CharacterTab> OnNavigate { get; set; }

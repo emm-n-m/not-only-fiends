@@ -109,6 +109,7 @@ else
         <CharacterHeaderBar State="_state"
                             Name="@_character.Name"
                             Subtitle="@HeaderSubtitle()"
+                            ShowEcl="@SelectedRaceHasEcl"
                             ClassName="DriverName"
                             OnNavigate="SetActiveTab" />
     }
@@ -542,6 +543,7 @@ else
                     <DriverPreviewGrid NextHd="_previewNextHd"
                                        Previews="_driverPreviews"
                                        Current="_state"
+                                       ShowEcl="@SelectedRaceHasEcl"
                                        OnChoose="ChooseDriverFromPreview" />
                 </div>
             }
@@ -1306,7 +1308,7 @@ else
         <aside class="reg-builder-delta">
             @if (_state != null)
             {
-                <DeltaPane State="_state" ClassName="DriverName" OnSave="SaveCharacter" OnEvaluate="EvaluateCharacter" />
+                <DeltaPane State="_state" ShowEcl="@SelectedRaceHasEcl" ClassName="DriverName" OnSave="SaveCharacter" OnEvaluate="EvaluateCharacter" />
             }
         </aside>
     </div>@* end .reg-builder-grid *@
@@ -1777,7 +1779,12 @@ else
                     </div>
                     <div class="col-md-3">
                         <h5>Info</h5>
-                        <p>HD: @_state.TotalHD | ECL: @_state.ECL | Skills: @_state.UnspentSkillPoints pts</p>
+                        <p>HD: @_state.TotalHD
+                            @if (SelectedRaceHasEcl)
+                            {
+                                <text> | ECL: @_state.ECL</text>
+                            }
+                            | Skills: @_state.UnspentSkillPoints pts</p>
                     </div>
                     @* Speeds are racial/class facts, so they sit here rather than with the gear
                        readout they used to share a column with. *@

@@ -18,7 +18,10 @@
             @Row("Base attack", FormatSigned(State.EffectiveBAB))
             @Row("Fort / Ref / Will", $"{FormatSigned(State.EffectiveSaves.Fort)} / {FormatSigned(State.EffectiveSaves.Ref)} / {FormatSigned(State.EffectiveSaves.Will)}")
             @Row("Armor class", $"{State.AC.Total} (T {State.AC.Touch} / FF {State.AC.FlatFooted})")
-            @Row("ECL", State.ECL.ToString())
+            @if (ShowEcl)
+            {
+                @Row("ECL", State.ECL.ToString())
+            }
         </div>
     </div>
 
@@ -72,6 +75,7 @@
 
 @code {
     [Parameter, EditorRequired] public CharacterState State { get; set; } = default!;
+    [Parameter] public bool ShowEcl { get; set; }
     [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public EventCallback OnEvaluate { get; set; }
 

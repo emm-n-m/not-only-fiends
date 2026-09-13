@@ -24,7 +24,10 @@
                 <div class="reg-dpv-stats">
                     <div class="reg-dpv-stat"><span class="k">HP</span><span class="v @(hpDelta > 0 ? "up" : "")">@Signed(hpDelta)</span></div>
                     <div class="reg-dpv-stat"><span class="k">BAB</span><span class="v @(babDelta > 0 ? "up" : "")">@Signed(babDelta)</span></div>
-                    <div class="reg-dpv-stat"><span class="k">ECL</span><span class="v">@p.Preview.Ecl</span></div>
+                    @if (ShowEcl)
+                    {
+                        <div class="reg-dpv-stat"><span class="k">ECL</span><span class="v">@p.Preview.Ecl</span></div>
+                    }
                     <div class="reg-dpv-stat"><span class="k">Skill points</span><span class="v">@p.Preview.UnspentSkillPoints</span></div>
                 </div>
                 <div class="reg-dpv-badges">
@@ -50,6 +53,7 @@
     [Parameter, EditorRequired] public int NextHd { get; set; }
     [Parameter, EditorRequired] public IReadOnlyList<DriverPreviewDto> Previews { get; set; } = Array.Empty<DriverPreviewDto>();
     [Parameter, EditorRequired] public CharacterState Current { get; set; } = default!;
+    [Parameter] public bool ShowEcl { get; set; }
     [Parameter] public EventCallback<string> OnChoose { get; set; }
 
     private static string Signed(int v) => v >= 0 ? $"+{v}" : v.ToString();
