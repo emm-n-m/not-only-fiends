@@ -197,6 +197,7 @@ else
                                           ValueChanged="@((v) => { _selectedTemplate = v ?? string.Empty; })"
                                   DisplaySelector="@(t => t.Name)"
                                   ValueSelector="@(t => t.Id)"
+                                  TitleSelector="@(t => t.Description)"
                                   Placeholder="Search templates..." />
                     @if (!string.IsNullOrEmpty(_selectedTemplate) && !_character.TemplateIds.Contains(_selectedTemplate))
                     {

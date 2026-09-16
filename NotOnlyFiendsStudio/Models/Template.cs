@@ -18,6 +18,14 @@ public class TemplateDriver
     public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
 
+    /// <summary>
+    /// What the template is, for the person choosing it. Provenance belongs here — "personal
+    /// boon from Grace to Duchess Rose" — because the engine has no way to say a template is
+    /// meant for one character: a template is either hidden or offered to everyone, and this
+    /// text is what keeps "everyone" honest.
+    /// </summary>
+    public string Description { get; set; } = string.Empty;
+
     // Fail closed for newly-authored content: it must be explicitly classified before it
     // appears as a direct character-builder choice.
     public TemplateAcquisitionKind AcquisitionKind { get; set; } = TemplateAcquisitionKind.Internal;

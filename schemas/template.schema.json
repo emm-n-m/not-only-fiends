@@ -310,6 +310,10 @@
           "type": "string",
           "description": "Display name (e.g., 'Half-Fiend')."
         },
+        "description": {
+          "type": "string",
+          "description": "What the template is and where it comes from, shown as the picker tooltip. Record provenance for campaign-specific templates (who grants it, to whom); the engine cannot restrict a template to one character, so this text is the only place that intent lives."
+        },
         "acquisitionKind": {
           "type": "string",
           "enum": ["internal", "inherited", "acquired"],
