@@ -606,6 +606,12 @@ public partial class BuilderView
         OnCharacterChanged();
     }
 
+    private void ClearAbilityIncrease(int index)
+    {
+        _character.Ticks[index].Choices.AbilityIncrease = null;
+        OnCharacterChanged();
+    }
+
     private void SetTickDriver(int index, string? driverId)
     {
         if (string.IsNullOrEmpty(driverId)) return;

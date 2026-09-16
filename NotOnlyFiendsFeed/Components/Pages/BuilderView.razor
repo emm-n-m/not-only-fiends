@@ -580,6 +580,18 @@ else
                                     <span class="badge bg-warning text-dark ms-1">Ability +1 needed</span>
                                 }
                             }
+                            else if (tick.Choices.AbilityIncrease != null)
+                            {
+                                @* A pick recorded on a tick that grants none — an older import wrote
+                                   PCGen stat edits here. The engine ignores it and warns; the only
+                                   way out is to clear it, so offer that where the select would be. *@
+                                <span class="badge bg-warning text-dark ms-1 d-inline-flex align-items-center gap-1"
+                                      title="No ability increase is due on this HD, so the engine ignores this pick. Clear it to remove the warning.">
+                                    +1 @tick.Choices.AbilityIncrease not due
+                                    <button type="button" class="btn btn-sm p-0 border-0 text-dark" style="font-size: 0.85em; line-height: 1;"
+                                            @onclick="() => ClearAbilityIncrease(index)" title="Clear">&times;</button>
+                                </span>
+                            }
                         </div>
                         @if (_expandedTicks.Contains(index))
                         {
