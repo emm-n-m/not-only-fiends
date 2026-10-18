@@ -614,9 +614,97 @@ public sealed class AgentApiService
             FirstHdSkillMultiplier = rules.FirstHDSkillMultiplier,
             StandardFeatHds = rules.StandardFeatHDs.OrderBy(hd => hd).ToList(),
             EpicFeatInterval = rules.EpicFeatInterval,
-            EpicFeatStartHd = rules.EpicFeatStartHD
+            EpicFeatStartHd = rules.EpicFeatStartHD,
+            PointBuyBudgets = AbilityScoreGenerationRules.PointBuyBudgets
+                .Select(b => new PointBuyBudgetDto { Name = b.Name, Budget = b.Budget })
+                .ToList(),
+            PointBuyCosts = Enumerable
+                .Range(AbilityScoreGenerationRules.PointBuyMinimum,
+                    AbilityScoreGenerationRules.PointBuyMaximum - AbilityScoreGenerationRules.PointBuyMinimum + 1)
+                .ToDictionary(score => score, score => AbilityScoreGenerationRules.PointBuyCost(score)!.Value)
         };
     }
+
+    /// <summary>
+    /// Sets base ability scores by a generation method. Rolls happen server-side so a caller
+    /// can arrange its dice but never choose them; see <see cref="SetAbilityScoresRequest"/>.
+    /// </summary>
+    public CharacterMutationResponseDto SetAbilityScores(string id, SetAbilityScoresRequest request) =>
+        SetAbilityScores(id, request, Random.Shared);
+
+    /// <summary>Takes the dice source so tests can roll deterministically.</summary>
+    public CharacterMutationResponseDto SetAbilityScores(string id, SetAbilityScoresRequest request, Random random)
+    {
+        if (request.Method != AbilityScoreMethod.PointBuy && request.PointBuyBudget != null)
+            throw new ArgumentException("pointBuyBudget applies only to method pointBuy");
+        if (request.Method != AbilityScoreMethod.Rolled && request.Roll)
+            throw new ArgumentException("roll applies only to method rolled");
+
+        return _characterStore.Update(id, character =>
+        {
+            switch (request.Method)
+            {
+                case AbilityScoreMethod.Manual:
+                {
+                    var scores = RequireScores(request);
+                    foreach (var ability in Enum.GetValues<Ability>())
+                    {
+                        var score = scores.GetScore(ability);
+                        if (score is < 1 or > 40)
+                            throw new ArgumentException($"scores.{ability} {score} is outside 1–40");
+                    }
+                    character.BaseAbilityScores = scores;
+                    character.AbilityGeneration = null;
+                    break;
+                }
+                case AbilityScoreMethod.PointBuy:
+                {
+                    var scores = RequireScores(request);
+                    var budget = request.PointBuyBudget ?? AbilityScoreGenerationRules.StandardPointBuyBudget;
+                    if (!AbilityScoreGenerationRules.IsStandardBudget(budget))
+                        throw new ArgumentException(
+                            $"pointBuyBudget {budget} is not one of {string.Join(", ", AbilityScoreGenerationRules.PointBuyBudgets.Select(b => b.Budget))}");
+                    if (AbilityScoreGenerationRules.PointBuyProblem(scores, budget) is { } problem)
+                        throw new ArgumentException(problem);
+                    character.BaseAbilityScores = scores;
+                    character.AbilityGeneration = new AbilityScoreGeneration { Method = request.Method, PointBuyBudget = budget };
+                    break;
+                }
+                case AbilityScoreMethod.Rolled:
+                {
+                    if (request.Roll)
+                    {
+                        if (request.Scores != null)
+                            throw new ArgumentException("omit scores when roll is true; rearrange the rolls in a second request");
+                        var rolls = AbilityScoreGenerationRules.RollScores(random);
+                        var abilities = Enum.GetValues<Ability>();
+                        var scores = new AbilityScoreSet();
+                        for (var i = 0; i < abilities.Length; i++) scores.SetScore(abilities[i], rolls[i]);
+                        character.BaseAbilityScores = scores;
+                        character.AbilityGeneration = new AbilityScoreGeneration { Method = request.Method, Rolls = rolls };
+                        break;
+                    }
+
+                    var existing = character.AbilityGeneration is { Method: AbilityScoreMethod.Rolled } rolled
+                        ? rolled.Rolls
+                        : throw new ArgumentException("character has no rolls to arrange; send roll: true first");
+                    var arranged = RequireScores(request);
+                    if (!AbilityScoreGenerationRules.IsArrangementOf(arranged, existing))
+                        throw new ArgumentException(
+                            $"scores must use each roll exactly once: {string.Join(", ", existing)}");
+                    character.BaseAbilityScores = arranged;
+                    break;
+                }
+                default:
+                    throw new ArgumentException($"unknown method: {request.Method}");
+            }
+
+            return EvaluateAndEnvelope(id, character);
+        });
+    }
+
+    private static AbilityScoreSet RequireScores(SetAbilityScoresRequest request) =>
+        request.Scores ?? throw new ArgumentException($"scores is required for method {request.Method}");
 
     /// <summary>
     /// Previews every legal next HD. <paramref name="optionDetail"/> applies only to the

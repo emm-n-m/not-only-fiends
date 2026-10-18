@@ -530,6 +530,107 @@ public partial class BuilderView
         }
     }
 
+    private AbilityScoreMethod AbilityMethod =>
+        _character.AbilityGeneration?.Method ?? AbilityScoreMethod.Manual;
+
+    /// <summary>
+    /// Switching to manual keeps the scores and drops the bookkeeping. Point buy keeps scores
+    /// that already fit the standard budget and otherwise starts every score at 8 (zero points
+    /// spent); rolling replaces the scores with a fresh set, assigned in roll order.
+    /// </summary>
+    private void SetAbilityMethod(AbilityScoreMethod method)
+    {
+        if (method == AbilityMethod) return;
+
+        switch (method)
+        {
+            case AbilityScoreMethod.Manual:
+                _character.AbilityGeneration = null;
+                break;
+            case AbilityScoreMethod.PointBuy:
+                _character.AbilityGeneration = new AbilityScoreGeneration { Method = method };
+                var spent = AbilityScoreGenerationRules.PointBuyTotal(_character.BaseAbilityScores);
+                if (spent is null || spent > _character.AbilityGeneration.PointBuyBudget)
+                {
+                    foreach (var ability in Enum.GetValues<Ability>())
+                        _character.BaseAbilityScores.SetScore(ability, AbilityScoreGenerationRules.PointBuyMinimum);
+                }
+                break;
+            case AbilityScoreMethod.Rolled:
+                _character.AbilityGeneration = new AbilityScoreGeneration { Method = method };
+                RollAbilityScores();
+                return;
+        }
+        OnCharacterChanged();
+    }
+
+    private void SetPointBuyBudget(ChangeEventArgs e)
+    {
+        if (_character.AbilityGeneration is { } generation && int.TryParse(e.Value?.ToString(), out var budget))
+        {
+            generation.PointBuyBudget = budget;
+            OnCharacterChanged();
+        }
+    }
+
+    /// <summary>
+    /// A step is allowed while it stays on the cost table and, when raising, within budget.
+    /// Lowering is always allowed inside the table so an over-budget set (a smaller budget picked
+    /// after spending) can be walked back down.
+    /// </summary>
+    private bool CanAdjustPointBuy(Ability ability, int delta)
+    {
+        if (_character.AbilityGeneration is not { } generation) return false;
+        var next = _character.BaseAbilityScores.GetScore(ability) + delta;
+        if (AbilityScoreGenerationRules.PointBuyCost(next) is null) return false;
+        if (delta < 0) return true;
+
+        var current = _character.BaseAbilityScores;
+        var candidate = new AbilityScoreSet
+        {
+            STR = current.STR, DEX = current.DEX, CON = current.CON,
+            INT = current.INT, WIS = current.WIS, CHA = current.CHA
+        };
+        candidate.SetScore(ability, next);
+        return AbilityScoreGenerationRules.PointBuyTotal(candidate) <= generation.PointBuyBudget;
+    }
+
+    private void AdjustPointBuy(Ability ability, int delta)
+    {
+        if (!CanAdjustPointBuy(ability, delta)) return;
+        _character.BaseAbilityScores.SetScore(ability, _character.BaseAbilityScores.GetScore(ability) + delta);
+        OnCharacterChanged();
+    }
+
+    private void RollAbilityScores()
+    {
+        if (_character.AbilityGeneration is not { } generation) return;
+        generation.Rolls = AbilityScoreGenerationRules.RollScores(Random.Shared);
+        var abilities = Enum.GetValues<Ability>();
+        for (var i = 0; i < abilities.Length; i++)
+            _character.BaseAbilityScores.SetScore(abilities[i], generation.Rolls[i]);
+        OnCharacterChanged();
+    }
+
+    /// <summary>
+    /// Rolled scores are always some arrangement of the six rolls, so giving an ability a roll
+    /// another ability holds swaps the two rather than duplicating a value.
+    /// </summary>
+    private void AssignRolledScore(Ability ability, ChangeEventArgs e)
+    {
+        if (!int.TryParse(e.Value?.ToString(), out var value)) return;
+        var scores = _character.BaseAbilityScores;
+        var previous = scores.GetScore(ability);
+        if (previous == value) return;
+
+        // No holder only when the saved scores were edited away from the rolls outside the builder.
+        var holder = Enum.GetValues<Ability>().Cast<Ability?>()
+            .FirstOrDefault(a => a != ability && scores.GetScore(a!.Value) == value);
+        if (holder is { } swapped) scores.SetScore(swapped, previous);
+        scores.SetScore(ability, value);
+        OnCharacterChanged();
+    }
+
     private int _addHdCount = 1;
     private string _addHdDriverId = "";
 

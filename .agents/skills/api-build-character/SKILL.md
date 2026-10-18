@@ -36,6 +36,14 @@ Templates apply at creation via `templateIds`. A template earned mid-career (lic
 that HD, forward only, and an evaluation truncated below it never sees the template. Missing
 entry = creation.
 
+**Ability scores by method** — `POST …/{id}/ability-scores`, before the first tick:
+`{"method":"pointBuy","scores":{str..cha},"pointBuyBudget":25}` (each 8–18, budget one of
+`/api/rules` `pointBuyBudgets`; over budget 400s), or `{"method":"rolled","roll":true}` (the
+server rolls 4d6-drop-lowest and assigns STR→CHA; you cannot supply dice), then optionally
+`{"method":"rolled","scores":{…}}` to rearrange — it must use each stored roll exactly once.
+`{"method":"manual","scores":{…}}` sets scores freely. Raw `baseAbilityScores` on create is
+still manual entry.
+
 **Level loop** — once per HD (racial HD tick like classes via `racial_hd:*` drivers; monsters
 usually take racial HD first):
 

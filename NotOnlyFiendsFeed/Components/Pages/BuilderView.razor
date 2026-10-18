@@ -350,17 +350,91 @@ else
     <div class="card mb-3">
         <div class="card-header">Base Ability Scores (pre-racial)</div>
         <div class="card-body">
+            @{
+                var abilityMethod = AbilityMethod;
+                var generation = _character.AbilityGeneration;
+            }
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                <div class="btn-group btn-group-sm" role="group" aria-label="Ability score method">
+                    <button class="btn @(abilityMethod == AbilityScoreMethod.Manual ? "btn-primary" : "btn-outline-primary")"
+                            @onclick="() => SetAbilityMethod(AbilityScoreMethod.Manual)">Manual</button>
+                    <button class="btn @(abilityMethod == AbilityScoreMethod.PointBuy ? "btn-primary" : "btn-outline-primary")"
+                            @onclick="() => SetAbilityMethod(AbilityScoreMethod.PointBuy)">Point buy</button>
+                    <button class="btn @(abilityMethod == AbilityScoreMethod.Rolled ? "btn-primary" : "btn-outline-primary")"
+                            @onclick="() => SetAbilityMethod(AbilityScoreMethod.Rolled)">Roll 4d6</button>
+                </div>
+
+                @if (abilityMethod == AbilityScoreMethod.PointBuy && generation != null)
+                {
+                    var spent = AbilityScoreGenerationRules.PointBuyTotal(_character.BaseAbilityScores);
+                    <select class="form-select form-select-sm w-auto"
+                            value="@generation.PointBuyBudget"
+                            @onchange="SetPointBuyBudget">
+                        @foreach (var (name, budget) in AbilityScoreGenerationRules.PointBuyBudgets)
+                        {
+                            <option value="@budget">@name (@budget)</option>
+                        }
+                    </select>
+                    @if (spent is null)
+                    {
+                        <span class="badge bg-danger">A score is outside @AbilityScoreGenerationRules.PointBuyMinimum–@AbilityScoreGenerationRules.PointBuyMaximum</span>
+                    }
+                    else
+                    {
+                        <span class="badge @(spent > generation.PointBuyBudget ? "bg-danger" : spent == generation.PointBuyBudget ? "bg-success" : "bg-secondary")">
+                            @spent / @generation.PointBuyBudget points
+                        </span>
+                    }
+                }
+
+                @if (abilityMethod == AbilityScoreMethod.Rolled && generation != null)
+                {
+                    <button class="btn btn-sm btn-outline-secondary" @onclick="RollAbilityScores">Roll again</button>
+                    <span class="small text-muted">Rolled: @string.Join(", ", generation.Rolls)</span>
+                    @if (generation.Rolls.Count == 6 && AbilityScoreGenerationRules.QualifiesForReroll(generation.Rolls))
+                    {
+                        <span class="badge bg-warning text-dark"
+                              title="The PHB allows rerolling a set whose modifiers total 0 or less, or whose highest score is 13 or lower.">
+                            Eligible for reroll
+                        </span>
+                    }
+                }
+            </div>
             <div class="row">
                 @foreach (var ability in Enum.GetValues<Ability>())
                 {
                     var raceBonus = GetRaceAbilityModifier(ability);
                     var templateBonus = GetTemplateAbilityModifier(ability);
-                    var creationTotal = _character.BaseAbilityScores.GetScore(ability) + raceBonus + templateBonus;
+                    var baseScore = _character.BaseAbilityScores.GetScore(ability);
+                    var creationTotal = baseScore + raceBonus + templateBonus;
                     <div class="col-2">
                         <label class="form-label">@ability</label>
-                        <input type="number" class="form-control" min="1" max="40"
-                               value="@_character.BaseAbilityScores.GetScore(ability)"
-                               @onchange="(e) => SetAbilityScore(ability, e)" />
+                        @if (abilityMethod == AbilityScoreMethod.PointBuy)
+                        {
+                            <div class="input-group input-group-sm">
+                                <button class="btn btn-outline-secondary" disabled="@(!CanAdjustPointBuy(ability, -1))"
+                                        @onclick="() => AdjustPointBuy(ability, -1)">&minus;</button>
+                                <span class="form-control text-center">@baseScore</span>
+                                <button class="btn btn-outline-secondary" disabled="@(!CanAdjustPointBuy(ability, 1))"
+                                        @onclick="() => AdjustPointBuy(ability, 1)">+</button>
+                            </div>
+                            <div class="form-text">Cost @(AbilityScoreGenerationRules.PointBuyCost(baseScore)?.ToString() ?? "—")</div>
+                        }
+                        else if (abilityMethod == AbilityScoreMethod.Rolled && generation != null)
+                        {
+                            <select class="form-select" value="@baseScore" @onchange="(e) => AssignRolledScore(ability, e)">
+                                @foreach (var roll in generation.Rolls.Append(baseScore).Distinct().OrderByDescending(r => r))
+                                {
+                                    <option value="@roll">@roll</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <input type="number" class="form-control" min="1" max="40"
+                                   value="@baseScore"
+                                   @onchange="(e) => SetAbilityScore(ability, e)" />
+                        }
                         <div class="form-text">
                             Race @FormatSigned(raceBonus) | Template @FormatSigned(templateBonus) | Start @creationTotal
                         </div>

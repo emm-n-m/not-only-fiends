@@ -213,6 +213,9 @@ app.MapPatch("/api/characters/{id}/ticks/{index:int}", (string id, int index, No
 app.MapDelete("/api/characters/{id}/ticks/last", (string id, AgentApiService api) =>
     RunMutation(() => Results.Ok(api.DeleteLastTick(id))));
 
+app.MapPost("/api/characters/{id}/ability-scores", (string id, SetAbilityScoresRequest request, AgentApiService api) =>
+    RunMutation(() => Results.Ok(api.SetAbilityScores(id, request))));
+
 app.MapPost("/api/characters/{id}/events", (string id, NotOnlyFiendsStudio.Models.PermanentEvent evt, AgentApiService api) =>
     RunMutation(() => Results.Ok(api.AppendEvent(id, evt))));
 

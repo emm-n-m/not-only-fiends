@@ -144,6 +144,7 @@ The same app serves both the Blazor UI and the REST API. Key endpoints:
 - `POST /api/characters/next-step` — preview every legal next HD choice with pending decisions
 - `GET /api/characters`, `POST /api/characters`, `PUT /api/characters/{id}`, `DELETE /api/characters/{id}` — character CRUD
 - `POST /api/characters/{id}/ticks`, `PATCH /api/characters/{id}/ticks/{index}`, `DELETE /api/characters/{id}/ticks/last` — tick-level mutations
+- `POST /api/characters/{id}/ability-scores` — set base ability scores by `manual`, `pointBuy` (DMG budgets, listed with costs under `/api/rules`) or `rolled` (server-side 4d6 drop lowest, then rearrange)
 - `POST /api/characters/{id}/simulate` — try a tick without persisting
 - `POST /api/characters/export-pcg` — export a supplied character draft and return UTF-8 `.pcg` content plus a fidelity report
 - `GET /api/characters/{id}/export-pcg` — export a stored character through the same pipeline

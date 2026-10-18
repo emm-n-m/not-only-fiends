@@ -64,6 +64,12 @@ public sealed class RulesDto
     public List<int> StandardFeatHds { get; set; } = new();
     public int EpicFeatInterval { get; set; }
     public int EpicFeatStartHd { get; set; }
+
+    /// <summary>Budgets accepted by <c>POST /api/characters/{id}/ability-scores</c> with method <c>pointBuy</c>.</summary>
+    public List<PointBuyBudgetDto> PointBuyBudgets { get; set; } = new();
+
+    /// <summary>Point cost of each base score from 8 to 18 (DMG Table 6–1).</summary>
+    public Dictionary<int, int> PointBuyCosts { get; set; } = new();
 }
 
 public sealed class ApiHealthResponse
@@ -281,6 +287,31 @@ public sealed class SpellSummaryDto
     public string School { get; set; } = string.Empty;
     public Dictionary<string, int> ClassLevels { get; set; } = new();
     public string Description { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Sets a character's base ability scores by one of the generation methods.
+/// <list type="bullet">
+/// <item><c>manual</c>: <see cref="Scores"/> required, any values 1–40.</item>
+/// <item><c>pointBuy</c>: <see cref="Scores"/> required, each 8–18 and costing no more than
+/// <see cref="PointBuyBudget"/> (default 25; must be one listed under <c>/api/rules</c>).</item>
+/// <item><c>rolled</c> with <see cref="Roll"/> true: the server rolls six 4d6-drop-lowest scores
+/// and assigns them STR→CHA; <see cref="Scores"/> must be omitted. Without <see cref="Roll"/>:
+/// <see cref="Scores"/> rearranges the character's existing rolls and must use each exactly once.</item>
+/// </list>
+/// </summary>
+public sealed class SetAbilityScoresRequest
+{
+    public AbilityScoreMethod Method { get; set; }
+    public AbilityScoreSet? Scores { get; set; }
+    public int? PointBuyBudget { get; set; }
+    public bool Roll { get; set; }
+}
+
+public sealed class PointBuyBudgetDto
+{
+    public string Name { get; set; } = string.Empty;
+    public int Budget { get; set; }
 }
 
 public sealed class ImportPcgRequest

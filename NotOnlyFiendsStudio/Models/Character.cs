@@ -39,6 +39,13 @@ public class Character
     public AbilityScoreSet BaseAbilityScores { get; set; } = new();
 
     /// <summary>
+    /// How <see cref="BaseAbilityScores"/> were generated. Builder bookkeeping only: replay reads
+    /// the scores and ignores this. Null (imports, characters saved before this field existed)
+    /// means the scores were typed in directly.
+    /// </summary>
+    public AbilityScoreGeneration? AbilityGeneration { get; set; }
+
+    /// <summary>
     /// Bonus languages chosen at creation, one per point of starting Intelligence modifier.
     /// A creation-time input like <see cref="BaseAbilityScores"/>, not a per-tick choice: 3.5
     /// prices these off starting Int, so a later ability increase does not buy another language
@@ -116,6 +123,7 @@ public class Character
             WIS = BaseAbilityScores.WIS,
             CHA = BaseAbilityScores.CHA
         },
+        AbilityGeneration = AbilityGeneration?.Clone(),
         LeadershipModifiers = LeadershipModifiers.Clone(),
         BonusLanguageIds = new List<string>(BonusLanguageIds),
         SourceLanguageIds = new List<string>(SourceLanguageIds),
@@ -505,6 +513,31 @@ public class AbilityScoreSet
         // Floor division: -9/2 should be -5, not -4
         return diff >= 0 ? diff / 2 : (diff - 1) / 2;
     }
+}
+
+public enum AbilityScoreMethod { Manual, PointBuy, Rolled }
+
+public class AbilityScoreGeneration
+{
+    public AbilityScoreMethod Method { get; set; }
+
+    /// <summary>The point-buy budget the scores are held to. Only meaningful for <see cref="AbilityScoreMethod.PointBuy"/>.</summary>
+    public int PointBuyBudget { get; set; } = Studio.AbilityScoreGenerationRules.StandardPointBuyBudget;
+
+    /// <summary>
+    /// The six rolled scores, in roll order. Stored because a roll is a user input that can't be
+    /// recomputed: the base scores are always some arrangement of these, and keeping them lets
+    /// the player rearrange later without rolling again. Only meaningful for
+    /// <see cref="AbilityScoreMethod.Rolled"/>.
+    /// </summary>
+    public List<int> Rolls { get; set; } = new();
+
+    public AbilityScoreGeneration Clone() => new()
+    {
+        Method = Method,
+        PointBuyBudget = PointBuyBudget,
+        Rolls = new List<int>(Rolls),
+    };
 }
 
 public class SkillAllocation
