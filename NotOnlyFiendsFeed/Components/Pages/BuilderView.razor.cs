@@ -602,10 +602,21 @@ public partial class BuilderView
         OnCharacterChanged();
     }
 
+    /// <summary>Rolls belong to the system that produced them, so changing system rolls afresh.</summary>
+    private void SetRollSystem(ChangeEventArgs e)
+    {
+        if (_character.AbilityGeneration is not { } generation
+            || !Enum.TryParse<AbilityRollSystem>(e.Value?.ToString(), out var system)
+            || system == generation.RollSystem)
+            return;
+        generation.RollSystem = system;
+        RollAbilityScores();
+    }
+
     private void RollAbilityScores()
     {
         if (_character.AbilityGeneration is not { } generation) return;
-        generation.Rolls = AbilityScoreGenerationRules.RollScores(Random.Shared);
+        generation.Rolls = AbilityScoreGenerationRules.RollScores(Random.Shared, generation.RollSystem);
         var abilities = Enum.GetValues<Ability>();
         for (var i = 0; i < abilities.Length; i++)
             _character.BaseAbilityScores.SetScore(abilities[i], generation.Rolls[i]);

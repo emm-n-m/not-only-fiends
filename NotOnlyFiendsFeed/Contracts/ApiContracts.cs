@@ -70,6 +70,9 @@ public sealed class RulesDto
 
     /// <summary>Point cost of each base score from 8 to 18 (DMG Table 6–1).</summary>
     public Dictionary<int, int> PointBuyCosts { get; set; } = new();
+
+    /// <summary>Roll systems accepted as <c>rollSystem</c> by method <c>rolled</c>.</summary>
+    public List<AbilityRollSystemDto> RollSystems { get; set; } = new();
 }
 
 public sealed class ApiHealthResponse
@@ -295,9 +298,11 @@ public sealed class SpellSummaryDto
 /// <item><c>manual</c>: <see cref="Scores"/> required, any values 1–40.</item>
 /// <item><c>pointBuy</c>: <see cref="Scores"/> required, each 8–18 and costing no more than
 /// <see cref="PointBuyBudget"/> (default 25; must be one listed under <c>/api/rules</c>).</item>
-/// <item><c>rolled</c> with <see cref="Roll"/> true: the server rolls six 4d6-drop-lowest scores
-/// and assigns them STR→CHA; <see cref="Scores"/> must be omitted. Without <see cref="Roll"/>:
-/// <see cref="Scores"/> rearranges the character's existing rolls and must use each exactly once.</item>
+/// <item><c>rolled</c> with <see cref="Roll"/> true: the server rolls six scores by
+/// <see cref="RollSystem"/> (default 4d6 drop lowest; the choices are listed under
+/// <c>/api/rules</c>) and assigns them STR→CHA; <see cref="Scores"/> must be omitted. Without
+/// <see cref="Roll"/>: <see cref="Scores"/> rearranges the character's existing rolls and must use
+/// each exactly once — refused for an in-order system, whose rolls stay where they fell.</item>
 /// </list>
 /// </summary>
 public sealed class SetAbilityScoresRequest
@@ -306,6 +311,18 @@ public sealed class SetAbilityScoresRequest
     public AbilityScoreSet? Scores { get; set; }
     public int? PointBuyBudget { get; set; }
     public bool Roll { get; set; }
+    public AbilityRollSystem? RollSystem { get; set; }
+}
+
+public sealed class AbilityRollSystemDto
+{
+    public AbilityRollSystem Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int Dice { get; set; }
+    public int Keep { get; set; }
+    public int Bonus { get; set; }
+    /// <summary>True when the rolls are assigned STR→CHA and cannot be rearranged.</summary>
+    public bool InOrder { get; set; }
 }
 
 public sealed class PointBuyBudgetDto

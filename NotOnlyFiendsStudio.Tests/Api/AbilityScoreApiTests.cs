@@ -127,6 +127,50 @@ public sealed class AbilityScoreApiTests : IDisposable
     }
 
     [Fact]
+    public void Roll_WithSystemRollsThatSystemAndRecordsIt()
+    {
+        var expected = AbilityScoreGenerationRules.RollScores(new Random(7), AbilityRollSystem.TwoD6Plus6);
+
+        _api.SetAbilityScores(Id, new SetAbilityScoresRequest
+        {
+            Method = AbilityScoreMethod.Rolled, Roll = true, RollSystem = AbilityRollSystem.TwoD6Plus6
+        }, new Random(7));
+        var persisted = _store.Get(Id);
+
+        Assert.Equal(AbilityRollSystem.TwoD6Plus6, persisted.AbilityGeneration!.RollSystem);
+        Assert.Equal(expected, persisted.AbilityGeneration.Rolls);
+        Assert.All(persisted.AbilityGeneration.Rolls, s => Assert.InRange(s, 8, 18));
+    }
+
+    [Fact]
+    public void Rolled_InOrderSystemCannotBeRearranged()
+    {
+        _api.SetAbilityScores(Id, new SetAbilityScoresRequest
+        {
+            Method = AbilityScoreMethod.Rolled, Roll = true, RollSystem = AbilityRollSystem.ThreeD6InOrder
+        }, new Random(7));
+        var rolls = _store.Get(Id).AbilityGeneration!.Rolls;
+        var reversed = rolls.AsEnumerable().Reverse().ToArray();
+
+        var error = Assert.Throws<ArgumentException>(() => _api.SetAbilityScores(Id, new SetAbilityScoresRequest
+        {
+            Method = AbilityScoreMethod.Rolled,
+            Scores = Scores(reversed[0], reversed[1], reversed[2], reversed[3], reversed[4], reversed[5])
+        }));
+        Assert.Contains("cannot be rearranged", error.Message);
+        Assert.Equal(rolls, ScoreArray(_store.Get(Id).BaseAbilityScores));
+    }
+
+    [Fact]
+    public void RollSystem_WithoutRollIsRejected() =>
+        Assert.Throws<ArgumentException>(() => _api.SetAbilityScores(Id, new SetAbilityScoresRequest
+        {
+            Method = AbilityScoreMethod.Rolled,
+            RollSystem = AbilityRollSystem.ThreeD6,
+            Scores = Scores(10, 10, 10, 10, 10, 10)
+        }));
+
+    [Fact]
     public void Rolled_RearrangingUsesEachRollOnce()
     {
         _api.SetAbilityScores(Id, new SetAbilityScoresRequest { Method = AbilityScoreMethod.Rolled, Roll = true }, new Random(7));
@@ -219,5 +263,10 @@ public sealed class AbilityScoreApiTests : IDisposable
         Assert.Equal(
             AbilityScoreGenerationRules.PointBuyMaximum - AbilityScoreGenerationRules.PointBuyMinimum + 1,
             rules.PointBuyCosts.Count);
+
+        Assert.Equal(Enum.GetValues<AbilityRollSystem>().Length, rules.RollSystems.Count);
+        var heroic = rules.RollSystems.Single(r => r.Id == AbilityRollSystem.TwoD6Plus6);
+        Assert.Equal((2, 2, 6, false), (heroic.Dice, heroic.Keep, heroic.Bonus, heroic.InOrder));
+        Assert.True(rules.RollSystems.Single(r => r.Id == AbilityRollSystem.ThreeD6InOrder).InOrder);
     }
 }

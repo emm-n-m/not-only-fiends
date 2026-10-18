@@ -621,7 +621,14 @@ public sealed class AgentApiService
             PointBuyCosts = Enumerable
                 .Range(AbilityScoreGenerationRules.PointBuyMinimum,
                     AbilityScoreGenerationRules.PointBuyMaximum - AbilityScoreGenerationRules.PointBuyMinimum + 1)
-                .ToDictionary(score => score, score => AbilityScoreGenerationRules.PointBuyCost(score)!.Value)
+                .ToDictionary(score => score, score => AbilityScoreGenerationRules.PointBuyCost(score)!.Value),
+            RollSystems = AbilityScoreGenerationRules.RollSystems
+                .Select(kv => new AbilityRollSystemDto
+                {
+                    Id = kv.Key, Name = kv.Value.Name, Dice = kv.Value.Dice,
+                    Keep = kv.Value.Keep, Bonus = kv.Value.Bonus, InOrder = kv.Value.InOrder
+                })
+                .ToList()
         };
     }
 
@@ -639,6 +646,10 @@ public sealed class AgentApiService
             throw new ArgumentException("pointBuyBudget applies only to method pointBuy");
         if (request.Method != AbilityScoreMethod.Rolled && request.Roll)
             throw new ArgumentException("roll applies only to method rolled");
+        if (request.RollSystem != null && !request.Roll)
+            throw new ArgumentException("rollSystem applies only when roll is true; arranging keeps the system the rolls came from");
+        if (request.RollSystem is { } requested && !AbilityScoreGenerationRules.RollSystems.ContainsKey(requested))
+            throw new ArgumentException($"unknown rollSystem: {requested}");
 
         return _characterStore.Update(id, character =>
         {
@@ -676,18 +687,25 @@ public sealed class AgentApiService
                     {
                         if (request.Scores != null)
                             throw new ArgumentException("omit scores when roll is true; rearrange the rolls in a second request");
-                        var rolls = AbilityScoreGenerationRules.RollScores(random);
+                        var system = request.RollSystem ?? AbilityRollSystem.FourD6DropLowest;
+                        var rolls = AbilityScoreGenerationRules.RollScores(random, system);
                         var abilities = Enum.GetValues<Ability>();
                         var scores = new AbilityScoreSet();
                         for (var i = 0; i < abilities.Length; i++) scores.SetScore(abilities[i], rolls[i]);
                         character.BaseAbilityScores = scores;
-                        character.AbilityGeneration = new AbilityScoreGeneration { Method = request.Method, Rolls = rolls };
+                        character.AbilityGeneration = new AbilityScoreGeneration
+                        {
+                            Method = request.Method, Rolls = rolls, RollSystem = system
+                        };
                         break;
                     }
 
                     var existing = character.AbilityGeneration is { Method: AbilityScoreMethod.Rolled } rolled
                         ? rolled.Rolls
                         : throw new ArgumentException("character has no rolls to arrange; send roll: true first");
+                    var rolledSystem = AbilityScoreGenerationRules.RollSystems[character.AbilityGeneration.RollSystem];
+                    if (rolledSystem.InOrder)
+                        throw new ArgumentException($"{rolledSystem.Name} assigns rolls STR→CHA; they cannot be rearranged");
                     var arranged = RequireScores(request);
                     if (!AbilityScoreGenerationRules.IsArrangementOf(arranged, existing))
                         throw new ArgumentException(

@@ -6,7 +6,8 @@ namespace NotOnlyFiendsStudio.Tests;
 
 /// <summary>
 /// Ability score generation is not in the SRD; the expected values here are DMG Table 6–1
-/// (point costs) and the PHB's 4d6-drop-lowest and reroll rules.
+/// (point costs), the PHB's 4d6-drop-lowest and reroll rules, and the dice arithmetic of the
+/// alternative roll systems.
 /// </summary>
 public class AbilityScoreGenerationTests
 {
@@ -51,11 +52,48 @@ public class AbilityScoreGenerationTests
         Assert.Null(AbilityScoreGenerationRules.PointBuyTotal(Scores(19, 8, 8, 8, 8, 8)));
 
     [Theory]
-    [InlineData(new[] { 1, 6, 6, 6 }, 18)]
-    [InlineData(new[] { 1, 1, 1, 1 }, 3)]
-    [InlineData(new[] { 4, 2, 5, 2 }, 11)]
-    public void KeepHighestThree_DropsOneLowestDie(int[] dice, int expected) =>
-        Assert.Equal(expected, AbilityScoreGenerationRules.KeepHighestThree(dice));
+    [InlineData(new[] { 1, 6, 6, 6 }, 3, 18)]
+    [InlineData(new[] { 1, 1, 1, 1 }, 3, 3)]
+    [InlineData(new[] { 4, 2, 5, 2 }, 3, 11)]
+    [InlineData(new[] { 2, 6, 1, 5, 3 }, 3, 14)] // 5d6 keep three
+    [InlineData(new[] { 4, 2, 5 }, 3, 11)]       // 3d6 keeps everything
+    public void KeepHighest_DropsTheLowestDice(int[] dice, int keep, int expected) =>
+        Assert.Equal(expected, AbilityScoreGenerationRules.KeepHighest(dice, keep));
+
+    [Theory]
+    [InlineData(AbilityRollSystem.FourD6DropLowest, 3, 18)]
+    [InlineData(AbilityRollSystem.ThreeD6, 3, 18)]
+    [InlineData(AbilityRollSystem.ThreeD6InOrder, 3, 18)]
+    [InlineData(AbilityRollSystem.TwoD6Plus6, 8, 18)]
+    [InlineData(AbilityRollSystem.FiveD6KeepThree, 3, 18)]
+    public void RollScores_StayInEachSystemsRange(AbilityRollSystem system, int min, int max)
+    {
+        var random = new Random(4321);
+        var seen = new List<int>();
+        for (var set = 0; set < 500; set++)
+        {
+            var scores = AbilityScoreGenerationRules.RollScores(random, system);
+            Assert.Equal(Enum.GetValues<Ability>().Length, scores.Count);
+            seen.AddRange(scores);
+        }
+        Assert.All(seen, s => Assert.InRange(s, min, max));
+        // 3000 rolls reach both ends of 2d6+6 (1 in 36) and get near them for the rest.
+        if (system == AbilityRollSystem.TwoD6Plus6)
+        {
+            Assert.Contains(8, seen);
+            Assert.Contains(18, seen);
+        }
+    }
+
+    [Fact]
+    public void RollSystems_OnlyThreeD6InOrderIsInOrder() =>
+        Assert.Equal(
+            new[] { AbilityRollSystem.ThreeD6InOrder },
+            AbilityScoreGenerationRules.RollSystems.Where(kv => kv.Value.InOrder).Select(kv => kv.Key));
+
+    [Fact]
+    public void RollSystems_CoverEveryEnumValue() =>
+        Assert.Equal(Enum.GetValues<AbilityRollSystem>().Order(), AbilityScoreGenerationRules.RollSystems.Keys.Order());
 
     [Fact]
     public void RollScores_ProducesSixScoresInThreeToEighteen()
@@ -66,18 +104,6 @@ public class AbilityScoreGenerationTests
             var scores = AbilityScoreGenerationRules.RollScores(random);
             Assert.Equal(Enum.GetValues<Ability>().Length, scores.Count);
             Assert.All(scores, s => Assert.InRange(s, 3, 18));
-        }
-    }
-
-    [Fact]
-    public void RollFourDropLowest_RollsFourSixSidedDice()
-    {
-        var random = new Random(99);
-        for (var roll = 0; roll < 200; roll++)
-        {
-            var dice = AbilityScoreGenerationRules.RollFourDropLowest(random);
-            Assert.Equal(4, dice.Length);
-            Assert.All(dice, d => Assert.InRange(d, 1, 6));
         }
     }
 
@@ -126,6 +152,27 @@ public class AbilityScoreGenerationTests
         Assert.Contains("\"pointBuy\"", json);
         Assert.Equal(AbilityScoreMethod.PointBuy, loaded.AbilityGeneration!.Method);
         Assert.Equal(32, loaded.AbilityGeneration.PointBuyBudget);
+    }
+
+    [Fact]
+    public void RollSystem_RoundTripsThroughJson_AndDefaultsTo4d6ForOlderSaves()
+    {
+        var character = new Character
+        {
+            AbilityGeneration = new AbilityScoreGeneration
+            {
+                Method = AbilityScoreMethod.Rolled, RollSystem = AbilityRollSystem.TwoD6Plus6,
+                Rolls = new() { 18, 15, 14, 12, 10, 9 }
+            }
+        };
+        var json = JsonSerializer.Serialize(character, JsonOptions.Default);
+        Assert.Contains("\"twoD6Plus6\"", json);
+        Assert.Equal(AbilityRollSystem.TwoD6Plus6,
+            JsonSerializer.Deserialize<Character>(json, JsonOptions.Default)!.AbilityGeneration!.RollSystem);
+
+        var older = JsonSerializer.Deserialize<Character>(
+            """{"abilityGeneration":{"method":"rolled","rolls":[15,14,13,12,10,8]}}""", JsonOptions.Default)!;
+        Assert.Equal(AbilityRollSystem.FourD6DropLowest, older.AbilityGeneration!.RollSystem);
     }
 
     [Fact]

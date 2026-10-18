@@ -74,21 +74,45 @@ public static class AbilityScoreGenerationRules
         rolls.Count == Enum.GetValues<Ability>().Length
         && Enum.GetValues<Ability>().Select(scores.GetScore).Order().SequenceEqual(rolls.Order());
 
-    /// <summary>Four d6, highest three kept. Returns the four dice so a UI can show the dropped one.</summary>
-    public static int[] RollFourDropLowest(Random random) =>
-        Enumerable.Range(0, 4).Select(_ => random.Next(1, 7)).ToArray();
+    public static int KeepHighest(IEnumerable<int> dice, int keep) =>
+        dice.OrderDescending().Take(keep).Sum();
 
-    public static int KeepHighestThree(IReadOnlyCollection<int> dice) =>
-        dice.Sum() - dice.Min();
+    /// <summary>
+    /// The roll systems on offer. 4d6 drop lowest is the PHB's; the others are the long-standing
+    /// table alternatives — weaker (3d6), stricter (3d6 in order) or stronger (2d6+6, 5d6 keep
+    /// three) — which every edition leaves to the DM.
+    /// </summary>
+    public static IReadOnlyDictionary<AbilityRollSystem, AbilityRollSpec> RollSystems { get; } =
+        new Dictionary<AbilityRollSystem, AbilityRollSpec>
+        {
+            [AbilityRollSystem.FourD6DropLowest] = new("4d6 drop lowest", Dice: 4, Keep: 3, Bonus: 0, InOrder: false),
+            [AbilityRollSystem.ThreeD6] = new("3d6", Dice: 3, Keep: 3, Bonus: 0, InOrder: false),
+            [AbilityRollSystem.ThreeD6InOrder] = new("3d6 in order", Dice: 3, Keep: 3, Bonus: 0, InOrder: true),
+            [AbilityRollSystem.TwoD6Plus6] = new("2d6+6", Dice: 2, Keep: 2, Bonus: 6, InOrder: false),
+            [AbilityRollSystem.FiveD6KeepThree] = new("5d6 keep highest 3", Dice: 5, Keep: 3, Bonus: 0, InOrder: false),
+        };
 
-    /// <summary>Six scores, each 4d6 drop lowest, in the order rolled.</summary>
-    public static List<int> RollScores(Random random) =>
-        Enumerable.Range(0, 6).Select(_ => KeepHighestThree(RollFourDropLowest(random))).ToList();
+    /// <summary>One score: roll the system's dice, keep the highest, add its bonus.</summary>
+    public static int RollScore(Random random, AbilityRollSpec spec) =>
+        KeepHighest(Enumerable.Range(0, spec.Dice).Select(_ => random.Next(1, 7)).ToList(), spec.Keep) + spec.Bonus;
+
+    /// <summary>Six scores in the order rolled — which, for an in-order system, is STR→CHA for good.</summary>
+    public static List<int> RollScores(Random random, AbilityRollSystem system = AbilityRollSystem.FourD6DropLowest)
+    {
+        var spec = RollSystems[system];
+        return Enumerable.Range(0, 6).Select(_ => RollScore(random, spec)).ToList();
+    }
 
     /// <summary>
     /// The PHB lets a player scrap a set whose modifiers total 0 or less, or whose best score is
-    /// 13 or lower.
+    /// 13 or lower. That rule is written for its own 4d6 method; the builder offers it for no other.
     /// </summary>
     public static bool QualifiesForReroll(IReadOnlyCollection<int> scores) =>
         scores.Sum(AbilityScoreSet.Modifier) <= 0 || scores.Max() <= 13;
 }
+
+/// <summary>
+/// How a rolled set is generated. <see cref="InOrder"/> systems assign the six rolls STR→CHA and
+/// forbid rearranging them; the rest let the player place each roll where they like.
+/// </summary>
+public sealed record AbilityRollSpec(string Name, int Dice, int Keep, int Bonus, bool InOrder);

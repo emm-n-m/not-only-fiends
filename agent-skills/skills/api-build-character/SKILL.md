@@ -38,8 +38,10 @@ entry = creation.
 **Ability scores by method** — `POST …/{id}/ability-scores`, before the first tick:
 `{"method":"pointBuy","scores":{str..cha},"pointBuyBudget":25}` (each 8–18, budget one of
 `/api/rules` `pointBuyBudgets`; over budget 400s), or `{"method":"rolled","roll":true}` (the
-server rolls 4d6-drop-lowest and assigns STR→CHA; you cannot supply dice), then optionally
-`{"method":"rolled","scores":{…}}` to rearrange — it must use each stored roll exactly once.
+server rolls and assigns STR→CHA; you cannot supply dice). Add `"rollSystem"` to pick the dice —
+one of `/api/rules` `rollSystems` ids, default `fourD6DropLowest`. Then optionally
+`{"method":"rolled","scores":{…}}` to rearrange — it must use each stored roll exactly once, and
+is refused for `threeD6InOrder` (`inOrder: true`).
 `{"method":"manual","scores":{…}}` sets scores freely. Raw `baseAbilityScores` on create is
 still manual entry.
 

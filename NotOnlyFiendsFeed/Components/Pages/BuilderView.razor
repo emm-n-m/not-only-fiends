@@ -361,7 +361,7 @@ else
                     <button class="btn @(abilityMethod == AbilityScoreMethod.PointBuy ? "btn-primary" : "btn-outline-primary")"
                             @onclick="() => SetAbilityMethod(AbilityScoreMethod.PointBuy)">Point buy</button>
                     <button class="btn @(abilityMethod == AbilityScoreMethod.Rolled ? "btn-primary" : "btn-outline-primary")"
-                            @onclick="() => SetAbilityMethod(AbilityScoreMethod.Rolled)">Roll 4d6</button>
+                            @onclick="() => SetAbilityMethod(AbilityScoreMethod.Rolled)">Roll</button>
                 </div>
 
                 @if (abilityMethod == AbilityScoreMethod.PointBuy && generation != null)
@@ -389,9 +389,18 @@ else
 
                 @if (abilityMethod == AbilityScoreMethod.Rolled && generation != null)
                 {
+                    <select class="form-select form-select-sm w-auto" aria-label="Roll system"
+                            value="@generation.RollSystem"
+                            @onchange="SetRollSystem">
+                        @foreach (var (system, spec) in AbilityScoreGenerationRules.RollSystems)
+                        {
+                            <option value="@system">@spec.Name</option>
+                        }
+                    </select>
                     <button class="btn btn-sm btn-outline-secondary" @onclick="RollAbilityScores">Roll again</button>
                     <span class="small text-muted">Rolled: @string.Join(", ", generation.Rolls)</span>
-                    @if (generation.Rolls.Count == 6 && AbilityScoreGenerationRules.QualifiesForReroll(generation.Rolls))
+                    @if (generation.RollSystem == AbilityRollSystem.FourD6DropLowest
+                         && generation.Rolls.Count == 6 && AbilityScoreGenerationRules.QualifiesForReroll(generation.Rolls))
                     {
                         <span class="badge bg-warning text-dark"
                               title="The PHB allows rerolling a set whose modifiers total 0 or less, or whose highest score is 13 or lower.">
@@ -419,6 +428,11 @@ else
                                         @onclick="() => AdjustPointBuy(ability, 1)">+</button>
                             </div>
                             <div class="form-text">Cost @(AbilityScoreGenerationRules.PointBuyCost(baseScore)?.ToString() ?? "—")</div>
+                        }
+                        else if (abilityMethod == AbilityScoreMethod.Rolled && generation != null
+                                 && AbilityScoreGenerationRules.RollSystems[generation.RollSystem].InOrder)
+                        {
+                            <span class="form-control text-center" title="Rolled in order — scores stay where they fell.">@baseScore</span>
                         }
                         else if (abilityMethod == AbilityScoreMethod.Rolled && generation != null)
                         {

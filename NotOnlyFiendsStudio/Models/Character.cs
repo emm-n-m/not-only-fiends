@@ -517,6 +517,9 @@ public class AbilityScoreSet
 
 public enum AbilityScoreMethod { Manual, PointBuy, Rolled }
 
+/// <summary>The dice behind <see cref="AbilityScoreMethod.Rolled"/>; see <see cref="Studio.AbilityScoreGenerationRules.RollSystems"/>.</summary>
+public enum AbilityRollSystem { FourD6DropLowest, ThreeD6, ThreeD6InOrder, TwoD6Plus6, FiveD6KeepThree }
+
 public class AbilityScoreGeneration
 {
     public AbilityScoreMethod Method { get; set; }
@@ -532,10 +535,18 @@ public class AbilityScoreGeneration
     /// </summary>
     public List<int> Rolls { get; set; } = new();
 
+    /// <summary>
+    /// The dice <see cref="Rolls"/> came from. Defaults to 4d6 drop lowest, the only system saves
+    /// written before the choice existed could have used. Only meaningful for
+    /// <see cref="AbilityScoreMethod.Rolled"/>.
+    /// </summary>
+    public AbilityRollSystem RollSystem { get; set; }
+
     public AbilityScoreGeneration Clone() => new()
     {
         Method = Method,
         PointBuyBudget = PointBuyBudget,
+        RollSystem = RollSystem,
         Rolls = new List<int>(Rolls),
     };
 }
