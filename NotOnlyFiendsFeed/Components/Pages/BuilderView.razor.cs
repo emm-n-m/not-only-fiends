@@ -2040,11 +2040,6 @@ public partial class BuilderView
         ["special_mount"] = "template:special_mount_standard",
     };
 
-    private static readonly Dictionary<string, string> CompanionRacialHdByLinkType = new()
-    {
-        ["shadow_companion"] = "racial_hd:undead",
-    };
-
     private void CreateCompanionFromSlot(CompanionSlotState slot)
     {
         if (!CharacterStore.IsConfigured)
@@ -2085,10 +2080,11 @@ public partial class BuilderView
             companion.TemplateIds.Add(slot.SelectedTemplateId);
         }
 
-        if (CompanionRacialHdByLinkType.TryGetValue(slot.LinkType, out var racialHdDriverId))
+        // The slot carries the shadowdancer's level; the shadow's HD follow from it.
+        if (slot.LinkType == "shadow_companion")
         {
-            for (var hd = 0; hd < Math.Max(0, slot.EffectiveLevel); hd++)
-                companion.Ticks.Add(new Tick { DriverId = racialHdDriverId });
+            for (var hd = 0; hd < CompanionResolver.ShadowCompanionHitDice(slot.EffectiveLevel); hd++)
+                companion.Ticks.Add(new Tick { DriverId = "racial_hd:undead" });
         }
 
         var id = CharacterStore.Create(companion);
@@ -2236,7 +2232,7 @@ public partial class BuilderView
             LinkType = "leadership_follower",
             CompanionId = id,
             FollowerLevel = level,
-            EffectiveLevelFormula = new Formula(level.ToString()),
+            EffectiveLevelFormula = new Formula(CompanionResolver.LeadershipLevelExpression),
         });
         CharacterStore.Replace(_characterStoreId, _character);
         RefreshAvailableCharacters();
@@ -2267,7 +2263,7 @@ public partial class BuilderView
             CompanionId = _leadershipFollowerCandidate,
             SelectedSpecies = string.IsNullOrEmpty(candidate.RaceId) ? null : candidate.RaceId,
             FollowerLevel = _leadershipFollowerLevel,
-            EffectiveLevelFormula = new Formula(_leadershipFollowerLevel.ToString()),
+            EffectiveLevelFormula = new Formula(CompanionResolver.LeadershipLevelExpression),
         });
         CharacterStore.Replace(_characterStoreId, _character);
         _leadershipFollowerCandidate = string.Empty;

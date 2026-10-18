@@ -1529,8 +1529,7 @@ public static class PcgConverter
     {
         "animal_companion" => new Formula(CompanionResolver.AnimalCompanionLevelExpression),
         "familiar" or "improved_familiar" => new Formula("ClassLevel(wizard) + ClassLevel(sorcerer)"),
-        "leadership_cohort" => new Formula("min(TotalHD - 2, LeadershipScore - 2)"),
-        _ => new Formula("TotalHD"),
+        _ => new Formula(CompanionResolver.ImportedDefaultLevelExpression),
     };
 
     private static bool IsFamiliarLinkType(string? linkType) =>

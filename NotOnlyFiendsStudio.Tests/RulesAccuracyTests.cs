@@ -1311,13 +1311,24 @@ public class RulesAccuracyTests
 
         Assert.Equal("shadow_companion", slot.LinkType);
         Assert.Equal("race:companion_shadow", slot.SelectedSpecies);
+        // The slot is the master's level, like every other link; the shadow's HD derive from it.
         var state = new CharacterState();
-        state.ClassLevels["class:shadowdancer"] = 3;
-        Assert.Equal(3, slot.EffectiveLevelFormula.Evaluate(state));
-        state.ClassLevels["class:shadowdancer"] = 6;
-        Assert.Equal(5, slot.EffectiveLevelFormula.Evaluate(state));
-        state.ClassLevels["class:shadowdancer"] = 9;
-        Assert.Equal(7, slot.EffectiveLevelFormula.Evaluate(state));
+        state.ClassLevels["class:shadowdancer"] = 11;
+        Assert.Equal(11, slot.EffectiveLevelFormula.Evaluate(state));
+    }
+
+    [Theory]
+    [InlineData(2, 0)]
+    [InlineData(3, 3)]
+    [InlineData(5, 3)]
+    [InlineData(6, 5)]
+    [InlineData(9, 7)]
+    [InlineData(11, 7)]
+    [InlineData(12, 9)] // Epic: "every third level gained after 9th adds +2 HD".
+    [InlineData(15, 11)]
+    public void Shadowdancer_ShadowCompanionHitDice_FollowSummonShadow(int shadowdancerLevel, int expectedHd)
+    {
+        Assert.Equal(expectedHd, CompanionResolver.ShadowCompanionHitDice(shadowdancerLevel));
     }
 
     [Fact]

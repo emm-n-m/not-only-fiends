@@ -99,7 +99,7 @@
         "classFeatureType": "",
         "selectedSpecies": "race:companion_shadow",
         "effectiveLevelFormula": {
-          "expression": "3 + 2 * max(0, (ClassLevel(shadowdancer) - 3) / 3)"
+          "expression": "ClassLevel(shadowdancer)"
         }
       }
     ],

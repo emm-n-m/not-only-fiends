@@ -969,7 +969,7 @@
         "linkType": "leadership_cohort",
         "classFeatureType": "",
         "effectiveLevelFormula": {
-          "expression": "CohortLevel()"
+          "expression": "TotalHD"
         }
       }
     ],

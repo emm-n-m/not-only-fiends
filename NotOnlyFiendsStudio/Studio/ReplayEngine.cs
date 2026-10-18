@@ -1460,8 +1460,10 @@ public class ReplayStudio
         // reduction belongs to the species, not the master. Applied here so everything downstream
         // — companion scaling tiers and any MasterLevel formula — sees the one adjusted number.
         // Never below zero: a master too low-level for this companion gets no progression, not
-        // negative progression.
-        if (state.CompanionOrigin != null && race.CompanionLevelModifier != 0)
+        // negative progression. Only for an animal companion — the alternative list is the
+        // druid's; the same creature taken as a Leadership follower is still led by its leader's
+        // full level.
+        if (state.CompanionOrigin?.LinkType == "animal_companion" && race.CompanionLevelModifier != 0)
         {
             state.EffectiveMasterLevel =
                 Math.Max(0, state.EffectiveMasterLevel + race.CompanionLevelModifier);

@@ -60,6 +60,51 @@ public class CompanionResolver
         + "max(0, max(EffectiveClassLevel(ranger), EffectiveClassLevel(planar_ranger)) - 3) * 2)",
     };
 
+    /// <summary>
+    /// A shadowdancer's shadow companion, like every other link, scales off the master's class
+    /// level. The shadow's hit dice are a separate rule derived from it — see
+    /// <see cref="ShadowCompanionHitDice"/>.
+    /// </summary>
+    public const string ShadowCompanionLevelExpression = "ClassLevel(shadowdancer)";
+
+    /// <summary>
+    /// The slot formula builder-made shadow links stored before the split: it computed the
+    /// shadow's HD and passed them off as the master's level (shadowdancer 11 → 7).
+    /// </summary>
+    private const string SupersededShadowCompanionExpression =
+        "3 + 2 * max(0, (ClassLevel(shadowdancer) - 3) / 3)";
+
+    /// <summary>
+    /// SRD Summon Shadow: a 3 HD shadow at 3rd level, and "every third level gained by the
+    /// shadowdancer adds +2 HD" — 5 at 6th, 7 at 9th. The epic text continues the same cadence
+    /// ("every third level gained after 9th adds +2 HD"), so no separate epic rule is needed.
+    /// </summary>
+    public static int ShadowCompanionHitDice(int shadowdancerLevel) =>
+        shadowdancerLevel < 3 ? 0 : 3 + 2 * ((shadowdancerLevel - 3) / 3);
+
+    /// <summary>
+    /// Leadership links — cohort and followers — scale off the leader's character level, the same
+    /// level the Leadership score is built from. The cohort's level ceiling is not this: it is the
+    /// leader's <see cref="CharacterState.MaxCohortLevel"/>, checked against the cohort's ECL.
+    /// </summary>
+    public const string LeadershipLevelExpression = "TotalHD";
+
+    /// <summary>
+    /// Cohort link formulas written before the split, which stored the leader's maximum cohort
+    /// level (builder: the slot's <c>CohortLevel()</c>; importer: the cap arithmetic) where the
+    /// leader's level belongs.
+    /// </summary>
+    private static readonly string[] SupersededCohortExpressions =
+    {
+        "CohortLevel()",
+        "min(TotalHD - 2, LeadershipScore - 2)",
+    };
+
+    /// <summary>
+    /// The PCGen importer's fallback progression for a link type it has no specific rule for.
+    /// </summary>
+    public const string ImportedDefaultLevelExpression = "TotalHD";
+
     private readonly ReplayStudio _engine;
     private readonly Func<string, Character?> _lookup;
     private readonly Func<string, Character?>? _lookupByName;
@@ -250,6 +295,40 @@ public class CompanionResolver
                 link.EffectiveLevelFormula.Expression, StringComparer.Ordinal))
         {
             return new Formula(AnimalCompanionLevelExpression).Evaluate(master);
+        }
+
+        if (link.LinkType == "leadership_cohort"
+            && SupersededCohortExpressions.Contains(link.EffectiveLevelFormula.Expression, StringComparer.Ordinal))
+        {
+            return new Formula(LeadershipLevelExpression).Evaluate(master);
+        }
+
+        // Builder-made followers stored their own level as a literal; the level they hold is
+        // FollowerLevel, and the link scales off the leader.
+        if (link.LinkType is "leadership_follower" or "follower"
+            && link.EffectiveLevelFormula.Expression == link.FollowerLevel.ToString())
+        {
+            return new Formula(LeadershipLevelExpression).Evaluate(master);
+        }
+
+        if (link.LinkType == "shadow_companion"
+            && link.EffectiveLevelFormula.Expression == SupersededShadowCompanionExpression)
+        {
+            return new Formula(ShadowCompanionLevelExpression).Evaluate(master);
+        }
+
+        // The importer's catch-all default is the master's total HD, which is right only for a
+        // link nothing on the master scales. When the master holds a slot of this link type, the
+        // slot's own progression is the rule — a shadowdancer 11 / rogue 10's shadow advances as an 11th-level shadowdancer's,
+        // not a 21st-level one; a multiclass paladin's mount advances by paladin level.
+        if (link.EffectiveLevelFormula.Expression == ImportedDefaultLevelExpression)
+        {
+            var slotLevels = master.CompanionSlots
+                .Where(slot => slot.LinkType == link.LinkType)
+                .Select(slot => slot.EffectiveLevel)
+                .ToList();
+            if (slotLevels.Count > 0)
+                return slotLevels.Max();
         }
 
         return link.EffectiveLevelFormula.Evaluate(master);

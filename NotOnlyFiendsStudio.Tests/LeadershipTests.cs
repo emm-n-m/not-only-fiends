@@ -32,8 +32,8 @@ public class LeadershipTests
         var slot = Assert.Single(state.CompanionSlots);
         Assert.Equal("leadership_cohort", slot.LinkType);
         Assert.Equal("feat:leadership", slot.Granter);
-        // The slot follows the same table-derived cap as the warning and companion resolver.
-        Assert.Equal(state.MaxCohortLevel, slot.EffectiveLevel);
+        // The slot carries the leader's level; the cohort's ceiling stays in MaxCohortLevel.
+        Assert.Equal(6, slot.EffectiveLevel);
     }
 
     [Fact]
@@ -165,6 +165,42 @@ public class LeadershipTests
         Assert.Equal(8, result.MasterState.MaxCohortLevel);
         Assert.DoesNotContain(result.MasterState.Warnings, w =>
             w.Message.Contains("exceeds max cohort level", StringComparison.OrdinalIgnoreCase));
+        // The old cap formula on the link resolves to the leader's level, not the cap.
+        Assert.Equal(10, result.Companions[0].State.EffectiveMasterLevel);
+    }
+
+    /// <summary>
+    /// Leadership links scale off the leader's level. Saves written before that stored the
+    /// cohort cap (<c>CohortLevel()</c>) or the follower's own level as a literal.
+    /// </summary>
+    [Theory]
+    [InlineData("leadership_cohort", "CohortLevel()", 0)]
+    [InlineData("leadership_cohort", "TotalHD", 0)]
+    [InlineData("leadership_follower", "1", 1)]
+    public void CompanionResolver_LeadershipLinks_ResolveToLeaderLevel(string linkType, string expression, int followerLevel)
+    {
+        var engine = new ReplayStudio(TestContentHelper.LoadAllPacks());
+        var master = BuildFighterWithLeadership(levels: 10, cha: 16);
+        master.CompanionLinks = new List<CompanionLink>
+        {
+            new()
+            {
+                LinkType = linkType,
+                CompanionId = "ally",
+                FollowerLevel = followerLevel,
+                EffectiveLevelFormula = new Formula(expression)
+            }
+        };
+        var ally = new Character
+        {
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = new List<Tick> { new() { DriverId = "class:fighter" } }
+        };
+
+        var result = new CompanionResolver(engine, _ => ally).Build(master);
+
+        Assert.Equal(10, result.Companions[0].State.EffectiveMasterLevel);
     }
 
     [Fact]

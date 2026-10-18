@@ -281,6 +281,30 @@ public class CompanionTests
     }
 
     /// <summary>
+    /// The species adjustment belongs to the druid's alternative companion list. Lilly's
+    /// constrictor snake is a Leadership follower: it reported her level 21 as 18.
+    /// </summary>
+    [Fact]
+    public void AdvancedCompanionSpecies_AsLeadershipFollower_KeepsTheLeadersLevel()
+    {
+        var engine = new ReplayStudio(TestContentHelper.LoadAllPacks());
+        var snake = new Character
+        {
+            RaceId = "race:companion_snake_constrictor",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 3).Select(_ => new Tick { DriverId = "racial_hd:animal" }).ToList(),
+            CompanionOrigin = new CompanionOrigin
+            {
+                LinkType = "leadership_follower",
+                MasterCharacterId = "lilly",
+                EffectiveMasterLevel = 21
+            }
+        };
+
+        Assert.Equal(21, engine.Evaluate(snake).EffectiveMasterLevel);
+    }
+
+    /// <summary>
     /// A save written before the fix still carries the old expression. It is migrated at replay
     /// time — the same treatment the legacy familiar formula gets — so existing characters are
     /// corrected without a re-import.
@@ -1866,6 +1890,112 @@ public class CompanionTests
         Assert.Equal(8, mount.State.AbilityScores.INT);
         Assert.Contains(mount.State.Abilities, a => a.Id == "mount_command");
         Assert.DoesNotContain(mount.State.Abilities, a => a.Id == "mount_spell_resistance");
+    }
+
+    /// <summary>
+    /// The PCGen importer writes <c>TotalHD</c> for link types it has no rule for (special mount,
+    /// shadow companion, wild cohort). Read literally, a paladin 5 / fighter 6's mount advanced as
+    /// an 11th-level paladin's — and an epic shadowdancer's shadow as the master's whole level.
+    /// The master's slot carries the real progression, so it wins.
+    /// </summary>
+    [Fact]
+    public void ImportedTotalHdDefault_DefersToMasterSlotProgression()
+    {
+        var engine = new ReplayStudio(TestContentHelper.LoadAllPacks());
+        var paladin = new Character
+        {
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 10, CON = 12, INT = 10, WIS = 12, CHA = 14 },
+            Ticks = Enumerable.Range(0, 11)
+                .Select(i => new Tick { DriverId = i < 5 ? "class:paladin" : "class:fighter" }).ToList(),
+            CompanionLinks = new List<CompanionLink>
+            {
+                new()
+                {
+                    LinkType = "special_mount",
+                    CompanionId = "warhorse",
+                    EffectiveLevelFormula = new Formula(CompanionResolver.ImportedDefaultLevelExpression)
+                }
+            }
+        };
+        var warhorse = new Character
+        {
+            RaceId = "race:companion_heavy_warhorse",
+            TemplateIds = new List<string> { "template:special_mount_standard" },
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 4).Select(_ => new Tick { DriverId = "racial_hd:animal" }).ToList()
+        };
+
+        var result = new CompanionResolver(engine, _ => warhorse).Build(paladin);
+
+        Assert.Equal(5, result.Companions[0].State.EffectiveMasterLevel);
+    }
+
+    /// <summary>
+    /// Builder-made shadow links stored the shadow's HD formula as the master level (shadowdancer
+    /// 11 → 7). Saves carrying it must resolve to the shadowdancer level without a re-import.
+    /// </summary>
+    [Fact]
+    public void SupersededShadowCompanionFormula_ResolvesToShadowdancerLevel()
+    {
+        var engine = new ReplayStudio(TestContentHelper.LoadAllPacks());
+        var master = new Character
+        {
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 16, CON = 12, INT = 12, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 21)
+                .Select(i => new Tick { DriverId = i < 10 ? "class:rogue" : "class:shadowdancer" }).ToList(),
+            CompanionLinks = new List<CompanionLink>
+            {
+                new()
+                {
+                    LinkType = "shadow_companion",
+                    CompanionId = "shadow",
+                    EffectiveLevelFormula = new Formula("3 + 2 * max(0, (ClassLevel(shadowdancer) - 3) / 3)")
+                }
+            }
+        };
+        var shadow = new Character
+        {
+            RaceId = "race:companion_shadow",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 7).Select(_ => new Tick { DriverId = "racial_hd:undead" }).ToList()
+        };
+
+        var result = new CompanionResolver(engine, _ => shadow).Build(master);
+
+        Assert.Equal(11, result.Companions[0].State.EffectiveMasterLevel);
+    }
+
+    [Fact]
+    public void ImportedTotalHdDefault_WithoutMatchingSlot_KeepsTotalHd()
+    {
+        var engine = new ReplayStudio(TestContentHelper.LoadAllPacks());
+        var fighter = new Character
+        {
+            RaceId = "race:human",
+            BaseAbilityScores = new AbilityScoreSet { STR = 14, DEX = 10, CON = 12, INT = 10, WIS = 12, CHA = 14 },
+            Ticks = Enumerable.Range(0, 6).Select(_ => new Tick { DriverId = "class:fighter" }).ToList(),
+            CompanionLinks = new List<CompanionLink>
+            {
+                new()
+                {
+                    LinkType = "special_mount",
+                    CompanionId = "warhorse",
+                    EffectiveLevelFormula = new Formula(CompanionResolver.ImportedDefaultLevelExpression)
+                }
+            }
+        };
+        var warhorse = new Character
+        {
+            RaceId = "race:companion_heavy_warhorse",
+            BaseAbilityScores = new AbilityScoreSet { STR = 10, DEX = 10, CON = 10, INT = 10, WIS = 10, CHA = 10 },
+            Ticks = Enumerable.Range(0, 4).Select(_ => new Tick { DriverId = "racial_hd:animal" }).ToList()
+        };
+
+        var result = new CompanionResolver(engine, _ => warhorse).Build(fighter);
+
+        Assert.Equal(6, result.Companions[0].State.EffectiveMasterLevel);
     }
 
     [Fact]

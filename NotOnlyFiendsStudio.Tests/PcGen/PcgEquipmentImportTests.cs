@@ -531,7 +531,8 @@ public class PcgEquipmentImportTests
 
         var shadowSlot = state.CompanionSlots.Single(slot => slot.LinkType == "shadow_companion");
         Assert.Equal("race:companion_shadow", shadowSlot.SelectedSpecies);
-        Assert.Equal(7, shadowSlot.EffectiveLevel);
+        Assert.Equal(11, shadowSlot.EffectiveLevel); // shadowdancer level
+        Assert.Equal(7, CompanionResolver.ShadowCompanionHitDice(shadowSlot.EffectiveLevel));
         Assert.Equal(6, result.Character.CompanionLinks.Count(link => link.LinkType == "leadership_follower"));
         Assert.True(state.Followers.Level1 > 0);
     }
