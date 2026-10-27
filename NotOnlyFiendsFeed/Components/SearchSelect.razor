@@ -48,6 +48,8 @@
     /// <summary>Optional rules text displayed beneath each result, rather than hidden in a native tooltip.</summary>
     [Parameter] public Func<TItem, string>? DescriptionSelector { get; set; }
     [Parameter] public int MaxResults { get; set; } = 50;
+    /// <summary>Emptying the box and leaving it clears the selection (ValueChanged(null)) instead of reverting.</summary>
+    [Parameter] public bool AllowClear { get; set; }
 
     private string _search = "";
     private bool _open;
@@ -107,6 +109,19 @@
             });
         }
         var matches = source.ToList();
+        if (!string.IsNullOrEmpty(query))
+        {
+            // Prefix hits first, then word-prefix hits, then plain substring hits: "Lor" should
+            // offer Loremaster before Colorless. OrderBy is stable, so catalogue order holds
+            // within each group.
+            var q = query.ToLowerInvariant();
+            matches = matches.OrderBy(item =>
+            {
+                var display = GetDisplay(item).ToLowerInvariant();
+                if (display.StartsWith(q)) return 0;
+                return display.Split(' ', '(', '-', '/').Any(w => w.StartsWith(q)) ? 1 : 2;
+            }).ToList();
+        }
         _matchCount = matches.Count;
         _truncated = matches.Count > MaxResults;
         _filtered = _truncated ? matches.Take(MaxResults).ToList() : matches;
@@ -149,6 +164,12 @@
             _search = GetDisplay(match);
             if (GetValue(match) != Value)
                 await ValueChanged.InvokeAsync(GetValue(match));
+        }
+        else if (AllowClear && string.IsNullOrWhiteSpace(_search))
+        {
+            _search = "";
+            if (!string.IsNullOrEmpty(Value))
+                await ValueChanged.InvokeAsync(null);
         }
         else
         {

@@ -613,12 +613,16 @@ else
                     </button>
                 }
                 <input type="number" class="form-control form-control-sm" style="width:60px" min="1" max="20" @bind="_addHdCount" />
-                <select class="form-select form-select-sm" style="width:auto" @bind="_addHdDriverId">
-                    @foreach (var d in _drivers)
-                    {
-                        <option value="@d.Id">@d.Name</option>
-                    }
-                </select>
+                <div style="width:220px">
+                    <SearchSelect TItem="Driver"
+                                  Items="_drivers"
+                                  Value="@_addHdDriverId"
+                                  ValueChanged="@((v) => _addHdDriverId = v ?? string.Empty)"
+                                  DisplaySelector="@(d => d.Name)"
+                                  ValueSelector="@(d => d.Id)"
+                                  CssClass="form-control-sm"
+                                  Placeholder="Search classes..." />
+                </div>
                 <button class="btn btn-sm btn-outline-secondary" @onclick="ToggleDriverPreviews">
                     @(_showDriverPreviews ? "Hide previews" : "Preview next HD")
                 </button>
@@ -787,14 +791,16 @@ else
                             }
                             else if (selectedFeatDef?.SelectionRequired == "skill")
                             {
-                                <select class="form-select form-select-sm" style="width:auto"
-                                        value="@FeatSelectionInput(index)" @onchange="(e) => SetFeatSelectionInput(index, e)">
-                                    <option value="">Skill...</option>
-                                    @foreach (var skill in _skills)
-                                    {
-                                        <option value="@skill.Id">@skill.Name</option>
-                                    }
-                                </select>
+                                <div style="width:200px">
+                                    <SearchSelect TItem="SkillDefinition"
+                                                  Items="_skills"
+                                                  Value="@FeatSelectionInput(index)"
+                                                  ValueChanged="@((v) => _featSelectionInputs[index] = v ?? string.Empty)"
+                                                  DisplaySelector="@(s => s.Name)"
+                                                  ValueSelector="@(s => s.Id)"
+                                                  CssClass="form-control-sm"
+                                                  Placeholder="Skill..." />
+                                </div>
                             }
                             else if (selectedFeatDef?.SelectionRequired == "weapon")
                             {
@@ -977,16 +983,19 @@ else
                                 {
                                     var capturedSlot = slot;
                                     var currentPick = SelectedClassFeatureOption(tick, featurePick.Feature.Id, capturedSlot);
-                                    <select class="form-select form-select-sm mt-1 @(string.IsNullOrEmpty(currentPick) ? "border-warning" : "")"
-                                            style="max-width:360px"
-                                            value="@(currentPick ?? "")"
-                                            @onchange="(e) => SetClassFeatureChoice(index, featurePick.Feature.Id, capturedSlot, e.Value?.ToString())">
-                                        <option value="">Select @featurePick.Feature.Name...</option>
-                                        @foreach (var option in ClassFeatureOptionsForTick(index, featurePick.Feature.Id, capturedSlot))
-                                        {
-                                            <option value="@option.Id" title="@option.Description">@option.Name</option>
-                                        }
-                                    </select>
+                                    <div class="mt-1" style="max-width:360px" @key="(featurePick.Feature.Id, capturedSlot)">
+                                        <SearchSelect TItem="ClassFeatureOption"
+                                                      Items="ClassFeatureOptionsForTick(index, featurePick.Feature.Id, capturedSlot)"
+                                                      Value="@(currentPick ?? "")"
+                                                      ValueChanged="@((v) => SetClassFeatureChoice(index, featurePick.Feature.Id, capturedSlot, v))"
+                                                      DisplaySelector="@(o => o.Name)"
+                                                      ValueSelector="@(o => o.Id)"
+                                                      TitleSelector="@(o => o.Description)"
+                                                      DescriptionSelector="@(o => o.Description)"
+                                                      AllowClear="true"
+                                                      CssClass="@("form-control-sm" + (string.IsNullOrEmpty(currentPick) ? " border-warning" : ""))"
+                                                      Placeholder="@($"Select {featurePick.Feature.Name}...")" />
+                                    </div>
                                 }
                             </div>
                         }
@@ -1026,15 +1035,16 @@ else
                                 </div>
                                 @if (featureDef != null && featureDef.Options.Any())
                                 {
-                                    <select class="form-select form-select-sm mt-1" style="max-width:360px"
-                                            value="@(currentPick ?? "")"
-                                            @onchange="(e) => { var v = e.Value?.ToString(); if (!string.IsNullOrEmpty(v)) SetCompanionSpeciesOnTick(index, featureType!, v); }">
-                                        <option value="">Pick @capturedSlot.LinkType species...</option>
-                                        @foreach (var opt in featureDef.Options)
-                                        {
-                                            <option value="@opt.Id">@opt.Name</option>
-                                        }
-                                    </select>
+                                    <div class="mt-1" style="max-width:360px">
+                                        <SearchSelect TItem="ClassFeatureOption"
+                                                      Items="featureDef.Options"
+                                                      Value="@(currentPick ?? "")"
+                                                      ValueChanged="@((v) => { if (!string.IsNullOrEmpty(v)) SetCompanionSpeciesOnTick(index, featureType!, v); })"
+                                                      DisplaySelector="@(o => o.Name)"
+                                                      ValueSelector="@(o => o.Id)"
+                                                      CssClass="form-control-sm"
+                                                      Placeholder="@($"Pick {capturedSlot.LinkType} species...")" />
+                                    </div>
                                 }
                                 else if (string.IsNullOrEmpty(featureType))
                                 {
@@ -2177,15 +2187,17 @@ else
                                 var selectedCandidate = _linkCandidateByLinkType.GetValueOrDefault(slotLinkType, "");
                                 <div class="mt-1 d-flex align-items-center gap-1">
                                     <small class="text-muted">or link existing:</small>
-                                    <select class="form-select form-select-sm" style="max-width:280px"
-                                            value="@selectedCandidate"
-                                            @onchange="(e) => _linkCandidateByLinkType[slotLinkType] = e.Value?.ToString() ?? string.Empty">
-                                        <option value="">Pick a character...</option>
-                                        @foreach (var c in _availableCharacters.Where(c => c.Id != _characterStoreId))
-                                        {
-                                            <option value="@c.Id">@c.Name</option>
-                                        }
-                                    </select>
+                                    <div style="width:280px">
+                                        <SearchSelect TItem="CharacterFileInfo"
+                                                      Items="_availableCharacters.Where(c => c.Id != _characterStoreId)"
+                                                      Value="@selectedCandidate"
+                                                      ValueChanged="@((v) => _linkCandidateByLinkType[slotLinkType] = v ?? string.Empty)"
+                                                      DisplaySelector="@(c => c.Name)"
+                                                      ValueSelector="@(c => c.Id)"
+                                                      AllowClear="true"
+                                                      CssClass="form-control-sm"
+                                                      Placeholder="Pick a character..." />
+                                    </div>
                                     <button class="btn btn-sm btn-outline-primary"
                                             disabled="@string.IsNullOrEmpty(selectedCandidate)"
                                             @onclick="() => LinkExistingCompanion(capturedSlot)">Link</button>
@@ -2281,13 +2293,17 @@ else
                             {
                                 <div class="d-flex flex-wrap align-items-center gap-1 mb-2">
                                     <small class="text-muted">or link existing:</small>
-                                    <select class="form-select form-select-sm" style="max-width:280px" @bind="_leadershipFollowerCandidate">
-                                        <option value="">Pick a character...</option>
-                                        @foreach (var c in _availableCharacters.Where(c => c.Id != _characterStoreId))
-                                        {
-                                            <option value="@c.Id">@c.Name</option>
-                                        }
-                                    </select>
+                                    <div style="width:280px">
+                                        <SearchSelect TItem="CharacterFileInfo"
+                                                      Items="_availableCharacters.Where(c => c.Id != _characterStoreId)"
+                                                      Value="@_leadershipFollowerCandidate"
+                                                      ValueChanged="@((v) => _leadershipFollowerCandidate = v ?? string.Empty)"
+                                                      DisplaySelector="@(c => c.Name)"
+                                                      ValueSelector="@(c => c.Id)"
+                                                      AllowClear="true"
+                                                      CssClass="form-control-sm"
+                                                      Placeholder="Pick a character..." />
+                                    </div>
                                     <button class="btn btn-sm btn-outline-primary"
                                             disabled="@(string.IsNullOrEmpty(_leadershipFollowerCandidate) || followerCapacity <= followersAtLevel)"
                                             @onclick="LinkExistingLeadershipFollower">Link</button>
