@@ -54,11 +54,17 @@ public class SkillTotalTests
         });
 
         void Skill(string id, string name, string keyAbility, params (string Target, int Bonus)[] synergies) =>
+            SkillWithTraining(id, name, keyAbility, trainedOnly: false, synergies);
+
+        void SkillWithTraining(
+            string id, string name, string keyAbility, bool trainedOnly,
+            params (string Target, int Bonus)[] synergies) =>
             registry.RegisterSkill(new SkillDefinition
             {
                 Id = id,
                 Name = name,
                 KeyAbility = keyAbility,
+                TrainedOnly = trainedOnly,
                 Synergies = synergies
                     .Select(s => new SkillSynergy { TargetSkillId = s.Target, Bonus = s.Bonus })
                     .ToList(),
@@ -75,7 +81,8 @@ public class SkillTotalTests
         Skill("skill:sense_motive", "Sense Motive", "wis", ("skill:diplomacy", 2));
         Skill("skill:knowledge_nobility", "Knowledge (nobility and royalty)", "int", ("skill:diplomacy", 2));
         Skill("skill:jump", "Jump", "str", ("skill:tumble", 2));
-        Skill("skill:tumble", "Tumble", "dex", ("skill:balance", 2), ("skill:jump", 2));
+        SkillWithTraining("skill:tumble", "Tumble", "dex", trainedOnly: true,
+            ("skill:balance", 2), ("skill:jump", 2));
 
         return registry;
     }
@@ -247,6 +254,36 @@ public class SkillTotalTests
 
         Assert.False(state.SkillSynergyBonuses.ContainsKey("skill:balance"));
         Assert.Equal(5, state.SkillTotals["skill:jump"]);
+    }
+
+    [Fact]
+    public void TrainedOnlySkill_WithNoRanks_HasNoTotalEvenWithASynergy()
+    {
+        // Jump 5 ranks → Tumble +2, but Tumble is trained-only: with no rank the character cannot
+        // attempt it, so there is no total to show. The synergy is still recorded for provenance.
+        var state = Evaluate(CreateRegistry(), new() { ["skill:jump"] = 5 }, levels: 2);
+
+        Assert.Equal(2, state.SkillSynergyBonuses["skill:tumble"]);
+        Assert.False(state.SkillTotals.ContainsKey("skill:tumble"));
+    }
+
+    [Fact]
+    public void TrainedOnlySkill_WithNoRanks_HasNoTotalEvenWithAGrantedBonus()
+    {
+        var grants = new List<Permabuff> { new GrantSkillBonus { SkillId = "skill:tumble", Value = 2 } };
+
+        var state = Evaluate(CreateRegistry(), new(), extraGrants: grants);
+
+        Assert.Equal(2, state.SkillBonuses["skill:tumble"]);
+        Assert.False(state.SkillTotals.ContainsKey("skill:tumble"));
+    }
+
+    [Fact]
+    public void TrainedOnlySkill_WithOneRank_IsTotalled()
+    {
+        var state = Evaluate(CreateRegistry(), new() { ["skill:tumble"] = 1 });
+
+        Assert.Equal(1, state.SkillTotals["skill:tumble"]);
     }
 
     [Fact]

@@ -198,7 +198,8 @@ public class CharacterState
     /// <summary>
     /// The number a player actually rolls: whole ranks + key ability modifier + SkillBonuses +
     /// SkillSynergyBonuses. Computed by the tail pass, so valid only after evaluation finishes.
-    /// Armor check penalty, untrained-use restrictions and situational modifiers are not applied.
+    /// Trained-only skills with no whole rank are omitted (they cannot be used). Armor check
+    /// penalty and situational modifiers are not applied.
     /// </summary>
     public Dictionary<string, int> SkillTotals { get; set; } = new();
 

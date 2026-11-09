@@ -1189,9 +1189,16 @@ public class ReplayStudio
 
         foreach (var skillId in skillIds)
         {
+            var hasDef = _content.TryGetSkill(skillId, out var def) && def != null;
+
+            // SRD: a trained-only skill needs at least 1 rank to be used at all, so a racial
+            // bonus or synergy alone gives no check to total. The bonus dictionaries keep the
+            // entry for provenance; only the total is withheld.
+            if (hasDef && def!.TrainedOnly && WholeRanks(skillId) < 1)
+                continue;
+
             var abilityMod = 0;
-            if (_content.TryGetSkill(skillId, out var def) && def != null
-                && Enum.TryParse<Ability>(def.KeyAbility, ignoreCase: true, out var keyAbility))
+            if (hasDef && Enum.TryParse<Ability>(def!.KeyAbility, ignoreCase: true, out var keyAbility))
                 abilityMod = state.AbilityModifier(keyAbility);
 
             // Hide is the one skill with a size modifier, and it is not the AC/attack one — a
